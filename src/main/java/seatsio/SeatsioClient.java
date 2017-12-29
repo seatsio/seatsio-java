@@ -1,5 +1,6 @@
 package seatsio;
 
+import seatsio.holdTokens.HoldTokens;
 import seatsio.subaccounts.Subaccounts;
 
 public class SeatsioClient {
@@ -18,5 +19,9 @@ public class SeatsioClient {
 
     public Subaccounts subaccounts() {
         return new Subaccounts(secretKey, baseUrl);
+    }
+
+    public HoldTokens holdTokens() {
+        return new HoldTokens(secretKey, baseUrl);
     }
 }
