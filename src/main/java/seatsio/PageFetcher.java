@@ -18,6 +18,7 @@ public class PageFetcher<T> {
     private final String secretKey;
     private final Class<T> clazz;
     private Integer pageSize;
+    private Map<String, Object> queryParams = new HashMap<>();
 
     public PageFetcher(String baseUrl, String url, String secretKey, Class<T> clazz) {
         this.baseUrl = baseUrl;
@@ -27,30 +28,33 @@ public class PageFetcher<T> {
     }
 
     public Page<T> fetchFirstPage() {
-        return fetchFirstPage(buildRequest());
+        return fetch(buildRequest());
     }
 
     public Page<T> fetchAfter(long id) {
         HttpRequest request = buildRequest();
         request.queryString("start_after_id", id);
-        return fetchFirstPage(request);
+        return fetch(request);
     }
 
     public Page<T> fetchBefore(long id) {
         HttpRequest request = buildRequest();
         request.queryString("end_before_id", id);
-        return fetchFirstPage(request);
+        return fetch(request);
     }
 
     private HttpRequest buildRequest() {
-        HttpRequest request = Unirest.get(baseUrl + "/" + url).basicAuth(secretKey, null);
+        HttpRequest request = Unirest
+                .get(baseUrl + "/" + url)
+                .queryString(queryParams)
+                .basicAuth(secretKey, null);
         if (pageSize != null) {
             request.queryString("limit", pageSize);
         }
         return request;
     }
 
-    private Page<T> fetchFirstPage(HttpRequest request) {
+    private Page<T> fetch(HttpRequest request) {
         HttpResponse<String> response = unirest(request::asString);
         JsonObject responseJson = new JsonParser().parse(response.getBody()).getAsJsonObject();
         List<T> items = asList(responseJson.getAsJsonArray("items"), clazz);
@@ -75,5 +79,9 @@ public class PageFetcher<T> {
 
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
+    }
+
+    protected void setQueryParam(String name, String value) {
+        this.queryParams.put(name, value);
     }
 }

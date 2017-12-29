@@ -13,7 +13,7 @@ import static seatsio.json.JsonObjectBuilder.aJsonObject;
 
 public class SeatsioClientTest {
 
-    private static final String BASE_URL = "https://api-staging.seats.io";
+    protected static final String BASE_URL = "https://api-staging.seats.io";
 
     protected TestUser user;
     protected SeatsioClient client;

@@ -5,6 +5,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
+import seatsio.Lister;
+import seatsio.PageFetcher;
 import seatsio.json.JsonObjectBuilder;
 
 import java.util.List;
@@ -87,6 +89,45 @@ public class Charts {
                 .asString());
     }
 
+    public Chart copy(String key) {
+        HttpResponse<String> response = unirest(() -> Unirest.post(baseUrl + "/charts/{key}/version/published/actions/copy")
+                .routeParam("key", key)
+                .basicAuth(secretKey, null)
+                .asString());
+        return new Gson().fromJson(response.getBody(), Chart.class);
+    }
+
+    public void publishDraftVersion(String key) {
+        unirest(() -> Unirest.post(baseUrl + "/charts/{key}/version/draft/actions/publish")
+                .routeParam("key", key)
+                .basicAuth(secretKey, null)
+                .asString());
+    }
+
+    public void discardDraftVersion(String key) {
+        unirest(() -> Unirest.post(baseUrl + "/charts/{key}/version/draft/actions/discard")
+                .routeParam("key", key)
+                .basicAuth(secretKey, null)
+                .asString());
+    }
+
+    public Chart copyDraftVersion(String key) {
+        HttpResponse<String> response = unirest(() -> Unirest.post(baseUrl + "/charts/{key}/version/draft/actions/copy")
+                .routeParam("key", key)
+                .basicAuth(secretKey, null)
+                .asString());
+        return new Gson().fromJson(response.getBody(), Chart.class);
+    }
+
+    public Chart copyToSubacccount(String key, long subaccountId) {
+        HttpResponse<String> response = unirest(() -> Unirest.post(baseUrl + "/charts/{key}/version/published/actions/copy-to/{subaccountId}")
+                .routeParam("key", key)
+                .routeParam("subaccountId", Long.toString(subaccountId))
+                .basicAuth(secretKey, null)
+                .asString());
+        return new Gson().fromJson(response.getBody(), Chart.class);
+    }
+
     public void addTag(String key, String tag) {
         unirest(() -> Unirest.post(baseUrl + "/charts/{key}/tags/{tag}")
                 .routeParam("key", key)
@@ -110,4 +151,9 @@ public class Charts {
         JsonElement tags = new JsonParser().parse(response.getBody()).getAsJsonObject().get("tags");
         return new Gson().fromJson(tags, List.class);
     }
+
+    public Lister<Chart> list() {
+        return new Lister<>(new PageFetcher<>(baseUrl, "/charts", secretKey, Chart.class));
+    }
+
 }

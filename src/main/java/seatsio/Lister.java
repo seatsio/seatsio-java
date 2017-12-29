@@ -1,7 +1,5 @@
 package seatsio;
 
-import seatsio.subaccounts.Subaccount;
-
 import java.util.stream.Stream;
 
 public class Lister<T> {
@@ -33,4 +31,18 @@ public class Lister<T> {
         return this;
     }
 
+    public Lister<T> setFilter(String filter) {
+        this.pageFetcher.setQueryParam("filter", filter);
+        return this;
+    }
+
+    public Lister<T> setTag(String tag) {
+        this.pageFetcher.setQueryParam("tag", tag);
+        return this;
+    }
+
+    public Lister<T> setExpandEvents() {
+        this.pageFetcher.setQueryParam("expand", "events");
+        return this;
+    }
 }

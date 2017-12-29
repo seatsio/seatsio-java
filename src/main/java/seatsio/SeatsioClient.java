@@ -1,6 +1,7 @@
 package seatsio;
 
 import seatsio.charts.Charts;
+import seatsio.events.Events;
 import seatsio.holdTokens.HoldTokens;
 import seatsio.subaccounts.Subaccounts;
 
@@ -28,5 +29,9 @@ public class SeatsioClient {
 
     public Charts charts() {
         return new Charts(secretKey, baseUrl);
+    }
+
+    public Events events() {
+        return new Events(secretKey, baseUrl);
     }
 }
