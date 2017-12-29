@@ -5,3 +5,4 @@
 - Error handling
 - retrieve chart call should also return events (if expand parameter is provided?)
 - remove list events for chart call (also in PHP client)
+- find a way to auto publish successful builds
