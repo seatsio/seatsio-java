@@ -30,6 +30,35 @@ public class Subaccounts {
         return new Gson().fromJson(response.getBody(), Subaccount.class);
     }
 
+    public Subaccount create() {
+        HttpResponse<String> response = unirest(() -> Unirest.post(baseUrl + "/subaccounts")
+                .basicAuth(secretKey, null)
+                .asString());
+        return new Gson().fromJson(response.getBody(), Subaccount.class);
+    }
+
+    public Subaccount retrieve(long id) {
+        HttpResponse<String> response = unirest(() -> Unirest.get(baseUrl + "/subaccounts/{id}")
+                .routeParam("id", Long.toString(id))
+                .basicAuth(secretKey, null)
+                .asString());
+        return new Gson().fromJson(response.getBody(), Subaccount.class);
+    }
+
+    public void activate(long id) {
+        unirest(() -> Unirest.post(baseUrl + "/subaccounts/{id}/actions/activate")
+                .routeParam("id", Long.toString(id))
+                .basicAuth(secretKey, null)
+                .asBinary());
+    }
+
+    public void deactivate(long id) {
+        unirest(() -> Unirest.post(baseUrl + "/subaccounts/{id}/actions/deactivate")
+                .routeParam("id", Long.toString(id))
+                .basicAuth(secretKey, null)
+                .asBinary());
+    }
+
     private <T> HttpResponse<T> unirest(UnirestExceptionThrowingSupplier<HttpResponse<T>> supplier) {
         try {
             HttpResponse<T> response = supplier.get();
@@ -41,4 +70,5 @@ public class Subaccounts {
             throw new RuntimeException(e);
         }
     }
+
 }
