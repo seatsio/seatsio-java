@@ -1,0 +1,20 @@
+package seatsio.charts;
+
+import seatsio.events.Event;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+public class Chart {
+
+    public long id;
+    public String key;
+    public String name;
+    public String status;
+    public Set<String> tags;
+    public String publishedVersionThumbnailUrl;
+    public String draftVersionThumbnailUrl;
+    public List<Event> events = new ArrayList<>();
+    public boolean archived;
+}

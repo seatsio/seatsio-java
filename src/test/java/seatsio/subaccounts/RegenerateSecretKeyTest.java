@@ -15,7 +15,7 @@ public class RegenerateSecretKeyTest extends SeatsioClientTest {
 
         Subaccount retrievedSubaccount = client.subaccounts().retrieve(subaccount.id);
         assertThat(retrievedSubaccount.secretKey)
-                .isNotEmpty()
+                .isNotBlank()
                 .isNotEqualTo(subaccount.secretKey);
     }
 

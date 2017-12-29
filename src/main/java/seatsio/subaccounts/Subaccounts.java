@@ -4,10 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import seatsio.Lister;
 import seatsio.PageFetcher;
-import seatsio.UnirestExceptionThrowingSupplier;
 
 import static seatsio.UnirestUtil.unirest;
 import static seatsio.json.JsonObjectBuilder.aJsonObject;

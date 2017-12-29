@@ -14,9 +14,9 @@ public class RetrieveSubaccountTest extends SeatsioClientTest {
         Subaccount retrievedSubaccount = client.subaccounts().retrieve(subaccount.id);
 
         assertThat(subaccount.id).isEqualTo(retrievedSubaccount.id);
-        assertThat(retrievedSubaccount.secretKey).isNotEmpty();
-        assertThat(retrievedSubaccount.designerKey).isNotEmpty();
-        assertThat(retrievedSubaccount.publicKey).isNotEmpty();
+        assertThat(retrievedSubaccount.secretKey).isNotBlank();
+        assertThat(retrievedSubaccount.designerKey).isNotBlank();
+        assertThat(retrievedSubaccount.publicKey).isNotBlank();
         assertThat(retrievedSubaccount.name).isEqualTo("joske");
         assertThat(retrievedSubaccount.active).isTrue();
     }

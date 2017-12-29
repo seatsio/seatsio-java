@@ -1,5 +1,6 @@
 package seatsio;
 
+import seatsio.charts.Charts;
 import seatsio.holdTokens.HoldTokens;
 import seatsio.subaccounts.Subaccounts;
 
@@ -23,5 +24,9 @@ public class SeatsioClient {
 
     public HoldTokens holdTokens() {
         return new HoldTokens(secretKey, baseUrl);
+    }
+
+    public Charts charts() {
+        return new Charts(secretKey, baseUrl);
     }
 }

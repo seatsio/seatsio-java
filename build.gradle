@@ -9,6 +9,7 @@ repositories {
 dependencies {
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.mashape.unirest:unirest-java:1.4.9'
+    compile 'com.google.guava:guava:23.6-jre'
     testCompile 'junit:junit:4.12'
     testCompile 'org.assertj:assertj-core:3.6.1'
 }

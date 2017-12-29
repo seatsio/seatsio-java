@@ -9,7 +9,7 @@ public class UnirestUtil {
         try {
             HttpResponse<T> response = supplier.get();
             if (response.getStatus() >= 400) {
-                throw new RuntimeException("Error: " + response.getStatus());
+                throw new RuntimeException("Error: " + response.getStatus() + ". Reason: " + response.getBody().toString());
             }
             return response;
         } catch (UnirestException e) {
