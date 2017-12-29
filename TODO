@@ -1,4 +1,7 @@
 - CopyChartToParent
 - CopyChartToSubaccount
 - Delete list tags call
+- move to archive should be action
 - Error handling
+- retrieve chart call should also return events (if expand parameter is provided?)
+- remove list events for chart call (also in PHP client)

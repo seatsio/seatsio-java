@@ -9,6 +9,7 @@ import seatsio.Lister;
 import seatsio.PageFetcher;
 import seatsio.json.JsonObjectBuilder;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -70,6 +71,30 @@ public class Charts {
         return new Gson().fromJson(response.getBody(), Map.class);
     }
 
+    public InputStream retrievePublishedVersionThumbnail(String key) {
+        HttpResponse<InputStream> response = unirest(() -> Unirest.get(baseUrl + "/charts/{key}/version/published/thumbnail")
+                .routeParam("key", key)
+                .basicAuth(secretKey, null)
+                .asBinary());
+        return response.getBody();
+    }
+
+    public Map<?, ?> retrieveDraftVersion(String key) {
+        HttpResponse<String> response = unirest(() -> Unirest.get(baseUrl + "/charts/{key}/version/draft")
+                .routeParam("key", key)
+                .basicAuth(secretKey, null)
+                .asString());
+        return new Gson().fromJson(response.getBody(), Map.class);
+    }
+
+    public InputStream retrieveDraftVersionThumbnail(String key) {
+        HttpResponse<InputStream> response = unirest(() -> Unirest.get(baseUrl + "/charts/{key}/version/draft/thumbnail")
+                .routeParam("key", key)
+                .basicAuth(secretKey, null)
+                .asBinary());
+        return response.getBody();
+    }
+
     public void update(String key, String name) {
         update(key, name, null);
     }
@@ -95,6 +120,20 @@ public class Charts {
                 .basicAuth(secretKey, null)
                 .asString());
         return new Gson().fromJson(response.getBody(), Chart.class);
+    }
+
+    public void moveToArchive(String key) {
+        unirest(() -> Unirest.post(baseUrl + "/charts/archive/{key}")
+                .routeParam("key", key)
+                .basicAuth(secretKey, null)
+                .asString());
+    }
+
+    public void moveOutOfArchive(String key) {
+        unirest(() -> Unirest.delete(baseUrl + "/charts/archive/{key}")
+                .routeParam("key", key)
+                .basicAuth(secretKey, null)
+                .asString());
     }
 
     public void publishDraftVersion(String key) {
@@ -154,6 +193,10 @@ public class Charts {
 
     public Lister<Chart> list() {
         return new Lister<>(new PageFetcher<>(baseUrl, "/charts", secretKey, Chart.class));
+    }
+
+    public Lister<Chart> archive() {
+        return new Lister<>(new PageFetcher<>(baseUrl, "/charts/archive", secretKey, Chart.class));
     }
 
 }
