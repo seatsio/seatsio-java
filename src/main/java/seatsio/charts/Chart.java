@@ -15,6 +15,6 @@ public class Chart {
     public Set<String> tags;
     public String publishedVersionThumbnailUrl;
     public String draftVersionThumbnailUrl;
-    public List<Event> events = new ArrayList<>();
+    public List<Event> events;
     public boolean archived;
 }

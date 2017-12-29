@@ -22,7 +22,7 @@ public class CreateChartTest extends SeatsioClientTest {
         assertThat(chart.name).isEqualTo("Untitled chart");
         assertThat(chart.publishedVersionThumbnailUrl).isNotBlank();
         assertThat(chart.draftVersionThumbnailUrl).isNull();
-        assertThat(chart.events).isEmpty();
+        assertThat(chart.events).isNull();
         assertThat(chart.tags).isEmpty();
         assertThat(chart.archived).isFalse();
 

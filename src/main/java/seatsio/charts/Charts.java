@@ -1,6 +1,8 @@
 package seatsio.charts;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import seatsio.json.JsonObjectBuilder;
@@ -85,4 +87,27 @@ public class Charts {
                 .asString());
     }
 
+    public void addTag(String key, String tag) {
+        unirest(() -> Unirest.post(baseUrl + "/charts/{key}/tags/{tag}")
+                .routeParam("key", key)
+                .routeParam("tag", tag)
+                .basicAuth(secretKey, null)
+                .asString());
+    }
+
+    public void removeTag(String key, String tag) {
+        unirest(() -> Unirest.delete(baseUrl + "/charts/{key}/tags/{tag}")
+                .routeParam("key", key)
+                .routeParam("tag", tag)
+                .basicAuth(secretKey, null)
+                .asString());
+    }
+
+    public List<String> listAllTags() {
+        HttpResponse<String> response = unirest(() -> Unirest.get(baseUrl + "/charts/tags")
+                .basicAuth(secretKey, null)
+                .asString());
+        JsonElement tags = new JsonParser().parse(response.getBody()).getAsJsonObject().get("tags");
+        return new Gson().fromJson(tags, List.class);
+    }
 }
