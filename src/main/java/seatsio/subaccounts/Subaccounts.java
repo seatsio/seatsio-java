@@ -5,8 +5,11 @@ import com.google.gson.JsonObject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import seatsio.Lister;
+import seatsio.PageFetcher;
 import seatsio.UnirestExceptionThrowingSupplier;
 
+import static seatsio.UnirestUtil.unirest;
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
 
 public class Subaccounts {
@@ -84,16 +87,8 @@ public class Subaccounts {
                 .asBinary());
     }
 
-    private <T> HttpResponse<T> unirest(UnirestExceptionThrowingSupplier<HttpResponse<T>> supplier) {
-        try {
-            HttpResponse<T> response = supplier.get();
-            if (response.getStatus() >= 400) {
-                throw new RuntimeException("Error: " + response.getStatus());
-            }
-            return response;
-        } catch (UnirestException e) {
-            throw new RuntimeException(e);
-        }
+    public Lister<Subaccount> list() {
+        return new Lister<>(new PageFetcher<>(baseUrl, "/subaccounts", secretKey, Subaccount.class));
     }
 
 }
