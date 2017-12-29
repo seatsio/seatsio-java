@@ -1,0 +1,22 @@
+package seatsio.subaccounts;
+
+import org.junit.Test;
+import seatsio.SeatsioClientTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class RegenerateSecretKeyTest extends SeatsioClientTest {
+
+    @Test
+    public void test() {
+        Subaccount subaccount = client.subaccounts().create();
+
+        client.subaccounts().regenerateSecretKey(subaccount.id);
+
+        Subaccount retrievedSubaccount = client.subaccounts().retrieve(subaccount.id);
+        assertThat(retrievedSubaccount.secretKey)
+                .isNotEmpty()
+                .isNotEqualTo(subaccount.secretKey);
+    }
+
+}

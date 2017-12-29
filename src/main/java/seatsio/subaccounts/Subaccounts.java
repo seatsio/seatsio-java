@@ -30,6 +30,17 @@ public class Subaccounts {
         return new Gson().fromJson(response.getBody(), Subaccount.class);
     }
 
+    public void update(long id, String name) {
+        unirest(() -> {
+            JsonObject request = aJsonObject().withProperty("name", name).build();
+            return Unirest.post(baseUrl + "/subaccounts/{id}")
+                    .routeParam("id", Long.toString(id))
+                    .basicAuth(secretKey, null)
+                    .body(request.toString())
+                    .asString();
+        });
+    }
+
     public Subaccount create() {
         HttpResponse<String> response = unirest(() -> Unirest.post(baseUrl + "/subaccounts")
                 .basicAuth(secretKey, null)
@@ -54,6 +65,20 @@ public class Subaccounts {
 
     public void deactivate(long id) {
         unirest(() -> Unirest.post(baseUrl + "/subaccounts/{id}/actions/deactivate")
+                .routeParam("id", Long.toString(id))
+                .basicAuth(secretKey, null)
+                .asBinary());
+    }
+
+    public void regenerateSecretKey(long id) {
+        unirest(() -> Unirest.post(baseUrl + "/subaccounts/{id}/secret-key/actions/regenerate")
+                .routeParam("id", Long.toString(id))
+                .basicAuth(secretKey, null)
+                .asBinary());
+    }
+
+    public void regenerateDesignerKey(long id) {
+        unirest(() -> Unirest.post(baseUrl + "/subaccounts/{id}/designer-key/actions/regenerate")
                 .routeParam("id", Long.toString(id))
                 .basicAuth(secretKey, null)
                 .asBinary());
