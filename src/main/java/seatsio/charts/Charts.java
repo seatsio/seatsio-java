@@ -20,6 +20,14 @@ public class Charts {
         this.baseUrl = baseUrl;
     }
 
+    public Chart retrieve(String key) {
+        HttpResponse<String> response = unirest(() -> Unirest.get(baseUrl + "/charts/{key}")
+                .routeParam("key", key)
+                .basicAuth(secretKey, null)
+                .asString());
+        return new Gson().fromJson(response.getBody(), Chart.class);
+    }
+
     public Chart create() {
         return create(null);
     }
@@ -56,6 +64,25 @@ public class Charts {
                 .basicAuth(secretKey, null)
                 .asString());
         return new Gson().fromJson(response.getBody(), Map.class);
+    }
+
+    public void update(String key, String name) {
+        update(key, name, null);
+    }
+
+    public void update(String key, String name, List<Category> categories) {
+        JsonObjectBuilder request = JsonObjectBuilder.aJsonObject();
+        if (name != null) {
+            request.withProperty("name", name);
+        }
+        if (categories != null) {
+            request.withProperty("categories", categories, category -> new Gson().toJsonTree(category));
+        }
+        unirest(() -> Unirest.post(baseUrl + "/charts/{key}")
+                .routeParam("key", key)
+                .basicAuth(secretKey, null)
+                .body(request.build().toString())
+                .asString());
     }
 
 }
