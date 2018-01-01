@@ -4,12 +4,14 @@ import com.google.gson.JsonObject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import seatsio.json.JsonObjectBuilder;
+import seatsio.util.Lister;
+import seatsio.util.PageFetcher;
 
 import java.util.List;
 
+import static seatsio.json.JsonObjectBuilder.aJsonObject;
 import static seatsio.json.SeatsioGson.gson;
 import static seatsio.util.UnirestUtil.unirest;
-import static seatsio.json.JsonObjectBuilder.aJsonObject;
 
 public class Events {
 
@@ -29,6 +31,24 @@ public class Events {
                 .body(request.build().toString())
                 .asString());
         return gson().fromJson(response.getBody(), Event.class);
+    }
+
+    public void update(String key, String chartKey, String newKey, Boolean bookWholeTables) {
+        JsonObjectBuilder request = aJsonObject();
+        if (chartKey != null) {
+            request.withProperty("chartKey", chartKey);
+        }
+        if (newKey != null) {
+            request.withProperty("eventKey", newKey);
+        }
+        if (bookWholeTables != null) {
+            request.withProperty("bookWholeTables", bookWholeTables);
+        }
+        unirest(() -> Unirest.post(baseUrl + "/events/{key}")
+                .routeParam("key", key)
+                .basicAuth(secretKey, null)
+                .body(request.build().toString())
+                .asString());
     }
 
     public Event retrieve(String key) {
@@ -72,4 +92,9 @@ public class Events {
                 .routeParam("key", key)
                 .asString());
     }
+
+    public Lister<Event> list() {
+        return new Lister<>(new PageFetcher<>(baseUrl, "/events", secretKey, Event.class));
+    }
+
 }
