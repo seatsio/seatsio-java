@@ -1,4 +1,4 @@
-package seatsio;
+package seatsio.util;
 
 import java.util.List;
 import java.util.Optional;

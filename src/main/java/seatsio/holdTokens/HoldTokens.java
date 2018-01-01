@@ -4,10 +4,8 @@ import com.google.gson.*;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 
-import java.lang.reflect.Type;
-import java.time.Instant;
-
-import static seatsio.UnirestUtil.unirest;
+import static seatsio.json.SeatsioGson.gson;
+import static seatsio.util.UnirestUtil.unirest;
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
 
 public class HoldTokens {
@@ -43,16 +41,6 @@ public class HoldTokens {
                 .body(request.toString())
                 .asString());
         return gson().fromJson(response.getBody(), HoldToken.class);
-    }
-
-    private static Gson gson() {
-        return new GsonBuilder()
-                .registerTypeAdapter(Instant.class, instantDeserializer())
-                .create();
-    }
-
-    private static JsonDeserializer<Instant> instantDeserializer() {
-        return (JsonElement json, Type typeOfT, JsonDeserializationContext ctx) -> Instant.parse(json.getAsJsonPrimitive().getAsString());
     }
 
 }

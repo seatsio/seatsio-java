@@ -17,7 +17,7 @@ public class CreateHoldTokenTest extends SeatsioClientTest {
         HoldToken holdToken = client.holdTokens().create();
 
         assertThat(holdToken.holdToken).isNotEmpty();
-        assertThat(holdToken.expiresAt).isBetween(creationTime.plus(15, MINUTES), creationTime.plus(16, MINUTES));
+        assertThat(holdToken.expiresAt).isBetween(creationTime.plus(14, MINUTES), creationTime.plus(16, MINUTES));
     }
 
 }

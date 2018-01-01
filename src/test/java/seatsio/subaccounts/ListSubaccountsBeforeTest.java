@@ -1,7 +1,7 @@
 package seatsio.subaccounts;
 
 import org.junit.Test;
-import seatsio.Page;
+import seatsio.util.Page;
 import seatsio.SeatsioClientTest;
 
 import static org.assertj.core.api.Assertions.assertThat;

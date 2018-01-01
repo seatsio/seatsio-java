@@ -1,6 +1,8 @@
 package seatsio.subaccounts;
 
-public class Subaccount {
+import seatsio.util.ValueObject;
+
+public class Subaccount extends ValueObject {
 
     public long id;
     public String secretKey;

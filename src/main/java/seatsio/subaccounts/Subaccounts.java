@@ -1,13 +1,13 @@
 package seatsio.subaccounts;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
-import seatsio.Lister;
-import seatsio.PageFetcher;
+import seatsio.util.Lister;
+import seatsio.util.PageFetcher;
 
-import static seatsio.UnirestUtil.unirest;
+import static seatsio.json.SeatsioGson.gson;
+import static seatsio.util.UnirestUtil.unirest;
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
 
 public class Subaccounts {
@@ -28,7 +28,7 @@ public class Subaccounts {
                     .body(request.toString())
                     .asString();
         });
-        return new Gson().fromJson(response.getBody(), Subaccount.class);
+        return gson().fromJson(response.getBody(), Subaccount.class);
     }
 
     public void update(long id, String name) {
@@ -46,7 +46,7 @@ public class Subaccounts {
         HttpResponse<String> response = unirest(() -> Unirest.post(baseUrl + "/subaccounts")
                 .basicAuth(secretKey, null)
                 .asString());
-        return new Gson().fromJson(response.getBody(), Subaccount.class);
+        return gson().fromJson(response.getBody(), Subaccount.class);
     }
 
     public Subaccount retrieve(long id) {
@@ -54,7 +54,7 @@ public class Subaccounts {
                 .routeParam("id", Long.toString(id))
                 .basicAuth(secretKey, null)
                 .asString());
-        return new Gson().fromJson(response.getBody(), Subaccount.class);
+        return gson().fromJson(response.getBody(), Subaccount.class);
     }
 
     public void activate(long id) {

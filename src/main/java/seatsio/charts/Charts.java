@@ -1,19 +1,19 @@
 package seatsio.charts;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
-import seatsio.Lister;
-import seatsio.PageFetcher;
+import seatsio.util.Lister;
+import seatsio.util.PageFetcher;
 import seatsio.json.JsonObjectBuilder;
 
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-import static seatsio.UnirestUtil.unirest;
+import static seatsio.json.SeatsioGson.gson;
+import static seatsio.util.UnirestUtil.unirest;
 
 public class Charts {
 
@@ -30,7 +30,7 @@ public class Charts {
                 .routeParam("key", key)
                 .basicAuth(secretKey, null)
                 .asString());
-        return new Gson().fromJson(response.getBody(), Chart.class);
+        return gson().fromJson(response.getBody(), Chart.class);
     }
 
     public Chart create() {
@@ -54,13 +54,13 @@ public class Charts {
             request.withProperty("venueType", venueType);
         }
         if (categories != null) {
-            request.withProperty("categories", categories, category -> new Gson().toJsonTree(category));
+            request.withProperty("categories", categories, category -> gson().toJsonTree(category));
         }
         HttpResponse<String> response = unirest(() -> Unirest.post(baseUrl + "/charts")
                 .basicAuth(secretKey, null)
                 .body(request.build().toString())
                 .asString());
-        return new Gson().fromJson(response.getBody(), Chart.class);
+        return gson().fromJson(response.getBody(), Chart.class);
     }
 
     public Map<?, ?> retrievePublishedVersion(String key) {
@@ -68,7 +68,7 @@ public class Charts {
                 .routeParam("key", key)
                 .basicAuth(secretKey, null)
                 .asString());
-        return new Gson().fromJson(response.getBody(), Map.class);
+        return gson().fromJson(response.getBody(), Map.class);
     }
 
     public InputStream retrievePublishedVersionThumbnail(String key) {
@@ -84,7 +84,7 @@ public class Charts {
                 .routeParam("key", key)
                 .basicAuth(secretKey, null)
                 .asString());
-        return new Gson().fromJson(response.getBody(), Map.class);
+        return gson().fromJson(response.getBody(), Map.class);
     }
 
     public InputStream retrieveDraftVersionThumbnail(String key) {
@@ -105,7 +105,7 @@ public class Charts {
             request.withProperty("name", name);
         }
         if (categories != null) {
-            request.withProperty("categories", categories, category -> new Gson().toJsonTree(category));
+            request.withProperty("categories", categories, category -> gson().toJsonTree(category));
         }
         unirest(() -> Unirest.post(baseUrl + "/charts/{key}")
                 .routeParam("key", key)
@@ -119,7 +119,7 @@ public class Charts {
                 .routeParam("key", key)
                 .basicAuth(secretKey, null)
                 .asString());
-        return new Gson().fromJson(response.getBody(), Chart.class);
+        return gson().fromJson(response.getBody(), Chart.class);
     }
 
     public void moveToArchive(String key) {
@@ -155,7 +155,7 @@ public class Charts {
                 .routeParam("key", key)
                 .basicAuth(secretKey, null)
                 .asString());
-        return new Gson().fromJson(response.getBody(), Chart.class);
+        return gson().fromJson(response.getBody(), Chart.class);
     }
 
     public Chart copyToSubacccount(String key, long subaccountId) {
@@ -164,7 +164,7 @@ public class Charts {
                 .routeParam("subaccountId", Long.toString(subaccountId))
                 .basicAuth(secretKey, null)
                 .asString());
-        return new Gson().fromJson(response.getBody(), Chart.class);
+        return gson().fromJson(response.getBody(), Chart.class);
     }
 
     public void addTag(String key, String tag) {
@@ -188,7 +188,7 @@ public class Charts {
                 .basicAuth(secretKey, null)
                 .asString());
         JsonElement tags = new JsonParser().parse(response.getBody()).getAsJsonObject().get("tags");
-        return new Gson().fromJson(tags, List.class);
+        return gson().fromJson(tags, List.class);
     }
 
     public Lister<Chart> list() {

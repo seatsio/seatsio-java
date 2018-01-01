@@ -18,7 +18,7 @@ public class UpdateHoldTokenExpirationDateTest extends SeatsioClientTest {
         HoldToken updatedHoldToken = client.holdTokens().expireInMinutes(holdToken.holdToken, 30);
 
         assertThat(updatedHoldToken.holdToken).isEqualTo(holdToken.holdToken);
-        assertThat(updatedHoldToken.expiresAt).isBetween(now.plus(30, MINUTES), now.plus(31, MINUTES));
+        assertThat(updatedHoldToken.expiresAt).isBetween(now.plus(29, MINUTES), now.plus(31, MINUTES));
     }
 
 }

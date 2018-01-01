@@ -1,6 +1,5 @@
 package seatsio.events;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -8,7 +7,8 @@ import seatsio.json.JsonObjectBuilder;
 
 import java.util.List;
 
-import static seatsio.UnirestUtil.unirest;
+import static seatsio.json.SeatsioGson.gson;
+import static seatsio.util.UnirestUtil.unirest;
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
 
 public class Events {
@@ -28,7 +28,7 @@ public class Events {
                 .basicAuth(secretKey, null)
                 .body(request.build().toString())
                 .asString());
-        return new Gson().fromJson(response.getBody(), Event.class);
+        return gson().fromJson(response.getBody(), Event.class);
     }
 
     public Event retrieve(String key) {
@@ -36,7 +36,7 @@ public class Events {
                 .basicAuth(secretKey, null)
                 .routeParam("key", key)
                 .asString());
-        return new Gson().fromJson(response.getBody(), Event.class);
+        return gson().fromJson(response.getBody(), Event.class);
     }
 
     public void markAsForSale(String key, List<String> objects, List<String> categories) {

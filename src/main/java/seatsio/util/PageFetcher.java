@@ -1,4 +1,4 @@
-package seatsio;
+package seatsio.util;
 
 import com.google.gson.*;
 import com.mashape.unirest.http.HttpResponse;
@@ -9,7 +9,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static seatsio.UnirestUtil.unirest;
+import static seatsio.json.SeatsioGson.gson;
+import static seatsio.util.UnirestUtil.unirest;
 
 public class PageFetcher<T> {
 
@@ -73,7 +74,7 @@ public class PageFetcher<T> {
         Iterator<JsonElement> itemsIterator = jsonArray.iterator();
         Spliterator<JsonElement> itemsSpliterator = Spliterators.spliteratorUnknownSize(itemsIterator, Spliterator.ORDERED);
         return StreamSupport.stream(itemsSpliterator, false)
-                .map(itemJson -> new Gson().fromJson(itemJson, clazz))
+                .map(itemJson -> gson().fromJson(itemJson, clazz))
                 .collect(Collectors.toList());
     }
 

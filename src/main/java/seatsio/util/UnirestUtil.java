@@ -1,4 +1,4 @@
-package seatsio;
+package seatsio.util;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;

@@ -1,6 +1,8 @@
 package seatsio.charts;
 
-public class Category {
+import seatsio.util.ValueObject;
+
+public class Category extends ValueObject {
 
     private final int key;
     private final String label;

@@ -1,12 +1,13 @@
 package seatsio.charts;
 
 import seatsio.events.Event;
+import seatsio.util.ValueObject;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class Chart {
+public class Chart extends ValueObject {
 
     public long id;
     public String key;
