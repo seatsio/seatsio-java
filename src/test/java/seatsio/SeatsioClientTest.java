@@ -5,11 +5,16 @@ import com.google.gson.JsonObject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Random;
 
+import static java.util.UUID.randomUUID;
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
+import static seatsio.util.UnirestUtil.unirest;
 
 public class SeatsioClientTest {
 
@@ -34,5 +39,23 @@ public class SeatsioClientTest {
                 .asString();
 
         return new Gson().fromJson(response.getBody(), TestUser.class);
+    }
+
+    protected String createTestChart() {
+        String testChartJson = testChartJson();
+        String chartKey = randomUUID().toString();
+        unirest(() -> Unirest.post(BASE_URL + "/system/public/" + user.designerKey + "/charts/" + chartKey)
+                .body(testChartJson)
+                .asString());
+        return chartKey;
+    }
+
+    private String testChartJson() {
+        try {
+            InputStream testChartJson = SeatsioClientTest.class.getResourceAsStream("/sampleChart.json");
+            return IOUtils.toString(testChartJson, "UTF-8");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
