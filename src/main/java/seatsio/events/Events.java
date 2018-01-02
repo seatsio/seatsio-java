@@ -1,14 +1,13 @@
 package seatsio.events;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import com.mashape.unirest.http.HttpResponse;
 import seatsio.json.JsonObjectBuilder;
 import seatsio.util.Lister;
 import seatsio.util.PageFetcher;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.mashape.unirest.http.Unirest.get;
 import static com.mashape.unirest.http.Unirest.post;
@@ -105,6 +104,26 @@ public class Events {
 
     public EventReports reports() {
         return new EventReports(baseUrl, secretKey);
+    }
+
+    public Lister<StatusChange> statusChanges(String key) {
+        PageFetcher<StatusChange> pageFetcher = new PageFetcher<>(
+                baseUrl,
+                "/events/{key}/status-changes",
+                ImmutableMap.of("key", key),
+                secretKey,
+                StatusChange.class);
+        return new Lister<>(pageFetcher);
+    }
+
+    public Lister<StatusChange> statusChanges(String key, String objectId) {
+        PageFetcher<StatusChange> pageFetcher = new PageFetcher<>(
+                baseUrl,
+                "/events/{key}/objects/{objectId}/status-changes",
+                ImmutableMap.of("key", key, "objectId", objectId),
+                secretKey,
+                StatusChange.class);
+        return new Lister<>(pageFetcher);
     }
 
     public void book(String eventKey, List<?> objects) {
