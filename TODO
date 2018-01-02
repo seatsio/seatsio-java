@@ -7,3 +7,4 @@
 - remove list events for chart call (also in PHP client)
 - find a way to auto publish successful builds
 - rename SeatsioObject
+- php: book and hold calls must be able to take bestAvailable

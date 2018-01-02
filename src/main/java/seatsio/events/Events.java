@@ -1,14 +1,17 @@
 package seatsio.events;
 
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
 import seatsio.json.JsonObjectBuilder;
 import seatsio.util.Lister;
 import seatsio.util.PageFetcher;
 
 import java.util.List;
+import java.util.Map;
 
+import static com.mashape.unirest.http.Unirest.get;
+import static com.mashape.unirest.http.Unirest.post;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static seatsio.events.ObjectStatus.*;
@@ -29,7 +32,7 @@ public class Events {
     public Event create(String chartKey) {
         JsonObjectBuilder request = aJsonObject();
         request.withProperty("chartKey", chartKey);
-        HttpResponse<String> response = unirest(() -> Unirest.post(baseUrl + "/events")
+        HttpResponse<String> response = unirest(() -> post(baseUrl + "/events")
                 .basicAuth(secretKey, null)
                 .body(request.build().toString())
                 .asString());
@@ -47,7 +50,7 @@ public class Events {
         if (bookWholeTables != null) {
             request.withProperty("bookWholeTables", bookWholeTables);
         }
-        unirest(() -> Unirest.post(baseUrl + "/events/{key}")
+        unirest(() -> post(baseUrl + "/events/{key}")
                 .routeParam("key", key)
                 .basicAuth(secretKey, null)
                 .body(request.build().toString())
@@ -55,7 +58,7 @@ public class Events {
     }
 
     public Event retrieve(String key) {
-        HttpResponse<String> response = unirest(() -> Unirest.get(baseUrl + "/events/{key}")
+        HttpResponse<String> response = unirest(() -> get(baseUrl + "/events/{key}")
                 .basicAuth(secretKey, null)
                 .routeParam("key", key)
                 .asString());
@@ -63,7 +66,7 @@ public class Events {
     }
 
     public void markAsForSale(String key, List<String> objects, List<String> categories) {
-        unirest(() -> Unirest.post(baseUrl + "/events/{key}/actions/mark-as-for-sale")
+        unirest(() -> post(baseUrl + "/events/{key}/actions/mark-as-for-sale")
                 .basicAuth(secretKey, null)
                 .routeParam("key", key)
                 .body(forSaleRequest(objects, categories).toString())
@@ -71,7 +74,7 @@ public class Events {
     }
 
     public void markAsNotForSale(String key, List<String> objects, List<String> categories) {
-        unirest(() -> Unirest.post(baseUrl + "/events/{key}/actions/mark-as-not-for-sale")
+        unirest(() -> post(baseUrl + "/events/{key}/actions/mark-as-not-for-sale")
                 .basicAuth(secretKey, null)
                 .routeParam("key", key)
                 .body(forSaleRequest(objects, categories).toString())
@@ -90,7 +93,7 @@ public class Events {
     }
 
     public void markEverythingAsForSale(String key) {
-        unirest(() -> Unirest.post(baseUrl + "/events/{key}/actions/mark-everything-as-for-sale")
+        unirest(() -> post(baseUrl + "/events/{key}/actions/mark-everything-as-for-sale")
                 .basicAuth(secretKey, null)
                 .routeParam("key", key)
                 .asString());
@@ -98,6 +101,10 @@ public class Events {
 
     public Lister<Event> list() {
         return new Lister<>(new PageFetcher<>(baseUrl, "/events", secretKey, Event.class));
+    }
+
+    public EventReports reports() {
+        return new EventReports(baseUrl, secretKey);
     }
 
     public void book(String eventKey, List<?> objects) {
@@ -173,7 +180,7 @@ public class Events {
     }
 
     public BestAvailableResult changeObjectStatus(String eventKey, BestAvailable bestAvailable, String status, String holdToken, String orderId) {
-        HttpResponse<String> result = unirest(() -> Unirest.post(baseUrl + "/events/{key}/actions/change-object-status")
+        HttpResponse<String> result = unirest(() -> post(baseUrl + "/events/{key}/actions/change-object-status")
                 .routeParam("key", eventKey)
                 .basicAuth(secretKey, null)
                 .body(changeObjectStatusRequest(bestAvailable, status, holdToken, orderId).toString())
@@ -194,7 +201,7 @@ public class Events {
     }
 
     public void changeObjectStatus(List<String> eventKeys, List<?> objects, String status, String holdToken, String orderId) {
-        unirest(() -> Unirest.post(baseUrl + "/seasons/actions/change-object-status")
+        unirest(() -> post(baseUrl + "/seasons/actions/change-object-status")
                 .basicAuth(secretKey, null)
                 .body(changeObjectStatusRequest(eventKeys, toObjects(objects), status, holdToken, orderId).toString())
                 .asString());
@@ -232,7 +239,7 @@ public class Events {
     }
 
     public ObjectStatus getObjectStatus(String key, String object) {
-        HttpResponse<String> response = unirest(() -> Unirest.get(baseUrl + "/events/{key}/objects/{object}")
+        HttpResponse<String> response = unirest(() -> get(baseUrl + "/events/{key}/objects/{object}")
                 .basicAuth(secretKey, null)
                 .routeParam("key", key)
                 .routeParam("object", object)
