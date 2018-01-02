@@ -7,7 +7,6 @@ import seatsio.holdTokens.HoldToken;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static seatsio.events.ObjectStatus.BOOKED;
 import static seatsio.events.ObjectStatus.FREE;
 
 public class ChangeObjectStatusTest extends SeatsioClientTest {
@@ -57,8 +56,8 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
     public void ticketType() {
         String chartKey = createTestChart();
         Event event = client.events().create(chartKey);
-        SeatsioObject object1 = new SeatsioObject("A-1", "T1");
-        SeatsioObject object2 = new SeatsioObject("A-2", "T2");
+        ObjectProperties object1 = new ObjectProperties("A-1", "T1");
+        ObjectProperties object2 = new ObjectProperties("A-2", "T2");
 
         client.events().changeObjectStatus(event.key, newArrayList(object1, object2), "foo");
 
@@ -75,8 +74,8 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
     public void quantity() {
         String chartKey = createTestChart();
         Event event = client.events().create(chartKey);
-        SeatsioObject object1 = new SeatsioObject("GA1", 5);
-        SeatsioObject object2 = new SeatsioObject("GA2", 10);
+        ObjectProperties object1 = new ObjectProperties("GA1", 5);
+        ObjectProperties object2 = new ObjectProperties("GA2", 10);
 
         client.events().changeObjectStatus(event.key, newArrayList(object1, object2), "foo");
 
@@ -91,8 +90,8 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
     public void extraData() {
         String chartKey = createTestChart();
         Event event = client.events().create(chartKey);
-        SeatsioObject object1 = new SeatsioObject("A-1", ImmutableMap.of("foo", "bar"));
-        SeatsioObject object2 = new SeatsioObject("A-2", ImmutableMap.of("foo", "baz"));
+        ObjectProperties object1 = new ObjectProperties("A-1", ImmutableMap.of("foo", "bar"));
+        ObjectProperties object2 = new ObjectProperties("A-2", ImmutableMap.of("foo", "baz"));
 
         client.events().changeObjectStatus(event.key, newArrayList(object1, object2), "foo");
 

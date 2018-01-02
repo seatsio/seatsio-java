@@ -15,7 +15,7 @@ public class EventReportsTest extends SeatsioClientTest {
     public void reportItemProperties() {
         String chartKey = createTestChart();
         Event event = client.events().create(chartKey);
-        client.events().book(event.key, asList(new SeatsioObject("A-1", "ticketType1")), null, "order1");
+        client.events().book(event.key, asList(new ObjectProperties("A-1", "ticketType1")), null, "order1");
 
         Map<String, List<EventReportItem>> report = client.events().reports().byLabel(event.key);
 
@@ -38,7 +38,7 @@ public class EventReportsTest extends SeatsioClientTest {
     public void reportItemPropertiesForGA() {
         String chartKey = createTestChart();
         Event event = client.events().create(chartKey);
-        client.events().book(event.key, asList(new SeatsioObject("GA1", 5)));
+        client.events().book(event.key, asList(new ObjectProperties("GA1", 5)));
 
         Map<String, List<EventReportItem>> report = client.events().reports().byLabel(event.key);
 

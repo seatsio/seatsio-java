@@ -2,7 +2,6 @@
 - retrieve chart call should also return events (if expand parameter is provided?)
 - remove list events for chart call (also in PHP client)
 - find a way to auto publish successful builds
-- rename SeatsioObject
 - php: book and hold calls must be able to take bestAvailable
 - php: status change lister must url encode object id
 - docs

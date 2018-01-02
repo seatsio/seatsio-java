@@ -32,7 +32,7 @@ public class ListStatusChangesTest extends SeatsioClientTest {
     public void propertiesOfStatusChange() {
         String chartKey = createTestChart();
         Event event = client.events().create(chartKey);
-        SeatsioObject object = new SeatsioObject("A-1", ImmutableMap.of("foo", "bar"));
+        ObjectProperties object = new ObjectProperties("A-1", ImmutableMap.of("foo", "bar"));
         client.events().changeObjectStatus(event.key, asList(object), "s1", null, "order1");
 
         Stream<StatusChange> statusChanges = client.events().statusChanges(event.key).all();

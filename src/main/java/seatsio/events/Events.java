@@ -219,13 +219,13 @@ public class Events {
                 .body(changeObjectStatusRequest(eventKeys, toObjects(objects), status, holdToken, orderId).toString()));
     }
 
-    private List<SeatsioObject> toObjects(List<?> objects) {
+    private List<ObjectProperties> toObjects(List<?> objects) {
         return objects.stream()
-                .map(SeatsioObject::from)
+                .map(ObjectProperties::from)
                 .collect(toList());
     }
 
-    private JsonObject changeObjectStatusRequest(List<String> eventKeys, List<SeatsioObject> objects, String status, String holdToken, String orderId) {
+    private JsonObject changeObjectStatusRequest(List<String> eventKeys, List<ObjectProperties> objects, String status, String holdToken, String orderId) {
         JsonObjectBuilder request = changeObjectStatusRequestBuilder(status, holdToken, orderId);
         request.withProperty("events", eventKeys);
         request.withProperty("objects", objects, object -> gson().toJsonTree(object));
