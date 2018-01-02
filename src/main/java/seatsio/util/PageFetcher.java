@@ -13,7 +13,7 @@ import java.util.stream.StreamSupport;
 
 import static com.mashape.unirest.http.Unirest.get;
 import static seatsio.json.SeatsioGson.gson;
-import static seatsio.util.UnirestUtil.unirest;
+import static seatsio.util.UnirestUtil.stringResponse;
 
 public class PageFetcher<T> {
 
@@ -69,7 +69,7 @@ public class PageFetcher<T> {
     }
 
     private Page<T> fetch(HttpRequest request) {
-        HttpResponse<String> response = unirest(request::asString);
+        HttpResponse<String> response = stringResponse(request);
         JsonObject responseJson = new JsonParser().parse(response.getBody()).getAsJsonObject();
         List<T> items = asList(responseJson.getAsJsonArray("items"), clazz);
         return new Page<T>(

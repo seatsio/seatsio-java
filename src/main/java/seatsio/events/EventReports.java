@@ -8,7 +8,7 @@ import java.util.Map;
 
 import static com.mashape.unirest.http.Unirest.get;
 import static seatsio.json.SeatsioGson.gson;
-import static seatsio.util.UnirestUtil.unirest;
+import static seatsio.util.UnirestUtil.stringResponse;
 
 public class EventReports {
 
@@ -99,10 +99,9 @@ public class EventReports {
     }
 
     private HttpResponse<String> fetchRawReport(String reportType, String eventKey) {
-        return unirest(() -> get(baseUrl + "/reports/events/{key}/{reportType}")
+        return stringResponse(get(baseUrl + "/reports/events/{key}/{reportType}")
                 .basicAuth(secretKey, null)
                 .routeParam("key", eventKey)
-                .routeParam("reportType", reportType)
-                .asString());
+                .routeParam("reportType", reportType));
     }
 }

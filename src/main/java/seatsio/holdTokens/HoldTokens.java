@@ -1,12 +1,12 @@
 package seatsio.holdTokens;
 
-import com.google.gson.*;
+import com.google.gson.JsonObject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 
-import static seatsio.json.SeatsioGson.gson;
-import static seatsio.util.UnirestUtil.unirest;
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
+import static seatsio.json.SeatsioGson.gson;
+import static seatsio.util.UnirestUtil.stringResponse;
 
 public class HoldTokens {
 
@@ -19,27 +19,24 @@ public class HoldTokens {
     }
 
     public HoldToken create() {
-        HttpResponse<String> response = unirest(() -> Unirest.post(baseUrl + "/hold-tokens")
-                .basicAuth(secretKey, null)
-                .asString());
+        HttpResponse<String> response = stringResponse(Unirest.post(baseUrl + "/hold-tokens")
+                .basicAuth(secretKey, null));
         return gson().fromJson(response.getBody(), HoldToken.class);
     }
 
     public HoldToken retrieve(String holdToken) {
-        HttpResponse<String> response = unirest(() -> Unirest.get(baseUrl + "/hold-tokens/{holdToken}")
+        HttpResponse<String> response = stringResponse(Unirest.get(baseUrl + "/hold-tokens/{holdToken}")
                 .routeParam("holdToken", holdToken)
-                .basicAuth(secretKey, null)
-                .asString());
+                .basicAuth(secretKey, null));
         return gson().fromJson(response.getBody(), HoldToken.class);
     }
 
     public HoldToken expireInMinutes(String holdToken, int minutes) {
         JsonObject request = aJsonObject().withProperty("expiresInMinutes", minutes).build();
-        HttpResponse<String> response = unirest(() -> Unirest.post(baseUrl + "/hold-tokens/{holdToken}")
+        HttpResponse<String> response = stringResponse(Unirest.post(baseUrl + "/hold-tokens/{holdToken}")
                 .basicAuth(secretKey, null)
                 .routeParam("holdToken", holdToken)
-                .body(request.toString())
-                .asString());
+                .body(request.toString()));
         return gson().fromJson(response.getBody(), HoldToken.class);
     }
 

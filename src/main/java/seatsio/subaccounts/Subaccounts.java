@@ -10,7 +10,7 @@ import static com.mashape.unirest.http.Unirest.get;
 import static com.mashape.unirest.http.Unirest.post;
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
 import static seatsio.json.SeatsioGson.gson;
-import static seatsio.util.UnirestUtil.unirest;
+import static seatsio.util.UnirestUtil.stringResponse;
 
 public class Subaccounts {
 
@@ -23,86 +23,72 @@ public class Subaccounts {
     }
 
     public Subaccount create(String name) {
-        HttpResponse<String> response = unirest(() -> {
-            JsonObject request = aJsonObject().withProperty("name", name).build();
-            return post(baseUrl + "/subaccounts")
-                    .basicAuth(secretKey, null)
-                    .body(request.toString())
-                    .asString();
-        });
+        JsonObject request = aJsonObject().withProperty("name", name).build();
+        HttpResponse<String> response = stringResponse(post(baseUrl + "/subaccounts")
+                .basicAuth(secretKey, null)
+                .body(request.toString()));
         return gson().fromJson(response.getBody(), Subaccount.class);
     }
 
     public void update(long id, String name) {
-        unirest(() -> {
-            JsonObject request = aJsonObject().withProperty("name", name).build();
-            return post(baseUrl + "/subaccounts/{id}")
-                    .routeParam("id", Long.toString(id))
-                    .basicAuth(secretKey, null)
-                    .body(request.toString())
-                    .asString();
-        });
+        JsonObject request = aJsonObject().withProperty("name", name).build();
+        stringResponse(post(baseUrl + "/subaccounts/{id}")
+                .routeParam("id", Long.toString(id))
+                .basicAuth(secretKey, null)
+                .body(request.toString()));
     }
 
     public Subaccount create() {
-        HttpResponse<String> response = unirest(() -> post(baseUrl + "/subaccounts")
-                .basicAuth(secretKey, null)
-                .asString());
+        HttpResponse<String> response = stringResponse(post(baseUrl + "/subaccounts")
+                .basicAuth(secretKey, null));
         return gson().fromJson(response.getBody(), Subaccount.class);
     }
 
     public Subaccount retrieve(long id) {
-        HttpResponse<String> response = unirest(() -> get(baseUrl + "/subaccounts/{id}")
+        HttpResponse<String> response = stringResponse(get(baseUrl + "/subaccounts/{id}")
                 .routeParam("id", Long.toString(id))
-                .basicAuth(secretKey, null)
-                .asString());
+                .basicAuth(secretKey, null));
         return gson().fromJson(response.getBody(), Subaccount.class);
     }
 
     public void activate(long id) {
-        unirest(() -> post(baseUrl + "/subaccounts/{id}/actions/activate")
+        stringResponse(post(baseUrl + "/subaccounts/{id}/actions/activate")
                 .routeParam("id", Long.toString(id))
-                .basicAuth(secretKey, null)
-                .asBinary());
+                .basicAuth(secretKey, null));
     }
 
     public void deactivate(long id) {
-        unirest(() -> post(baseUrl + "/subaccounts/{id}/actions/deactivate")
+        stringResponse(post(baseUrl + "/subaccounts/{id}/actions/deactivate")
                 .routeParam("id", Long.toString(id))
-                .basicAuth(secretKey, null)
-                .asBinary());
+                .basicAuth(secretKey, null));
     }
 
     public void regenerateSecretKey(long id) {
-        unirest(() -> post(baseUrl + "/subaccounts/{id}/secret-key/actions/regenerate")
+        stringResponse(post(baseUrl + "/subaccounts/{id}/secret-key/actions/regenerate")
                 .routeParam("id", Long.toString(id))
-                .basicAuth(secretKey, null)
-                .asBinary());
+                .basicAuth(secretKey, null));
     }
 
     public void regenerateDesignerKey(long id) {
-        unirest(() -> post(baseUrl + "/subaccounts/{id}/designer-key/actions/regenerate")
+        stringResponse(post(baseUrl + "/subaccounts/{id}/designer-key/actions/regenerate")
                 .routeParam("id", Long.toString(id))
-                .basicAuth(secretKey, null)
-                .asBinary());
+                .basicAuth(secretKey, null));
     }
 
     public Chart copyChartToParent(long id, String chartKey) {
-        HttpResponse<String> response = unirest(() -> post(baseUrl + "/subaccounts/{id}/charts/{chartKey}/actions/copy-to/parent")
+        HttpResponse<String> response = stringResponse(post(baseUrl + "/subaccounts/{id}/charts/{chartKey}/actions/copy-to/parent")
                 .basicAuth(secretKey, null)
                 .routeParam("id", Long.toString(id))
-                .routeParam("chartKey", chartKey)
-                .asString());
+                .routeParam("chartKey", chartKey));
         return gson().fromJson(response.getBody(), Chart.class);
     }
 
     public Chart copyChartToSubaccount(long fromId, long toId, String chartKey) {
-        HttpResponse<String> response = unirest(() -> post(baseUrl + "/subaccounts/{fromId}/charts/{chartKey}/actions/copy-to/{toId}")
+        HttpResponse<String> response = stringResponse(post(baseUrl + "/subaccounts/{fromId}/charts/{chartKey}/actions/copy-to/{toId}")
                 .basicAuth(secretKey, null)
                 .routeParam("fromId", Long.toString(fromId))
                 .routeParam("chartKey", chartKey)
-                .routeParam("toId", Long.toString(toId))
-                .asString());
+                .routeParam("toId", Long.toString(toId)));
         return gson().fromJson(response.getBody(), Chart.class);
     }
 

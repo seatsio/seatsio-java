@@ -17,7 +17,7 @@ import static java.util.stream.Collectors.toList;
 import static seatsio.events.ObjectStatus.*;
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
 import static seatsio.json.SeatsioGson.gson;
-import static seatsio.util.UnirestUtil.unirest;
+import static seatsio.util.UnirestUtil.stringResponse;
 
 public class Events {
 
@@ -32,10 +32,9 @@ public class Events {
     public Event create(String chartKey) {
         JsonObjectBuilder request = aJsonObject();
         request.withProperty("chartKey", chartKey);
-        HttpResponse<String> response = unirest(() -> post(baseUrl + "/events")
+        HttpResponse<String> response = stringResponse(post(baseUrl + "/events")
                 .basicAuth(secretKey, null)
-                .body(request.build().toString())
-                .asString());
+                .body(request.build().toString()));
         return gson().fromJson(response.getBody(), Event.class);
     }
 
@@ -50,35 +49,31 @@ public class Events {
         if (bookWholeTables != null) {
             request.withProperty("bookWholeTables", bookWholeTables);
         }
-        unirest(() -> post(baseUrl + "/events/{key}")
+        stringResponse(post(baseUrl + "/events/{key}")
                 .routeParam("key", key)
                 .basicAuth(secretKey, null)
-                .body(request.build().toString())
-                .asString());
+                .body(request.build().toString()));
     }
 
     public Event retrieve(String key) {
-        HttpResponse<String> response = unirest(() -> get(baseUrl + "/events/{key}")
+        HttpResponse<String> response = stringResponse(get(baseUrl + "/events/{key}")
                 .basicAuth(secretKey, null)
-                .routeParam("key", key)
-                .asString());
+                .routeParam("key", key));
         return gson().fromJson(response.getBody(), Event.class);
     }
 
     public void markAsForSale(String key, List<String> objects, List<String> categories) {
-        unirest(() -> post(baseUrl + "/events/{key}/actions/mark-as-for-sale")
+        stringResponse(post(baseUrl + "/events/{key}/actions/mark-as-for-sale")
                 .basicAuth(secretKey, null)
                 .routeParam("key", key)
-                .body(forSaleRequest(objects, categories).toString())
-                .asString());
+                .body(forSaleRequest(objects, categories).toString()));
     }
 
     public void markAsNotForSale(String key, List<String> objects, List<String> categories) {
-        unirest(() -> post(baseUrl + "/events/{key}/actions/mark-as-not-for-sale")
+        stringResponse(post(baseUrl + "/events/{key}/actions/mark-as-not-for-sale")
                 .basicAuth(secretKey, null)
                 .routeParam("key", key)
-                .body(forSaleRequest(objects, categories).toString())
-                .asString());
+                .body(forSaleRequest(objects, categories).toString()));
     }
 
     private JsonObject forSaleRequest(List<String> objects, List<String> categories) {
@@ -93,10 +88,9 @@ public class Events {
     }
 
     public void markEverythingAsForSale(String key) {
-        unirest(() -> post(baseUrl + "/events/{key}/actions/mark-everything-as-for-sale")
+        stringResponse(post(baseUrl + "/events/{key}/actions/mark-everything-as-for-sale")
                 .basicAuth(secretKey, null)
-                .routeParam("key", key)
-                .asString());
+                .routeParam("key", key));
     }
 
     public Lister<Event> list() {
@@ -200,11 +194,10 @@ public class Events {
     }
 
     public BestAvailableResult changeObjectStatus(String eventKey, BestAvailable bestAvailable, String status, String holdToken, String orderId) {
-        HttpResponse<String> result = unirest(() -> post(baseUrl + "/events/{key}/actions/change-object-status")
+        HttpResponse<String> result = stringResponse(post(baseUrl + "/events/{key}/actions/change-object-status")
                 .routeParam("key", eventKey)
                 .basicAuth(secretKey, null)
-                .body(changeObjectStatusRequest(bestAvailable, status, holdToken, orderId).toString())
-                .asString());
+                .body(changeObjectStatusRequest(bestAvailable, status, holdToken, orderId).toString()));
         return gson().fromJson(result.getBody(), BestAvailableResult.class);
     }
 
@@ -221,10 +214,9 @@ public class Events {
     }
 
     public void changeObjectStatus(List<String> eventKeys, List<?> objects, String status, String holdToken, String orderId) {
-        unirest(() -> post(baseUrl + "/seasons/actions/change-object-status")
+        stringResponse(post(baseUrl + "/seasons/actions/change-object-status")
                 .basicAuth(secretKey, null)
-                .body(changeObjectStatusRequest(eventKeys, toObjects(objects), status, holdToken, orderId).toString())
-                .asString());
+                .body(changeObjectStatusRequest(eventKeys, toObjects(objects), status, holdToken, orderId).toString()));
     }
 
     private List<SeatsioObject> toObjects(List<?> objects) {
@@ -259,22 +251,20 @@ public class Events {
     }
 
     public ObjectStatus getObjectStatus(String key, String object) {
-        HttpResponse<String> response = unirest(() -> get(baseUrl + "/events/{key}/objects/{object}")
+        HttpResponse<String> response = stringResponse(get(baseUrl + "/events/{key}/objects/{object}")
                 .basicAuth(secretKey, null)
                 .routeParam("key", key)
-                .routeParam("object", object)
-                .asString());
+                .routeParam("object", object));
         return gson().fromJson(response.getBody(), ObjectStatus.class);
     }
 
     public void updateExtraData(String key, String object, Map<?, ?> extraData) {
         JsonObjectBuilder request = aJsonObject();
         request.withProperty("extraData", gson().toJsonTree(extraData));
-        unirest(() -> post(baseUrl + "/events/{key}/objects/{object}/actions/update-extra-data")
+        stringResponse(post(baseUrl + "/events/{key}/objects/{object}/actions/update-extra-data")
                 .routeParam("key", key)
                 .routeParam("object", object)
                 .basicAuth(secretKey, null)
-                .body(request.build().toString())
-                .asString());
+                .body(request.build().toString()));
     }
 }
