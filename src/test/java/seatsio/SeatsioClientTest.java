@@ -26,7 +26,11 @@ public class SeatsioClientTest {
     @Before
     public void setup() throws UnirestException {
         user = createTestUser();
-        client = new SeatsioClient(user.secretKey, BASE_URL);
+        client = seatsioClient(user.secretKey);
+    }
+
+    protected SeatsioClient seatsioClient(String secretKey) {
+        return new SeatsioClient(secretKey, BASE_URL);
     }
 
     private TestUser createTestUser() throws UnirestException {
