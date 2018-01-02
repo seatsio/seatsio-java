@@ -40,6 +40,10 @@ dependencies {
 </dependency>
 ```
 
+## Java version
+
+You need at least Java 8 to use seatsio-java.
+
 ## Versioning
 
 seatsio-java only uses major version numbers: 5, 6, 7 etc. Each release - backwards compatible or not - receives a new major version number.
