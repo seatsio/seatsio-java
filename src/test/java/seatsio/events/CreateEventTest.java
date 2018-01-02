@@ -23,7 +23,7 @@ public class CreateEventTest extends SeatsioClientTest {
         assertThat(event.bookWholeTables).isFalse();
         assertThat(event.forSaleConfig).isNull();
         Instant now = Instant.now();
-        assertThat(event.createdOn).isBetween(now.minus(1, MINUTES), now);
+        assertThat(event.createdOn).isBetween(now.minus(1, MINUTES), now.plus(1, MINUTES));
         assertThat(event.updatedOn).isNull();
     }
 }
