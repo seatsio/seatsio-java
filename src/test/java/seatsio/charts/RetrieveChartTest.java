@@ -2,6 +2,7 @@ package seatsio.charts;
 
 import org.junit.Test;
 import seatsio.SeatsioClientTest;
+import seatsio.events.Event;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,5 +25,18 @@ public class RetrieveChartTest extends SeatsioClientTest {
         assertThat(retrievedChart.events).isNull();
         assertThat(retrievedChart.tags).containsOnly("tag1", "tag2");
         assertThat(retrievedChart.archived).isFalse();
+    }
+
+    @Test
+    public void withEvents() {
+        Chart chart = client.charts().create();
+        Event event1 = client.events().create(chart.key);
+        Event event2 = client.events().create(chart.key);
+
+        Chart retrievedChart = client.charts().retrieveWithEvents(chart.key);
+
+        assertThat(retrievedChart.events)
+                .extracting("id")
+                .containsExactly(event2.id, event1.id);
     }
 }

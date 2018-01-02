@@ -34,6 +34,13 @@ public class Charts {
         return gson().fromJson(response.getBody(), Chart.class);
     }
 
+    public Chart retrieveWithEvents(String key) {
+        HttpResponse<String> response = stringResponse(get(baseUrl + "/charts/{key}?expand=events")
+                .routeParam("key", key)
+                .basicAuth(secretKey, null));
+        return gson().fromJson(response.getBody(), Chart.class);
+    }
+
     public Chart create() {
         return create(null);
     }
