@@ -213,6 +213,14 @@ public class Events {
         changeObjectStatus(singletonList(eventKey), objects, status, holdToken, orderId);
     }
 
+    public void changeObjectStatus(List<String> eventKeys, List<?> objects, String status) {
+        changeObjectStatus(eventKeys, objects, status, null, null);
+    }
+
+    public void changeObjectStatus(List<String> eventKeys, List<?> objects, String status, String holdToken) {
+        changeObjectStatus(eventKeys, objects, status, holdToken, null);
+    }
+
     public void changeObjectStatus(List<String> eventKeys, List<?> objects, String status, String holdToken, String orderId) {
         stringResponse(post(baseUrl + "/seasons/actions/change-object-status")
                 .basicAuth(secretKey, null)
