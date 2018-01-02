@@ -117,13 +117,13 @@ public class Charts {
     }
 
     public void moveToArchive(String key) {
-        stringResponse(post(baseUrl + "/charts/archive/{key}")
+        stringResponse(post(baseUrl + "/charts/{key}/actions/move-to-archive")
                 .routeParam("key", key)
                 .basicAuth(secretKey, null));
     }
 
     public void moveOutOfArchive(String key) {
-        stringResponse(delete(baseUrl + "/charts/archive/{key}")
+        stringResponse(post(baseUrl + "/charts/{key}/actions/move-out-of-archive")
                 .routeParam("key", key)
                 .basicAuth(secretKey, null));
     }
