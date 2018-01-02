@@ -53,7 +53,7 @@ The reason: we want to play safe and assume that each release _might_ break back
 ```java
 SeatsioClient client = new SeatsioClient(<SECRET KEY>); // can be found on https://app.seats.io/settings
 Chart chart = client.charts().create();
-Event event = client.events().create($chart->key);
+Event event = client.events().create(chart.key);
 System.out.println("Created event with key " + event.key);
 ```
 
