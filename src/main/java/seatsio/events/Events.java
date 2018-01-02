@@ -8,6 +8,7 @@ import seatsio.util.Lister;
 import seatsio.util.PageFetcher;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.mashape.unirest.http.Unirest.get;
 import static com.mashape.unirest.http.Unirest.post;
@@ -266,4 +267,14 @@ public class Events {
         return gson().fromJson(response.getBody(), ObjectStatus.class);
     }
 
+    public void updateExtraData(String key, String object, Map<?, ?> extraData) {
+        JsonObjectBuilder request = aJsonObject();
+        request.withProperty("extraData", gson().toJsonTree(extraData));
+        unirest(() -> post(baseUrl + "/events/{key}/objects/{object}/actions/update-extra-data")
+                .routeParam("key", key)
+                .routeParam("object", object)
+                .basicAuth(secretKey, null)
+                .body(request.build().toString())
+                .asString());
+    }
 }
