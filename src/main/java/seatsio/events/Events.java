@@ -112,6 +112,18 @@ public class Events {
         changeObjectStatus(eventKey, objects, BOOKED, holdToken, orderId);
     }
 
+    public void book(String eventKey, BestAvailable bestAvailable) {
+        book(eventKey, bestAvailable, null, null);
+    }
+
+    public void book(String eventKey, BestAvailable bestAvailable, String holdToken) {
+        book(eventKey, bestAvailable, holdToken, null);
+    }
+
+    public void book(String eventKey, BestAvailable bestAvailable, String holdToken, String orderId) {
+        changeObjectStatus(eventKey, bestAvailable, BOOKED, holdToken, orderId);
+    }
+
     public void book(List<String> eventKeys, List<?> objects, String holdToken, String orderId) {
         changeObjectStatus(eventKeys, objects, BOOKED, holdToken, orderId);
     }
@@ -121,11 +133,19 @@ public class Events {
     }
 
     public void hold(String eventKey, List<?> objects, String holdToken, String orderId) {
-        changeObjectStatus(eventKey, objects, RESERVED_BY_TOKEN, holdToken, orderId);
+        changeObjectStatus(eventKey, objects, HELD, holdToken, orderId);
+    }
+
+    public void hold(String eventKey, BestAvailable bestAvailable, String holdToken) {
+        hold(eventKey, bestAvailable, holdToken, null);
+    }
+
+    public void hold(String eventKey, BestAvailable bestAvailable, String holdToken, String orderId) {
+        changeObjectStatus(eventKey, bestAvailable, HELD, holdToken, orderId);
     }
 
     public void hold(List<String> eventKeys, List<?> objects, String holdToken, String orderId) {
-        changeObjectStatus(eventKeys, objects, RESERVED_BY_TOKEN, holdToken, orderId);
+        changeObjectStatus(eventKeys, objects, HELD, holdToken, orderId);
     }
 
     public void release(String eventKey, List<?> objects) {
@@ -142,6 +162,23 @@ public class Events {
 
     public void release(List<String> eventKeys, List<?> objects, String holdToken, String orderId) {
         changeObjectStatus(eventKeys, objects, FREE, holdToken, orderId);
+    }
+
+    public BestAvailableResult changeObjectStatus(String eventKey, BestAvailable bestAvailable, String status) {
+        return changeObjectStatus(eventKey, bestAvailable, status, null, null);
+    }
+
+    public BestAvailableResult changeObjectStatus(String eventKey, BestAvailable bestAvailable, String status, String holdToken) {
+        return changeObjectStatus(eventKey, bestAvailable, status, holdToken, null);
+    }
+
+    public BestAvailableResult changeObjectStatus(String eventKey, BestAvailable bestAvailable, String status, String holdToken, String orderId) {
+        HttpResponse<String> result = unirest(() -> Unirest.post(baseUrl + "/events/{key}/actions/change-object-status")
+                .routeParam("key", eventKey)
+                .basicAuth(secretKey, null)
+                .body(changeObjectStatusRequest(bestAvailable, status, holdToken, orderId).toString())
+                .asString());
+        return gson().fromJson(result.getBody(), BestAvailableResult.class);
     }
 
     public void changeObjectStatus(String eventKey, List<?> objects, String status) {
@@ -170,9 +207,20 @@ public class Events {
     }
 
     private JsonObject changeObjectStatusRequest(List<String> eventKeys, List<SeatsioObject> objects, String status, String holdToken, String orderId) {
-        JsonObjectBuilder request = aJsonObject();
+        JsonObjectBuilder request = changeObjectStatusRequestBuilder(status, holdToken, orderId);
         request.withProperty("events", eventKeys);
         request.withProperty("objects", objects, object -> gson().toJsonTree(object));
+        return request.build();
+    }
+
+    private JsonObject changeObjectStatusRequest(BestAvailable bestAvailable, String status, String holdToken, String orderId) {
+        JsonObjectBuilder request = changeObjectStatusRequestBuilder(status, holdToken, orderId);
+        request.withProperty("bestAvailable", gson().toJsonTree(bestAvailable));
+        return request.build();
+    }
+
+    private JsonObjectBuilder changeObjectStatusRequestBuilder(String status, String holdToken, String orderId) {
+        JsonObjectBuilder request = aJsonObject();
         request.withProperty("status", status);
         if (holdToken != null) {
             request.withProperty("holdToken", holdToken);
@@ -180,7 +228,7 @@ public class Events {
         if (orderId != null) {
             request.withProperty("orderId", orderId);
         }
-        return request.build();
+        return request;
     }
 
     public ObjectStatus getObjectStatus(String key, String object) {

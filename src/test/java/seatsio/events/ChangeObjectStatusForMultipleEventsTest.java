@@ -9,7 +9,7 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static seatsio.events.ObjectStatus.BOOKED;
 import static seatsio.events.ObjectStatus.FREE;
-import static seatsio.events.ObjectStatus.RESERVED_BY_TOKEN;
+import static seatsio.events.ObjectStatus.HELD;
 
 public class ChangeObjectStatusForMultipleEventsTest extends SeatsioClientTest {
 
@@ -50,10 +50,10 @@ public class ChangeObjectStatusForMultipleEventsTest extends SeatsioClientTest {
 
         client.events().hold(asList(event1.key, event2.key), newArrayList("A-1", "A-2"), token.holdToken, null);
 
-        assertThat(client.events().getObjectStatus(event1.key, "A-1").status).isEqualTo(RESERVED_BY_TOKEN);
-        assertThat(client.events().getObjectStatus(event1.key, "A-2").status).isEqualTo(RESERVED_BY_TOKEN);
-        assertThat(client.events().getObjectStatus(event2.key, "A-1").status).isEqualTo(RESERVED_BY_TOKEN);
-        assertThat(client.events().getObjectStatus(event2.key, "A-2").status).isEqualTo(RESERVED_BY_TOKEN);
+        assertThat(client.events().getObjectStatus(event1.key, "A-1").status).isEqualTo(HELD);
+        assertThat(client.events().getObjectStatus(event1.key, "A-2").status).isEqualTo(HELD);
+        assertThat(client.events().getObjectStatus(event2.key, "A-1").status).isEqualTo(HELD);
+        assertThat(client.events().getObjectStatus(event2.key, "A-2").status).isEqualTo(HELD);
     }
 
     @Test

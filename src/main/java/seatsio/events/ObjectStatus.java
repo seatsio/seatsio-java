@@ -9,7 +9,7 @@ public class ObjectStatus extends ValueObject {
 
     public static final String FREE = "free";
     public static final String BOOKED = "booked";
-    public static final String RESERVED_BY_TOKEN = "reservedByToken";
+    public static final String HELD = "reservedByToken";
 
     public String status;
     public String holdToken;

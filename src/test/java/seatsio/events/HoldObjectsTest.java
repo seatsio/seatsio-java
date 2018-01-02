@@ -6,8 +6,7 @@ import seatsio.holdTokens.HoldToken;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static seatsio.events.ObjectStatus.FREE;
-import static seatsio.events.ObjectStatus.RESERVED_BY_TOKEN;
+import static seatsio.events.ObjectStatus.HELD;
 
 public class HoldObjectsTest extends SeatsioClientTest {
 
@@ -20,11 +19,11 @@ public class HoldObjectsTest extends SeatsioClientTest {
         client.events().hold(event.key, newArrayList("A-1", "A-2"), holdToken.holdToken);
 
         ObjectStatus status1 = client.events().getObjectStatus(event.key, "A-1");
-        assertThat(status1.status).isEqualTo(RESERVED_BY_TOKEN);
+        assertThat(status1.status).isEqualTo(HELD);
         assertThat(status1.holdToken).isEqualTo(holdToken.holdToken);
 
         ObjectStatus status2 = client.events().getObjectStatus(event.key, "A-2");
-        assertThat(status2.status).isEqualTo(RESERVED_BY_TOKEN);
+        assertThat(status2.status).isEqualTo(HELD);
         assertThat(status2.holdToken).isEqualTo(holdToken.holdToken);
     }
 
