@@ -29,7 +29,7 @@ Then you can refer to seatsio-java as a regular package:
 ```
 // build.gradle
 dependencies {
-  compile 'com.github.seatsio:seatsio-java:3'
+  compile 'com.github.seatsio:seatsio-java:4'
 }
 
 // pom.xml
