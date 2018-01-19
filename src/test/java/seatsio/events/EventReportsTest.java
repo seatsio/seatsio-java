@@ -22,7 +22,6 @@ public class EventReportsTest extends SeatsioClientTest {
         EventReportItem reportItem = report.get("A-1").get(0);
         assertThat(reportItem.status).isEqualTo("booked");
         assertThat(reportItem.label).isEqualTo("A-1");
-        assertThat(reportItem.uuid).isEqualTo("uuid288");
         assertThat(reportItem.categoryLabel).isEqualTo("Cat1");
         assertThat(reportItem.categoryKey).isEqualTo(9);
         assertThat(reportItem.ticketType).isEqualTo("ticketType1");
@@ -134,27 +133,6 @@ public class EventReportsTest extends SeatsioClientTest {
         List<EventReportItem> report = client.events().reports().byLabel(event.key, "A-1");
 
         assertThat(report).hasSize(1);
-    }
-
-    @Test
-    public void byUuid() {
-        String chartKey = createTestChart();
-        Event event = client.events().create(chartKey);
-
-        Map<String, EventReportItem> report = client.events().reports().byUuid(event.key);
-
-        assertThat(report.get("uuid300")).isNotNull();
-        assertThat(report.get("uuid301")).isNotNull();
-    }
-
-    @Test
-    public void bySpecificUuid() {
-        String chartKey = createTestChart();
-        Event event = client.events().create(chartKey);
-
-        EventReportItem report = client.events().reports().byUuid(event.key, "uuid300");
-
-        assertThat(report.uuid).isEqualTo("uuid300");
     }
 
     @Test

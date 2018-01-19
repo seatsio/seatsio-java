@@ -6,7 +6,6 @@ public class EventReportItem extends ValueObject {
 
     public String status;
     public String label;
-    public String uuid;
     public String categoryLabel;
     public Integer categoryKey;
     public String ticketType;

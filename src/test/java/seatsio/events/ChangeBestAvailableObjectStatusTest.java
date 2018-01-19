@@ -29,14 +29,4 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
         assertThat(bestAvailableResult.objects).containsOnly("C-3", "C-4", "C-5");
     }
 
-    @Test
-    public void useObjectsUuidsInsteadOfLabels() {
-        String chartKey = createTestChart();
-        Event event = client.events().create(chartKey);
-
-        BestAvailableResult bestAvailableResult = client.events().changeObjectStatus(event.key, new BestAvailable(3, true), "foo");
-
-        assertThat(bestAvailableResult.objects).containsOnly("uuid300", "uuid301", "uuid302");
-    }
-
 }

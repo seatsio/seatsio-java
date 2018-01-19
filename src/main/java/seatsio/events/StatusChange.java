@@ -9,7 +9,7 @@ public class StatusChange {
     public long eventId;
     public String status;
     public int quantity;
-    public String objectLabelOrUuid;
+    public String objectLabel;
     public Instant date;
     public String orderId;
     public Map<?, ?> extraData;

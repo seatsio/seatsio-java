@@ -43,7 +43,7 @@ public class ListStatusChangesTest extends SeatsioClientTest {
         assertThat(statusChange.date).isBetween(now.minus(1, MINUTES), now.plus(1, MINUTES));
         assertThat(statusChange.orderId).isEqualTo("order1");
         assertThat(statusChange.status).isEqualTo("s1");
-        assertThat(statusChange.objectLabelOrUuid).isEqualTo("A-1");
+        assertThat(statusChange.objectLabel).isEqualTo("A-1");
         assertThat(statusChange.eventId).isEqualTo(event.id);
         assertThat(statusChange.extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
     }

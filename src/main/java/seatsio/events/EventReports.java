@@ -52,14 +52,6 @@ public class EventReports {
         return fetchReport("byCategoryKey", eventKey, categorykey);
     }
 
-    public Map<String, EventReportItem> byUuid(String eventKey) {
-        return fetchSingleValuedReport("byUuid", eventKey);
-    }
-
-    public EventReportItem byUuid(String eventKey, String uuid) {
-        return fetchSingleValuedReport("byUuid", eventKey, uuid);
-    }
-
     public Map<String, List<EventReportItem>> byOrderId(String eventKey) {
         return fetchReport("byOrderId", eventKey);
     }
