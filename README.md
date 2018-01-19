@@ -36,7 +36,7 @@ dependencies {
 <dependency>
   <groupId>com.github.seatsio</groupId>
   <artifactId>seatsio-java</artifactId>
-  <version>3</version>
+  <version>4</version>
 </dependency>
 ```
 
