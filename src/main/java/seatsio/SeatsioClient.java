@@ -34,4 +34,8 @@ public class SeatsioClient {
     public Events events() {
         return new Events(secretKey, baseUrl);
     }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
 }

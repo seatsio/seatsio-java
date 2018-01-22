@@ -11,7 +11,7 @@ public class ErrorHandlingTest extends SeatsioClientTest {
         try {
             client.charts().retrieve("unexistingChart");
         } catch (SeatsioException e) {
-            assertThat(e.getMessage()).contains("GET https://api-staging.seats.io/charts/unexistingChart resulted in a 404 Not Found response. Reason: Chart not found: unexistingChart. Request ID:");
+            assertThat(e.getMessage()).contains("GET " + client.getBaseUrl() + "/charts/unexistingChart resulted in a 404 Not Found response. Reason: Chart not found: unexistingChart. Request ID:");
             assertThat(e.messages).containsExactly("Chart not found: unexistingChart");
             assertThat(e.requestId).isNotNull();
             throw e;
