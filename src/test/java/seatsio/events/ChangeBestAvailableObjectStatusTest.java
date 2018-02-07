@@ -16,7 +16,7 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
         BestAvailableResult bestAvailableResult = client.events().changeObjectStatus(event.key, new BestAvailable(3), "foo");
 
         assertThat(bestAvailableResult.nextToEachOther).isTrue();
-        assertThat(bestAvailableResult.objects).containsOnly("B-3", "B-4", "B-5");
+        assertThat(bestAvailableResult.objects).containsOnly("B-4", "B-5", "B-6");
     }
 
     @Test
@@ -26,7 +26,7 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
 
         BestAvailableResult bestAvailableResult = client.events().changeObjectStatus(event.key, new BestAvailable(3, asList("cat2")), "foo");
 
-        assertThat(bestAvailableResult.objects).containsOnly("C-3", "C-4", "C-5");
+        assertThat(bestAvailableResult.objects).containsOnly("C-4", "C-5", "C-6");
     }
 
 }
