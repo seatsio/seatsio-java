@@ -21,10 +21,10 @@ public class ChangeObjectStatusForMultipleEventsTest extends SeatsioClientTest {
 
         client.events().changeObjectStatus(asList(event1.key, event2.key), newArrayList("A-1", "A-2"), "foo", null, null);
 
-        assertThat(client.events().getObjectStatus(event1.key, "A-1").status).isEqualTo("foo");
-        assertThat(client.events().getObjectStatus(event1.key, "A-2").status).isEqualTo("foo");
-        assertThat(client.events().getObjectStatus(event2.key, "A-1").status).isEqualTo("foo");
-        assertThat(client.events().getObjectStatus(event2.key, "A-2").status).isEqualTo("foo");
+        assertThat(client.events().retrieveObjectStatus(event1.key, "A-1").status).isEqualTo("foo");
+        assertThat(client.events().retrieveObjectStatus(event1.key, "A-2").status).isEqualTo("foo");
+        assertThat(client.events().retrieveObjectStatus(event2.key, "A-1").status).isEqualTo("foo");
+        assertThat(client.events().retrieveObjectStatus(event2.key, "A-2").status).isEqualTo("foo");
     }
 
     @Test
@@ -35,10 +35,10 @@ public class ChangeObjectStatusForMultipleEventsTest extends SeatsioClientTest {
 
         client.events().book(asList(event1.key, event2.key), newArrayList("A-1", "A-2"), null, null);
 
-        assertThat(client.events().getObjectStatus(event1.key, "A-1").status).isEqualTo(BOOKED);
-        assertThat(client.events().getObjectStatus(event1.key, "A-2").status).isEqualTo(BOOKED);
-        assertThat(client.events().getObjectStatus(event2.key, "A-1").status).isEqualTo(BOOKED);
-        assertThat(client.events().getObjectStatus(event2.key, "A-2").status).isEqualTo(BOOKED);
+        assertThat(client.events().retrieveObjectStatus(event1.key, "A-1").status).isEqualTo(BOOKED);
+        assertThat(client.events().retrieveObjectStatus(event1.key, "A-2").status).isEqualTo(BOOKED);
+        assertThat(client.events().retrieveObjectStatus(event2.key, "A-1").status).isEqualTo(BOOKED);
+        assertThat(client.events().retrieveObjectStatus(event2.key, "A-2").status).isEqualTo(BOOKED);
     }
 
     @Test
@@ -50,10 +50,10 @@ public class ChangeObjectStatusForMultipleEventsTest extends SeatsioClientTest {
 
         client.events().hold(asList(event1.key, event2.key), newArrayList("A-1", "A-2"), token.holdToken, null);
 
-        assertThat(client.events().getObjectStatus(event1.key, "A-1").status).isEqualTo(HELD);
-        assertThat(client.events().getObjectStatus(event1.key, "A-2").status).isEqualTo(HELD);
-        assertThat(client.events().getObjectStatus(event2.key, "A-1").status).isEqualTo(HELD);
-        assertThat(client.events().getObjectStatus(event2.key, "A-2").status).isEqualTo(HELD);
+        assertThat(client.events().retrieveObjectStatus(event1.key, "A-1").status).isEqualTo(HELD);
+        assertThat(client.events().retrieveObjectStatus(event1.key, "A-2").status).isEqualTo(HELD);
+        assertThat(client.events().retrieveObjectStatus(event2.key, "A-1").status).isEqualTo(HELD);
+        assertThat(client.events().retrieveObjectStatus(event2.key, "A-2").status).isEqualTo(HELD);
     }
 
     @Test
@@ -65,10 +65,10 @@ public class ChangeObjectStatusForMultipleEventsTest extends SeatsioClientTest {
 
         client.events().release(asList(event1.key, event2.key), newArrayList("A-1", "A-2"), null, null);
 
-        assertThat(client.events().getObjectStatus(event1.key, "A-1").status).isEqualTo(FREE);
-        assertThat(client.events().getObjectStatus(event1.key, "A-2").status).isEqualTo(FREE);
-        assertThat(client.events().getObjectStatus(event2.key, "A-1").status).isEqualTo(FREE);
-        assertThat(client.events().getObjectStatus(event2.key, "A-2").status).isEqualTo(FREE);
+        assertThat(client.events().retrieveObjectStatus(event1.key, "A-1").status).isEqualTo(FREE);
+        assertThat(client.events().retrieveObjectStatus(event1.key, "A-2").status).isEqualTo(FREE);
+        assertThat(client.events().retrieveObjectStatus(event2.key, "A-1").status).isEqualTo(FREE);
+        assertThat(client.events().retrieveObjectStatus(event2.key, "A-2").status).isEqualTo(FREE);
     }
 
 }

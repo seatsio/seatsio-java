@@ -258,7 +258,7 @@ public class Events {
         return request;
     }
 
-    public ObjectStatus getObjectStatus(String key, String object) {
+    public ObjectStatus retrieveObjectStatus(String key, String object) {
         HttpResponse<String> response = stringResponse(get(baseUrl + "/events/{key}/objects/{object}")
                 .basicAuth(secretKey, null)
                 .routeParam("key", key)

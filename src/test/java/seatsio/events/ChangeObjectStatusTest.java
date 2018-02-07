@@ -18,9 +18,9 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
 
         client.events().changeObjectStatus(event.key, newArrayList("A-1", "A-2"), "foo");
 
-        assertThat(client.events().getObjectStatus(event.key, "A-1").status).isEqualTo("foo");
-        assertThat(client.events().getObjectStatus(event.key, "A-2").status).isEqualTo("foo");
-        assertThat(client.events().getObjectStatus(event.key, "A-3").status).isEqualTo(FREE);
+        assertThat(client.events().retrieveObjectStatus(event.key, "A-1").status).isEqualTo("foo");
+        assertThat(client.events().retrieveObjectStatus(event.key, "A-2").status).isEqualTo("foo");
+        assertThat(client.events().retrieveObjectStatus(event.key, "A-3").status).isEqualTo(FREE);
     }
 
     @Test
@@ -32,11 +32,11 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
 
         client.events().changeObjectStatus(event.key, newArrayList("A-1", "A-2"), "foo", holdToken.holdToken);
 
-        ObjectStatus status1 = client.events().getObjectStatus(event.key, "A-1");
+        ObjectStatus status1 = client.events().retrieveObjectStatus(event.key, "A-1");
         assertThat(status1.status).isEqualTo("foo");
         assertThat(status1.holdToken).isNull();
 
-        ObjectStatus status2 = client.events().getObjectStatus(event.key, "A-2");
+        ObjectStatus status2 = client.events().retrieveObjectStatus(event.key, "A-2");
         assertThat(status2.status).isEqualTo("foo");
         assertThat(status2.holdToken).isNull();
     }
@@ -48,8 +48,8 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
 
         client.events().changeObjectStatus(event.key, newArrayList("A-1", "A-2"), "foo", null, "order1");
 
-        assertThat(client.events().getObjectStatus(event.key, "A-1").orderId).isEqualTo("order1");
-        assertThat(client.events().getObjectStatus(event.key, "A-2").orderId).isEqualTo("order1");
+        assertThat(client.events().retrieveObjectStatus(event.key, "A-1").orderId).isEqualTo("order1");
+        assertThat(client.events().retrieveObjectStatus(event.key, "A-2").orderId).isEqualTo("order1");
     }
 
     @Test
@@ -61,11 +61,11 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
 
         client.events().changeObjectStatus(event.key, newArrayList(object1, object2), "foo");
 
-        ObjectStatus status1 = client.events().getObjectStatus(event.key, "A-1");
+        ObjectStatus status1 = client.events().retrieveObjectStatus(event.key, "A-1");
         assertThat(status1.status).isEqualTo("foo");
         assertThat(status1.ticketType).isEqualTo("T1");
 
-        ObjectStatus status2 = client.events().getObjectStatus(event.key, "A-2");
+        ObjectStatus status2 = client.events().retrieveObjectStatus(event.key, "A-2");
         assertThat(status2.status).isEqualTo("foo");
         assertThat(status2.ticketType).isEqualTo("T2");
     }
@@ -79,10 +79,10 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
 
         client.events().changeObjectStatus(event.key, newArrayList(object1, object2), "foo");
 
-        ObjectStatus status1 = client.events().getObjectStatus(event.key, "GA1");
+        ObjectStatus status1 = client.events().retrieveObjectStatus(event.key, "GA1");
         assertThat(status1.quantity).isEqualTo(5);
 
-        ObjectStatus status2 = client.events().getObjectStatus(event.key, "GA2");
+        ObjectStatus status2 = client.events().retrieveObjectStatus(event.key, "GA2");
         assertThat(status2.quantity).isEqualTo(10);
     }
 
@@ -95,10 +95,10 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
 
         client.events().changeObjectStatus(event.key, newArrayList(object1, object2), "foo");
 
-        ObjectStatus status1 = client.events().getObjectStatus(event.key, "A-1");
+        ObjectStatus status1 = client.events().retrieveObjectStatus(event.key, "A-1");
         assertThat(status1.extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
 
-        ObjectStatus status2 = client.events().getObjectStatus(event.key, "A-2");
+        ObjectStatus status2 = client.events().retrieveObjectStatus(event.key, "A-2");
         assertThat(status2.extraData).isEqualTo(ImmutableMap.of("foo", "baz"));
     }
 }

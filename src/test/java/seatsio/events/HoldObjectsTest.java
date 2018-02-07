@@ -18,11 +18,11 @@ public class HoldObjectsTest extends SeatsioClientTest {
 
         client.events().hold(event.key, newArrayList("A-1", "A-2"), holdToken.holdToken);
 
-        ObjectStatus status1 = client.events().getObjectStatus(event.key, "A-1");
+        ObjectStatus status1 = client.events().retrieveObjectStatus(event.key, "A-1");
         assertThat(status1.status).isEqualTo(HELD);
         assertThat(status1.holdToken).isEqualTo(holdToken.holdToken);
 
-        ObjectStatus status2 = client.events().getObjectStatus(event.key, "A-2");
+        ObjectStatus status2 = client.events().retrieveObjectStatus(event.key, "A-2");
         assertThat(status2.status).isEqualTo(HELD);
         assertThat(status2.holdToken).isEqualTo(holdToken.holdToken);
     }
@@ -35,7 +35,7 @@ public class HoldObjectsTest extends SeatsioClientTest {
 
         client.events().hold(event.key, newArrayList("A-1", "A-2"), holdToken.holdToken, "order1");
 
-        assertThat(client.events().getObjectStatus(event.key, "A-1").orderId).isEqualTo("order1");
-        assertThat(client.events().getObjectStatus(event.key, "A-2").orderId).isEqualTo("order1");
+        assertThat(client.events().retrieveObjectStatus(event.key, "A-1").orderId).isEqualTo("order1");
+        assertThat(client.events().retrieveObjectStatus(event.key, "A-2").orderId).isEqualTo("order1");
     }
 }

@@ -18,9 +18,9 @@ public class BookObjectsTest extends SeatsioClientTest {
 
         client.events().book(event.key, newArrayList("A-1", "A-2"));
 
-        assertThat(client.events().getObjectStatus(event.key, "A-1").status).isEqualTo(BOOKED);
-        assertThat(client.events().getObjectStatus(event.key, "A-2").status).isEqualTo(BOOKED);
-        assertThat(client.events().getObjectStatus(event.key, "A-3").status).isEqualTo(FREE);
+        assertThat(client.events().retrieveObjectStatus(event.key, "A-1").status).isEqualTo(BOOKED);
+        assertThat(client.events().retrieveObjectStatus(event.key, "A-2").status).isEqualTo(BOOKED);
+        assertThat(client.events().retrieveObjectStatus(event.key, "A-3").status).isEqualTo(FREE);
     }
 
     @Test
@@ -32,11 +32,11 @@ public class BookObjectsTest extends SeatsioClientTest {
 
         client.events().book(event.key, newArrayList("A-1", "A-2"), holdToken.holdToken);
 
-        ObjectStatus status1 = client.events().getObjectStatus(event.key, "A-1");
+        ObjectStatus status1 = client.events().retrieveObjectStatus(event.key, "A-1");
         assertThat(status1.status).isEqualTo(BOOKED);
         assertThat(status1.holdToken).isNull();
 
-        ObjectStatus status2 = client.events().getObjectStatus(event.key, "A-2");
+        ObjectStatus status2 = client.events().retrieveObjectStatus(event.key, "A-2");
         assertThat(status2.status).isEqualTo(BOOKED);
         assertThat(status2.holdToken).isNull();
     }
@@ -48,7 +48,7 @@ public class BookObjectsTest extends SeatsioClientTest {
 
         client.events().book(event.key, newArrayList("A-1", "A-2"), null, "order1");
 
-        assertThat(client.events().getObjectStatus(event.key, "A-1").orderId).isEqualTo("order1");
-        assertThat(client.events().getObjectStatus(event.key, "A-2").orderId).isEqualTo("order1");
+        assertThat(client.events().retrieveObjectStatus(event.key, "A-1").orderId).isEqualTo("order1");
+        assertThat(client.events().retrieveObjectStatus(event.key, "A-2").orderId).isEqualTo("order1");
     }
 }
