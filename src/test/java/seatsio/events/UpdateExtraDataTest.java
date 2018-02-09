@@ -15,7 +15,7 @@ public class UpdateExtraDataTest extends SeatsioClientTest {
     public void test() {
         String chartKey = createTestChart();
         Event event = client.events().create(chartKey);
-        Map<String, String> extraData = ImmutableMap.of("foo", "bar");
+        Map<String, Object> extraData = ImmutableMap.of("foo", "bar");
 
         client.events().updateExtraData(event.key, "A-1", extraData);
 

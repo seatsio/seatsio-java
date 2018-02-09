@@ -266,7 +266,7 @@ public class Events {
         return gson().fromJson(response.getBody(), ObjectStatus.class);
     }
 
-    public void updateExtraData(String key, String object, Map<?, ?> extraData) {
+    public void updateExtraData(String key, String object, Map<String, Object> extraData) {
         JsonObjectBuilder request = aJsonObject();
         request.withProperty("extraData", gson().toJsonTree(extraData));
         stringResponse(post(baseUrl + "/events/{key}/objects/{object}/actions/update-extra-data")
