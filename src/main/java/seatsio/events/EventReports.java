@@ -36,8 +36,16 @@ public class EventReports {
         return fetchReport("byStatus", eventKey, status);
     }
 
+    public Map<String, EventSummaryReportItem> summaryByStatus(String eventKey) {
+        return fetchSummaryReport("byStatus", eventKey);
+    }
+
     public Map<String, List<EventReportItem>> byCategoryLabel(String eventKey) {
         return fetchReport("byCategoryLabel", eventKey);
+    }
+
+    public Map<String, EventSummaryReportItem> summaryByCategoryLabel(String eventKey) {
+        return fetchSummaryReport("byCategoryLabel", eventKey);
     }
 
     public List<EventReportItem> byCategoryLabel(String eventKey, String categorylabel) {
@@ -46,6 +54,10 @@ public class EventReports {
 
     public Map<String, List<EventReportItem>> byCategoryKey(String eventKey) {
         return fetchReport("byCategoryKey", eventKey);
+    }
+
+    public Map<String, EventSummaryReportItem> summaryByCategoryKey(String eventKey) {
+        return fetchSummaryReport("byCategoryKey", eventKey);
     }
 
     public List<EventReportItem> byCategoryKey(String eventKey, String categorykey) {
@@ -64,6 +76,10 @@ public class EventReports {
         return fetchReport("bySection", eventKey);
     }
 
+    public Map<String, EventSummaryReportItem> summaryBySection(String eventKey) {
+        return fetchSummaryReport("bySection", eventKey);
+    }
+
     public List<EventReportItem> bySection(String eventKey, String section) {
         return fetchReport("bySection", eventKey, section);
     }
@@ -79,19 +95,22 @@ public class EventReports {
         return fetchReport(reportType, eventKey).get(filter);
     }
 
-    private Map<String, EventReportItem> fetchSingleValuedReport(String reportType, String eventKey) {
-        HttpResponse<String> result = fetchRawReport(reportType, eventKey);
-        TypeToken<Map<String, EventReportItem>> typeToken = new TypeToken<Map<String, EventReportItem>>() {
+    private Map<String, EventSummaryReportItem> fetchSummaryReport(String reportType, String eventKey) {
+        HttpResponse<String> result = fetchRawSummaryReport(reportType, eventKey);
+        TypeToken<Map<String, EventSummaryReportItem>> typeToken = new TypeToken<Map<String, EventSummaryReportItem>>() {
         };
         return gson().fromJson(result.getBody(), typeToken.getType());
     }
 
-    private EventReportItem fetchSingleValuedReport(String reportType, String eventKey, String filter) {
-        return fetchSingleValuedReport(reportType, eventKey).get(filter);
-    }
-
     private HttpResponse<String> fetchRawReport(String reportType, String eventKey) {
         return stringResponse(get(baseUrl + "/reports/events/{key}/{reportType}")
+                .basicAuth(secretKey, null)
+                .routeParam("key", eventKey)
+                .routeParam("reportType", reportType));
+    }
+
+    private HttpResponse<String> fetchRawSummaryReport(String reportType, String eventKey) {
+        return stringResponse(get(baseUrl + "/reports/events/{key}/{reportType}/summary")
                 .basicAuth(secretKey, null)
                 .routeParam("key", eventKey)
                 .routeParam("reportType", reportType));
