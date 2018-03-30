@@ -4,7 +4,7 @@ import seatsio.util.ValueObject;
 
 import java.util.Map;
 
-public class EventSummaryReportItem extends ValueObject {
+public class EventReportSummaryItem extends ValueObject {
 
     public int count;
     public Map<String, Integer> byStatus;

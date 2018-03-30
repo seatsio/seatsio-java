@@ -2,7 +2,7 @@ package seatsio.events;
 
 import java.util.Map;
 
-public class EventSummaryReportItemBuilder {
+public class EventReportSummaryItemBuilder {
 
     private int count;
     private Map<String, Integer> bySection;
@@ -10,37 +10,37 @@ public class EventSummaryReportItemBuilder {
     private Map<String, Integer> byCategoryLabel;
     private Map<String, Integer> byStatus;
 
-    public static EventSummaryReportItemBuilder anEventSummaryReportItem() {
-        return new EventSummaryReportItemBuilder();
+    public static EventReportSummaryItemBuilder anEventReportSummaryItem() {
+        return new EventReportSummaryItemBuilder();
     }
 
-    public EventSummaryReportItemBuilder withCount(int count) {
+    public EventReportSummaryItemBuilder withCount(int count) {
         this.count = count;
         return this;
     }
 
-    public EventSummaryReportItemBuilder withBySection(Map<String, Integer> bySection) {
+    public EventReportSummaryItemBuilder withBySection(Map<String, Integer> bySection) {
         this.bySection = bySection;
         return this;
     }
 
-    public EventSummaryReportItemBuilder withByCategoryKey(Map<String, Integer> byCategoryKey) {
+    public EventReportSummaryItemBuilder withByCategoryKey(Map<String, Integer> byCategoryKey) {
         this.byCategoryKey = byCategoryKey;
         return this;
     }
 
-    public EventSummaryReportItemBuilder withByCategoryLabel(Map<String, Integer> byCategoryLabel) {
+    public EventReportSummaryItemBuilder withByCategoryLabel(Map<String, Integer> byCategoryLabel) {
         this.byCategoryLabel = byCategoryLabel;
         return this;
     }
 
-    public EventSummaryReportItemBuilder withByStatus(Map<String, Integer> byStatus) {
+    public EventReportSummaryItemBuilder withByStatus(Map<String, Integer> byStatus) {
         this.byStatus = byStatus;
         return this;
     }
 
-    public EventSummaryReportItem build() {
-        EventSummaryReportItem eventSummaryReportItem = new EventSummaryReportItem();
+    public EventReportSummaryItem build() {
+        EventReportSummaryItem eventSummaryReportItem = new EventReportSummaryItem();
         eventSummaryReportItem.count = count;
         eventSummaryReportItem.byStatus = byStatus;
         eventSummaryReportItem.byCategoryKey = byCategoryKey;

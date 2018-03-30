@@ -36,7 +36,7 @@ public class EventReports {
         return fetchReport("byStatus", eventKey, status);
     }
 
-    public Map<String, EventSummaryReportItem> summaryByStatus(String eventKey) {
+    public Map<String, EventReportSummaryItem> summaryByStatus(String eventKey) {
         return fetchSummaryReport("byStatus", eventKey);
     }
 
@@ -44,7 +44,7 @@ public class EventReports {
         return fetchReport("byCategoryLabel", eventKey);
     }
 
-    public Map<String, EventSummaryReportItem> summaryByCategoryLabel(String eventKey) {
+    public Map<String, EventReportSummaryItem> summaryByCategoryLabel(String eventKey) {
         return fetchSummaryReport("byCategoryLabel", eventKey);
     }
 
@@ -56,7 +56,7 @@ public class EventReports {
         return fetchReport("byCategoryKey", eventKey);
     }
 
-    public Map<String, EventSummaryReportItem> summaryByCategoryKey(String eventKey) {
+    public Map<String, EventReportSummaryItem> summaryByCategoryKey(String eventKey) {
         return fetchSummaryReport("byCategoryKey", eventKey);
     }
 
@@ -76,7 +76,7 @@ public class EventReports {
         return fetchReport("bySection", eventKey);
     }
 
-    public Map<String, EventSummaryReportItem> summaryBySection(String eventKey) {
+    public Map<String, EventReportSummaryItem> summaryBySection(String eventKey) {
         return fetchSummaryReport("bySection", eventKey);
     }
 
@@ -95,9 +95,9 @@ public class EventReports {
         return fetchReport(reportType, eventKey).get(filter);
     }
 
-    private Map<String, EventSummaryReportItem> fetchSummaryReport(String reportType, String eventKey) {
+    private Map<String, EventReportSummaryItem> fetchSummaryReport(String reportType, String eventKey) {
         HttpResponse<String> result = fetchRawSummaryReport(reportType, eventKey);
-        TypeToken<Map<String, EventSummaryReportItem>> typeToken = new TypeToken<Map<String, EventSummaryReportItem>>() {
+        TypeToken<Map<String, EventReportSummaryItem>> typeToken = new TypeToken<Map<String, EventReportSummaryItem>>() {
         };
         return gson().fromJson(result.getBody(), typeToken.getType());
     }

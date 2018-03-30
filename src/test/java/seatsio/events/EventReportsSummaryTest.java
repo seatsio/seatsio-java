@@ -8,7 +8,7 @@ import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static seatsio.events.EventSummaryReportItemBuilder.anEventSummaryReportItem;
+import static seatsio.events.EventReportSummaryItemBuilder.anEventReportSummaryItem;
 import static seatsio.events.ObjectStatus.BOOKED;
 import static seatsio.events.ObjectStatus.FREE;
 
@@ -20,15 +20,15 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
         Event event = client.events().create(chartKey);
         client.events().book(event.key, asList(new ObjectProperties("A-1", "ticketType1")), null, "order1");
 
-        Map<String, EventSummaryReportItem> report = client.events().reports().summaryByStatus(event.key);
+        Map<String, EventReportSummaryItem> report = client.events().reports().summaryByStatus(event.key);
 
-        EventSummaryReportItem bookedReport = anEventSummaryReportItem()
+        EventReportSummaryItem bookedReport = anEventReportSummaryItem()
                 .withCount(1)
                 .withBySection(ImmutableMap.of("NO_SECTION", 1))
                 .withByCategoryKey(ImmutableMap.of("9", 1))
                 .withByCategoryLabel(ImmutableMap.of("Cat1", 1))
                 .build();
-        EventSummaryReportItem freeReport = anEventSummaryReportItem()
+        EventReportSummaryItem freeReport = anEventReportSummaryItem()
                 .withCount(33)
                 .withBySection(ImmutableMap.of("NO_SECTION", 33))
                 .withByCategoryKey(ImmutableMap.of("9", 16, "10", 17))
@@ -43,14 +43,14 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
         Event event = client.events().create(chartKey);
         client.events().book(event.key, asList(new ObjectProperties("A-1", "ticketType1")), null, "order1");
 
-        Map<String, EventSummaryReportItem> report = client.events().reports().summaryByCategoryKey(event.key);
+        Map<String, EventReportSummaryItem> report = client.events().reports().summaryByCategoryKey(event.key);
 
-        EventSummaryReportItem cat9Report = anEventSummaryReportItem()
+        EventReportSummaryItem cat9Report = anEventReportSummaryItem()
                 .withCount(17)
                 .withBySection(ImmutableMap.of("NO_SECTION", 17))
                 .withByStatus(ImmutableMap.of(BOOKED, 1, FREE, 16))
                 .build();
-        EventSummaryReportItem cat10Report = anEventSummaryReportItem()
+        EventReportSummaryItem cat10Report = anEventReportSummaryItem()
                 .withCount(17)
                 .withBySection(ImmutableMap.of("NO_SECTION", 17))
                 .withByStatus(ImmutableMap.of(FREE, 17))
@@ -64,14 +64,14 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
         Event event = client.events().create(chartKey);
         client.events().book(event.key, asList(new ObjectProperties("A-1", "ticketType1")), null, "order1");
 
-        Map<String, EventSummaryReportItem> report = client.events().reports().summaryByCategoryLabel(event.key);
+        Map<String, EventReportSummaryItem> report = client.events().reports().summaryByCategoryLabel(event.key);
 
-        EventSummaryReportItem cat1Report = anEventSummaryReportItem()
+        EventReportSummaryItem cat1Report = anEventReportSummaryItem()
                 .withCount(17)
                 .withBySection(ImmutableMap.of("NO_SECTION", 17))
                 .withByStatus(ImmutableMap.of(BOOKED, 1, FREE, 16))
                 .build();
-        EventSummaryReportItem cat2Report = anEventSummaryReportItem()
+        EventReportSummaryItem cat2Report = anEventReportSummaryItem()
                 .withCount(17)
                 .withBySection(ImmutableMap.of("NO_SECTION", 17))
                 .withByStatus(ImmutableMap.of(FREE, 17))
@@ -85,9 +85,9 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
         Event event = client.events().create(chartKey);
         client.events().book(event.key, asList(new ObjectProperties("A-1", "ticketType1")), null, "order1");
 
-        Map<String, EventSummaryReportItem> report = client.events().reports().summaryBySection(event.key);
+        Map<String, EventReportSummaryItem> report = client.events().reports().summaryBySection(event.key);
 
-        EventSummaryReportItem noSectionReport = anEventSummaryReportItem()
+        EventReportSummaryItem noSectionReport = anEventReportSummaryItem()
                 .withCount(34)
                 .withByStatus(ImmutableMap.of(BOOKED, 1, FREE, 33))
                 .withByCategoryKey(ImmutableMap.of("9", 17, "10", 17))
