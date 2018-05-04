@@ -127,10 +127,6 @@ public class Events {
         return new Lister<>(new PageFetcher<>(baseUrl, "/events", secretKey, Event.class));
     }
 
-    public EventReports reports() {
-        return new EventReports(baseUrl, secretKey);
-    }
-
     public Lister<StatusChange> statusChanges(String key) {
         PageFetcher<StatusChange> pageFetcher = new PageFetcher<>(
                 baseUrl,

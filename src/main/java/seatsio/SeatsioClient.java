@@ -1,6 +1,7 @@
 package seatsio;
 
 import seatsio.charts.Charts;
+import seatsio.eventreports.EventReports;
 import seatsio.events.Events;
 import seatsio.holdTokens.HoldTokens;
 import seatsio.subaccounts.Subaccounts;
@@ -33,6 +34,10 @@ public class SeatsioClient {
 
     public Events events() {
         return new Events(secretKey, baseUrl);
+    }
+
+    public EventReports eventReports() {
+        return new EventReports(baseUrl, secretKey);
     }
 
     public String getBaseUrl() {
