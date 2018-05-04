@@ -5,12 +5,14 @@ import com.google.gson.JsonParser;
 import com.mashape.unirest.http.HttpResponse;
 import seatsio.json.JsonObjectBuilder;
 import seatsio.util.Lister;
+import seatsio.util.Page;
 import seatsio.util.PageFetcher;
-import seatsio.util.UnirestUtil;
 
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static com.mashape.unirest.http.Unirest.*;
 import static seatsio.json.SeatsioGson.gson;
@@ -183,8 +185,58 @@ public class Charts {
         return gson().fromJson(tags, List.class);
     }
 
-    public Lister<Chart> list() {
+    public Stream<Chart> listAll() {
+        return listAll(null, null, null);
+    }
+
+    public Stream<Chart> listAll(String filter, String tag, Boolean expandEvents) {
+        return list().all(chartListParams(filter, tag, expandEvents));
+    }
+
+    public Page<Chart> listFirstPage() {
+        return listFirstPage(null, null, null, null);
+    }
+
+    public Page<Chart> listFirstPage(String filter, String tag, Boolean expandEvents, Integer pageSize) {
+        return list().firstPage(chartListParams(filter, tag, expandEvents), pageSize);
+    }
+
+    public Page<Chart> listPageAfter(long id) {
+        return listPageAfter(id, null, null, null, null);
+    }
+
+    public Page<Chart> listPageAfter(long id, String filter, String tag, Boolean expandEvents, Integer pageSize) {
+        return list().pageAfter(id, chartListParams(filter, tag, expandEvents), pageSize);
+    }
+
+    public Page<Chart> listPageBefore(long id) {
+        return listPageBefore(id, null, null, null, null);
+    }
+
+    public Page<Chart> listPageBefore(long id, String filter, String tag, Boolean expandEvents, Integer pageSize) {
+        return list().pageBefore(id, chartListParams(filter, tag, expandEvents), pageSize);
+    }
+
+    private Lister<Chart> list() {
         return new Lister<>(new PageFetcher<>(baseUrl, "/charts", secretKey, Chart.class));
+    }
+
+    private Map<String, Object> chartListParams(String filter, String tag, Boolean expandEvents) {
+        Map<String, Object> chartListParams = new HashMap<>();
+
+        if (filter != null) {
+            chartListParams.put("filter", filter);
+        }
+
+        if (tag != null) {
+            chartListParams.put("tag", tag);
+        }
+
+        if (expandEvents != null && expandEvents) {
+            chartListParams.put("expand", "events");
+        }
+
+        return chartListParams;
     }
 
     public Lister<Chart> archive() {

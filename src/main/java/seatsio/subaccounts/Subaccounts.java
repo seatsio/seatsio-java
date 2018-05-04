@@ -4,7 +4,10 @@ import com.google.gson.JsonObject;
 import com.mashape.unirest.http.HttpResponse;
 import seatsio.charts.Chart;
 import seatsio.util.Lister;
+import seatsio.util.Page;
 import seatsio.util.PageFetcher;
+
+import java.util.stream.Stream;
 
 import static com.mashape.unirest.http.Unirest.get;
 import static com.mashape.unirest.http.Unirest.post;
@@ -92,7 +95,35 @@ public class Subaccounts {
         return gson().fromJson(response.getBody(), Chart.class);
     }
 
-    public Lister<Subaccount> list() {
+    public Stream<Subaccount> listAll() {
+        return list().all(null);
+    }
+
+    public Page<Subaccount> listFirstPage() {
+        return listFirstPage(null);
+    }
+
+    public Page<Subaccount> listFirstPage(Integer pageSize) {
+        return list().firstPage(null, pageSize);
+    }
+
+    public Page<Subaccount> listPageAfter(long id) {
+        return listPageAfter(id, null);
+    }
+
+    public Page<Subaccount> listPageAfter(long id, Integer pageSize) {
+        return list().pageAfter(id, null, pageSize);
+    }
+
+    public Page<Subaccount> listPageBefore(long id) {
+        return listPageBefore(id, null);
+    }
+
+    public Page<Subaccount> listPageBefore(long id, Integer pageSize) {
+        return list().pageBefore(id, null, pageSize);
+    }
+
+    private Lister<Subaccount> list() {
         return new Lister<>(new PageFetcher<>(baseUrl, "/subaccounts", secretKey, Subaccount.class));
     }
 

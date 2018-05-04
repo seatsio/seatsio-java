@@ -5,10 +5,12 @@ import com.google.gson.JsonObject;
 import com.mashape.unirest.http.HttpResponse;
 import seatsio.json.JsonObjectBuilder;
 import seatsio.util.Lister;
+import seatsio.util.Page;
 import seatsio.util.PageFetcher;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static com.mashape.unirest.http.Unirest.get;
 import static com.mashape.unirest.http.Unirest.post;
@@ -93,7 +95,35 @@ public class Events {
                 .routeParam("key", key));
     }
 
-    public Lister<Event> list() {
+    public Stream<Event> listAll() {
+        return list().all(null);
+    }
+
+    public Page<Event> listFirstPage() {
+        return listFirstPage(null);
+    }
+
+    public Page<Event> listFirstPage(Integer pageSize) {
+        return list().firstPage(null, pageSize);
+    }
+
+    public Page<Event> listPageAfter(long id) {
+        return listPageAfter(id, null);
+    }
+
+    public Page<Event> listPageAfter(long id, Integer pageSize) {
+        return list().pageAfter(id, null, pageSize);
+    }
+
+    public Page<Event> listPageBefore(long id) {
+        return listPageBefore(id, null);
+    }
+
+    public Page<Event> listPageBefore(long id, Integer pageSize) {
+        return list().pageBefore(id, null, pageSize);
+    }
+
+    private Lister<Event> list() {
         return new Lister<>(new PageFetcher<>(baseUrl, "/events", secretKey, Event.class));
     }
 

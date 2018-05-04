@@ -14,7 +14,7 @@ public class ListFirstPageOfSubaccountsTest extends SeatsioClientTest {
         Subaccount subaccount2 = client.subaccounts().create();
         Subaccount subaccount3 = client.subaccounts().create();
 
-        Page<Subaccount> subaccounts = client.subaccounts().list().firstPage();
+        Page<Subaccount> subaccounts = client.subaccounts().listFirstPage();
 
         assertThat(subaccounts.items)
                 .extracting(subaccount -> subaccount.id)
@@ -29,7 +29,7 @@ public class ListFirstPageOfSubaccountsTest extends SeatsioClientTest {
         Subaccount subaccount2 = client.subaccounts().create();
         Subaccount subaccount3 = client.subaccounts().create();
 
-        Page<Subaccount> subaccounts = client.subaccounts().list().setPageSize(2).firstPage();
+        Page<Subaccount> subaccounts = client.subaccounts().listFirstPage(2);
 
         assertThat(subaccounts.items)
                 .extracting(subaccount -> subaccount.id)

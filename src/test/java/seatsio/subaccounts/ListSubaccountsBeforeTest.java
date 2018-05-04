@@ -1,8 +1,8 @@
 package seatsio.subaccounts;
 
 import org.junit.Test;
-import seatsio.util.Page;
 import seatsio.SeatsioClientTest;
+import seatsio.util.Page;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,7 +14,7 @@ public class ListSubaccountsBeforeTest extends SeatsioClientTest {
         Subaccount subaccount2 = client.subaccounts().create();
         Subaccount subaccount3 = client.subaccounts().create();
 
-        Page<Subaccount> subaccounts = client.subaccounts().list().pageBefore(subaccount1.id);
+        Page<Subaccount> subaccounts = client.subaccounts().listPageBefore(subaccount1.id, null);
 
         assertThat(subaccounts.items)
                 .extracting(subaccount -> subaccount.id)
@@ -29,7 +29,7 @@ public class ListSubaccountsBeforeTest extends SeatsioClientTest {
         Subaccount subaccount2 = client.subaccounts().create();
         Subaccount subaccount3 = client.subaccounts().create();
 
-        Page<Subaccount> subaccounts = client.subaccounts().list().setPageSize(1).pageBefore(subaccount1.id);
+        Page<Subaccount> subaccounts = client.subaccounts().listPageBefore(subaccount1.id, 1);
 
         assertThat(subaccounts.items)
                 .extracting(subaccount -> subaccount.id)

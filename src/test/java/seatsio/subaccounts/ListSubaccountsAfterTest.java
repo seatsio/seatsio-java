@@ -14,7 +14,7 @@ public class ListSubaccountsAfterTest extends SeatsioClientTest {
         Subaccount subaccount2 = client.subaccounts().create();
         Subaccount subaccount3 = client.subaccounts().create();
 
-        Page<Subaccount> subaccounts = client.subaccounts().list().pageAfter(subaccount3.id);
+        Page<Subaccount> subaccounts = client.subaccounts().listPageAfter(subaccount3.id);
 
         assertThat(subaccounts.items)
                 .extracting(subaccount -> subaccount.id)
@@ -29,7 +29,7 @@ public class ListSubaccountsAfterTest extends SeatsioClientTest {
         Subaccount subaccount2 = client.subaccounts().create();
         Subaccount subaccount3 = client.subaccounts().create();
 
-        Page<Subaccount> subaccounts = client.subaccounts().list().setPageSize(1).pageAfter(subaccount3.id);
+        Page<Subaccount> subaccounts = client.subaccounts().listPageAfter(subaccount3.id, 1);
 
         assertThat(subaccounts.items)
                 .extracting(subaccount -> subaccount.id)

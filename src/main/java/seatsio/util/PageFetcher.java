@@ -22,8 +22,6 @@ public class PageFetcher<T> {
     private final Map<String, String> routeParams;
     private final String secretKey;
     private final Class<T> clazz;
-    private Integer pageSize;
-    private Map<String, Object> queryParams = new HashMap<>();
 
     public PageFetcher(String baseUrl, String url, String secretKey, Class<T> clazz) {
         this.baseUrl = baseUrl;
@@ -41,25 +39,25 @@ public class PageFetcher<T> {
         this.clazz = clazz;
     }
 
-    public Page<T> fetchFirstPage() {
-        return fetch(buildRequest());
+    public Page<T> fetchFirstPage(Map<String, Object> parameters, Integer pageSize) {
+        return fetch(buildRequest(parameters, pageSize));
     }
 
-    public Page<T> fetchAfter(long id) {
-        HttpRequest request = buildRequest();
+    public Page<T> fetchAfter(long id, Map<String, Object> parameters, Integer pageSize) {
+        HttpRequest request = buildRequest(parameters, pageSize);
         request.queryString("start_after_id", id);
         return fetch(request);
     }
 
-    public Page<T> fetchBefore(long id) {
-        HttpRequest request = buildRequest();
+    public Page<T> fetchBefore(long id, Map<String, Object> parameters, Integer pageSize) {
+        HttpRequest request = buildRequest(parameters, pageSize);
         request.queryString("end_before_id", id);
         return fetch(request);
     }
 
-    private HttpRequest buildRequest() {
+    private HttpRequest buildRequest(Map<String, Object> parameters, Integer pageSize) {
         HttpRequest request = get(baseUrl + "/" + url)
-                .queryString(queryParams)
+                .queryString(parameters)
                 .basicAuth(secretKey, null);
         routeParams.forEach(request::routeParam);
         if (pageSize != null) {
@@ -91,11 +89,4 @@ public class PageFetcher<T> {
                 .collect(Collectors.toList());
     }
 
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    protected void setQueryParam(String name, String value) {
-        this.queryParams.put(name, value);
-    }
 }

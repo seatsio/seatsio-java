@@ -1,5 +1,6 @@
 package seatsio.util;
 
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class Lister<T> {
@@ -11,38 +12,35 @@ public class Lister<T> {
     }
 
     public Stream<T> all() {
-        return new PageStreamer<>(pageFetcher).stream();
+        return all(null);
+    }
+
+    public Stream<T> all(Map<String, Object> parameters) {
+        return new PageStreamer<>(pageFetcher).stream(parameters);
     }
 
     public Page<T> firstPage() {
-        return pageFetcher.fetchFirstPage();
+        return firstPage(null, null);
+    }
+
+    public Page<T> firstPage(Map<String, Object> parameters, Integer pageSize) {
+        return pageFetcher.fetchFirstPage(parameters, pageSize);
     }
 
     public Page<T> pageAfter(long id) {
-        return pageFetcher.fetchAfter(id);
+        return pageAfter(id, null, null);
+    }
+
+    public Page<T> pageAfter(long id, Map<String, Object> parameters, Integer pageSize) {
+        return pageFetcher.fetchAfter(id, parameters, pageSize);
     }
 
     public Page<T> pageBefore(long id) {
-        return pageFetcher.fetchBefore(id);
+        return pageBefore(id, null, null);
     }
 
-    public Lister<T> setPageSize(int pageSize) {
-        this.pageFetcher.setPageSize(pageSize);
-        return this;
+    public Page<T> pageBefore(long id, Map<String, Object> parameters, Integer pageSize) {
+        return pageFetcher.fetchBefore(id, parameters, pageSize);
     }
 
-    public Lister<T> setFilter(String filter) {
-        this.pageFetcher.setQueryParam("filter", filter);
-        return this;
-    }
-
-    public Lister<T> setTag(String tag) {
-        this.pageFetcher.setQueryParam("tag", tag);
-        return this;
-    }
-
-    public Lister<T> setExpandEvents() {
-        this.pageFetcher.setQueryParam("expand", "events");
-        return this;
-    }
 }

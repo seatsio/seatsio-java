@@ -1,5 +1,6 @@
 package seatsio.util;
 
+import java.util.Map;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.Stream;
@@ -13,8 +14,8 @@ public class PageStreamer<T> {
         this.pageFetcher = pageFetcher;
     }
 
-    public Stream<T> stream() {
-        Spliterator<T> itemsSpliterator = Spliterators.spliteratorUnknownSize(new PagedIterator<>(pageFetcher), Spliterator.ORDERED);
+    public Stream<T> stream(Map<String, Object> parameters) {
+        Spliterator<T> itemsSpliterator = Spliterators.spliteratorUnknownSize(new PagedIterator<>(pageFetcher, parameters), Spliterator.ORDERED);
         return StreamSupport.stream(itemsSpliterator, false);
     }
 }

@@ -16,7 +16,7 @@ public class ListChartsTest extends SeatsioClientTest {
         Chart chart2 = client.charts().create();
         Chart chart3 = client.charts().create();
 
-        Stream<Chart> charts = client.charts().list().all();
+        Stream<Chart> charts = client.charts().listAll();
 
         assertThat(charts)
                 .extracting(chart -> chart.key)
@@ -29,7 +29,7 @@ public class ListChartsTest extends SeatsioClientTest {
         Chart chart2 = client.charts().create("bar");
         Chart chart3 = client.charts().create("foofoo");
 
-        Stream<Chart> charts = client.charts().list().setFilter("foo").all();
+        Stream<Chart> charts = client.charts().listAll("foo", null, null);
 
         assertThat(charts)
                 .extracting(chart -> chart.key)
@@ -46,7 +46,7 @@ public class ListChartsTest extends SeatsioClientTest {
         Chart chart3 = client.charts().create();
         client.charts().addTag(chart3.key, "foo");
 
-        Stream<Chart> charts = client.charts().list().setTag("foo").all();
+        Stream<Chart> charts = client.charts().listAll(null, "foo", null);
 
         assertThat(charts)
                 .extracting(chart -> chart.key)
@@ -66,7 +66,7 @@ public class ListChartsTest extends SeatsioClientTest {
 
         Chart chart4 = client.charts().create("bar");
 
-        Stream<Chart> charts = client.charts().list().setFilter("bar").setTag("foo").all();
+        Stream<Chart> charts = client.charts().listAll("bar", "foo", null);
 
         assertThat(charts)
                 .extracting(chart -> chart.key)
@@ -79,7 +79,7 @@ public class ListChartsTest extends SeatsioClientTest {
         Event event1 = client.events().create(chart.key);
         Event event2 = client.events().create(chart.key);
 
-        Chart retrievedChart = client.charts().list().setExpandEvents().all().findFirst().get();
+        Chart retrievedChart = client.charts().listAll(null, null, true).findFirst().get();
 
         assertThat(retrievedChart.events)
                 .extracting(event -> event.id)

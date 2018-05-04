@@ -98,7 +98,7 @@ Chart chart1 = client.charts().create();
 Chart chart2 = client.charts().create();
 Chart chart3 = client.charts().create();
 
-Stream<Chart> charts = client.charts().list().all();
+Stream<Chart> charts = client.charts().listAll();
 ```
 
 ## Error handling
