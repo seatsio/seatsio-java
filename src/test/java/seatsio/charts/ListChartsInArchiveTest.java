@@ -20,7 +20,7 @@ public class ListChartsInArchiveTest extends SeatsioClientTest {
         Chart chart3 = client.charts.create();
         client.charts.moveToArchive(chart3.key);
 
-        Stream<Chart> charts = client.charts.archive().all();
+        Stream<Chart> charts = client.charts.archive.all();
 
         assertThat(charts)
                 .extracting(chart -> chart.key)

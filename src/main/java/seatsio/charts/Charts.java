@@ -24,9 +24,12 @@ public class Charts {
     private final String secretKey;
     private final String baseUrl;
 
+    public final Lister<Chart> archive;
+
     public Charts(String secretKey, String baseUrl) {
         this.secretKey = secretKey;
         this.baseUrl = baseUrl;
+        this.archive = new Lister<>(new PageFetcher<>(baseUrl, "/charts/archive", secretKey, Chart.class));
     }
 
     public Chart retrieve(String key) {
@@ -237,10 +240,6 @@ public class Charts {
         }
 
         return chartListParams;
-    }
-
-    public Lister<Chart> archive() {
-        return new Lister<>(new PageFetcher<>(baseUrl, "/charts/archive", secretKey, Chart.class));
     }
 
 }
