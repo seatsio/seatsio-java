@@ -4,6 +4,7 @@ import org.junit.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.events.Event;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -84,6 +85,19 @@ public class ListChartsTest extends SeatsioClientTest {
         assertThat(retrievedChart.events)
                 .extracting(event -> event.id)
                 .containsExactly(event2.id, event1.id);
+    }
+
+    @Test
+    public void pageSize() {
+        Chart chart1 = client.charts.create();
+        Chart chart2 = client.charts.create();
+        Chart chart3 = client.charts.create();
+
+        List<Chart> charts = client.charts.listFirstPage(new ChartListParams().withPageSize(2)).items;
+
+        assertThat(charts)
+                .extracting(chart -> chart.key)
+                .containsExactly(chart3.key, chart2.key);
     }
 
 }
