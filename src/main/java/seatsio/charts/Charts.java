@@ -9,7 +9,6 @@ import seatsio.util.Page;
 import seatsio.util.PageFetcher;
 
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -189,57 +188,39 @@ public class Charts {
     }
 
     public Stream<Chart> listAll() {
-        return listAll(null, null, null);
+        return listAll(new ChartListParams());
     }
 
-    public Stream<Chart> listAll(String filter, String tag, Boolean expandEvents) {
-        return list().all(chartListParams(filter, tag, expandEvents));
+    public Stream<Chart> listAll(ChartListParams chartListParams) {
+        return list().all(chartListParams.asMap());
     }
 
     public Page<Chart> listFirstPage() {
-        return listFirstPage(null, null, null, null);
+        return listFirstPage(new ChartListParams(), null);
     }
 
-    public Page<Chart> listFirstPage(String filter, String tag, Boolean expandEvents, Integer pageSize) {
-        return list().firstPage(chartListParams(filter, tag, expandEvents), pageSize);
+    public Page<Chart> listFirstPage(ChartListParams chartListParams, Integer pageSize) {
+        return list().firstPage(chartListParams.asMap(), pageSize);
     }
 
     public Page<Chart> listPageAfter(long id) {
-        return listPageAfter(id, null, null, null, null);
+        return listPageAfter(id, new ChartListParams(), null);
     }
 
-    public Page<Chart> listPageAfter(long id, String filter, String tag, Boolean expandEvents, Integer pageSize) {
-        return list().pageAfter(id, chartListParams(filter, tag, expandEvents), pageSize);
+    public Page<Chart> listPageAfter(long id, ChartListParams chartListParams, Integer pageSize) {
+        return list().pageAfter(id, chartListParams.asMap(), pageSize);
     }
 
     public Page<Chart> listPageBefore(long id) {
-        return listPageBefore(id, null, null, null, null);
+        return listPageBefore(id, new ChartListParams(), null);
     }
 
-    public Page<Chart> listPageBefore(long id, String filter, String tag, Boolean expandEvents, Integer pageSize) {
-        return list().pageBefore(id, chartListParams(filter, tag, expandEvents), pageSize);
+    public Page<Chart> listPageBefore(long id, ChartListParams chartListParams, Integer pageSize) {
+        return list().pageBefore(id, chartListParams.asMap(), pageSize);
     }
 
     private Lister<Chart> list() {
         return new Lister<>(new PageFetcher<>(baseUrl, "/charts", secretKey, Chart.class));
-    }
-
-    private Map<String, Object> chartListParams(String filter, String tag, Boolean expandEvents) {
-        Map<String, Object> chartListParams = new HashMap<>();
-
-        if (filter != null) {
-            chartListParams.put("filter", filter);
-        }
-
-        if (tag != null) {
-            chartListParams.put("tag", tag);
-        }
-
-        if (expandEvents != null && expandEvents) {
-            chartListParams.put("expand", "events");
-        }
-
-        return chartListParams;
     }
 
 }
