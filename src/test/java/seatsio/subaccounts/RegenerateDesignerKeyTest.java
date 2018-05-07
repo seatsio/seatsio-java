@@ -9,11 +9,11 @@ public class RegenerateDesignerKeyTest extends SeatsioClientTest {
 
     @Test
     public void test() {
-        Subaccount subaccount = client.subaccounts().create();
+        Subaccount subaccount = client.subaccounts.create();
 
-        client.subaccounts().regenerateDesignerKey(subaccount.id);
+        client.subaccounts.regenerateDesignerKey(subaccount.id);
 
-        Subaccount retrievedSubaccount = client.subaccounts().retrieve(subaccount.id);
+        Subaccount retrievedSubaccount = client.subaccounts.retrieve(subaccount.id);
         assertThat(retrievedSubaccount.designerKey)
                 .isNotEmpty()
                 .isNotEqualTo(subaccount.designerKey);

@@ -14,13 +14,13 @@ public class ListStatusChangesForObjectTest extends SeatsioClientTest {
     @Test
     public void test() {
         String chartKey = createTestChart();
-        Event event = client.events().create(chartKey);
-        client.events().changeObjectStatus(event.key, asList("A-1"), "s1");
-        client.events().changeObjectStatus(event.key, asList("A-1"), "s2");
-        client.events().changeObjectStatus(event.key, asList("A-1"), "s3");
-        client.events().changeObjectStatus(event.key, asList("A-1"), "s4");
+        Event event = client.events.create(chartKey);
+        client.events.changeObjectStatus(event.key, asList("A-1"), "s1");
+        client.events.changeObjectStatus(event.key, asList("A-1"), "s2");
+        client.events.changeObjectStatus(event.key, asList("A-1"), "s3");
+        client.events.changeObjectStatus(event.key, asList("A-1"), "s4");
 
-        Stream<StatusChange> statusChanges = client.events().statusChanges(event.key, "A-1").all();
+        Stream<StatusChange> statusChanges = client.events.statusChanges(event.key, "A-1").all();
 
         assertThat(statusChanges)
                 .extracting(statusChange -> statusChange.status)

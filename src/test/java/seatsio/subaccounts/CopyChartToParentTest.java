@@ -10,13 +10,13 @@ public class CopyChartToParentTest extends SeatsioClientTest {
 
     @Test
     public void test() {
-        Subaccount subaccount = client.subaccounts().create();
-        Chart chart = seatsioClient(subaccount.secretKey).charts().create("aChart");
+        Subaccount subaccount = client.subaccounts.create();
+        Chart chart = seatsioClient(subaccount.secretKey).charts.create("aChart");
 
-        Chart copiedChart = client.subaccounts().copyChartToParent(subaccount.id, chart.key);
+        Chart copiedChart = client.subaccounts.copyChartToParent(subaccount.id, chart.key);
 
         assertThat(copiedChart.name).isEqualTo("aChart");
-        Chart retrievedChart = client.charts().retrieve(copiedChart.key);
+        Chart retrievedChart = client.charts.retrieve(copiedChart.key);
         assertThat(retrievedChart.name).isEqualTo("aChart");
     }
 }

@@ -12,11 +12,11 @@ public class ListChartsTest extends SeatsioClientTest {
 
     @Test
     public void all() {
-        Chart chart1 = client.charts().create();
-        Chart chart2 = client.charts().create();
-        Chart chart3 = client.charts().create();
+        Chart chart1 = client.charts.create();
+        Chart chart2 = client.charts.create();
+        Chart chart3 = client.charts.create();
 
-        Stream<Chart> charts = client.charts().listAll();
+        Stream<Chart> charts = client.charts.listAll();
 
         assertThat(charts)
                 .extracting(chart -> chart.key)
@@ -25,11 +25,11 @@ public class ListChartsTest extends SeatsioClientTest {
 
     @Test
     public void filter() {
-        Chart chart1 = client.charts().create("foo");
-        Chart chart2 = client.charts().create("bar");
-        Chart chart3 = client.charts().create("foofoo");
+        Chart chart1 = client.charts.create("foo");
+        Chart chart2 = client.charts.create("bar");
+        Chart chart3 = client.charts.create("foofoo");
 
-        Stream<Chart> charts = client.charts().listAll("foo", null, null);
+        Stream<Chart> charts = client.charts.listAll("foo", null, null);
 
         assertThat(charts)
                 .extracting(chart -> chart.key)
@@ -38,15 +38,15 @@ public class ListChartsTest extends SeatsioClientTest {
 
     @Test
     public void tag() {
-        Chart chart1 = client.charts().create();
-        client.charts().addTag(chart1.key, "foo");
+        Chart chart1 = client.charts.create();
+        client.charts.addTag(chart1.key, "foo");
 
-        Chart chart2 = client.charts().create();
+        Chart chart2 = client.charts.create();
 
-        Chart chart3 = client.charts().create();
-        client.charts().addTag(chart3.key, "foo");
+        Chart chart3 = client.charts.create();
+        client.charts.addTag(chart3.key, "foo");
 
-        Stream<Chart> charts = client.charts().listAll(null, "foo", null);
+        Stream<Chart> charts = client.charts.listAll(null, "foo", null);
 
         assertThat(charts)
                 .extracting(chart -> chart.key)
@@ -55,18 +55,18 @@ public class ListChartsTest extends SeatsioClientTest {
 
     @Test
     public void tagAndFilter() {
-        Chart chart1 = client.charts().create("bar");
-        client.charts().addTag(chart1.key, "foo");
+        Chart chart1 = client.charts.create("bar");
+        client.charts.addTag(chart1.key, "foo");
 
-        Chart chart2 = client.charts().create();
-        client.charts().addTag(chart2.key, "foo");
+        Chart chart2 = client.charts.create();
+        client.charts.addTag(chart2.key, "foo");
 
-        Chart chart3 = client.charts().create("bar");
-        client.charts().addTag(chart3.key, "foo");
+        Chart chart3 = client.charts.create("bar");
+        client.charts.addTag(chart3.key, "foo");
 
-        Chart chart4 = client.charts().create("bar");
+        Chart chart4 = client.charts.create("bar");
 
-        Stream<Chart> charts = client.charts().listAll("bar", "foo", null);
+        Stream<Chart> charts = client.charts.listAll("bar", "foo", null);
 
         assertThat(charts)
                 .extracting(chart -> chart.key)
@@ -75,11 +75,11 @@ public class ListChartsTest extends SeatsioClientTest {
 
     @Test
     public void expand() {
-        Chart chart = client.charts().create();
-        Event event1 = client.events().create(chart.key);
-        Event event2 = client.events().create(chart.key);
+        Chart chart = client.charts.create();
+        Event event1 = client.events.create(chart.key);
+        Event event2 = client.events.create(chart.key);
 
-        Chart retrievedChart = client.charts().listAll(null, null, true).findFirst().get();
+        Chart retrievedChart = client.charts.listAll(null, null, true).findFirst().get();
 
         assertThat(retrievedChart.events)
                 .extracting(event -> event.id)

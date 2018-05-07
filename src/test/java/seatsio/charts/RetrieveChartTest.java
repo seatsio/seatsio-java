@@ -10,11 +10,11 @@ public class RetrieveChartTest extends SeatsioClientTest {
 
     @Test
     public void test() {
-        Chart chart = client.charts().create();
-        client.charts().addTag(chart.key, "tag1");
-        client.charts().addTag(chart.key, "tag2");
+        Chart chart = client.charts.create();
+        client.charts.addTag(chart.key, "tag1");
+        client.charts.addTag(chart.key, "tag2");
 
-        Chart retrievedChart = client.charts().retrieve(chart.key);
+        Chart retrievedChart = client.charts.retrieve(chart.key);
 
         assertThat(retrievedChart.id).isNotZero();
         assertThat(retrievedChart.key).isNotBlank();
@@ -29,11 +29,11 @@ public class RetrieveChartTest extends SeatsioClientTest {
 
     @Test
     public void withEvents() {
-        Chart chart = client.charts().create();
-        Event event1 = client.events().create(chart.key);
-        Event event2 = client.events().create(chart.key);
+        Chart chart = client.charts.create();
+        Event event1 = client.events.create(chart.key);
+        Event event2 = client.events.create(chart.key);
 
-        Chart retrievedChart = client.charts().retrieveWithEvents(chart.key);
+        Chart retrievedChart = client.charts.retrieveWithEvents(chart.key);
 
         assertThat(retrievedChart.events)
                 .extracting("id")

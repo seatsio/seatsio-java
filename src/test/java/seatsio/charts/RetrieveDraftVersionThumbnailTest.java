@@ -14,11 +14,11 @@ public class RetrieveDraftVersionThumbnailTest extends SeatsioClientTest {
 
     @Test
     public void test() throws IOException {
-        Chart chart = client.charts().create();
-        client.events().create(chart.key);
-        client.charts().update(chart.key, "newName");
+        Chart chart = client.charts.create();
+        client.events.create(chart.key);
+        client.charts.update(chart.key, "newName");
 
-        InputStream thumbnail = client.charts().retrieveDraftVersionThumbnail(chart.key);
+        InputStream thumbnail = client.charts.retrieveDraftVersionThumbnail(chart.key);
 
         assertThat(IOUtils.toString(thumbnail, "UTF-8")).contains("<!DOCTYPE svg");
     }

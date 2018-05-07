@@ -14,7 +14,7 @@ public class CreateHoldTokenTest extends SeatsioClientTest {
     public void test() {
         Instant creationTime = Instant.now();
 
-        HoldToken holdToken = client.holdTokens().create();
+        HoldToken holdToken = client.holdTokens.create();
 
         assertThat(holdToken.holdToken).isNotEmpty();
         assertThat(holdToken.expiresAt).isBetween(creationTime.plus(14, MINUTES), creationTime.plus(16, MINUTES));

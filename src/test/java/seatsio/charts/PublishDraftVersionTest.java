@@ -9,13 +9,13 @@ public class PublishDraftVersionTest extends SeatsioClientTest {
 
     @Test
     public void test() {
-        Chart chart = client.charts().create("oldname");
-        client.events().create(chart.key);
-        client.charts().update(chart.key, "newname");
+        Chart chart = client.charts.create("oldname");
+        client.events.create(chart.key);
+        client.charts.update(chart.key, "newname");
 
-        client.charts().publishDraftVersion(chart.key);
+        client.charts.publishDraftVersion(chart.key);
 
-        Chart retrievedChart = client.charts().retrieve(chart.key);
+        Chart retrievedChart = client.charts.retrieve(chart.key);
         assertThat(retrievedChart.name).isEqualTo("newname");
         assertThat(retrievedChart.status).isEqualTo("PUBLISHED");
     }

@@ -19,10 +19,10 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
     @Test
     public void summaryByStatus() {
         String chartKey = createTestChart();
-        Event event = client.events().create(chartKey);
-        client.events().book(event.key, asList(new ObjectProperties("A-1", "ticketType1")), null, "order1");
+        Event event = client.events.create(chartKey);
+        client.events.book(event.key, asList(new ObjectProperties("A-1", "ticketType1")), null, "order1");
 
-        Map<String, EventReportSummaryItem> report = client.eventReports().summaryByStatus(event.key);
+        Map<String, EventReportSummaryItem> report = client.eventReports.summaryByStatus(event.key);
 
         EventReportSummaryItem bookedReport = anEventReportSummaryItem()
                 .withCount(1)
@@ -42,10 +42,10 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
     @Test
     public void summaryByCategoryKey() {
         String chartKey = createTestChart();
-        Event event = client.events().create(chartKey);
-        client.events().book(event.key, asList(new ObjectProperties("A-1", "ticketType1")), null, "order1");
+        Event event = client.events.create(chartKey);
+        client.events.book(event.key, asList(new ObjectProperties("A-1", "ticketType1")), null, "order1");
 
-        Map<String, EventReportSummaryItem> report = client.eventReports().summaryByCategoryKey(event.key);
+        Map<String, EventReportSummaryItem> report = client.eventReports.summaryByCategoryKey(event.key);
 
         EventReportSummaryItem cat9Report = anEventReportSummaryItem()
                 .withCount(17)
@@ -63,10 +63,10 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
     @Test
     public void summaryByCategoryLabel() {
         String chartKey = createTestChart();
-        Event event = client.events().create(chartKey);
-        client.events().book(event.key, asList(new ObjectProperties("A-1", "ticketType1")), null, "order1");
+        Event event = client.events.create(chartKey);
+        client.events.book(event.key, asList(new ObjectProperties("A-1", "ticketType1")), null, "order1");
 
-        Map<String, EventReportSummaryItem> report = client.eventReports().summaryByCategoryLabel(event.key);
+        Map<String, EventReportSummaryItem> report = client.eventReports.summaryByCategoryLabel(event.key);
 
         EventReportSummaryItem cat1Report = anEventReportSummaryItem()
                 .withCount(17)
@@ -84,10 +84,10 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
     @Test
     public void summaryBySection() {
         String chartKey = createTestChart();
-        Event event = client.events().create(chartKey);
-        client.events().book(event.key, asList(new ObjectProperties("A-1", "ticketType1")), null, "order1");
+        Event event = client.events.create(chartKey);
+        client.events.book(event.key, asList(new ObjectProperties("A-1", "ticketType1")), null, "order1");
 
-        Map<String, EventReportSummaryItem> report = client.eventReports().summaryBySection(event.key);
+        Map<String, EventReportSummaryItem> report = client.eventReports.summaryBySection(event.key);
 
         EventReportSummaryItem noSectionReport = anEventReportSummaryItem()
                 .withCount(34)

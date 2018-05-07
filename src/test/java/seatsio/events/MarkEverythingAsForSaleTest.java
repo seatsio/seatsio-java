@@ -11,13 +11,13 @@ public class MarkEverythingAsForSaleTest extends SeatsioClientTest{
 
     @Test
     public void test() {
-        Chart chart = client.charts().create();
-        Event event = client.events().create(chart.key);
-        client.events().markAsNotForSale(event.key, newArrayList("o1", "o2"), newArrayList("cat1", "cat2"));
+        Chart chart = client.charts.create();
+        Event event = client.events.create(chart.key);
+        client.events.markAsNotForSale(event.key, newArrayList("o1", "o2"), newArrayList("cat1", "cat2"));
 
-        client.events().markEverythingAsForSale(event.key);
+        client.events.markEverythingAsForSale(event.key);
 
-        Event retrievedEvent = client.events().retrieve(event.key);
+        Event retrievedEvent = client.events.retrieve(event.key);
         assertThat(retrievedEvent.forSaleConfig).isNull();
     }
 

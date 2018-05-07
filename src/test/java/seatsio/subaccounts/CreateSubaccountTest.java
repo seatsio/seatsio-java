@@ -9,7 +9,7 @@ public class CreateSubaccountTest extends SeatsioClientTest {
 
     @Test
     public void test() {
-        Subaccount subaccount = client.subaccounts().create("joske");
+        Subaccount subaccount = client.subaccounts.create("joske");
 
         assertThat(subaccount.secretKey).isNotBlank();
         assertThat(subaccount.designerKey).isNotBlank();
@@ -20,7 +20,7 @@ public class CreateSubaccountTest extends SeatsioClientTest {
 
     @Test
     public void nameIsOptional() {
-        Subaccount subaccount = client.subaccounts().create();
+        Subaccount subaccount = client.subaccounts.create();
 
         assertThat(subaccount.name).isNull();
     }

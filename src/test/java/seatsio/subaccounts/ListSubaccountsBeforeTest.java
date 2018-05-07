@@ -10,11 +10,11 @@ public class ListSubaccountsBeforeTest extends SeatsioClientTest {
 
     @Test
     public void withNextPage() {
-        Subaccount subaccount1 = client.subaccounts().create();
-        Subaccount subaccount2 = client.subaccounts().create();
-        Subaccount subaccount3 = client.subaccounts().create();
+        Subaccount subaccount1 = client.subaccounts.create();
+        Subaccount subaccount2 = client.subaccounts.create();
+        Subaccount subaccount3 = client.subaccounts.create();
 
-        Page<Subaccount> subaccounts = client.subaccounts().listPageBefore(subaccount1.id, null);
+        Page<Subaccount> subaccounts = client.subaccounts.listPageBefore(subaccount1.id, null);
 
         assertThat(subaccounts.items)
                 .extracting(subaccount -> subaccount.id)
@@ -25,11 +25,11 @@ public class ListSubaccountsBeforeTest extends SeatsioClientTest {
 
     @Test
     public void withNextAndPreviousPages() {
-        Subaccount subaccount1 = client.subaccounts().create();
-        Subaccount subaccount2 = client.subaccounts().create();
-        Subaccount subaccount3 = client.subaccounts().create();
+        Subaccount subaccount1 = client.subaccounts.create();
+        Subaccount subaccount2 = client.subaccounts.create();
+        Subaccount subaccount3 = client.subaccounts.create();
 
-        Page<Subaccount> subaccounts = client.subaccounts().listPageBefore(subaccount1.id, 1);
+        Page<Subaccount> subaccounts = client.subaccounts.listPageBefore(subaccount1.id, 1);
 
         assertThat(subaccounts.items)
                 .extracting(subaccount -> subaccount.id)

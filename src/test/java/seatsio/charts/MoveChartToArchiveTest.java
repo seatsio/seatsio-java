@@ -9,11 +9,11 @@ public class MoveChartToArchiveTest extends SeatsioClientTest {
 
     @Test
     public void test() {
-        Chart chart = client.charts().create();
+        Chart chart = client.charts.create();
 
-        client.charts().moveToArchive(chart.key);
+        client.charts.moveToArchive(chart.key);
 
-        Chart retrievedChart = client.charts().retrieve(chart.key);
+        Chart retrievedChart = client.charts.retrieve(chart.key);
         assertThat(retrievedChart.archived).isTrue();
     }
 

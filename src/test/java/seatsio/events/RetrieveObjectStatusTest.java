@@ -12,9 +12,9 @@ public class RetrieveObjectStatusTest extends SeatsioClientTest {
     @Test
     public void test() {
         String chartKey = createTestChart();
-        Event event = client.events().create(chartKey);
+        Event event = client.events.create(chartKey);
 
-        ObjectStatus objectStatus = client.events().retrieveObjectStatus(event.key, "A-1");
+        ObjectStatus objectStatus = client.events.retrieveObjectStatus(event.key, "A-1");
 
         assertThat(objectStatus.status).isEqualTo(FREE);
     }

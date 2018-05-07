@@ -15,9 +15,9 @@ public class EventReports {
     private final String baseUrl;
     private final String secretKey;
 
-    public EventReports(String baseUrl, String secretKey) {
-        this.baseUrl = baseUrl;
+    public EventReports(String secretKey, String baseUrl) {
         this.secretKey = secretKey;
+        this.baseUrl = baseUrl;
     }
 
     public Map<String, List<EventReportItem>> byLabel(String eventKey) {

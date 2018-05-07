@@ -11,11 +11,11 @@ public class CopyDraftVersionTest extends SeatsioClientTest {
 
     @Test
     public void test() {
-        Chart chart = client.charts().create("oldname");
-        client.events().create(chart.key);
-        client.charts().update(chart.key, "newname");
+        Chart chart = client.charts.create("oldname");
+        client.events.create(chart.key);
+        client.charts.update(chart.key, "newname");
 
-        Chart copiedChart = client.charts().copyDraftVersion(chart.key);
+        Chart copiedChart = client.charts.copyDraftVersion(chart.key);
 
         assertThat(copiedChart.name).isEqualTo("newname (copy)");
     }

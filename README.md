@@ -56,8 +56,8 @@ The reason: we want to play safe and assume that each release _might_ break back
 
 ```java
 SeatsioClient client = new SeatsioClient(<SECRET KEY>); // can be found on https://app.seats.io/settings
-Chart chart = client.charts().create();
-Event event = client.events().create(chart.key);
+Chart chart = client.charts.create();
+Event event = client.events.create(chart.key);
 System.out.println("Created event with key " + event.key);
 ```
 
@@ -65,28 +65,28 @@ System.out.println("Created event with key " + event.key);
 
 ```java
 SeatsioClient client = new SeatsioClient(<SECRET KEY>);
-client.events().book(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"));
+client.events.book(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"));
 ```
 
 ### Releasing objects
 
 ```java
 SeatsioClient client = new SeatsioClient(<SECRET KEY>);
-client.events().release(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"));
+client.events.release(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"));
 ```
 
 ### Booking objects that have been held
 
 ```java
 SeatsioClient client = new SeatsioClient(<SECRET KEY>);
-client.events().book(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"), <A HOLD TOKEN>);
+client.events.book(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"), <A HOLD TOKEN>);
 ```
 
 ### Changing object status
 
 ```java
 SeatsioClient client = new SeatsioClient(<SECRET KEY>);
-client.events().changeObjectStatus(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"), "unavailable");
+client.events.changeObjectStatus(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"), "unavailable");
 ```
 
 ### Listing charts
@@ -94,11 +94,11 @@ client.events().changeObjectStatus(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"), 
 ```java
 SeatsioClient client = new SeatsioClient(<SECRET KEY>);
 
-Chart chart1 = client.charts().create();
-Chart chart2 = client.charts().create();
-Chart chart3 = client.charts().create();
+Chart chart1 = client.charts.create();
+Chart chart2 = client.charts.create();
+Chart chart3 = client.charts.create();
 
-Stream<Chart> charts = client.charts().listAll();
+Stream<Chart> charts = client.charts.listAll();
 ```
 
 ## Error handling

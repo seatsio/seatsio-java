@@ -12,9 +12,9 @@ public class RetrieveHoldTokenTest extends SeatsioClientTest {
 
     @Test
     public void test() {
-        HoldToken holdToken = client.holdTokens().create();
+        HoldToken holdToken = client.holdTokens.create();
 
-        HoldToken retrievedHoldToken = client.holdTokens().retrieve(holdToken.holdToken);
+        HoldToken retrievedHoldToken = client.holdTokens.retrieve(holdToken.holdToken);
 
         assertThat(retrievedHoldToken.holdToken).isEqualTo(holdToken.holdToken);
         assertThat(retrievedHoldToken.expiresAt).isEqualTo(holdToken.expiresAt);

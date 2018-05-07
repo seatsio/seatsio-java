@@ -10,11 +10,11 @@ public class ListFirstPageOfSubaccountsTest extends SeatsioClientTest {
 
     @Test
     public void allOnFirstPage() {
-        Subaccount subaccount1 = client.subaccounts().create();
-        Subaccount subaccount2 = client.subaccounts().create();
-        Subaccount subaccount3 = client.subaccounts().create();
+        Subaccount subaccount1 = client.subaccounts.create();
+        Subaccount subaccount2 = client.subaccounts.create();
+        Subaccount subaccount3 = client.subaccounts.create();
 
-        Page<Subaccount> subaccounts = client.subaccounts().listFirstPage();
+        Page<Subaccount> subaccounts = client.subaccounts.listFirstPage();
 
         assertThat(subaccounts.items)
                 .extracting(subaccount -> subaccount.id)
@@ -25,11 +25,11 @@ public class ListFirstPageOfSubaccountsTest extends SeatsioClientTest {
 
     @Test
     public void someOnFirstPage() {
-        Subaccount subaccount1 = client.subaccounts().create();
-        Subaccount subaccount2 = client.subaccounts().create();
-        Subaccount subaccount3 = client.subaccounts().create();
+        Subaccount subaccount1 = client.subaccounts.create();
+        Subaccount subaccount2 = client.subaccounts.create();
+        Subaccount subaccount3 = client.subaccounts.create();
 
-        Page<Subaccount> subaccounts = client.subaccounts().listFirstPage(2);
+        Page<Subaccount> subaccounts = client.subaccounts.listFirstPage(2);
 
         assertThat(subaccounts.items)
                 .extracting(subaccount -> subaccount.id)

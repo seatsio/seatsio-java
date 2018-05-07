@@ -16,12 +16,12 @@ public class ListStatusChangesTest extends SeatsioClientTest {
     @Test
     public void test() {
         String chartKey = createTestChart();
-        Event event = client.events().create(chartKey);
-        client.events().changeObjectStatus(event.key, asList("A-1"), "s1");
-        client.events().changeObjectStatus(event.key, asList("A-2"), "s2");
-        client.events().changeObjectStatus(event.key, asList("A-3"), "s3");
+        Event event = client.events.create(chartKey);
+        client.events.changeObjectStatus(event.key, asList("A-1"), "s1");
+        client.events.changeObjectStatus(event.key, asList("A-2"), "s2");
+        client.events.changeObjectStatus(event.key, asList("A-3"), "s3");
 
-        Stream<StatusChange> statusChanges = client.events().statusChanges(event.key).all();
+        Stream<StatusChange> statusChanges = client.events.statusChanges(event.key).all();
 
         assertThat(statusChanges)
                 .extracting(statusChange -> statusChange.status)
@@ -31,11 +31,11 @@ public class ListStatusChangesTest extends SeatsioClientTest {
     @Test
     public void propertiesOfStatusChange() {
         String chartKey = createTestChart();
-        Event event = client.events().create(chartKey);
+        Event event = client.events.create(chartKey);
         ObjectProperties object = new ObjectProperties("A-1", ImmutableMap.of("foo", "bar"));
-        client.events().changeObjectStatus(event.key, asList(object), "s1", null, "order1");
+        client.events.changeObjectStatus(event.key, asList(object), "s1", null, "order1");
 
-        Stream<StatusChange> statusChanges = client.events().statusChanges(event.key).all();
+        Stream<StatusChange> statusChanges = client.events.statusChanges(event.key).all();
         StatusChange statusChange = statusChanges.findFirst().get();
 
         assertThat(statusChange.id).isNotZero();

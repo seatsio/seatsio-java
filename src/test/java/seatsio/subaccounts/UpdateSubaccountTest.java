@@ -9,11 +9,11 @@ public class UpdateSubaccountTest extends SeatsioClientTest {
 
     @Test
     public void test() {
-        Subaccount subaccount = client.subaccounts().create("joske");
+        Subaccount subaccount = client.subaccounts.create("joske");
 
-        client.subaccounts().update(subaccount.id, "jefke");
+        client.subaccounts.update(subaccount.id, "jefke");
 
-        Subaccount retrievedSubaccount = client.subaccounts().retrieve(subaccount.id);
+        Subaccount retrievedSubaccount = client.subaccounts.retrieve(subaccount.id);
         assertThat(retrievedSubaccount.name).isEqualTo("jefke");
     }
 

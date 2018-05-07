@@ -10,14 +10,14 @@ public class CopyChartToSubaccountTest extends SeatsioClientTest {
 
     @Test
     public void test() {
-        Subaccount fromSubaccount = client.subaccounts().create();
-        Chart chart = seatsioClient(fromSubaccount.secretKey).charts().create("aChart");
-        Subaccount toSubaccount = client.subaccounts().create();
+        Subaccount fromSubaccount = client.subaccounts.create();
+        Chart chart = seatsioClient(fromSubaccount.secretKey).charts.create("aChart");
+        Subaccount toSubaccount = client.subaccounts.create();
 
-        Chart copiedChart = client.subaccounts().copyChartToSubaccount(fromSubaccount.id, toSubaccount.id, chart.key);
+        Chart copiedChart = client.subaccounts.copyChartToSubaccount(fromSubaccount.id, toSubaccount.id, chart.key);
 
         assertThat(copiedChart.name).isEqualTo("aChart");
-        Chart retrievedChart = seatsioClient(toSubaccount.secretKey).charts().retrieve(copiedChart.key);
+        Chart retrievedChart = seatsioClient(toSubaccount.secretKey).charts.retrieve(copiedChart.key);
         assertThat(retrievedChart.name).isEqualTo("aChart");
     }
 }

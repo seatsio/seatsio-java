@@ -9,11 +9,11 @@ public class RegenerateSecretKeyTest extends SeatsioClientTest {
 
     @Test
     public void test() {
-        Subaccount subaccount = client.subaccounts().create();
+        Subaccount subaccount = client.subaccounts.create();
 
-        client.subaccounts().regenerateSecretKey(subaccount.id);
+        client.subaccounts.regenerateSecretKey(subaccount.id);
 
-        Subaccount retrievedSubaccount = client.subaccounts().retrieve(subaccount.id);
+        Subaccount retrievedSubaccount = client.subaccounts.retrieve(subaccount.id);
         assertThat(retrievedSubaccount.secretKey)
                 .isNotBlank()
                 .isNotEqualTo(subaccount.secretKey);

@@ -13,9 +13,9 @@ public class RetrievePublishedVersionThumbnailTest extends SeatsioClientTest {
 
     @Test
     public void test() throws IOException {
-        Chart chart = client.charts().create();
+        Chart chart = client.charts.create();
 
-        InputStream thumbnail = client.charts().retrievePublishedVersionThumbnail(chart.key);
+        InputStream thumbnail = client.charts.retrievePublishedVersionThumbnail(chart.key);
 
         assertThat(IOUtils.toString(thumbnail, "UTF-8")).contains("<!DOCTYPE svg");
     }

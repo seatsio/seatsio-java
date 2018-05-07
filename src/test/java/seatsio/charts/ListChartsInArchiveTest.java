@@ -12,15 +12,15 @@ public class ListChartsInArchiveTest extends SeatsioClientTest {
 
     @Test
     public void test() {
-        Chart chart1 = client.charts().create();
-        client.charts().moveToArchive(chart1.key);
+        Chart chart1 = client.charts.create();
+        client.charts.moveToArchive(chart1.key);
 
-        Chart chart2 = client.charts().create();
+        Chart chart2 = client.charts.create();
 
-        Chart chart3 = client.charts().create();
-        client.charts().moveToArchive(chart3.key);
+        Chart chart3 = client.charts.create();
+        client.charts.moveToArchive(chart3.key);
 
-        Stream<Chart> charts = client.charts().archive().all();
+        Stream<Chart> charts = client.charts.archive().all();
 
         assertThat(charts)
                 .extracting(chart -> chart.key)

@@ -13,10 +13,10 @@ public class RetrieveEventTest extends SeatsioClientTest {
 
     @Test
     public void test() {
-        Chart chart = client.charts().create();
-        Event event = client.events().create(chart.key);
+        Chart chart = client.charts.create();
+        Event event = client.events.create(chart.key);
 
-        Event retrievedEvent = client.events().retrieve(event.key);
+        Event retrievedEvent = client.events.retrieve(event.key);
 
         assertThat(retrievedEvent.id).isNotZero();
         assertThat(retrievedEvent.key).isNotNull();

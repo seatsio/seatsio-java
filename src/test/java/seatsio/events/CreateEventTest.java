@@ -13,9 +13,9 @@ public class CreateEventTest extends SeatsioClientTest {
 
     @Test
     public void test() {
-        Chart chart = client.charts().create();
+        Chart chart = client.charts.create();
 
-        Event event = client.events().create(chart.key);
+        Event event = client.events.create(chart.key);
 
         assertThat(event.id).isNotZero();
         assertThat(event.key).isNotNull();

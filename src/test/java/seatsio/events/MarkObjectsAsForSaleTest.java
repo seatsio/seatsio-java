@@ -11,12 +11,12 @@ public class MarkObjectsAsForSaleTest extends SeatsioClientTest{
 
     @Test
     public void objectsAndCategories() {
-        Chart chart = client.charts().create();
-        Event event = client.events().create(chart.key);
+        Chart chart = client.charts.create();
+        Event event = client.events.create(chart.key);
 
-        client.events().markAsForSale(event.key, newArrayList("o1", "o2"), newArrayList("cat1", "cat2"));
+        client.events.markAsForSale(event.key, newArrayList("o1", "o2"), newArrayList("cat1", "cat2"));
 
-        Event retrievedEvent = client.events().retrieve(event.key);
+        Event retrievedEvent = client.events.retrieve(event.key);
         assertThat(retrievedEvent.forSaleConfig.forSale).isTrue();
         assertThat(retrievedEvent.forSaleConfig.objects).containsExactly("o1", "o2");
         assertThat(retrievedEvent.forSaleConfig.categories).containsExactly("cat1", "cat2");
@@ -24,12 +24,12 @@ public class MarkObjectsAsForSaleTest extends SeatsioClientTest{
 
     @Test
     public void objects() {
-        Chart chart = client.charts().create();
-        Event event = client.events().create(chart.key);
+        Chart chart = client.charts.create();
+        Event event = client.events.create(chart.key);
 
-        client.events().markAsForSale(event.key, newArrayList("o1", "o2"), null);
+        client.events.markAsForSale(event.key, newArrayList("o1", "o2"), null);
 
-        Event retrievedEvent = client.events().retrieve(event.key);
+        Event retrievedEvent = client.events.retrieve(event.key);
         assertThat(retrievedEvent.forSaleConfig.forSale).isTrue();
         assertThat(retrievedEvent.forSaleConfig.objects).containsExactly("o1", "o2");
         assertThat(retrievedEvent.forSaleConfig.categories).isEmpty();
@@ -37,12 +37,12 @@ public class MarkObjectsAsForSaleTest extends SeatsioClientTest{
 
     @Test
     public void categories() {
-        Chart chart = client.charts().create();
-        Event event = client.events().create(chart.key);
+        Chart chart = client.charts.create();
+        Event event = client.events.create(chart.key);
 
-        client.events().markAsForSale(event.key, null, newArrayList("cat1", "cat2"));
+        client.events.markAsForSale(event.key, null, newArrayList("cat1", "cat2"));
 
-        Event retrievedEvent = client.events().retrieve(event.key);
+        Event retrievedEvent = client.events.retrieve(event.key);
         assertThat(retrievedEvent.forSaleConfig.forSale).isTrue();
         assertThat(retrievedEvent.forSaleConfig.objects).isEmpty();
         assertThat(retrievedEvent.forSaleConfig.categories).containsExactly("cat1", "cat2");

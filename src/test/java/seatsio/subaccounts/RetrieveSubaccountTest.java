@@ -9,9 +9,9 @@ public class RetrieveSubaccountTest extends SeatsioClientTest {
 
     @Test
     public void test() {
-        Subaccount subaccount = client.subaccounts().create("joske");
+        Subaccount subaccount = client.subaccounts.create("joske");
 
-        Subaccount retrievedSubaccount = client.subaccounts().retrieve(subaccount.id);
+        Subaccount retrievedSubaccount = client.subaccounts.retrieve(subaccount.id);
 
         assertThat(subaccount.id).isEqualTo(retrievedSubaccount.id);
         assertThat(retrievedSubaccount.secretKey).isNotBlank();

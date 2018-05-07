@@ -14,7 +14,7 @@ public class CreateChartTest extends SeatsioClientTest {
 
     @Test
     public void defaultParameters() {
-        Chart chart = client.charts().create();
+        Chart chart = client.charts.create();
 
         assertThat(chart.id).isNotZero();
         assertThat(chart.key).isNotBlank();
@@ -26,27 +26,27 @@ public class CreateChartTest extends SeatsioClientTest {
         assertThat(chart.tags).isEmpty();
         assertThat(chart.archived).isFalse();
 
-        Map<?, ?> drawing = client.charts().retrievePublishedVersion(chart.key);
+        Map<?, ?> drawing = client.charts.retrievePublishedVersion(chart.key);
         assertThat(drawing.get("venueType")).isEqualTo("MIXED");
         assertThat(categories(drawing)).isEmpty();
     }
 
     @Test
     public void name() {
-        Chart chart = client.charts().create("aChart");
+        Chart chart = client.charts.create("aChart");
 
         assertThat(chart.name).isEqualTo("aChart");
-        Map<?, ?> drawing = client.charts().retrievePublishedVersion(chart.key);
+        Map<?, ?> drawing = client.charts.retrievePublishedVersion(chart.key);
         assertThat(drawing.get("venueType")).isEqualTo("MIXED");
         assertThat(categories(drawing)).isEmpty();
     }
 
     @Test
     public void venueType() {
-        Chart chart = client.charts().create(null, "BOOTHS");
+        Chart chart = client.charts.create(null, "BOOTHS");
 
         assertThat(chart.name).isEqualTo("Untitled chart");
-        Map<?, ?> drawing = client.charts().retrievePublishedVersion(chart.key);
+        Map<?, ?> drawing = client.charts.retrievePublishedVersion(chart.key);
         assertThat(drawing.get("venueType")).isEqualTo("BOOTHS");
         assertThat(categories(drawing)).isEmpty();
     }
@@ -57,10 +57,10 @@ public class CreateChartTest extends SeatsioClientTest {
                 new Category(1, "Category 1", "#aaaaaa"),
                 new Category(2, "Category 2", "#bbbbbb")
         );
-        Chart chart = client.charts().create(null, null, categories);
+        Chart chart = client.charts.create(null, null, categories);
 
         assertThat(chart.name).isEqualTo("Untitled chart");
-        Map<?, ?> drawing = client.charts().retrievePublishedVersion(chart.key);
+        Map<?, ?> drawing = client.charts.retrievePublishedVersion(chart.key);
         assertThat(drawing.get("venueType")).isEqualTo("MIXED");
         assertThat(categories(drawing)).containsExactly(
                 ImmutableMap.of("key", 1.0, "label", "Category 1", "color", "#aaaaaa"),
