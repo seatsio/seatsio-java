@@ -20,9 +20,14 @@ public class Subaccounts {
     private final String secretKey;
     private final String baseUrl;
 
+    public final Lister<Subaccount> active;
+    public final Lister<Subaccount> inactive;
+
     public Subaccounts(String secretKey, String baseUrl) {
         this.secretKey = secretKey;
         this.baseUrl = baseUrl;
+        this.active = new Lister<>(new PageFetcher<>(baseUrl, "/subaccounts/active", secretKey, Subaccount.class));
+        this.inactive = new Lister<>(new PageFetcher<>(baseUrl, "/subaccounts/inactive", secretKey, Subaccount.class));
     }
 
     public Subaccount create(String name) {
