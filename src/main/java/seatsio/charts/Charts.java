@@ -7,9 +7,10 @@ import seatsio.json.JsonObjectBuilder;
 import seatsio.util.Lister;
 import seatsio.util.Page;
 import seatsio.util.PageFetcher;
+import seatsio.util.ParameterizedLister;
 
 import java.io.InputStream;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -220,13 +221,13 @@ public class Charts {
         return list().pageBefore(id, toMap(chartListParams), pageSize);
     }
 
-    private Lister<Chart> list() {
-        return new Lister<>(new PageFetcher<>(baseUrl, "/charts", secretKey, Chart.class));
+    private ParameterizedLister<Chart> list() {
+        return new ParameterizedLister<>(new PageFetcher<>(baseUrl, "/charts", secretKey, Chart.class));
     }
 
     private Map<String, Object> toMap(ChartListParams chartListParams) {
         if (chartListParams == null) {
-            return new LinkedHashMap<>();
+            return new HashMap<>();
         }
         return chartListParams.asMap();
     }

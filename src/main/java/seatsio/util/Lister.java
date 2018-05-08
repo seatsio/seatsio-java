@@ -1,6 +1,6 @@
 package seatsio.util;
 
-import java.util.Map;
+import java.util.HashMap;
 import java.util.stream.Stream;
 
 public class Lister<T> {
@@ -12,35 +12,31 @@ public class Lister<T> {
     }
 
     public Stream<T> all() {
-        return all(null);
-    }
-
-    public Stream<T> all(Map<String, Object> parameters) {
-        return new PageStreamer<>(pageFetcher).stream(parameters);
+        return all();
     }
 
     public Page<T> firstPage() {
-        return firstPage(null, null);
+        return firstPage(null);
     }
 
-    public Page<T> firstPage(Map<String, Object> parameters, Integer pageSize) {
-        return pageFetcher.fetchFirstPage(parameters, pageSize);
+    public Page<T> firstPage(Integer pageSize) {
+        return pageFetcher.fetchFirstPage(new HashMap<>(), pageSize);
     }
 
     public Page<T> pageAfter(long id) {
-        return pageAfter(id, null, null);
+        return pageAfter(id, null);
     }
 
-    public Page<T> pageAfter(long id, Map<String, Object> parameters, Integer pageSize) {
-        return pageFetcher.fetchAfter(id, parameters, pageSize);
+    public Page<T> pageAfter(long id, Integer pageSize) {
+        return pageFetcher.fetchAfter(id, new HashMap<>(), pageSize);
     }
 
     public Page<T> pageBefore(long id) {
-        return pageBefore(id, null, null);
+        return pageBefore(id, null);
     }
 
-    public Page<T> pageBefore(long id, Map<String, Object> parameters, Integer pageSize) {
-        return pageFetcher.fetchBefore(id, parameters, pageSize);
+    public Page<T> pageBefore(long id, Integer pageSize) {
+        return pageFetcher.fetchBefore(id, new HashMap<>(), pageSize);
     }
 
 }
