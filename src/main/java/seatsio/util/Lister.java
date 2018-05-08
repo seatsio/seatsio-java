@@ -12,7 +12,7 @@ public class Lister<T> {
     }
 
     public Stream<T> all() {
-        return all();
+        return new PageStreamer<>(pageFetcher).stream(new HashMap<>());
     }
 
     public Page<T> firstPage() {

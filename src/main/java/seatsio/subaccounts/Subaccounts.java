@@ -101,7 +101,7 @@ public class Subaccounts {
     }
 
     public Stream<Subaccount> listAll() {
-        return list().all(null);
+        return list().all();
     }
 
     public Page<Subaccount> listFirstPage() {
@@ -109,7 +109,7 @@ public class Subaccounts {
     }
 
     public Page<Subaccount> listFirstPage(Integer pageSize) {
-        return list().firstPage(null, pageSize);
+        return list().firstPage(pageSize);
     }
 
     public Page<Subaccount> listPageAfter(long id) {
@@ -117,7 +117,7 @@ public class Subaccounts {
     }
 
     public Page<Subaccount> listPageAfter(long id, Integer pageSize) {
-        return list().pageAfter(id, null, pageSize);
+        return list().pageAfter(id, pageSize);
     }
 
     public Page<Subaccount> listPageBefore(long id) {
@@ -125,7 +125,7 @@ public class Subaccounts {
     }
 
     public Page<Subaccount> listPageBefore(long id, Integer pageSize) {
-        return list().pageBefore(id, null, pageSize);
+        return list().pageBefore(id, pageSize);
     }
 
     private Lister<Subaccount> list() {

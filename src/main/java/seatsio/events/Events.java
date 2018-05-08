@@ -96,7 +96,7 @@ public class Events {
     }
 
     public Stream<Event> listAll() {
-        return list().all(null);
+        return list().all();
     }
 
     public Page<Event> listFirstPage() {
@@ -104,7 +104,7 @@ public class Events {
     }
 
     public Page<Event> listFirstPage(Integer pageSize) {
-        return list().firstPage(null, pageSize);
+        return list().firstPage(pageSize);
     }
 
     public Page<Event> listPageAfter(long id) {
@@ -112,7 +112,7 @@ public class Events {
     }
 
     public Page<Event> listPageAfter(long id, Integer pageSize) {
-        return list().pageAfter(id, null, pageSize);
+        return list().pageAfter(id, pageSize);
     }
 
     public Page<Event> listPageBefore(long id) {
@@ -120,7 +120,7 @@ public class Events {
     }
 
     public Page<Event> listPageBefore(long id, Integer pageSize) {
-        return list().pageBefore(id, null, pageSize);
+        return list().pageBefore(id, pageSize);
     }
 
     private Lister<Event> list() {
