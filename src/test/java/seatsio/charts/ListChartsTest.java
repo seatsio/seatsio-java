@@ -93,7 +93,7 @@ public class ListChartsTest extends SeatsioClientTest {
         Chart chart2 = client.charts.create();
         Chart chart3 = client.charts.create();
 
-        List<Chart> charts = client.charts.listFirstPage(new ChartListParams().withPageSize(2)).items;
+        List<Chart> charts = client.charts.listFirstPage(null, 2).items;
 
         assertThat(charts)
                 .extracting(chart -> chart.key)

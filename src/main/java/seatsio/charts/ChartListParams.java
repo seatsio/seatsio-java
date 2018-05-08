@@ -8,7 +8,6 @@ public class ChartListParams {
     private String filter;
     private String tag;
     private Boolean expandEvents;
-    Integer pageSize;
 
     public ChartListParams withFilter(String filter) {
         this.filter = filter;
@@ -22,11 +21,6 @@ public class ChartListParams {
 
     public ChartListParams withExpandEvents(Boolean expandEvents) {
         this.expandEvents = expandEvents;
-        return this;
-    }
-
-    public ChartListParams withPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
         return this;
     }
 

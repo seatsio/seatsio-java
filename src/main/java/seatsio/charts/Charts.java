@@ -9,6 +9,7 @@ import seatsio.util.Page;
 import seatsio.util.PageFetcher;
 
 import java.io.InputStream;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -196,31 +197,37 @@ public class Charts {
     }
 
     public Page<Chart> listFirstPage() {
-        return listFirstPage(new ChartListParams());
+        return listFirstPage(new ChartListParams(), null);
     }
 
-    public Page<Chart> listFirstPage(ChartListParams chartListParams) {
-        return list().firstPage(chartListParams.asMap(), chartListParams.pageSize);
+    public Page<Chart> listFirstPage(ChartListParams chartListParams, Integer pageSize) {
+        return list().firstPage(toMap(chartListParams), pageSize);
     }
 
     public Page<Chart> listPageAfter(long id) {
-        return listPageAfter(id, new ChartListParams());
+        return listPageAfter(id, new ChartListParams(), null);
     }
 
-    public Page<Chart> listPageAfter(long id, ChartListParams chartListParams) {
-        return list().pageAfter(id, chartListParams.asMap(), chartListParams.pageSize);
+    public Page<Chart> listPageAfter(long id, ChartListParams chartListParams, Integer pageSize) {
+        return list().pageAfter(id, toMap(chartListParams), pageSize);
     }
 
     public Page<Chart> listPageBefore(long id) {
-        return listPageBefore(id, new ChartListParams());
+        return listPageBefore(id, new ChartListParams(), null);
     }
 
-    public Page<Chart> listPageBefore(long id, ChartListParams chartListParams) {
-        return list().pageBefore(id, chartListParams.asMap(), chartListParams.pageSize);
+    public Page<Chart> listPageBefore(long id, ChartListParams chartListParams, Integer pageSize) {
+        return list().pageBefore(id, toMap(chartListParams), pageSize);
     }
 
     private Lister<Chart> list() {
         return new Lister<>(new PageFetcher<>(baseUrl, "/charts", secretKey, Chart.class));
     }
 
+    private Map<String, Object> toMap(ChartListParams chartListParams) {
+        if (chartListParams == null) {
+            return new LinkedHashMap<>();
+        }
+        return chartListParams.asMap();
+    }
 }
