@@ -9,6 +9,7 @@ public class EventReportItem extends ValueObject {
     public String categoryLabel;
     public Integer categoryKey;
     public String ticketType;
+    public String objectType;
     public String orderId;
     public boolean forSale;
     public String section;

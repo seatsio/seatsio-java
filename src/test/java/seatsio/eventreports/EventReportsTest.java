@@ -34,6 +34,7 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.entrance).isNull();
         assertThat(reportItem.numBooked).isNull();
         assertThat(reportItem.capacity).isNull();
+        assertThat(reportItem.objectType).isEqualTo("seat");
     }
 
     @Test
@@ -47,6 +48,7 @@ public class EventReportsTest extends SeatsioClientTest {
         EventReportItem reportItem = report.get("GA1").get(0);
         assertThat(reportItem.numBooked).isEqualTo(5);
         assertThat(reportItem.capacity).isEqualTo(100);
+        assertThat(reportItem.objectType).isEqualTo("generalAdmission");
     }
 
     @Test
