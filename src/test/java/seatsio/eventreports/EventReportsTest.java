@@ -2,13 +2,14 @@ package seatsio.eventreports;
 
 import org.junit.Test;
 import seatsio.SeatsioClientTest;
-import seatsio.eventreports.EventReportItem;
 import seatsio.events.Event;
 import seatsio.events.ObjectProperties;
+import seatsio.holdTokens.HoldToken;
 
 import java.util.List;
 import java.util.Map;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,6 +36,19 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.numBooked).isNull();
         assertThat(reportItem.capacity).isNull();
         assertThat(reportItem.objectType).isEqualTo("seat");
+    }
+
+    @Test
+    public void holdToken() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        HoldToken holdToken = client.holdTokens.create();
+        client.events.hold(event.key, newArrayList("A-1"), holdToken.holdToken);
+
+        Map<String, List<EventReportItem>> report = client.eventReports.byLabel(event.key);
+
+        EventReportItem reportItem = report.get("A-1").get(0);
+        assertThat(reportItem.holdToken).isEqualTo(holdToken.holdToken);
     }
 
     @Test
