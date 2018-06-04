@@ -1,5 +1,6 @@
 package seatsio.events;
 
+import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.holdTokens.HoldToken;
@@ -37,5 +38,19 @@ public class HoldObjectsTest extends SeatsioClientTest {
 
         assertThat(client.events.retrieveObjectStatus(event.key, "A-1").orderId).isEqualTo("order1");
         assertThat(client.events.retrieveObjectStatus(event.key, "A-2").orderId).isEqualTo("order1");
+    }
+
+    @Test
+    public void labels() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        HoldToken holdToken = client.holdTokens.create();
+
+        ChangeObjectStatusResult result = client.events.hold(event.key, newArrayList("A-1", "A-2"), holdToken.holdToken);
+
+        assertThat(result.labels).isEqualTo(ImmutableMap.of(
+                "A-1", new Labels("1", "A", null, null),
+                "A-2", new Labels("2", "A", null, null)
+        ));
     }
 }

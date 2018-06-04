@@ -147,68 +147,68 @@ public class Events {
         return new Lister<>(pageFetcher);
     }
 
-    public void book(String eventKey, List<?> objects) {
-        book(eventKey, objects, null, null);
+    public ChangeObjectStatusResult book(String eventKey, List<?> objects) {
+        return book(eventKey, objects, null, null);
     }
 
-    public void book(String eventKey, List<?> objects, String holdToken) {
-        book(eventKey, objects, holdToken, null);
+    public ChangeObjectStatusResult book(String eventKey, List<?> objects, String holdToken) {
+        return book(eventKey, objects, holdToken, null);
     }
 
-    public void book(String eventKey, List<?> objects, String holdToken, String orderId) {
-        changeObjectStatus(eventKey, objects, BOOKED, holdToken, orderId);
+    public ChangeObjectStatusResult book(String eventKey, List<?> objects, String holdToken, String orderId) {
+        return changeObjectStatus(eventKey, objects, BOOKED, holdToken, orderId);
     }
 
-    public void book(String eventKey, BestAvailable bestAvailable) {
-        book(eventKey, bestAvailable, null, null);
+    public BestAvailableResult book(String eventKey, BestAvailable bestAvailable) {
+        return book(eventKey, bestAvailable, null, null);
     }
 
-    public void book(String eventKey, BestAvailable bestAvailable, String holdToken) {
-        book(eventKey, bestAvailable, holdToken, null);
+    public BestAvailableResult book(String eventKey, BestAvailable bestAvailable, String holdToken) {
+        return book(eventKey, bestAvailable, holdToken, null);
     }
 
-    public void book(String eventKey, BestAvailable bestAvailable, String holdToken, String orderId) {
-        changeObjectStatus(eventKey, bestAvailable, BOOKED, holdToken, orderId);
+    public BestAvailableResult book(String eventKey, BestAvailable bestAvailable, String holdToken, String orderId) {
+        return changeObjectStatus(eventKey, bestAvailable, BOOKED, holdToken, orderId);
     }
 
-    public void book(List<String> eventKeys, List<?> objects, String holdToken, String orderId) {
-        changeObjectStatus(eventKeys, objects, BOOKED, holdToken, orderId);
+    public ChangeObjectStatusResult book(List<String> eventKeys, List<?> objects, String holdToken, String orderId) {
+        return changeObjectStatus(eventKeys, objects, BOOKED, holdToken, orderId);
     }
 
-    public void hold(String eventKey, List<?> objects, String holdToken) {
-        hold(eventKey, objects, holdToken, null);
+    public ChangeObjectStatusResult hold(String eventKey, List<?> objects, String holdToken) {
+        return hold(eventKey, objects, holdToken, null);
     }
 
-    public void hold(String eventKey, List<?> objects, String holdToken, String orderId) {
-        changeObjectStatus(eventKey, objects, HELD, holdToken, orderId);
+    public ChangeObjectStatusResult hold(String eventKey, List<?> objects, String holdToken, String orderId) {
+        return changeObjectStatus(eventKey, objects, HELD, holdToken, orderId);
     }
 
-    public void hold(String eventKey, BestAvailable bestAvailable, String holdToken) {
-        hold(eventKey, bestAvailable, holdToken, null);
+    public BestAvailableResult hold(String eventKey, BestAvailable bestAvailable, String holdToken) {
+        return hold(eventKey, bestAvailable, holdToken, null);
     }
 
-    public void hold(String eventKey, BestAvailable bestAvailable, String holdToken, String orderId) {
-        changeObjectStatus(eventKey, bestAvailable, HELD, holdToken, orderId);
+    public BestAvailableResult hold(String eventKey, BestAvailable bestAvailable, String holdToken, String orderId) {
+        return changeObjectStatus(eventKey, bestAvailable, HELD, holdToken, orderId);
     }
 
-    public void hold(List<String> eventKeys, List<?> objects, String holdToken, String orderId) {
-        changeObjectStatus(eventKeys, objects, HELD, holdToken, orderId);
+    public ChangeObjectStatusResult hold(List<String> eventKeys, List<?> objects, String holdToken, String orderId) {
+        return changeObjectStatus(eventKeys, objects, HELD, holdToken, orderId);
     }
 
-    public void release(String eventKey, List<?> objects) {
-        release(eventKey, objects, null, null);
+    public ChangeObjectStatusResult release(String eventKey, List<?> objects) {
+        return release(eventKey, objects, null, null);
     }
 
-    public void release(String eventKey, List<?> objects, String holdToken) {
-        release(eventKey, objects, holdToken, null);
+    public ChangeObjectStatusResult release(String eventKey, List<?> objects, String holdToken) {
+        return release(eventKey, objects, holdToken, null);
     }
 
-    public void release(String eventKey, List<?> objects, String holdToken, String orderId) {
-        changeObjectStatus(eventKey, objects, FREE, holdToken, orderId);
+    public ChangeObjectStatusResult release(String eventKey, List<?> objects, String holdToken, String orderId) {
+        return changeObjectStatus(eventKey, objects, FREE, holdToken, orderId);
     }
 
-    public void release(List<String> eventKeys, List<?> objects, String holdToken, String orderId) {
-        changeObjectStatus(eventKeys, objects, FREE, holdToken, orderId);
+    public ChangeObjectStatusResult release(List<String> eventKeys, List<?> objects, String holdToken, String orderId) {
+        return changeObjectStatus(eventKeys, objects, FREE, holdToken, orderId);
     }
 
     public BestAvailableResult changeObjectStatus(String eventKey, BestAvailable bestAvailable, String status) {
@@ -227,30 +227,32 @@ public class Events {
         return gson().fromJson(result.getBody(), BestAvailableResult.class);
     }
 
-    public void changeObjectStatus(String eventKey, List<?> objects, String status) {
-        changeObjectStatus(eventKey, objects, status, null, null);
+    public ChangeObjectStatusResult changeObjectStatus(String eventKey, List<?> objects, String status) {
+        return changeObjectStatus(eventKey, objects, status, null, null);
     }
 
-    public void changeObjectStatus(String eventKey, List<?> objects, String status, String holdToken) {
-        changeObjectStatus(eventKey, objects, status, holdToken, null);
+    public ChangeObjectStatusResult changeObjectStatus(String eventKey, List<?> objects, String status, String holdToken) {
+        return changeObjectStatus(eventKey, objects, status, holdToken, null);
     }
 
-    public void changeObjectStatus(String eventKey, List<?> objects, String status, String holdToken, String orderId) {
-        changeObjectStatus(singletonList(eventKey), objects, status, holdToken, orderId);
+    public ChangeObjectStatusResult changeObjectStatus(String eventKey, List<?> objects, String status, String holdToken, String orderId) {
+        return changeObjectStatus(singletonList(eventKey), objects, status, holdToken, orderId);
     }
 
-    public void changeObjectStatus(List<String> eventKeys, List<?> objects, String status) {
-        changeObjectStatus(eventKeys, objects, status, null, null);
+    public ChangeObjectStatusResult changeObjectStatus(List<String> eventKeys, List<?> objects, String status) {
+        return changeObjectStatus(eventKeys, objects, status, null, null);
     }
 
-    public void changeObjectStatus(List<String> eventKeys, List<?> objects, String status, String holdToken) {
-        changeObjectStatus(eventKeys, objects, status, holdToken, null);
+    public ChangeObjectStatusResult changeObjectStatus(List<String> eventKeys, List<?> objects, String status, String holdToken) {
+        return changeObjectStatus(eventKeys, objects, status, holdToken, null);
     }
 
-    public void changeObjectStatus(List<String> eventKeys, List<?> objects, String status, String holdToken, String orderId) {
-        stringResponse(post(baseUrl + "/seasons/actions/change-object-status")
+    public ChangeObjectStatusResult changeObjectStatus(List<String> eventKeys, List<?> objects, String status, String holdToken, String orderId) {
+        HttpResponse<String> response = stringResponse(post(baseUrl + "/seasons/actions/change-object-status")
                 .basicAuth(secretKey, null)
+                .queryString("expand", "labels")
                 .body(changeObjectStatusRequest(eventKeys, toObjects(objects), status, holdToken, orderId).toString()));
+        return gson().fromJson(response.getBody(), ChangeObjectStatusResult.class);
     }
 
     private List<ObjectProperties> toObjects(List<?> objects) {

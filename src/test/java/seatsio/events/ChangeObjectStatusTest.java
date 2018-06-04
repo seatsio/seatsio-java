@@ -24,6 +24,16 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
     }
 
     @Test
+    public void labels() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        ChangeObjectStatusResult result = client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo");
+
+        assertThat(result.labels).isEqualTo(ImmutableMap.of("A-1", new Labels("1", "A", null, null)));
+    }
+
+    @Test
     public void holdToken() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);

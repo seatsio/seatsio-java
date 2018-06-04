@@ -26,6 +26,16 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
     }
 
     @Test
+    public void labels() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(2), "foo");
+
+        assertThat(bestAvailableResult.labels).isEqualTo(ImmutableMap.of("B-4", new Labels("4", "B", null, null), "B-5", new Labels("5", "B", null, null)));
+    }
+
+    @Test
     public void categories() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);

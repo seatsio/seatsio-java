@@ -1,5 +1,6 @@
 package seatsio.events;
 
+import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.holdTokens.HoldToken;
@@ -16,10 +17,14 @@ public class ReleaseObjectsTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
         client.events.book(event.key, newArrayList("A-1", "A-2"));
 
-        client.events.release(event.key, newArrayList("A-1", "A-2"));
+        ChangeObjectStatusResult result = client.events.release(event.key, newArrayList("A-1", "A-2"));
 
         assertThat(client.events.retrieveObjectStatus(event.key, "A-1").status).isEqualTo(FREE);
         assertThat(client.events.retrieveObjectStatus(event.key, "A-2").status).isEqualTo(FREE);
+        assertThat(result.labels).isEqualTo(ImmutableMap.of(
+                "A-1", new Labels("1", "A", null, null),
+                "A-2", new Labels("2", "A", null, null)
+        ));
     }
 
     @Test
