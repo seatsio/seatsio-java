@@ -3,6 +3,7 @@ package seatsio.events;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
 import seatsio.json.JsonObjectBuilder;
 import seatsio.util.Lister;
 import seatsio.util.Page;
@@ -55,6 +56,12 @@ public class Events {
                 .routeParam("key", key)
                 .basicAuth(secretKey, null)
                 .body(request.build().toString()));
+    }
+
+    public void delete(String key) {
+        stringResponse(Unirest.delete(baseUrl + "/events/{key}")
+                .basicAuth(secretKey, null)
+                .routeParam("key", key));
     }
 
     public Event retrieve(String key) {
