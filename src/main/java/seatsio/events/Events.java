@@ -33,8 +33,18 @@ public class Events {
     }
 
     public Event create(String chartKey) {
+        return create(chartKey, null, null);
+    }
+
+    public Event create(String chartKey, String eventKey, Boolean bookWholeTables) {
         JsonObjectBuilder request = aJsonObject();
         request.withProperty("chartKey", chartKey);
+        if (eventKey != null) {
+            request.withProperty("eventKey", eventKey);
+        }
+        if (bookWholeTables != null) {
+            request.withProperty("bookWholeTables", bookWholeTables);
+        }
         HttpResponse<String> response = stringResponse(post(baseUrl + "/events")
                 .basicAuth(secretKey, null)
                 .body(request.build().toString()));
