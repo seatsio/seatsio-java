@@ -5,16 +5,21 @@ import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCod
 
 public class Labels {
 
-    public String own;
-    public String row;
-    public String table;
+    public LabelAndType own;
+    public LabelAndType parent;
     public String section;
 
-    public Labels(String own, String row, String table, String section) {
-        this.own = own;
-        this.row = row;
-        this.table = table;
+    protected Labels() {
+    }
+
+    public Labels(String ownLabel, String ownType, String section) {
+        this.own = new LabelAndType(ownLabel, ownType);
         this.section = section;
+    }
+
+    public Labels(String ownLabel, String ownType, String parentLabel, String parentType, String section) {
+        this(ownLabel, ownType, section);
+        this.parent = new LabelAndType(parentLabel, parentType);
     }
 
     @Override

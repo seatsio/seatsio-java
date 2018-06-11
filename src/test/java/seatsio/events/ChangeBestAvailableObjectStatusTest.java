@@ -1,7 +1,6 @@
 package seatsio.events;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import org.junit.Test;
 import seatsio.SeatsioClientTest;
 
@@ -32,7 +31,10 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
 
         BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(2), "foo");
 
-        assertThat(bestAvailableResult.labels).isEqualTo(ImmutableMap.of("B-4", new Labels("4", "B", null, null), "B-5", new Labels("5", "B", null, null)));
+        assertThat(bestAvailableResult.labels).isEqualTo(ImmutableMap.of(
+                "B-4", new Labels("4", "seat", "B", "row", null),
+                "B-5", new Labels("5", "seat", "B", "row", null)
+        ));
     }
 
     @Test
