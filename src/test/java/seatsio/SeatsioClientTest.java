@@ -18,7 +18,7 @@ import static seatsio.util.UnirestUtil.stringResponse;
 
 public class SeatsioClientTest {
 
-    protected static final String BASE_URL = "https://api-staging.seats.io";
+    protected static final String BASE_URL = "https://api-staging.seatsio.net";
 
     protected TestUser user;
     protected SeatsioClient client;
