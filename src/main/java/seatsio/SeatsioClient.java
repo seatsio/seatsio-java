@@ -28,7 +28,7 @@ public class SeatsioClient {
     }
 
     public SeatsioClient(String secretKey) {
-        this(secretKey, "https://api.seats.io");
+        this(secretKey, "https://api.seatsio.net");
     }
 
     public String getBaseUrl() {
