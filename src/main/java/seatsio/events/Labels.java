@@ -8,18 +8,24 @@ public class Labels {
     public LabelAndType own;
     public LabelAndType parent;
     public String section;
+    public Entrance entrance;
 
     protected Labels() {
     }
 
-    public Labels(String ownLabel, String ownType, String section) {
+    public Labels(String ownLabel, String ownType) {
         this.own = new LabelAndType(ownLabel, ownType);
-        this.section = section;
     }
 
-    public Labels(String ownLabel, String ownType, String parentLabel, String parentType, String section) {
-        this(ownLabel, ownType, section);
+    public Labels(String ownLabel, String ownType, String parentLabel, String parentType) {
+        this(ownLabel, ownType);
         this.parent = new LabelAndType(parentLabel, parentType);
+    }
+
+    public Labels(String ownLabel, String ownType, String parentLabel, String parentType, String section, String entrance) {
+        this(ownLabel, ownType, parentLabel, parentType);
+        this.section = section;
+        this.entrance = new Entrance(entrance);
     }
 
     @Override

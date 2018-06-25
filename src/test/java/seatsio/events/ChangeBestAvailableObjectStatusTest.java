@@ -32,8 +32,8 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
         BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(2), "foo");
 
         assertThat(bestAvailableResult.labels).isEqualTo(ImmutableMap.of(
-                "B-4", new Labels("4", "seat", "B", "row", null),
-                "B-5", new Labels("5", "seat", "B", "row", null)
+                "B-4", new Labels("4", "seat", "B", "row"),
+                "B-5", new Labels("5", "seat", "B", "row")
         ));
     }
 

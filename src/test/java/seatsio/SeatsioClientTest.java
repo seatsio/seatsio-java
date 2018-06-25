@@ -46,16 +46,24 @@ public class SeatsioClientTest {
     }
 
     protected String createTestChart() {
-        String testChartJson = testChartJson();
+        return createTestChart("/sampleChart.json");
+    }
+
+    protected String createTestChartWithSections() {
+        return createTestChart("/sampleChartWithSections.json");
+    }
+
+    protected String createTestChart(String fileName) {
+        String testChartJson = testChartJson(fileName);
         String chartKey = randomUUID().toString();
         stringResponse(post(BASE_URL + "/system/public/" + user.designerKey + "/charts/" + chartKey)
                 .body(testChartJson));
         return chartKey;
     }
 
-    private String testChartJson() {
+    private String testChartJson(String fileName) {
         try {
-            InputStream testChartJson = SeatsioClientTest.class.getResourceAsStream("/sampleChart.json");
+            InputStream testChartJson = SeatsioClientTest.class.getResourceAsStream(fileName);
             return IOUtils.toString(testChartJson, "UTF-8");
         } catch (IOException e) {
             throw new RuntimeException(e);

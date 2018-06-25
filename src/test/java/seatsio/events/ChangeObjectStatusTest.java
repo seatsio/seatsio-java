@@ -30,7 +30,7 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
 
         ChangeObjectStatusResult result = client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo");
 
-        assertThat(result.labels).isEqualTo(ImmutableMap.of("A-1", new Labels("1", "seat", "A", "row", null)));
+        assertThat(result.labels).isEqualTo(ImmutableMap.of("A-1", new Labels("1", "seat", "A", "row")));
     }
 
     @Test
