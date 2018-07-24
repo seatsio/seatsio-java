@@ -38,6 +38,14 @@ public class Subaccounts {
         return gson().fromJson(response.getBody(), Subaccount.class);
     }
 
+    public Subaccount createWithEmail(String email) {
+        JsonObject request = aJsonObject().withProperty("email", email).build();
+        HttpResponse<String> response = stringResponse(post(baseUrl + "/subaccounts")
+                .basicAuth(secretKey, null)
+                .body(request.toString()));
+        return gson().fromJson(response.getBody(), Subaccount.class);
+    }
+
     public void update(long id, String name) {
         JsonObject request = aJsonObject().withProperty("name", name).build();
         stringResponse(post(baseUrl + "/subaccounts/{id}")

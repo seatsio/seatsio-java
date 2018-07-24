@@ -35,7 +35,7 @@ public class SeatsioClientTest {
 
     private TestUser createTestUser() throws UnirestException {
         JsonObject request = aJsonObject()
-                .withProperty("email", "test" + new Random().nextLong() + "@seats.io")
+                .withProperty("email", randomEmail())
                 .withProperty("password", "12345678")
                 .build();
         HttpResponse<String> response = post(BASE_URL + "/system/public/users")
@@ -43,6 +43,10 @@ public class SeatsioClientTest {
                 .asString();
 
         return new Gson().fromJson(response.getBody(), TestUser.class);
+    }
+
+    protected String randomEmail() {
+        return "test" + new Random().nextLong() + "@seats.io";
     }
 
     protected String createTestChart() {

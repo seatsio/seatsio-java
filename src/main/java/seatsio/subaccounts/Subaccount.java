@@ -9,5 +9,6 @@ public class Subaccount extends ValueObject {
     public String designerKey;
     public String publicKey;
     public String name;
+    public String email;
     public boolean active;
 }
