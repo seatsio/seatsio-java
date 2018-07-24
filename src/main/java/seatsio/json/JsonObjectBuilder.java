@@ -62,6 +62,34 @@ public class JsonObjectBuilder {
         return withProperty(propertyName, array);
     }
 
+    public JsonObjectBuilder withPropertyIfNotNull(String propertyName, String value) {
+        if (value == null) {
+            return this;
+        }
+        return withProperty(propertyName, value);
+    }
+
+    public JsonObjectBuilder withPropertyIfNotNull(String propertyName, Boolean value) {
+        if (value == null) {
+            return this;
+        }
+        return withProperty(propertyName, value);
+    }
+
+    public <T> JsonObjectBuilder withPropertyIfNotNull(String propertyName, Collection<T> values, Function<T, JsonElement> f) {
+        if (values == null) {
+            return this;
+        }
+        return withProperty(propertyName, values, f);
+    }
+
+    public JsonObjectBuilder withPropertyIfNotNull(String propertyName, Collection<String> values) {
+        if (values == null) {
+            return this;
+        }
+        return withProperty(propertyName, values);
+    }
+
     private <T> JsonObjectBuilder setValue(String propertyName, T value, Function<T, JsonPrimitive> f) {
         if (value == null) {
             return withNullProperty(propertyName);

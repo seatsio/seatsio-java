@@ -37,14 +37,10 @@ public class Events {
     }
 
     public Event create(String chartKey, String eventKey, Boolean bookWholeTables) {
-        JsonObjectBuilder request = aJsonObject();
-        request.withProperty("chartKey", chartKey);
-        if (eventKey != null) {
-            request.withProperty("eventKey", eventKey);
-        }
-        if (bookWholeTables != null) {
-            request.withProperty("bookWholeTables", bookWholeTables);
-        }
+        JsonObjectBuilder request = aJsonObject()
+                .withProperty("chartKey", chartKey)
+                .withPropertyIfNotNull("eventKey", eventKey)
+                .withPropertyIfNotNull("bookWholeTables", bookWholeTables);
         HttpResponse<String> response = stringResponse(post(baseUrl + "/events")
                 .basicAuth(secretKey, null)
                 .body(request.build().toString()));
@@ -52,16 +48,10 @@ public class Events {
     }
 
     public void update(String key, String chartKey, String newKey, Boolean bookWholeTables) {
-        JsonObjectBuilder request = aJsonObject();
-        if (chartKey != null) {
-            request.withProperty("chartKey", chartKey);
-        }
-        if (newKey != null) {
-            request.withProperty("eventKey", newKey);
-        }
-        if (bookWholeTables != null) {
-            request.withProperty("bookWholeTables", bookWholeTables);
-        }
+        JsonObjectBuilder request = aJsonObject()
+                .withPropertyIfNotNull("chartKey", chartKey)
+                .withPropertyIfNotNull("eventKey", newKey)
+                .withPropertyIfNotNull("bookWholeTables", bookWholeTables);
         stringResponse(post(baseUrl + "/events/{key}")
                 .routeParam("key", key)
                 .basicAuth(secretKey, null)
@@ -96,13 +86,9 @@ public class Events {
     }
 
     private JsonObject forSaleRequest(List<String> objects, List<String> categories) {
-        JsonObjectBuilder request = aJsonObject();
-        if (objects != null) {
-            request.withProperty("objects", objects);
-        }
-        if (categories != null) {
-            request.withProperty("categories", categories);
-        }
+        JsonObjectBuilder request = aJsonObject()
+                .withPropertyIfNotNull("objects", objects)
+                .withPropertyIfNotNull("categories", categories);
         return request.build();
     }
 
@@ -292,15 +278,10 @@ public class Events {
     }
 
     private JsonObjectBuilder changeObjectStatusRequestBuilder(String status, String holdToken, String orderId) {
-        JsonObjectBuilder request = aJsonObject();
-        request.withProperty("status", status);
-        if (holdToken != null) {
-            request.withProperty("holdToken", holdToken);
-        }
-        if (orderId != null) {
-            request.withProperty("orderId", orderId);
-        }
-        return request;
+        return aJsonObject()
+                .withProperty("status", status)
+                .withPropertyIfNotNull("holdToken", holdToken)
+                .withPropertyIfNotNull("orderId", orderId);
     }
 
     public ObjectStatus retrieveObjectStatus(String key, String object) {

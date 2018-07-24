@@ -31,15 +31,22 @@ public class Subaccounts {
     }
 
     public Subaccount create(String name) {
-        JsonObject request = aJsonObject().withProperty("name", name).build();
-        HttpResponse<String> response = stringResponse(post(baseUrl + "/subaccounts")
-                .basicAuth(secretKey, null)
-                .body(request.toString()));
-        return gson().fromJson(response.getBody(), Subaccount.class);
+        return doCreate(null, name);
     }
 
     public Subaccount createWithEmail(String email) {
-        JsonObject request = aJsonObject().withProperty("email", email).build();
+        return doCreate(email, null);
+    }
+
+    public Subaccount createWithEmail(String email, String name) {
+        return doCreate(email, name);
+    }
+
+    public Subaccount doCreate(String email, String name) {
+        JsonObject request = aJsonObject()
+                .withPropertyIfNotNull("name", name)
+                .withPropertyIfNotNull("email", email)
+                .build();
         HttpResponse<String> response = stringResponse(post(baseUrl + "/subaccounts")
                 .basicAuth(secretKey, null)
                 .body(request.toString()));

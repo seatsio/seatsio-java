@@ -37,4 +37,17 @@ public class CreateSubaccountTest extends SeatsioClientTest {
         assertThat(subaccount.active).isTrue();
         assertThat(subaccount.email).isEqualTo(email);
     }
+
+    @Test
+    public void testWithEmailAndName() {
+        String email = randomEmail();
+        Subaccount subaccount = client.subaccounts.createWithEmail(email, "jeff");
+
+        assertThat(subaccount.secretKey).isNotEmpty();
+        assertThat(subaccount.designerKey).isNotEmpty();
+        assertThat(subaccount.publicKey).isNotEmpty();
+        assertThat(subaccount.name).isEqualTo("jeff");
+        assertThat(subaccount.active).isTrue();
+        assertThat(subaccount.email).isEqualTo(email);
+    }
 }

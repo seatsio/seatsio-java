@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static com.mashape.unirest.http.Unirest.*;
+import static seatsio.json.JsonObjectBuilder.aJsonObject;
 import static seatsio.json.SeatsioGson.gson;
 import static seatsio.util.UnirestUtil.binaryResponse;
 import static seatsio.util.UnirestUtil.stringResponse;
@@ -60,16 +61,10 @@ public class Charts {
     }
 
     public Chart create(String name, String venueType, List<Category> categories) {
-        JsonObjectBuilder request = JsonObjectBuilder.aJsonObject();
-        if (name != null) {
-            request.withProperty("name", name);
-        }
-        if (venueType != null) {
-            request.withProperty("venueType", venueType);
-        }
-        if (categories != null) {
-            request.withProperty("categories", categories, category -> gson().toJsonTree(category));
-        }
+        JsonObjectBuilder request = aJsonObject()
+                .withPropertyIfNotNull("name", name)
+                .withPropertyIfNotNull("venueType", venueType)
+                .withPropertyIfNotNull("categories", categories, category -> gson().toJsonTree(category));
         HttpResponse<String> response = stringResponse(post(baseUrl + "/charts")
                 .basicAuth(secretKey, null)
                 .body(request.build().toString()));
@@ -109,13 +104,9 @@ public class Charts {
     }
 
     public void update(String key, String name, List<Category> categories) {
-        JsonObjectBuilder request = JsonObjectBuilder.aJsonObject();
-        if (name != null) {
-            request.withProperty("name", name);
-        }
-        if (categories != null) {
-            request.withProperty("categories", categories, category -> gson().toJsonTree(category));
-        }
+        JsonObjectBuilder request = aJsonObject()
+                .withPropertyIfNotNull("name", name)
+                .withPropertyIfNotNull("categories", categories, category -> gson().toJsonTree(category));
         stringResponse(post(baseUrl + "/charts/{key}")
                 .routeParam("key", key)
                 .basicAuth(secretKey, null)
