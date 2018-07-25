@@ -54,7 +54,14 @@ public class Subaccounts {
     }
 
     public void update(long id, String name) {
-        JsonObject request = aJsonObject().withProperty("name", name).build();
+        update(id, name, null);
+    }
+
+    public void update(long id, String name, String email) {
+        JsonObject request = aJsonObject()
+                .withPropertyIfNotNull("name", name)
+                .withPropertyIfNotNull("email", email)
+                .build();
         stringResponse(post(baseUrl + "/subaccounts/{id}")
                 .routeParam("id", Long.toString(id))
                 .basicAuth(secretKey, null)
