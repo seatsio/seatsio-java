@@ -1,7 +1,6 @@
 package seatsio;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.apache.commons.io.IOUtils;
@@ -9,11 +8,9 @@ import org.junit.Before;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Random;
 
 import static com.mashape.unirest.http.Unirest.post;
 import static java.util.UUID.randomUUID;
-import static seatsio.json.JsonObjectBuilder.aJsonObject;
 import static seatsio.util.UnirestUtil.stringResponse;
 
 public class SeatsioClientTest {
@@ -34,19 +31,13 @@ public class SeatsioClientTest {
     }
 
     private TestUser createTestUser() throws UnirestException {
-        JsonObject request = aJsonObject()
-                .withProperty("email", randomEmail())
-                .withProperty("password", "12345678")
-                .build();
-        HttpResponse<String> response = post(BASE_URL + "/system/public/users")
-                .body(request.toString())
-                .asString();
+        HttpResponse<String> response = post(BASE_URL + "/system/public/users/actions/create-test-user").asString();
 
         return new Gson().fromJson(response.getBody(), TestUser.class);
     }
 
     protected String randomEmail() {
-        return "test" + new Random().nextLong() + "@seats.io";
+        return randomUUID().toString() + "@mailinator.com";
     }
 
     protected String createTestChart() {
