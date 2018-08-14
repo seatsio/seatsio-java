@@ -15,6 +15,10 @@ public class SeatsioException extends RuntimeException {
     public List<String> messages;
     public String requestId;
 
+    public SeatsioException(String message) {
+        super(message);
+    }
+
     public SeatsioException(Throwable t, HttpRequest request) {
         super("Error while executing " + request.getHttpMethod() + " " + request.getUrl(), t);
     }

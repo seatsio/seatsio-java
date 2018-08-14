@@ -4,15 +4,20 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
+import seatsio.SeatsioException;
 import seatsio.json.JsonObjectBuilder;
 import seatsio.util.Lister;
 import seatsio.util.Page;
 import seatsio.util.PageFetcher;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.*;
 import static com.mashape.unirest.http.Unirest.get;
 import static com.mashape.unirest.http.Unirest.post;
 import static java.util.Collections.singletonList;
@@ -76,6 +81,63 @@ public class Events {
                 .basicAuth(secretKey, null)
                 .routeParam("key", key)
                 .body(forSaleRequest(objects, categories).toString()));
+    }
+
+    public void addObjectsForSale(String key, List<String> objects) {
+        ForSaleConfig forSaleConfig = retrieve(key).forSaleConfig;
+        if (forSaleConfig != null && !forSaleConfig.forSale) {
+            throw new SeatsioException("Cannot add objects to the list of objects that are for sale when there are objects or categories marked as not for sale");
+        }
+        Set<String> oldObjectsForSale = forSaleConfig == null ? new LinkedHashSet<>() : toSetNullSafe(forSaleConfig.objects);
+        List<String> categoriesForSale = forSaleConfig == null ? null : forSaleConfig.categories;
+        markAsForSale(key, newArrayList(union(oldObjectsForSale, toSetNullSafe(objects))), categoriesForSale);
+    }
+
+    public void removeObjectsForSale(String key, List<String> objects) {
+        ForSaleConfig forSaleConfig = retrieve(key).forSaleConfig;
+        if (forSaleConfig != null && !forSaleConfig.forSale) {
+            throw new SeatsioException("Cannot remove objects from the list of objects that are for sale when there are objects or categories marked as not for sale");
+        }
+        Set<String> oldObjectsForSale = forSaleConfig == null ? new LinkedHashSet<>() : toSetNullSafe(forSaleConfig.objects);
+        Set<String> newObjectsForSale = difference(oldObjectsForSale, toSetNullSafe(objects));
+        List<String> categoriesForSale = forSaleConfig == null ? null : forSaleConfig.categories;
+        if (toSetNullSafe(categoriesForSale).isEmpty() && newObjectsForSale.isEmpty()) {
+            markEverythingAsForSale(key);
+        } else {
+            markAsForSale(key, newArrayList(newObjectsForSale), categoriesForSale);
+        }
+    }
+
+    public void addObjectsNotForSale(String key, List<String> objects) {
+        ForSaleConfig forSaleConfig = retrieve(key).forSaleConfig;
+        if (forSaleConfig != null && forSaleConfig.forSale) {
+            throw new SeatsioException("Cannot add objects to the list of objects that are not for sale when there are objects or categories marked as for sale");
+        }
+        Set<String> oldObjectsNotForSale = forSaleConfig == null ? new LinkedHashSet<>() : toSetNullSafe(forSaleConfig.objects);
+        List<String> categoriesNotForSale = forSaleConfig == null ? null : forSaleConfig.categories;
+        markAsNotForSale(key, newArrayList(union(oldObjectsNotForSale, toSetNullSafe(objects))), categoriesNotForSale);
+    }
+
+    public void removeObjectsNotForSale(String key, List<String> objects) {
+        ForSaleConfig forSaleConfig = retrieve(key).forSaleConfig;
+        if (forSaleConfig != null && forSaleConfig.forSale) {
+            throw new SeatsioException("Cannot remove objects from the list of objects that are not for sale when there are objects or categories marked as for sale");
+        }
+        Set<String> oldObjectsNotForSale = forSaleConfig == null ? new LinkedHashSet<>() : toSetNullSafe(forSaleConfig.objects);
+        Set<String> newObjectsNotForSale = difference(oldObjectsNotForSale, toSetNullSafe(objects));
+        List<String> categoriesNotForSale = forSaleConfig == null ? null : forSaleConfig.categories;
+        if (toSetNullSafe(categoriesNotForSale).isEmpty() && newObjectsNotForSale.isEmpty()) {
+            markEverythingAsForSale(key);
+        } else {
+            markAsNotForSale(key, newArrayList(newObjectsNotForSale), categoriesNotForSale);
+        }
+    }
+
+    private static Set<String> toSetNullSafe(List<String> list) {
+        if (list == null) {
+            return newLinkedHashSet();
+        }
+        return newLinkedHashSet(list);
     }
 
     public void markAsNotForSale(String key, List<String> objects, List<String> categories) {
