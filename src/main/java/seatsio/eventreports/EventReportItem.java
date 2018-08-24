@@ -2,6 +2,8 @@ package seatsio.eventreports;
 
 import seatsio.util.ValueObject;
 
+import java.util.Map;
+
 public class EventReportItem extends ValueObject {
 
     public String status;
@@ -17,4 +19,5 @@ public class EventReportItem extends ValueObject {
     public String entrance;
     public Integer capacity;
     public Integer numBooked;
+    public Map<?, ?> extraData;
 }

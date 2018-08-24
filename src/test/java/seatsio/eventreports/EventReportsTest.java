@@ -1,5 +1,6 @@
 package seatsio.eventreports;
 
+import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.events.Event;
@@ -19,7 +20,8 @@ public class EventReportsTest extends SeatsioClientTest {
     public void reportItemProperties() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.book(event.key, asList(new ObjectProperties("A-1", "ticketType1")), null, "order1");
+        Map<String, String> extraData = ImmutableMap.of("foo", "bar");
+        client.events.book(event.key, asList(new ObjectProperties("A-1", "ticketType1", extraData)), null, "order1");
 
         Map<String, List<EventReportItem>> report = client.eventReports.byLabel(event.key);
 
@@ -36,6 +38,7 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.numBooked).isNull();
         assertThat(reportItem.capacity).isNull();
         assertThat(reportItem.objectType).isEqualTo("seat");
+        assertThat(reportItem.extraData).isEqualTo(extraData);
     }
 
     @Test
