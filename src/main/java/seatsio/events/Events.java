@@ -363,4 +363,13 @@ public class Events {
                 .basicAuth(secretKey, null)
                 .body(request.build().toString()));
     }
+
+    public void updateExtraDatas(String key, Map<String, Map<String, Object>> extraData) {
+        JsonObjectBuilder request = aJsonObject();
+        request.withProperty("extraData", gson().toJsonTree(extraData));
+        stringResponse(post(baseUrl + "/events/{key}/actions/update-extra-data")
+                .routeParam("key", key)
+                .basicAuth(secretKey, null)
+                .body(request.build().toString()));
+    }
 }
