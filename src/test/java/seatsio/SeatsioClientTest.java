@@ -44,6 +44,10 @@ public class SeatsioClientTest {
         return createTestChart("/sampleChart.json");
     }
 
+    protected String createTestChartWithTables() {
+        return createTestChart("/sampleChartWithTables.json");
+    }
+
     protected String createTestChartWithSections() {
         return createTestChart("/sampleChartWithSections.json");
     }

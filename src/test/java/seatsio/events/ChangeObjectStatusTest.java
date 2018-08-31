@@ -24,13 +24,33 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
     }
 
     @Test
-    public void labels() {
+    public void seatInRow() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
         ChangeObjectStatusResult result = client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo");
 
         assertThat(result.labels).isEqualTo(ImmutableMap.of("A-1", new Labels("1", "seat", "A", "row")));
+    }
+
+    @Test
+    public void seatInTable() {
+        String chartKey = createTestChartWithTables();
+        Event event = client.events.create(chartKey);
+
+        ChangeObjectStatusResult result = client.events.changeObjectStatus(event.key, newArrayList("T1-1"), "foo");
+
+        assertThat(result.labels).isEqualTo(ImmutableMap.of("T1-1", new Labels("1", "seat", "T1", "table")));
+    }
+
+    @Test
+    public void table() {
+        String chartKey = createTestChartWithTables();
+        Event event = client.events.create(chartKey, null, true);
+
+        ChangeObjectStatusResult result = client.events.changeObjectStatus(event.key, newArrayList("T1"), "foo");
+
+        assertThat(result.labels).isEqualTo(ImmutableMap.of("T1", new Labels("T1", "table")));
     }
 
     @Test
