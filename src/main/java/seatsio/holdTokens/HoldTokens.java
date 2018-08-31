@@ -24,6 +24,14 @@ public class HoldTokens {
         return gson().fromJson(response.getBody(), HoldToken.class);
     }
 
+    public HoldToken create(int expiresInMinutes) {
+        JsonObject request = aJsonObject().withProperty("expiresInMinutes", expiresInMinutes).build();
+        HttpResponse<String> response = stringResponse(Unirest.post(baseUrl + "/hold-tokens")
+                .basicAuth(secretKey, null)
+                .body(request.toString()));
+        return gson().fromJson(response.getBody(), HoldToken.class);
+    }
+
     public HoldToken retrieve(String holdToken) {
         HttpResponse<String> response = stringResponse(Unirest.get(baseUrl + "/hold-tokens/{holdToken}")
                 .routeParam("holdToken", holdToken)
