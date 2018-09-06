@@ -13,16 +13,17 @@ public class RetrieveEventTest extends SeatsioClientTest {
 
     @Test
     public void test() {
-        Chart chart = client.charts.create();
-        Event event = client.events.create(chart.key);
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
 
         Event retrievedEvent = client.events.retrieve(event.key);
 
         assertThat(retrievedEvent.id).isNotZero();
         assertThat(retrievedEvent.key).isNotNull();
-        assertThat(retrievedEvent.chartKey).isEqualTo(chart.key);
+        assertThat(retrievedEvent.chartKey).isEqualTo(chartKey);
         assertThat(retrievedEvent.bookWholeTables).isFalse();
         assertThat(retrievedEvent.forSaleConfig).isNull();
+        assertThat(retrievedEvent.supportsBestAvailable).isTrue();
         Instant now = Instant.now();
         assertThat(retrievedEvent.createdOn).isBetween(now.minus(1, MINUTES), now);
         assertThat(retrievedEvent.updatedOn).isNull();

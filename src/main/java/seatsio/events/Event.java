@@ -11,6 +11,7 @@ public class Event extends ValueObject {
     public String chartKey;
     public ForSaleConfig forSaleConfig;
     public boolean bookWholeTables;
+    public boolean supportsBestAvailable;
     public Instant createdOn;
     public Instant updatedOn;
 }

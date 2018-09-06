@@ -13,14 +13,15 @@ public class CreateEventTest extends SeatsioClientTest {
 
     @Test
     public void chartKeyIsRequired() {
-        Chart chart = client.charts.create();
+        String chartKey = createTestChart();
 
-        Event event = client.events.create(chart.key);
+        Event event = client.events.create(chartKey);
 
         assertThat(event.id).isNotZero();
         assertThat(event.key).isNotNull();
-        assertThat(event.chartKey).isEqualTo(chart.key);
+        assertThat(event.chartKey).isEqualTo(chartKey);
         assertThat(event.bookWholeTables).isFalse();
+        assertThat(event.supportsBestAvailable).isTrue();
         assertThat(event.forSaleConfig).isNull();
         Instant now = Instant.now();
         assertThat(event.createdOn).isBetween(now.minus(1, MINUTES), now.plus(1, MINUTES));
