@@ -18,6 +18,7 @@ public class RetrieveHoldTokenTest extends SeatsioClientTest {
 
         assertThat(retrievedHoldToken.holdToken).isEqualTo(holdToken.holdToken);
         assertThat(retrievedHoldToken.expiresAt).isEqualTo(holdToken.expiresAt);
+        assertThat(holdToken.expiresInSeconds).isBetween(14L * 60, 15L * 60);
     }
 
 }

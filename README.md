@@ -29,14 +29,14 @@ Then you can refer to seatsio-java as a regular package:
 ```
 // build.gradle
 dependencies {
-  compile 'com.github.seatsio:seatsio-java:27'
+  compile 'com.github.seatsio:seatsio-java:28'
 }
 
 // pom.xml
 <dependency>
   <groupId>com.github.seatsio</groupId>
   <artifactId>seatsio-java</artifactId>
-  <version>27</version>
+  <version>28</version>
 </dependency>
 ```
 
