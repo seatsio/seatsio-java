@@ -2,7 +2,6 @@ package seatsio.reports.charts;
 
 public class ChartReportItem {
 
-    public String status;
     public String label;
     public String categoryLabel;
     public Integer categoryKey;
