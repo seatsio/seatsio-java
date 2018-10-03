@@ -35,5 +35,9 @@ public abstract class Reports {
         return gson().fromJson(result.getBody(), typeToken.getType());
     }
 
+    protected <T> List<T> fetchReport(String reportType, String eventKey, String filter) {
+        return (List<T>) fetchReport(reportType, eventKey).get(filter);
+    }
+
     protected abstract <T> TypeToken<Map<String, List<T>>> getTypeToken();
 }
