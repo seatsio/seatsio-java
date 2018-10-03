@@ -1,4 +1,4 @@
-package seatsio.eventreports;
+package seatsio.reports.events;
 
 import com.google.common.collect.ImmutableMap;
 import org.junit.Test;

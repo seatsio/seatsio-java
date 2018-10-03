@@ -1,4 +1,4 @@
-package seatsio.eventreports;
+package seatsio.reports.events;
 
 import seatsio.util.ValueObject;
 
@@ -20,4 +20,5 @@ public class EventReportItem extends ValueObject {
     public Integer capacity;
     public Integer numBooked;
     public Map<?, ?> extraData;
+
 }

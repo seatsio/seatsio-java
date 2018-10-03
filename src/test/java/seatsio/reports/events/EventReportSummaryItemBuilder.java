@@ -1,4 +1,4 @@
-package seatsio.eventreports;
+package seatsio.reports.events;
 
 import java.util.Map;
 

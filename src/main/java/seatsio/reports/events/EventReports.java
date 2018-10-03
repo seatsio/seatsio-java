@@ -1,4 +1,4 @@
-package seatsio.eventreports;
+package seatsio.reports.events;
 
 import com.google.gson.reflect.TypeToken;
 import com.mashape.unirest.http.HttpResponse;
