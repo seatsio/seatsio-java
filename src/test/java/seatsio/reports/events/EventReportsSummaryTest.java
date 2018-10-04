@@ -1,4 +1,4 @@
-package seatsio.eventreports;
+package seatsio.reports.events;
 
 import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
@@ -10,7 +10,7 @@ import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static seatsio.eventreports.EventReportSummaryItemBuilder.anEventReportSummaryItem;
+import static seatsio.reports.events.EventReportSummaryItemBuilder.anEventReportSummaryItem;
 import static seatsio.events.ObjectStatus.BOOKED;
 import static seatsio.events.ObjectStatus.FREE;
 

@@ -2,7 +2,8 @@ package seatsio;
 
 import seatsio.accounts.subaccounts.Accounts;
 import seatsio.charts.Charts;
-import seatsio.eventreports.EventReports;
+import seatsio.reports.charts.ChartReports;
+import seatsio.reports.events.EventReports;
 import seatsio.events.Events;
 import seatsio.holdTokens.HoldTokens;
 import seatsio.subaccounts.Subaccounts;
@@ -18,6 +19,7 @@ public class SeatsioClient {
     public final Charts charts;
     public final Events events;
     public final EventReports eventReports;
+    public final ChartReports chartReports;
 
     public SeatsioClient(String secretKey, String baseUrl) {
         this.secretKey = secretKey;
@@ -28,6 +30,7 @@ public class SeatsioClient {
         this.charts = new Charts(secretKey, baseUrl);
         this.events = new Events(secretKey, baseUrl);
         this.eventReports = new EventReports(secretKey, baseUrl);
+        this.chartReports = new ChartReports(secretKey, baseUrl);
     }
 
     public SeatsioClient(String secretKey) {
