@@ -3,10 +3,9 @@ package seatsio.accounts;
 import org.junit.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.accounts.subaccounts.Account;
-import seatsio.subaccounts.Subaccount;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static seatsio.accounts.subaccounts.ChartValidationLevel.WARNING;
+import static seatsio.accounts.subaccounts.ChartValidationLevel.ERROR;
 
 public class RetrieveMyAccountTest extends SeatsioClientTest {
 
@@ -19,9 +18,9 @@ public class RetrieveMyAccountTest extends SeatsioClientTest {
         assertThat(account.publicKey).isNotBlank();
         assertThat(account.email).isNotBlank();
         assertThat(account.settings.draftChartDrawingsEnabled).isTrue();
-        assertThat(account.settings.chartValidation.validateDuplicateLabels).isEqualTo(WARNING);
-        assertThat(account.settings.chartValidation.validateObjectsWithoutCategories).isEqualTo(WARNING);
-        assertThat(account.settings.chartValidation.validateUnlabeledObjects).isEqualTo(WARNING);
+        assertThat(account.settings.chartValidation.validateDuplicateLabels).isEqualTo(ERROR);
+        assertThat(account.settings.chartValidation.validateObjectsWithoutCategories).isEqualTo(ERROR);
+        assertThat(account.settings.chartValidation.validateUnlabeledObjects).isEqualTo(ERROR);
     }
 
 }
