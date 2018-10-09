@@ -107,5 +107,5 @@ When an API call results in a 4xx or 5xx error (e.g. when a chart could not be f
 
 This exception contains a message string describing what went wrong, and also two other properties:
 
-- `messages`: a list of error messages that the server returned. In most cases, this array will contain only one element.
+- `errors`: a list of errors that the server returned. In most cases, this array will contain only one element, an instance of ApiError, containing an error code and a message.
 - `requestId`: the identifier of the request you made. Please mention this to us when you have questions, as it will make debugging easier.

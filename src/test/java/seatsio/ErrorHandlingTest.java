@@ -12,7 +12,7 @@ public class ErrorHandlingTest extends SeatsioClientTest {
             client.charts.retrieve("unexistingChart");
         } catch (SeatsioException e) {
             assertThat(e.getMessage()).contains("GET " + client.getBaseUrl() + "/charts/unexistingChart resulted in a 404 Not Found response. Reason: Chart not found: unexistingChart. Request ID:");
-            assertThat(e.messages).containsExactly("Chart not found: unexistingChart");
+            assertThat(e.errors).containsExactly(new ApiError("CHART_NOT_FOUND", "Chart not found: unexistingChart"));
             assertThat(e.requestId).isNotNull();
             throw e;
         }
@@ -24,7 +24,7 @@ public class ErrorHandlingTest extends SeatsioClientTest {
             new SeatsioClient("", "unknownProtocol://").charts.retrieve("unexistingChart");
         } catch (SeatsioException e) {
             assertThat(e.getMessage()).contains("Error while executing GET unknownProtocol:///charts/unexistingChart");
-            assertThat(e.messages).isNull();
+            assertThat(e.errors).isNull();
             assertThat(e.requestId).isNull();
             throw e;
         }
