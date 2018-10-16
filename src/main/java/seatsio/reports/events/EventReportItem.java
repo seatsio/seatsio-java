@@ -1,5 +1,6 @@
 package seatsio.reports.events;
 
+import seatsio.events.Labels;
 import seatsio.util.ValueObject;
 
 import java.util.Map;
@@ -8,6 +9,7 @@ public class EventReportItem extends ValueObject {
 
     public String status;
     public String label;
+    public Labels labels;
     public String categoryLabel;
     public Integer categoryKey;
     public String ticketType;

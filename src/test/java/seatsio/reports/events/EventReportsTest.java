@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.events.Event;
+import seatsio.events.Labels;
 import seatsio.events.ObjectProperties;
 import seatsio.holdTokens.HoldToken;
 
@@ -28,6 +29,7 @@ public class EventReportsTest extends SeatsioClientTest {
         EventReportItem reportItem = report.get("A-1").get(0);
         assertThat(reportItem.status).isEqualTo("booked");
         assertThat(reportItem.label).isEqualTo("A-1");
+        assertThat(reportItem.labels).isEqualTo(new Labels("1", "seat", "A", "row"));
         assertThat(reportItem.categoryLabel).isEqualTo("Cat1");
         assertThat(reportItem.categoryKey).isEqualTo(9);
         assertThat(reportItem.ticketType).isEqualTo("ticketType1");
