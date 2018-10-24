@@ -90,6 +90,13 @@ public class JsonObjectBuilder {
         return withProperty(propertyName, values);
     }
 
+    public JsonObjectBuilder withPropertyIfNotNull(String propertyName, Map<?, ?> value) {
+        if (value == null) {
+            return this;
+        }
+        return withProperty(propertyName, new Gson().toJsonTree(value));
+    }
+
     private <T> JsonObjectBuilder setValue(String propertyName, T value, Function<T, JsonPrimitive> f) {
         if (value == null) {
             return withNullProperty(propertyName);

@@ -3,6 +3,7 @@ package seatsio.events;
 import seatsio.util.ValueObject;
 
 import java.time.Instant;
+import java.util.Map;
 
 public class Event extends ValueObject {
 
@@ -14,4 +15,5 @@ public class Event extends ValueObject {
     public boolean supportsBestAvailable;
     public Instant createdOn;
     public Instant updatedOn;
+    public Map<String, TableBookingMode> tableBookingModes;
 }

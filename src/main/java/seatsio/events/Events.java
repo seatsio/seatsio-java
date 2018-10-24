@@ -38,25 +38,51 @@ public class Events {
     }
 
     public Event create(String chartKey) {
-        return create(chartKey, null, null);
+        return create(chartKey, null, null, null);
+    }
+
+    public Event create(String chartKey, String eventKey) {
+        return create(chartKey, eventKey, null, null);
     }
 
     public Event create(String chartKey, String eventKey, Boolean bookWholeTables) {
+        return create(chartKey, eventKey, bookWholeTables, null);
+    }
+
+    public Event create(String chartKey, String eventKey, Map<String, TableBookingMode> tableBookingModes) {
+        return create(chartKey, eventKey, null, tableBookingModes);
+    }
+
+    private Event create(String chartKey, String eventKey, Boolean bookWholeTables, Map<String, TableBookingMode> tableBookingModes) {
         JsonObjectBuilder request = aJsonObject()
                 .withProperty("chartKey", chartKey)
                 .withPropertyIfNotNull("eventKey", eventKey)
-                .withPropertyIfNotNull("bookWholeTables", bookWholeTables);
+                .withPropertyIfNotNull("bookWholeTables", bookWholeTables)
+                .withPropertyIfNotNull("tableBookingModes", tableBookingModes);
         HttpResponse<String> response = stringResponse(post(baseUrl + "/events")
                 .basicAuth(secretKey, null)
                 .body(request.build().toString()));
         return gson().fromJson(response.getBody(), Event.class);
     }
+    public void update(String key, String chartKey, String newKey) {
+        update(key, chartKey, newKey, null, null);
+    }
+
 
     public void update(String key, String chartKey, String newKey, Boolean bookWholeTables) {
+        update(key, chartKey, newKey, bookWholeTables, null);
+    }
+
+    public void update(String key, String chartKey, String newKey, Map<String, TableBookingMode> tableBookingModes) {
+        update(key, chartKey, newKey, null, tableBookingModes);
+    }
+
+    private void update(String key, String chartKey, String newKey, Boolean bookWholeTables, Map<String, TableBookingMode> tableBookingModes) {
         JsonObjectBuilder request = aJsonObject()
                 .withPropertyIfNotNull("chartKey", chartKey)
                 .withPropertyIfNotNull("eventKey", newKey)
-                .withPropertyIfNotNull("bookWholeTables", bookWholeTables);
+                .withPropertyIfNotNull("bookWholeTables", bookWholeTables)
+                .withPropertyIfNotNull("tableBookingModes", tableBookingModes);
         stringResponse(post(baseUrl + "/events/{key}")
                 .routeParam("key", key)
                 .basicAuth(secretKey, null)

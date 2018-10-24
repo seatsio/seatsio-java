@@ -1,5 +1,7 @@
 package seatsio.events;
 
+import com.google.common.collect.ImmutableMap;
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.junit.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.charts.Chart;
@@ -8,6 +10,8 @@ import java.time.Instant;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
+import static seatsio.events.TableBookingMode.BY_SEAT;
+import static seatsio.events.TableBookingMode.BY_TABLE;
 
 public class CreateEventTest extends SeatsioClientTest {
 
@@ -32,7 +36,7 @@ public class CreateEventTest extends SeatsioClientTest {
     public void eventKeyCanBePassedIn() {
         Chart chart = client.charts.create();
 
-        Event event = client.events.create(chart.key, "eventje", null);
+        Event event = client.events.create(chart.key, "eventje");
 
         assertThat(event.key).isEqualTo("eventje");
         assertThat(event.bookWholeTables).isFalse();
@@ -46,5 +50,16 @@ public class CreateEventTest extends SeatsioClientTest {
 
         assertThat(event.key).isNotNull();
         assertThat(event.bookWholeTables).isTrue();
+    }
+
+    @Test
+    public void tableBookingModesCanBePassedIn() {
+        String chartKey = createTestChartWithTables();
+
+        Event event = client.events.create(chartKey, null, ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT));
+
+        assertThat(event.key).isNotNull();
+        assertThat(event.bookWholeTables).isFalse();
+        assertThat(event.tableBookingModes).isEqualTo(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT));
     }
 }
