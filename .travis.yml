@@ -1,5 +1,5 @@
 language: java
 install: gradle assemble
-build: coberturaCheck
+build: gradle coberturaCheck
 after_success:
 - ./gradlew coveralls
