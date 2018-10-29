@@ -1,3 +1,3 @@
 language: java
 after_success:
-- ./gradlew coveralls
+- ./gradlew cobertura coveralls
