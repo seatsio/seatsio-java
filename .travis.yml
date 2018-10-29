@@ -1,4 +1,4 @@
 language: java
-before_script: gradle coberturaCheck
+script: ./gradlew cobertura
 after_success:
 - ./gradlew coveralls
