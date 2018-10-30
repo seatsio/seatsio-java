@@ -1,1 +1,4 @@
 language: java
+script: ./gradlew cobertura
+after_success:
+- ./gradlew coveralls
