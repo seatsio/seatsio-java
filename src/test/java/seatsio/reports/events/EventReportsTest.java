@@ -103,7 +103,7 @@ public class EventReportsTest extends SeatsioClientTest {
 
         List<EventReportItem> report = client.eventReports.byStatus(event.key, "lolzor");
 
-        assertThat(report).isEmpty();
+        assertThat(report).isNull();
     }
 
     @Test
