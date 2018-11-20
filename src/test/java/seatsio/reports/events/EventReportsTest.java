@@ -97,6 +97,16 @@ public class EventReportsTest extends SeatsioClientTest {
     }
 
     @Test
+    public void bySpecificNonExistingStatus() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        List<EventReportItem> report = client.eventReports.byStatus(event.key, "lolzor");
+
+        assertThat(report).isEmpty();
+    }
+
+    @Test
     public void byCategoryLabel() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
