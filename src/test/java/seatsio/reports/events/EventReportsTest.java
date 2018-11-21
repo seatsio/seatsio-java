@@ -85,6 +85,16 @@ public class EventReportsTest extends SeatsioClientTest {
     }
 
     @Test
+    public void byStatus_emptyChart() {
+        String chartKey = client.charts.create().key;
+        Event event = client.events.create(chartKey);
+
+        Map<String, List<EventReportItem>> report = client.eventReports.byStatus(event.key);
+
+        assertThat(report).isEmpty();
+    }
+
+    @Test
     public void bySpecificStatus() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
@@ -103,7 +113,7 @@ public class EventReportsTest extends SeatsioClientTest {
 
         List<EventReportItem> report = client.eventReports.byStatus(event.key, "lolzor");
 
-        assertThat(report).isNull();
+        assertThat(report).isEmpty();
     }
 
     @Test

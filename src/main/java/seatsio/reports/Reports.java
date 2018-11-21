@@ -3,6 +3,7 @@ package seatsio.reports;
 import com.google.gson.reflect.TypeToken;
 import com.mashape.unirest.http.HttpResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +37,7 @@ public abstract class Reports {
     }
 
     protected <T> List<T> fetchReport(String reportType, String eventKey, String filter) {
-        return (List<T>) fetchReport(reportType, eventKey).get(filter);
+        return (List<T>) fetchReport(reportType, eventKey).getOrDefault(filter, new ArrayList<>());
     }
 
     protected abstract <T> TypeToken<Map<String, List<T>>> getTypeToken();
