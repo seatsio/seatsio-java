@@ -6,6 +6,7 @@ import seatsio.charts.Chart;
 import seatsio.util.Lister;
 import seatsio.util.Page;
 import seatsio.util.PageFetcher;
+import seatsio.util.ParameterizedLister;
 
 import java.util.stream.Stream;
 
@@ -126,6 +127,8 @@ public class Subaccounts {
         return list().all();
     }
 
+    public Stream<Subaccount> listAll(SubaccountListParams subaccountListParams) { return listParametrized().all(subaccountListParams.asMap()); }
+
     public Page<Subaccount> listFirstPage() {
         return listFirstPage(null);
     }
@@ -152,6 +155,10 @@ public class Subaccounts {
 
     private Lister<Subaccount> list() {
         return new Lister<>(new PageFetcher<>(baseUrl, "/subaccounts", secretKey, Subaccount.class));
+    }
+
+    private ParameterizedLister<Subaccount> listParametrized() {
+        return new ParameterizedLister<>(new PageFetcher<>(baseUrl, "/subaccounts", secretKey, Subaccount.class));
     }
 
 }
