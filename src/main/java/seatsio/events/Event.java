@@ -12,7 +12,7 @@ public class Event extends ValueObject {
     public String chartKey;
     public ForSaleConfig forSaleConfig;
     public boolean bookWholeTables;
-    public boolean supportsBestAvailable;
+    public Boolean supportsBestAvailable;
     public Instant createdOn;
     public Instant updatedOn;
     public Map<String, TableBookingMode> tableBookingModes;

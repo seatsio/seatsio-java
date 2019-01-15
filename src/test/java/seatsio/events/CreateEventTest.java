@@ -1,7 +1,6 @@
 package seatsio.events;
 
 import com.google.common.collect.ImmutableMap;
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.junit.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.charts.Chart;

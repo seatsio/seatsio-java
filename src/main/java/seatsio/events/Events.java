@@ -1,6 +1,7 @@
 package seatsio.events;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -41,6 +42,24 @@ public class Events {
         return create(chartKey, null, null, null);
     }
 
+    public List<Event> create(String chartKey, List<EventCreationParams> params) {
+        JsonArray events = new JsonArray();
+        params.forEach(p -> events.add(aJsonObject()
+                .withPropertyIfNotNull("eventKey", p.eventKey)
+                .withPropertyIfNotNull("bookWholeTables", p.bookWholeTables)
+                .withPropertyIfNotNull("tableBookingModes", p.tableBookingModes)
+                .build()));
+        JsonObjectBuilder request = aJsonObject()
+                .withProperty("chartKey", chartKey)
+                .withProperty("events", events);
+
+        HttpResponse<String> response = stringResponse(post(baseUrl + "/events/actions/create-multiple")
+                .basicAuth(secretKey, null)
+                .body(request.build().toString()));
+
+        return gson().fromJson(response.getBody(), EventCreationResult.class).events;
+    }
+
     public Event create(String chartKey, String eventKey) {
         return create(chartKey, eventKey, null, null);
     }
@@ -64,6 +83,7 @@ public class Events {
                 .body(request.build().toString()));
         return gson().fromJson(response.getBody(), Event.class);
     }
+
     public void update(String key, String chartKey, String newKey) {
         update(key, chartKey, newKey, null, null);
     }
@@ -397,5 +417,10 @@ public class Events {
                 .routeParam("key", key)
                 .basicAuth(secretKey, null)
                 .body(request.build().toString()));
+    }
+
+    private static class EventCreationResult {
+
+        private List<Event> events;
     }
 }
