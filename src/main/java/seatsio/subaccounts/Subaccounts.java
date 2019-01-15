@@ -6,7 +6,10 @@ import seatsio.charts.Chart;
 import seatsio.util.Lister;
 import seatsio.util.Page;
 import seatsio.util.PageFetcher;
+import seatsio.util.ParameterizedLister;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static com.mashape.unirest.http.Unirest.get;
@@ -126,12 +129,18 @@ public class Subaccounts {
         return list().all();
     }
 
+    public Stream<Subaccount> listAll(SubaccountListParams subaccountListParams) { return parametrizedList().all(subaccountListParams.asMap()); }
+
     public Page<Subaccount> listFirstPage() {
         return listFirstPage(null);
     }
 
     public Page<Subaccount> listFirstPage(Integer pageSize) {
         return list().firstPage(pageSize);
+    }
+
+    public Page<Subaccount> listFirstPage(Integer pageSize, SubaccountListParams subaccountListParams) {
+        return parametrizedList().firstPage(toMap(subaccountListParams), pageSize);
     }
 
     public Page<Subaccount> listPageAfter(long id) {
@@ -142,6 +151,10 @@ public class Subaccounts {
         return list().pageAfter(id, pageSize);
     }
 
+    public Page<Subaccount> listPageAfter(long id, Integer pageSize, SubaccountListParams subaccountListParams) {
+        return parametrizedList().pageAfter(id, toMap(subaccountListParams), pageSize);
+    }
+
     public Page<Subaccount> listPageBefore(long id) {
         return listPageBefore(id, null);
     }
@@ -149,9 +162,23 @@ public class Subaccounts {
     public Page<Subaccount> listPageBefore(long id, Integer pageSize) {
         return list().pageBefore(id, pageSize);
     }
+    public Page<Subaccount> listPageBefore(long id, Integer pageSize, SubaccountListParams subaccountListParams) {
+        return parametrizedList().pageBefore(id, toMap(subaccountListParams), pageSize);
+    }
 
     private Lister<Subaccount> list() {
         return new Lister<>(new PageFetcher<>(baseUrl, "/subaccounts", secretKey, Subaccount.class));
+    }
+
+    private ParameterizedLister<Subaccount> parametrizedList() {
+        return new ParameterizedLister<>(new PageFetcher<>(baseUrl, "/subaccounts", secretKey, Subaccount.class));
+    }
+
+    private Map<String, Object> toMap(SubaccountListParams subaccountListParams) {
+        if (subaccountListParams == null) {
+            return new HashMap<>();
+        }
+        return subaccountListParams.asMap();
     }
 
 }
