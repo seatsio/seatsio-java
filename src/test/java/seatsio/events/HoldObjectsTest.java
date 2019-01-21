@@ -1,6 +1,5 @@
 package seatsio.events;
 
-import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.holdTokens.HoldToken;
@@ -48,9 +47,6 @@ public class HoldObjectsTest extends SeatsioClientTest {
 
         ChangeObjectStatusResult result = client.events.hold(event.key, newArrayList("A-1", "A-2"), holdToken.holdToken);
 
-        assertThat(result.labels).isEqualTo(ImmutableMap.of(
-                "A-1", new Labels("1", "seat", "A", "row"),
-                "A-2", new Labels("2", "seat", "A", "row")
-        ));
+        assertThat(result.objects).containsOnlyKeys("A-1", "A-2");
     }
 }

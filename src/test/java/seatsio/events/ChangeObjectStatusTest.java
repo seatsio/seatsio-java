@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.holdTokens.HoldToken;
+import seatsio.reports.events.EventReportItem;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,13 +25,38 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
     }
 
     @Test
+    public void objectDetails() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        ChangeObjectStatusResult result = client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo", null, "order1");
+
+        assertThat(result.objects).hasSize(1);
+        EventReportItem reportItem = result.objects.get("A-1");
+        assertThat(reportItem.status).isEqualTo("foo");
+        assertThat(reportItem.label).isEqualTo("A-1");
+        assertThat(reportItem.labels).isEqualTo(new Labels("1", "seat", "A", "row"));
+        assertThat(reportItem.categoryLabel).isEqualTo("Cat1");
+        assertThat(reportItem.categoryKey).isEqualTo(9);
+        assertThat(reportItem.ticketType).isNull();
+        assertThat(reportItem.orderId).isEqualTo("order1");
+        assertThat(reportItem.forSale).isTrue();
+        assertThat(reportItem.section).isNull();
+        assertThat(reportItem.entrance).isNull();
+        assertThat(reportItem.numBooked).isNull();
+        assertThat(reportItem.capacity).isNull();
+        assertThat(reportItem.objectType).isEqualTo("seat");
+        assertThat(reportItem.extraData).isEqualTo(null);
+    }
+
+    @Test
     public void seatInRow() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
         ChangeObjectStatusResult result = client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo");
 
-        assertThat(result.labels).isEqualTo(ImmutableMap.of("A-1", new Labels("1", "seat", "A", "row")));
+        assertThat(result.objects).containsOnlyKeys("A-1");
     }
 
     @Test
@@ -40,7 +66,7 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
 
         ChangeObjectStatusResult result = client.events.changeObjectStatus(event.key, newArrayList("T1-1"), "foo");
 
-        assertThat(result.labels).isEqualTo(ImmutableMap.of("T1-1", new Labels("1", "seat", "T1", "table")));
+        assertThat(result.objects).containsOnlyKeys("T1-1");
     }
 
     @Test
@@ -50,7 +76,7 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
 
         ChangeObjectStatusResult result = client.events.changeObjectStatus(event.key, newArrayList("T1"), "foo");
 
-        assertThat(result.labels).isEqualTo(ImmutableMap.of("T1", new Labels("T1", "table")));
+        assertThat(result.objects).containsOnlyKeys("T1");
     }
 
     @Test

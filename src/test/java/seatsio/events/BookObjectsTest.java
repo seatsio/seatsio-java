@@ -22,10 +22,7 @@ public class BookObjectsTest extends SeatsioClientTest {
         assertThat(client.events.retrieveObjectStatus(event.key, "A-1").status).isEqualTo(BOOKED);
         assertThat(client.events.retrieveObjectStatus(event.key, "A-2").status).isEqualTo(BOOKED);
         assertThat(client.events.retrieveObjectStatus(event.key, "A-3").status).isEqualTo(FREE);
-        assertThat(result.labels).isEqualTo(ImmutableMap.of(
-                "A-1", new Labels("1", "seat", "A", "row"),
-                "A-2", new Labels("2", "seat", "A", "row")
-        ));
+        assertThat(result.objects).containsOnlyKeys("A-1", "A-2");
     }
 
     @Test
@@ -38,10 +35,11 @@ public class BookObjectsTest extends SeatsioClientTest {
         assertThat(client.events.retrieveObjectStatus(event.key, "Section A-A-1").status).isEqualTo(BOOKED);
         assertThat(client.events.retrieveObjectStatus(event.key, "Section A-A-2").status).isEqualTo(BOOKED);
         assertThat(client.events.retrieveObjectStatus(event.key, "Section A-A-3").status).isEqualTo(FREE);
-        assertThat(result.labels).isEqualTo(ImmutableMap.of(
-                "Section A-A-1", new Labels("1", "seat", "A", "row", "Section A", "Entrance 1"),
-                "Section A-A-2", new Labels("2", "seat", "A", "row", "Section A", "Entrance 1")
-        ));
+
+        assertThat(result.objects).containsOnlyKeys("Section A-A-1", "Section A-A-2");
+        assertThat(result.objects.get("Section A-A-1").entrance).isEqualTo("Entrance 1");
+        assertThat(result.objects.get("Section A-A-1").section).isEqualTo("Section A");
+        assertThat(result.objects.get("Section A-A-1").labels).isEqualTo(new Labels("1", "seat", "A", "row", "Section A"));
     }
 
     @Test
