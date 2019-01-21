@@ -3,6 +3,7 @@ package seatsio.events;
 import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 import seatsio.SeatsioClientTest;
+import seatsio.reports.events.EventReportItem;
 
 import java.util.List;
 import java.util.Map;
@@ -25,16 +26,28 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
     }
 
     @Test
-    public void labels() {
+    public void objectDetails() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(2), "foo");
+        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(1), "foo");
 
-        assertThat(bestAvailableResult.labels).isEqualTo(ImmutableMap.of(
-                "B-4", new Labels("4", "seat", "B", "row"),
-                "B-5", new Labels("5", "seat", "B", "row")
-        ));
+        assertThat(bestAvailableResult.objectDetails).hasSize(1);
+        EventReportItem reportItem = bestAvailableResult.objectDetails.get("B-5");
+        assertThat(reportItem.status).isEqualTo("foo");
+        assertThat(reportItem.label).isEqualTo("B-5");
+        assertThat(reportItem.labels).isEqualTo(new Labels("5", "seat", "B", "row"));
+        assertThat(reportItem.categoryLabel).isEqualTo("Cat1");
+        assertThat(reportItem.categoryKey).isEqualTo(9);
+        assertThat(reportItem.ticketType).isNull();
+        assertThat(reportItem.orderId).isNull();
+        assertThat(reportItem.forSale).isTrue();
+        assertThat(reportItem.section).isNull();
+        assertThat(reportItem.entrance).isNull();
+        assertThat(reportItem.numBooked).isNull();
+        assertThat(reportItem.capacity).isNull();
+        assertThat(reportItem.objectType).isEqualTo("seat");
+        assertThat(reportItem.extraData).isEqualTo(null);
     }
 
     @Test

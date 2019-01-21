@@ -361,7 +361,7 @@ public class Events {
     public ChangeObjectStatusResult changeObjectStatus(List<String> eventKeys, List<?> objects, String status, String holdToken, String orderId) {
         HttpResponse<String> response = stringResponse(post(baseUrl + "/seasons/actions/change-object-status")
                 .basicAuth(secretKey, null)
-                .queryString("expand", "labels")
+                .queryString("expand", "objects")
                 .body(changeObjectStatusRequest(eventKeys, toObjects(objects), status, holdToken, orderId).toString()));
         return gson().fromJson(response.getBody(), ChangeObjectStatusResult.class);
     }
