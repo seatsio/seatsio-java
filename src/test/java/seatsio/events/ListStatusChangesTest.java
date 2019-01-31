@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static seatsio.SortDirection.DESC;
 
 public class ListStatusChangesTest extends SeatsioClientTest {
 
@@ -46,6 +47,52 @@ public class ListStatusChangesTest extends SeatsioClientTest {
         assertThat(statusChange.objectLabel).isEqualTo("A-1");
         assertThat(statusChange.eventId).isEqualTo(event.id);
         assertThat(statusChange.extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
+    }
+
+    @Test
+    public void filter() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        client.events.changeObjectStatus(event.key, asList("A-1"), "s1");
+        client.events.changeObjectStatus(event.key, asList("A-2"), "s2");
+        client.events.changeObjectStatus(event.key, asList("B-1"), "s3");
+        client.events.changeObjectStatus(event.key, asList("A-3"), "s4");
+
+        Stream<StatusChange> statusChanges = client.events.statusChanges(event.key, "A").all();
+
+        assertThat(statusChanges)
+                .extracting(statusChange -> statusChange.status)
+                .containsExactly("s4", "s2", "s1");
+    }
+
+    @Test
+    public void sortAsc() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        client.events.changeObjectStatus(event.key, asList("A-1"), "s1");
+        client.events.changeObjectStatus(event.key, asList("A-2"), "s2");
+        client.events.changeObjectStatus(event.key, asList("A-3"), "s3");
+
+        Stream<StatusChange> statusChanges = client.events.statusChanges(event.key, null, "date", null).all();
+
+        assertThat(statusChanges)
+                .extracting(statusChange -> statusChange.status)
+                .containsExactly("s1", "s2", "s3");
+    }
+
+    @Test
+    public void sortDesc() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        client.events.changeObjectStatus(event.key, asList("A-1"), "s1");
+        client.events.changeObjectStatus(event.key, asList("A-2"), "s2");
+        client.events.changeObjectStatus(event.key, asList("A-3"), "s3");
+
+        Stream<StatusChange> statusChanges = client.events.statusChanges(event.key, null, "date", DESC).all();
+
+        assertThat(statusChanges)
+                .extracting(statusChange -> statusChange.status)
+                .containsExactly("s3", "s2", "s1");
     }
 
 }

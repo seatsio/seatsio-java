@@ -7,7 +7,6 @@ import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static seatsio.events.ObjectStatus.FREE;
 
 public class ListStatusChangesForObjectTest extends SeatsioClientTest {
 
@@ -20,7 +19,7 @@ public class ListStatusChangesForObjectTest extends SeatsioClientTest {
         client.events.changeObjectStatus(event.key, asList("A-1"), "s3");
         client.events.changeObjectStatus(event.key, asList("A-1"), "s4");
 
-        Stream<StatusChange> statusChanges = client.events.statusChanges(event.key, "A-1").all();
+        Stream<StatusChange> statusChanges = client.events.statusChangesForObject(event.key, "A-1").all();
 
         assertThat(statusChanges)
                 .extracting(statusChange -> statusChange.status)
