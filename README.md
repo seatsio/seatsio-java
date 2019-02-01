@@ -1,7 +1,6 @@
 # seatsio-java, the official Seats.io Java client library
 
 [![](https://jitpack.io/v/seatsio/seatsio-java.svg)](https://jitpack.io/#seatsio/seatsio-java)
-[![Coverage Status](https://coveralls.io/repos/github/seatsio/seatsio-java/badge.svg?branch=nahuel%2Fcoveralls)](https://coveralls.io/github/seatsio/seatsio-java?branch=nahuel%2Fcoveralls)
 
 ## Installing seatsio-java
 
