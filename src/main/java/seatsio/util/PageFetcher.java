@@ -20,6 +20,7 @@ public class PageFetcher<T> {
     private final String baseUrl;
     private final String url;
     private final Map<String, String> routeParams;
+    private final Map<String, String> queryParams;
     private final String secretKey;
     private final Class<T> clazz;
 
@@ -27,6 +28,7 @@ public class PageFetcher<T> {
         this.baseUrl = baseUrl;
         this.url = url;
         this.routeParams = new HashMap<>();
+        this.queryParams = new HashMap<>();
         this.secretKey = secretKey;
         this.clazz = clazz;
     }
@@ -34,6 +36,16 @@ public class PageFetcher<T> {
     public PageFetcher(String baseUrl, String url, Map<String, String> routeParams, String secretKey, Class<T> clazz) {
         this.baseUrl = baseUrl;
         this.url = url;
+        this.routeParams = routeParams;
+        this.queryParams = new HashMap<>();
+        this.secretKey = secretKey;
+        this.clazz = clazz;
+    }
+
+    public PageFetcher(String baseUrl, String url, Map<String, String> routeParams, Map<String, String> queryParams, String secretKey, Class<T> clazz) {
+        this.baseUrl = baseUrl;
+        this.url = url;
+        this.queryParams = queryParams;
         this.routeParams = routeParams;
         this.secretKey = secretKey;
         this.clazz = clazz;
@@ -60,6 +72,9 @@ public class PageFetcher<T> {
                 .queryString(parameters)
                 .basicAuth(secretKey, null);
         routeParams.forEach(request::routeParam);
+        queryParams.entrySet().stream()
+                .filter(entry -> entry.getValue() != null)
+                .forEach(entry -> request.queryString(entry.getKey(), entry.getValue()));
         if (pageSize != null) {
             request.queryString("limit", pageSize);
         }

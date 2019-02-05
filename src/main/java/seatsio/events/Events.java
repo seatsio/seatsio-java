@@ -6,15 +6,13 @@ import com.google.gson.JsonObject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import seatsio.SeatsioException;
+import seatsio.SortDirection;
 import seatsio.json.JsonObjectBuilder;
 import seatsio.util.Lister;
 import seatsio.util.Page;
 import seatsio.util.PageFetcher;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -238,17 +236,39 @@ public class Events {
         return new Lister<>(new PageFetcher<>(baseUrl, "/events", secretKey, Event.class));
     }
 
-    public Lister<StatusChange> statusChanges(String key) {
+    public Lister<StatusChange> statusChanges(String eventKey) {
+        return statusChanges(eventKey, null, null, null);
+    }
+
+    public Lister<StatusChange> statusChanges(String eventKey, String filter) {
+        return statusChanges(eventKey, filter, null, null);
+    }
+
+    public Lister<StatusChange> statusChanges(String eventKey, String filter, String sortField, SortDirection sortDirection) {
         PageFetcher<StatusChange> pageFetcher = new PageFetcher<>(
                 baseUrl,
                 "/events/{key}/status-changes",
-                ImmutableMap.of("key", key),
+                ImmutableMap.of("key", eventKey),
+                new HashMap<String, String>() {{
+                    put("filter", filter);
+                    put("sort", toSort(sortField, sortDirection));
+                }},
                 secretKey,
                 StatusChange.class);
         return new Lister<>(pageFetcher);
     }
 
-    public Lister<StatusChange> statusChanges(String key, String objectId) {
+    private String toSort(String sortField, SortDirection sortDirection) {
+        if (sortField == null) {
+            return null;
+        }
+        if (sortDirection == null) {
+            return sortField;
+        }
+        return sortField + ":" + sortDirection.name();
+    }
+
+    public Lister<StatusChange> statusChangesForObject(String key, String objectId) {
         PageFetcher<StatusChange> pageFetcher = new PageFetcher<>(
                 baseUrl,
                 "/events/{key}/objects/{objectId}/status-changes",
