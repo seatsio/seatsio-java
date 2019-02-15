@@ -2,6 +2,7 @@ package seatsio.events;
 
 import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
+import seatsio.SeatsioClient;
 import seatsio.SeatsioClientTest;
 import seatsio.reports.events.EventReportItem;
 
