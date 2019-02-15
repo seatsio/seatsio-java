@@ -8,7 +8,7 @@ import seatsio.charts.Chart;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AddObjectsForSaleTest extends SeatsioClientTest{
+public class AddObjectsForSaleTest extends SeatsioClientTest {
 
     @Test
     public void addObjects() {
