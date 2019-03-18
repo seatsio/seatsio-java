@@ -89,17 +89,48 @@ SeatsioClient client = new SeatsioClient(<SECRET KEY>);
 client.events.changeObjectStatus(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"), "unavailable");
 ```
 
-### Listing charts
+### Listing all charts
 
 ```java
-SeatsioClient client = new SeatsioClient(<SECRET KEY>);
-
-Chart chart1 = client.charts.create();
-Chart chart2 = client.charts.create();
-Chart chart3 = client.charts.create();
+SeatsioClient client = new SeatsioClient("<SECRET KEY>");
 
 Stream<Chart> charts = client.charts.listAll();
+charts.forEach(chart -> {
+  System.out.println("Chart " + chart.key);
+});
 ```
+
+Note: `listAll()` returns an iterator, which under the hood calls the seats.io API to fetch charts page by page. So multiple API calls may be done underneath to fetch all charts.
+
+### Listing charts page by page
+
+E.g. to show charts in a paginated list on a dashboard.
+
+```java
+// ... user initially opens the screen ...
+
+Page<Chart> firstPage = client.charts.listFirstPage();
+for(Chart chart: charts.items) {
+  System.out.println("Chart " + chart.key)
+}
+```
+
+```java
+// ... user clicks on 'next page' button ...
+
+Page<Chart> nextPage = client.charts.listPageAfter(firstPage.nextPageStartsAfter);
+for(Chart chart: charts.items) {
+  System.out.println("Chart " + chart.key)
+}
+```
+
+```java
+// ... user clicks on 'previous page' button ...
+
+Page<Chart> previousPage = client.charts.listPageBefore(nextPage.previousPageEndsBefore);
+for(Chart chart: charts.items) {
+  System.out.println("Chart " + chart.key)
+}
 
 ## Error handling
 
