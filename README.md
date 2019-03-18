@@ -131,7 +131,7 @@ Page<Chart> previousPage = client.charts.listPageBefore(nextPage.previousPageEnd
 for(Chart chart: charts.items) {
   System.out.println("Chart " + chart.key)
 }
-
+```
 
 ## Error handling
 
