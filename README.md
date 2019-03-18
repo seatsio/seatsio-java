@@ -132,6 +132,7 @@ for(Chart chart: charts.items) {
   System.out.println("Chart " + chart.key)
 }
 
+
 ## Error handling
 
 When an API call results in a 4xx or 5xx error (e.g. when a chart could not be found), a SeatsioException is thrown.
