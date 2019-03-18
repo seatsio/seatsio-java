@@ -129,7 +129,7 @@ public class Subaccounts {
         return list().all();
     }
 
-    public Stream<Subaccount> listAll(SubaccountListParams subaccountListParams) { return parametrizedList().all(subaccountListParams.asMap()); }
+    public Stream<Subaccount> listAll(String filter) { return parametrizedList().all(toMap(filter)); }
 
     public Page<Subaccount> listFirstPage() {
         return listFirstPage(null);
@@ -139,8 +139,8 @@ public class Subaccounts {
         return list().firstPage(pageSize);
     }
 
-    public Page<Subaccount> listFirstPage(Integer pageSize, SubaccountListParams subaccountListParams) {
-        return parametrizedList().firstPage(toMap(subaccountListParams), pageSize);
+    public Page<Subaccount> listFirstPage(Integer pageSize, String filter) {
+        return parametrizedList().firstPage(toMap(filter), pageSize);
     }
 
     public Page<Subaccount> listPageAfter(long id) {
@@ -151,8 +151,8 @@ public class Subaccounts {
         return list().pageAfter(id, pageSize);
     }
 
-    public Page<Subaccount> listPageAfter(long id, Integer pageSize, SubaccountListParams subaccountListParams) {
-        return parametrizedList().pageAfter(id, toMap(subaccountListParams), pageSize);
+    public Page<Subaccount> listPageAfter(long id, Integer pageSize, String filter) {
+        return parametrizedList().pageAfter(id, toMap(filter), pageSize);
     }
 
     public Page<Subaccount> listPageBefore(long id) {
@@ -162,8 +162,8 @@ public class Subaccounts {
     public Page<Subaccount> listPageBefore(long id, Integer pageSize) {
         return list().pageBefore(id, pageSize);
     }
-    public Page<Subaccount> listPageBefore(long id, Integer pageSize, SubaccountListParams subaccountListParams) {
-        return parametrizedList().pageBefore(id, toMap(subaccountListParams), pageSize);
+    public Page<Subaccount> listPageBefore(long id, Integer pageSize, String filter) {
+        return parametrizedList().pageBefore(id, toMap(filter), pageSize);
     }
 
     private Lister<Subaccount> list() {
@@ -174,11 +174,12 @@ public class Subaccounts {
         return new ParameterizedLister<>(new PageFetcher<>(baseUrl, "/subaccounts", secretKey, Subaccount.class));
     }
 
-    private Map<String, Object> toMap(SubaccountListParams subaccountListParams) {
-        if (subaccountListParams == null) {
-            return new HashMap<>();
+    private Map<String, Object> toMap(String filter) {
+        HashMap<String, Object> map = new HashMap<>();
+        if (filter != null) {
+            map.put("filter", filter);
         }
-        return subaccountListParams.asMap();
+        return map;
     }
 
 }

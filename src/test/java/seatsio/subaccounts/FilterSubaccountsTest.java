@@ -16,7 +16,7 @@ public class FilterSubaccountsTest extends SeatsioClientTest {
         Subaccount subaccount2 = client.subaccounts.create("test2");
         Subaccount subaccount3 = client.subaccounts.create("test3");
 
-        Stream<Subaccount> subaccounts = client.subaccounts.listAll(new SubaccountListParams().withFilter("test2"));
+        Stream<Subaccount> subaccounts = client.subaccounts.listAll("test2");
 
         assertThat(subaccounts)
                 .extracting(subaccount -> subaccount.id)
@@ -29,7 +29,7 @@ public class FilterSubaccountsTest extends SeatsioClientTest {
         Subaccount subaccount2 = client.subaccounts.create("test-/@/2");
         Subaccount subaccount3 = client.subaccounts.create("test-/@/3");
 
-        Stream<Subaccount> subaccounts = client.subaccounts.listAll(new SubaccountListParams().withFilter("test-/@/2"));
+        Stream<Subaccount> subaccounts = client.subaccounts.listAll("test-/@/2");
 
         assertThat(subaccounts)
                 .extracting(subaccount -> subaccount.id)
@@ -38,7 +38,7 @@ public class FilterSubaccountsTest extends SeatsioClientTest {
 
     @Test
     public void filterWithNoResults() {
-        Stream<Subaccount> subaccounts = client.subaccounts.listAll(new SubaccountListParams().withFilter("test2"));
+        Stream<Subaccount> subaccounts = client.subaccounts.listAll("test2");
 
         assertThat(subaccounts.toArray())
                 .isEmpty();
@@ -50,7 +50,7 @@ public class FilterSubaccountsTest extends SeatsioClientTest {
         Subaccount subaccount2 = client.subaccounts.create("test-/@/2");
         Subaccount subaccount3 = client.subaccounts.create("test-/@/3");
 
-        Page<Subaccount> subaccounts = client.subaccounts.listFirstPage(null, new SubaccountListParams().withFilter("test-/@/2"));
+        Page<Subaccount> subaccounts = client.subaccounts.listFirstPage(null, "test-/@/2");
 
         assertThat(subaccounts.items)
                 .extracting(subaccount -> subaccount.id)
@@ -70,7 +70,7 @@ public class FilterSubaccountsTest extends SeatsioClientTest {
         Subaccount subaccount7 = client.subaccounts.create("test-/@/7");
         Subaccount subaccount8 = client.subaccounts.create("test-/@/8");
 
-        Page<Subaccount> subaccounts = client.subaccounts.listPageAfter(subaccount3.id, null, new SubaccountListParams().withFilter("test-/@/1"));
+        Page<Subaccount> subaccounts = client.subaccounts.listPageAfter(subaccount3.id, null, "test-/@/1");
 
         assertThat(subaccounts.items)
                 .extracting(subaccount -> subaccount.id)
@@ -90,7 +90,7 @@ public class FilterSubaccountsTest extends SeatsioClientTest {
         Subaccount subaccount7 = client.subaccounts.create("test-/@/7");
         Subaccount subaccount8 = client.subaccounts.create("test-/@/8");
 
-        Page<Subaccount> subaccounts = client.subaccounts.listPageBefore(subaccount1.id, null, new SubaccountListParams().withFilter("test-/@/1"));
+        Page<Subaccount> subaccounts = client.subaccounts.listPageBefore(subaccount1.id, null, "test-/@/1");
 
         assertThat(subaccounts.items)
                 .extracting(subaccount -> subaccount.id)
