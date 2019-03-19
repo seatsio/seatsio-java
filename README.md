@@ -100,7 +100,7 @@ charts.forEach(chart -> {
 });
 ```
 
-Note: `listAll()` returns an iterator, which under the hood calls the seats.io API to fetch charts page by page. So multiple API calls may be done underneath to fetch all charts.
+Note: `listAll()` returns a stream, which under the hood calls the seats.io API to fetch charts page by page. So multiple API calls may be done underneath to fetch all charts.
 
 ### Listing charts page by page
 
