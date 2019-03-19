@@ -106,6 +106,8 @@ Note: `listAll()` returns a stream, which under the hood calls the seats.io API 
 
 E.g. to show charts in a paginated list on a dashboard.
 
+Each page contains an `items` array of charts, and `nextPageStartsAfter` and `previousPageEndsBefore` properties. Those properties are the chart IDs after which the next page starts or the previous page ends.
+
 ```java
 // ... user initially opens the screen ...
 
