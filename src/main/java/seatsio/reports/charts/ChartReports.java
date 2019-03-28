@@ -17,11 +17,17 @@ public class ChartReports extends Reports {
         return fetchReport("byLabel", chartKey);
     }
 
+    public Map<String, List<ChartReportItem>> byCategoryKey(String chartKey) {
+        return fetchReport("byCategoryKey", chartKey);
+    }
+
+    public Map<String, List<ChartReportItem>> byCategoryLabel(String chartKey) {
+        return fetchReport("byCategoryLabel", chartKey);
+    }
 
     protected TypeToken<Map<String, List<ChartReportItem>>> getTypeToken() {
         return new TypeToken<Map<String, List<ChartReportItem>>>() {
         };
     }
-
 
 }
