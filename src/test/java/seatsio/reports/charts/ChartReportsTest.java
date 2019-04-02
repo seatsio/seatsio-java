@@ -51,4 +51,24 @@ public class ChartReportsTest extends SeatsioClientTest {
         assertThat(report.get("A-2")).hasSize(1);
     }
 
+    @Test
+    public void byCategoryKey() {
+        String chartKey = createTestChart();
+
+        Map<String, List<ChartReportItem>> report = client.chartReports.byCategoryKey(chartKey);
+
+        assertThat(report.get("9")).hasSize(17);
+        assertThat(report.get("10")).hasSize(17);
+    }
+
+    @Test
+    public void byCategoryLabel() {
+        String chartKey = createTestChart();
+
+        Map<String, List<ChartReportItem>> report = client.chartReports.byCategoryLabel(chartKey);
+
+        assertThat(report.get("Cat1")).hasSize(17);
+        assertThat(report.get("Cat2")).hasSize(17);
+    }
+
 }
