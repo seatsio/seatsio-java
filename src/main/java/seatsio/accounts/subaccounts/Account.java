@@ -9,4 +9,5 @@ public class Account extends ValueObject {
     public String publicKey;
     public String email;
     public AccountSettings settings;
+    public boolean isSubaccount;
 }

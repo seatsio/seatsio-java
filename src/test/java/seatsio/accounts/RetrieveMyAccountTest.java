@@ -17,6 +17,7 @@ public class RetrieveMyAccountTest extends SeatsioClientTest {
         assertThat(account.designerKey).isNotBlank();
         assertThat(account.publicKey).isNotBlank();
         assertThat(account.email).isNotBlank();
+        assertThat(account.isSubaccount).isFalse();
         assertThat(account.settings.draftChartDrawingsEnabled).isTrue();
         assertThat(account.settings.holdOnSelectForGAs).isTrue();
         assertThat(account.settings.chartValidation.validateDuplicateLabels).isEqualTo(ERROR);
