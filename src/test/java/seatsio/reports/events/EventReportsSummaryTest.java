@@ -31,10 +31,10 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withByCategoryLabel(ImmutableMap.of("Cat1", 1))
                 .build();
         EventReportSummaryItem freeReport = anEventReportSummaryItem()
-                .withCount(33)
-                .withBySection(ImmutableMap.of("NO_SECTION", 33))
-                .withByCategoryKey(ImmutableMap.of("9", 16, "10", 17))
-                .withByCategoryLabel(ImmutableMap.of("Cat1", 16, "Cat2", 17))
+                .withCount(231)
+                .withBySection(ImmutableMap.of("NO_SECTION", 231))
+                .withByCategoryKey(ImmutableMap.of("9", 115, "10", 116))
+                .withByCategoryLabel(ImmutableMap.of("Cat1", 115, "Cat2", 116))
                 .build();
         assertThat(report).isEqualTo(ImmutableMap.of(BOOKED, bookedReport, FREE, freeReport));
     }
@@ -48,14 +48,14 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
         Map<String, EventReportSummaryItem> report = client.eventReports.summaryByCategoryKey(event.key);
 
         EventReportSummaryItem cat9Report = anEventReportSummaryItem()
-                .withCount(17)
-                .withBySection(ImmutableMap.of("NO_SECTION", 17))
-                .withByStatus(ImmutableMap.of(BOOKED, 1, FREE, 16))
+                .withCount(116)
+                .withBySection(ImmutableMap.of("NO_SECTION", 116))
+                .withByStatus(ImmutableMap.of(BOOKED, 1, FREE, 115))
                 .build();
         EventReportSummaryItem cat10Report = anEventReportSummaryItem()
-                .withCount(17)
-                .withBySection(ImmutableMap.of("NO_SECTION", 17))
-                .withByStatus(ImmutableMap.of(FREE, 17))
+                .withCount(116)
+                .withBySection(ImmutableMap.of("NO_SECTION", 116))
+                .withByStatus(ImmutableMap.of(FREE, 116))
                 .build();
         assertThat(report).isEqualTo(ImmutableMap.of("9", cat9Report, "10", cat10Report));
     }
@@ -69,14 +69,14 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
         Map<String, EventReportSummaryItem> report = client.eventReports.summaryByCategoryLabel(event.key);
 
         EventReportSummaryItem cat1Report = anEventReportSummaryItem()
-                .withCount(17)
-                .withBySection(ImmutableMap.of("NO_SECTION", 17))
-                .withByStatus(ImmutableMap.of(BOOKED, 1, FREE, 16))
+                .withCount(116)
+                .withBySection(ImmutableMap.of("NO_SECTION", 116))
+                .withByStatus(ImmutableMap.of(BOOKED, 1, FREE, 115))
                 .build();
         EventReportSummaryItem cat2Report = anEventReportSummaryItem()
-                .withCount(17)
-                .withBySection(ImmutableMap.of("NO_SECTION", 17))
-                .withByStatus(ImmutableMap.of(FREE, 17))
+                .withCount(116)
+                .withBySection(ImmutableMap.of("NO_SECTION", 116))
+                .withByStatus(ImmutableMap.of(FREE, 116))
                 .build();
         assertThat(report).isEqualTo(ImmutableMap.of("Cat1", cat1Report, "Cat2", cat2Report));
     }
@@ -90,10 +90,10 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
         Map<String, EventReportSummaryItem> report = client.eventReports.summaryBySection(event.key);
 
         EventReportSummaryItem noSectionReport = anEventReportSummaryItem()
-                .withCount(34)
-                .withByStatus(ImmutableMap.of(BOOKED, 1, FREE, 33))
-                .withByCategoryKey(ImmutableMap.of("9", 17, "10", 17))
-                .withByCategoryLabel(ImmutableMap.of("Cat1", 17, "Cat2", 17))
+                .withCount(232)
+                .withByStatus(ImmutableMap.of(BOOKED, 1, FREE, 231))
+                .withByCategoryKey(ImmutableMap.of("9", 116, "10", 116))
+                .withByCategoryLabel(ImmutableMap.of("Cat1", 116, "Cat2", 116))
                 .build();
         assertThat(report).isEqualTo(ImmutableMap.of("NO_SECTION", noSectionReport));
     }
