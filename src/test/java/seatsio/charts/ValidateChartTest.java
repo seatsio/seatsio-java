@@ -13,23 +13,23 @@ public class ValidateChartTest extends SeatsioClientTest {
 
         ChartValidation validationRes = client.charts.validatePublishedVersion(chartKey);
 
-        ChartValidationChildren children = new ChartValidationChildren();
-        children.level = "ERROR";
-        children.validatorKey = "VALIDATE_DUPLICATE_LABELS";
+        ChartValidationItem item = new ChartValidationItem();
+        item.level = "ERROR";
+        item.validatorKey = "VALIDATE_DUPLICATE_LABELS";
 
-        assertThat(validationRes.errors).contains(children);
+        assertThat(validationRes.errors).contains(item);
 
-        ChartValidationChildren children2 = new ChartValidationChildren();
-        children2.level = "ERROR";
-        children2.validatorKey = "VALIDATE_UNLABELED_OBJECTS";
+        ChartValidationItem item2 = new ChartValidationItem();
+        item2.level = "ERROR";
+        item2.validatorKey = "VALIDATE_UNLABELED_OBJECTS";
 
-        assertThat(validationRes.errors).contains(children2);
+        assertThat(validationRes.errors).contains(item2);
 
-        ChartValidationChildren children3 = new ChartValidationChildren();
-        children3.level = "ERROR";
-        children3.validatorKey = "VALIDATE_OBJECTS_WITHOUT_CATEGORIES";
+        ChartValidationItem item3 = new ChartValidationItem();
+        item3.level = "ERROR";
+        item3.validatorKey = "VALIDATE_OBJECTS_WITHOUT_CATEGORIES";
 
-        assertThat(validationRes.errors).contains(children3);
+        assertThat(validationRes.errors).contains(item3);
     }
 
     @Test(expected = seatsio.SeatsioException.class)
