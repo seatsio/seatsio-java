@@ -173,18 +173,18 @@ public class Charts {
                 .basicAuth(secretKey, null));
     }
 
-    public ChartValidation validatePublishedVersion(String key) {
+    public ChartValidationResult validatePublishedVersion(String key) {
         HttpResponse<String> response = stringResponse(post(baseUrl + "/charts/{key}/version/published/actions/validate")
             .routeParam("key", key)
             .basicAuth(secretKey, null));
-        return gson().fromJson(response.getBody(), ChartValidation.class);
+        return gson().fromJson(response.getBody(), ChartValidationResult.class);
     }
 
-    public ChartValidation validateDraftVersion(String key) {
+    public ChartValidationResult validateDraftVersion(String key) {
         HttpResponse<String> response = stringResponse(post(baseUrl + "/charts/{key}/version/draft/actions/validate")
                 .routeParam("key", key)
                 .basicAuth(secretKey, null));
-        return gson().fromJson(response.getBody(), ChartValidation.class);
+        return gson().fromJson(response.getBody(), ChartValidationResult.class);
     }
 
     public List<String> listAllTags() {

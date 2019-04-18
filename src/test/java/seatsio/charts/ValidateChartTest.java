@@ -11,7 +11,7 @@ public class ValidateChartTest extends SeatsioClientTest {
     public void validatePublishedChart() {
         String chartKey = createTestChartWithErrors();
 
-        ChartValidation validationRes = client.charts.validatePublishedVersion(chartKey);
+        ChartValidationResult validationRes = client.charts.validatePublishedVersion(chartKey);
 
         assertThat(validationRes.errors).contains("VALIDATE_DUPLICATE_LABELS");
         assertThat(validationRes.errors).contains("VALIDATE_UNLABELED_OBJECTS");
