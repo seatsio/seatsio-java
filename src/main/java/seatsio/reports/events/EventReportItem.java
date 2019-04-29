@@ -21,6 +21,8 @@ public class EventReportItem extends ValueObject {
     public String entrance;
     public Integer capacity;
     public Integer numBooked;
+    public Integer numFree;
+    public Integer numHeld;
     public Map<?, ?> extraData;
 
 }

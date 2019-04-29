@@ -61,11 +61,15 @@ public class EventReportsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
         client.events.book(event.key, asList(new ObjectProperties("GA1", 5)));
+        String holdToken = client.holdTokens.create().holdToken;
+        client.events.hold(event.key, asList(new ObjectProperties("GA1", 3)), holdToken);
 
         Map<String, List<EventReportItem>> report = client.eventReports.byLabel(event.key);
 
         EventReportItem reportItem = report.get("GA1").get(0);
         assertThat(reportItem.numBooked).isEqualTo(5);
+        assertThat(reportItem.numFree).isEqualTo(92);
+        assertThat(reportItem.numHeld).isEqualTo(3);
         assertThat(reportItem.capacity).isEqualTo(100);
         assertThat(reportItem.objectType).isEqualTo("generalAdmission");
     }
