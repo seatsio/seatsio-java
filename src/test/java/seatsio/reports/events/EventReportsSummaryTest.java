@@ -20,7 +20,7 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
     public void summaryByStatus() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.book(event.key, asList(new ObjectProperties("A-1", "ticketType1")), null, "order1");
+        client.events.book(event.key, asList(new ObjectProperties("A-1", "ticketType1")), null, "order1", null);
 
         Map<String, EventReportSummaryItem> report = client.eventReports.summaryByStatus(event.key);
 
@@ -43,7 +43,7 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
     public void summaryByCategoryKey() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.book(event.key, asList(new ObjectProperties("A-1", "ticketType1")), null, "order1");
+        client.events.book(event.key, asList(new ObjectProperties("A-1", "ticketType1")), null, "order1", null);
 
         Map<String, EventReportSummaryItem> report = client.eventReports.summaryByCategoryKey(event.key);
 
@@ -64,7 +64,7 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
     public void summaryByCategoryLabel() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.book(event.key, asList(new ObjectProperties("A-1", "ticketType1")), null, "order1");
+        client.events.book(event.key, asList(new ObjectProperties("A-1", "ticketType1")), null, "order1", null);
 
         Map<String, EventReportSummaryItem> report = client.eventReports.summaryByCategoryLabel(event.key);
 
@@ -85,7 +85,7 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
     public void summaryBySection() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.book(event.key, asList(new ObjectProperties("A-1", "ticketType1")), null, "order1");
+        client.events.book(event.key, asList(new ObjectProperties("A-1", "ticketType1")), null, "order1", null);
 
         Map<String, EventReportSummaryItem> report = client.eventReports.summaryBySection(event.key);
 

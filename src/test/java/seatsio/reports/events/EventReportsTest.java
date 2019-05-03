@@ -22,7 +22,7 @@ public class EventReportsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
         Map<String, String> extraData = ImmutableMap.of("foo", "bar");
-        client.events.book(event.key, asList(new ObjectProperties("A-1", "ticketType1", extraData)), null, "order1");
+        client.events.book(event.key, asList(new ObjectProperties("A-1", "ticketType1", extraData)), null, "order1", null);
 
         Map<String, List<EventReportItem>> report = client.eventReports.byLabel(event.key);
 
@@ -187,8 +187,8 @@ public class EventReportsTest extends SeatsioClientTest {
     public void byOrderId() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.book(event.key, asList("A-1", "A-2"), null, "order1");
-        client.events.book(event.key, asList("A-3"), null, "order2");
+        client.events.book(event.key, asList("A-1", "A-2"), null, "order1", null);
+        client.events.book(event.key, asList("A-3"), null, "order2", null);
 
         Map<String, List<EventReportItem>> report = client.eventReports.byOrderId(event.key);
 
@@ -201,8 +201,8 @@ public class EventReportsTest extends SeatsioClientTest {
     public void bySpecificOrderId() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.book(event.key, asList("A-1", "A-2"), null, "order1");
-        client.events.book(event.key, asList("A-3"), null, "order2");
+        client.events.book(event.key, asList("A-1", "A-2"), null, "order1", null);
+        client.events.book(event.key, asList("A-3"), null, "order2", null);
 
         List<EventReportItem> report = client.eventReports.byOrderId(event.key, "order1");
 

@@ -6,6 +6,7 @@ import seatsio.SeatsioClient;
 import seatsio.SeatsioClientTest;
 import seatsio.reports.events.EventReportItem;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -75,6 +76,42 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
         assertThat(bestAvailableResult.objects).containsOnly("B-4", "B-5");
         assertThat(client.events.retrieveObjectStatus(event.key, "B-4").extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
         assertThat(client.events.retrieveObjectStatus(event.key, "B-5").extraData).isEqualTo(ImmutableMap.of("foo", "baz"));
+    }
+
+    @Test
+    public void keepExtraDataTrue() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        client.events.updateExtraData(event.key, "B-5", ImmutableMap.of("foo", "bar"));
+
+        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(1), "foo", null, null, true);
+
+        assertThat(bestAvailableResult.objects).containsOnly("B-5");
+        assertThat(client.events.retrieveObjectStatus(event.key, "B-5").extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
+    }
+
+    @Test
+    public void keepExtraDataFalse() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        client.events.updateExtraData(event.key, "B-5", ImmutableMap.of("foo", "bar"));
+
+        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(1), "foo", null, null, false);
+
+        assertThat(bestAvailableResult.objects).containsOnly("B-5");
+        assertThat(client.events.retrieveObjectStatus(event.key, "B-5").extraData).isNull();
+    }
+
+    @Test
+    public void keepExtraDataNotPassIn() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        client.events.updateExtraData(event.key, "B-5", ImmutableMap.of("foo", "bar"));
+
+        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(1), "foo", null, null, null);
+
+        assertThat(bestAvailableResult.objects).containsOnly("B-5");
+        assertThat(client.events.retrieveObjectStatus(event.key, "B-5").extraData).isNull();
     }
 
 }

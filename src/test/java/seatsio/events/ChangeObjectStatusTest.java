@@ -29,7 +29,7 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        ChangeObjectStatusResult result = client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo", null, "order1");
+        ChangeObjectStatusResult result = client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo", null, "order1", null);
 
         assertThat(result.objects).hasSize(1);
         EventReportItem reportItem = result.objects.get("A-1");
@@ -102,10 +102,43 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        client.events.changeObjectStatus(event.key, newArrayList("A-1", "A-2"), "foo", null, "order1");
+        client.events.changeObjectStatus(event.key, newArrayList("A-1", "A-2"), "foo", null, "order1", null);
 
         assertThat(client.events.retrieveObjectStatus(event.key, "A-1").orderId).isEqualTo("order1");
         assertThat(client.events.retrieveObjectStatus(event.key, "A-2").orderId).isEqualTo("order1");
+    }
+
+    @Test
+    public void keepExtraDataTrue() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        client.events.updateExtraData(event.key, "A-1", ImmutableMap.of("foo", "bar"));
+
+        client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo", null, "order1", true);
+
+        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
+    }
+
+    @Test
+    public void keepExtraDataFalse() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        client.events.updateExtraData(event.key, "A-1", ImmutableMap.of("foo", "bar"));
+
+        client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo", null, "order1", false);
+
+        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").extraData).isNull();
+    }
+
+    @Test
+    public void keepExtraDataNotPassedIn() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        client.events.updateExtraData(event.key, "A-1", ImmutableMap.of("foo", "bar"));
+
+        client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo", null, "order1", null);
+
+        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").extraData).isNull();
     }
 
     @Test

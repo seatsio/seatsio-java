@@ -1,5 +1,6 @@
 package seatsio.events;
 
+import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.holdTokens.HoldToken;
@@ -28,7 +29,7 @@ public class ReleaseObjectsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
         HoldToken holdToken = client.holdTokens.create();
-        client.events.hold(event.key, newArrayList("A-1", "A-2"), holdToken.holdToken, null);
+        client.events.hold(event.key, newArrayList("A-1", "A-2"), holdToken.holdToken, null, null);
 
         client.events.release(event.key, newArrayList("A-1", "A-2"), holdToken.holdToken);
 
@@ -46,9 +47,20 @@ public class ReleaseObjectsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        client.events.release(event.key, newArrayList("A-1", "A-2"), null, "order1");
+        client.events.release(event.key, newArrayList("A-1", "A-2"), null, "order1", null);
 
         assertThat(client.events.retrieveObjectStatus(event.key, "A-1").orderId).isEqualTo("order1");
         assertThat(client.events.retrieveObjectStatus(event.key, "A-2").orderId).isEqualTo("order1");
+    }
+
+    @Test
+    public void keepExtraData() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        client.events.updateExtraData(event.key, "A-1", ImmutableMap.of("foo", "bar"));
+
+        client.events.release(event.key, newArrayList("A-1"), null, null, true);
+
+        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
     }
 }
