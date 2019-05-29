@@ -4,10 +4,12 @@ import org.junit.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.events.Event;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNull;
 
 public class ListChartsTest extends SeatsioClientTest {
 
@@ -98,6 +100,22 @@ public class ListChartsTest extends SeatsioClientTest {
         assertThat(charts)
                 .extracting(chart -> chart.key)
                 .containsExactly(chart3.key, chart2.key);
+    }
+
+    @Test
+    public void listChartsWithValidationTest() {
+        createTestChartWithErrors();
+        createTestChartWithErrors();
+        createTestChartWithErrors();
+
+        ChartListParams params = new ChartListParams().withValidation(true);
+
+        List<Chart> charts = client.charts.listFirstPage(params, 10).items;
+
+        assertThat(charts)
+            .extracting(chart -> chart.validation.errors)
+            .asList()
+            .contains(Arrays.asList("VALIDATE_DUPLICATE_LABELS", "VALIDATE_UNLABELED_OBJECTS", "VALIDATE_OBJECTS_WITHOUT_CATEGORIES"));
     }
 
 }
