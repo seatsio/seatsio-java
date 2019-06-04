@@ -105,17 +105,27 @@ public class ListChartsTest extends SeatsioClientTest {
     @Test
     public void listChartsWithValidationTest() {
         createTestChartWithErrors();
-        createTestChartWithErrors();
-        createTestChartWithErrors();
 
         ChartListParams params = new ChartListParams().withValidation(true);
 
         List<Chart> charts = client.charts.listFirstPage(params, 10).items;
 
-        assertThat(charts)
-            .extracting(chart -> chart.validation.errors)
-            .asList()
-            .contains(Arrays.asList("VALIDATE_DUPLICATE_LABELS", "VALIDATE_UNLABELED_OBJECTS", "VALIDATE_OBJECTS_WITHOUT_CATEGORIES"));
+        assertThat(charts.get(0).validation.errors)
+            .isEqualTo(Arrays.asList("VALIDATE_DUPLICATE_LABELS", "VALIDATE_UNLABELED_OBJECTS", "VALIDATE_OBJECTS_WITHOUT_CATEGORIES"));
+
+        assertThat(charts.get(0).validation.warnings)
+            .isEqualTo(Arrays.asList());
+    }
+
+    @Test
+    public void listChartsWithoutValidationTest() {
+        createTestChartWithErrors();
+
+        ChartListParams params = new ChartListParams();
+
+        List<Chart> charts = client.charts.listFirstPage(params, 10).items;
+
+        assertThat(charts.get(0).validation).isNull();
     }
 
 }
