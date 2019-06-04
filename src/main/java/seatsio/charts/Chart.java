@@ -18,4 +18,5 @@ public class Chart extends ValueObject {
     public String draftVersionThumbnailUrl;
     public List<Event> events;
     public boolean archived;
+    public ChartValidationResult validation;
 }

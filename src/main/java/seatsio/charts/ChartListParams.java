@@ -8,7 +8,8 @@ public class ChartListParams {
     private String filter;
     private String tag;
     private Boolean expandEvents;
-
+    private Boolean validation;
+    
     public ChartListParams withFilter(String filter) {
         this.filter = filter;
         return this;
@@ -21,6 +22,11 @@ public class ChartListParams {
 
     public ChartListParams withExpandEvents(Boolean expandEvents) {
         this.expandEvents = expandEvents;
+        return this;
+    }
+
+    public ChartListParams withValidation(Boolean validation) {
+        this.validation = validation;
         return this;
     }
 
@@ -37,6 +43,10 @@ public class ChartListParams {
 
         if (expandEvents != null && expandEvents) {
             chartListParams.put("expand", "events");
+        }
+
+        if (validation != null) {
+            chartListParams.put("validation", validation);
         }
 
         return chartListParams;
