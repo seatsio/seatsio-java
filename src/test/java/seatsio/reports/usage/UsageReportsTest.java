@@ -16,21 +16,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UsageReportsTest extends SeatsioClientTest {
 
     @Test
-    public void allMonths() {
+    public void summaryForAllMonths() {
         List<UsageSummaryForMonth> report = client.usageReports.summaryForAllMonths();
 
         assertThat(report).isNotEmpty();
     }
 
     @Test
-    public void month() {
+    public void detailsForMonth() {
         List<UsageDetails> report = client.usageReports.detailsForMonth(new Month(2019, 5));
 
         assertThat(report).isEmpty();
     }
 
     @Test
-    public void eventInMonth() {
+    public void detailsForEventInMonth() {
         Chart chart = client.charts.create();
         Event event = client.events.create(chart.key);
         List<UsageForObject> report = client.usageReports.detailsForEventInMonth(event.id, new Month(2019, 5));
