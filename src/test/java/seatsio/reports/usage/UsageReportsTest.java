@@ -13,7 +13,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class usageReportsTest extends SeatsioClientTest {
+public class UsageReportsTest extends SeatsioClientTest {
 
     @Test
     public void allMonths() {
