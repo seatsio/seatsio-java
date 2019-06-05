@@ -18,15 +18,11 @@ public class UsageReportsTest extends SeatsioClientTest {
     @Test
     public void summaryForAllMonths() {
         List<UsageSummaryForMonth> report = client.usageReports.summaryForAllMonths();
-
-        assertThat(report).isNotEmpty();
     }
 
     @Test
     public void detailsForMonth() {
         List<UsageDetails> report = client.usageReports.detailsForMonth(new Month(2019, 5));
-
-        assertThat(report).isEmpty();
     }
 
     @Test
@@ -34,7 +30,5 @@ public class UsageReportsTest extends SeatsioClientTest {
         Chart chart = client.charts.create();
         Event event = client.events.create(chart.key);
         List<UsageForObject> report = client.usageReports.detailsForEventInMonth(event.id, new Month(2019, 5));
-
-        assertThat(report).isEmpty();
     }
 }
