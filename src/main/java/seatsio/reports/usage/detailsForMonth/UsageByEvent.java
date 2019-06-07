@@ -2,7 +2,7 @@ package seatsio.reports.usage.detailsForMonth;
 
 public class UsageByEvent {
 
-    public Event event;
+    public UsageEvent event;
     public int numUsedObjects;
     public int numFirstBookings;
     public int numFirstBookingsOrSelections;

@@ -4,6 +4,6 @@ import java.util.List;
 
 public class UsageByChart {
 
-    public Chart chart;
+    public UsageChart chart;
     public List<UsageByEvent> usageByEvent;
 }

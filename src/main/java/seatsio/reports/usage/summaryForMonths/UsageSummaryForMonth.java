@@ -1,5 +1,7 @@
 package seatsio.reports.usage.summaryForMonths;
 
+import seatsio.reports.usage.Month;
+
 import java.util.Map;
 
 public class UsageSummaryForMonth {

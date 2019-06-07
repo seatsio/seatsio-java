@@ -1,6 +1,6 @@
 package seatsio.reports.usage.detailsForMonth;
 
-public class Subaccount {
+public class UsageSubaccount {
 
     public long id;
 }

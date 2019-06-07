@@ -4,14 +4,11 @@ import org.junit.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.charts.Chart;
 import seatsio.events.Event;
-import seatsio.reports.usage.detailsForMonth.UsageDetails;
 import seatsio.reports.usage.detailsForEventInMonth.UsageForObject;
-import seatsio.reports.usage.summaryForMonths.Month;
+import seatsio.reports.usage.detailsForMonth.UsageDetails;
 import seatsio.reports.usage.summaryForMonths.UsageSummaryForMonth;
 
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class UsageReportsTest extends SeatsioClientTest {
 

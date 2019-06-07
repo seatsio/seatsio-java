@@ -1,4 +1,4 @@
-package seatsio.reports.usage.summaryForMonths;
+package seatsio.reports.usage;
 
 import static org.apache.commons.lang3.StringUtils.leftPad;
 
