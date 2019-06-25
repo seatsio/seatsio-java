@@ -13,4 +13,5 @@ public class StatusChange {
     public Instant date;
     public String orderId;
     public Map<?, ?> extraData;
+    public StatusChangeOrigin origin;
 }

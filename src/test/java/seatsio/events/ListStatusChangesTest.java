@@ -8,7 +8,6 @@ import seatsio.util.Page;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
@@ -16,6 +15,7 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static seatsio.SortDirection.DESC;
+import static seatsio.events.StatusChangeOriginType.API_CALL;
 
 public class ListStatusChangesTest extends SeatsioClientTest {
 
@@ -52,6 +52,8 @@ public class ListStatusChangesTest extends SeatsioClientTest {
         assertThat(statusChange.objectLabel).isEqualTo("A-1");
         assertThat(statusChange.eventId).isEqualTo(event.id);
         assertThat(statusChange.extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
+        assertThat(statusChange.origin.type).isEqualTo(API_CALL);
+        assertThat(statusChange.origin.ip).isNotNull();
     }
 
     @Test
