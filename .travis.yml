@@ -1,3 +1,5 @@
 language: java
 before_script:
   - export TZ=Europe/Brussels
+jdk:
+  - oraclejdk8
