@@ -1,5 +1,5 @@
 language: java
 before_script:
   - export TZ=Europe/Brussels
-jdk:
-  - oraclejdk8
+script:
+  - jdk_switcher use oraclejdk8
