@@ -16,7 +16,7 @@ public class UpdateChartTest extends SeatsioClientTest {
     @Test
     public void name() {
         List<Category> categories = newArrayList(
-                new Category(1, "Category 1", "#aaaaaa")
+                new Category(CategoryKey.of(1L), "Category 1", "#aaaaaa")
         );
 
         Chart chart = client.charts.create(null, "BOOTHS", categories);
@@ -36,7 +36,8 @@ public class UpdateChartTest extends SeatsioClientTest {
     public void categories() {
         Chart chart = client.charts.create("aChart", "BOOTHS", null);
         List<Category> categories = newArrayList(
-                new Category(1, "Category 1", "#aaaaaa")
+                new Category(CategoryKey.of(1L), "Category 1", "#aaaaaa"),
+                new Category(CategoryKey.of("anotherCat"), "Category 2", "#bbbbbb")
         );
 
         client.charts.update(chart.key, null, categories);
@@ -46,7 +47,8 @@ public class UpdateChartTest extends SeatsioClientTest {
         Map<?, ?> drawing = client.charts.retrievePublishedVersion(retrievedChart.key);
         assertThat(drawing.get("venueType")).isEqualTo("BOOTHS");
         assertThat(categories(drawing)).containsExactly(
-                ImmutableMap.of("key", 1.0, "label", "Category 1", "color", "#aaaaaa")
+                ImmutableMap.of("key", 1.0, "label", "Category 1", "color", "#aaaaaa"),
+                ImmutableMap.of("key", "anotherCat", "label", "Category 2", "color", "#bbbbbb")
         );
     }
 

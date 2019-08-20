@@ -3,7 +3,6 @@ package seatsio.charts;
 import seatsio.events.Event;
 import seatsio.util.ValueObject;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 

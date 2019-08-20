@@ -54,8 +54,8 @@ public class CreateChartTest extends SeatsioClientTest {
     @Test
     public void categories() {
         List<Category> categories = Lists.newArrayList(
-                new Category(1, "Category 1", "#aaaaaa"),
-                new Category(2, "Category 2", "#bbbbbb")
+                new Category(CategoryKey.of(1L), "Category 1", "#aaaaaa"),
+                new Category(CategoryKey.of("anotherCat"), "Category 2", "#bbbbbb")
         );
         Chart chart = client.charts.create(null, null, categories);
 
@@ -64,7 +64,7 @@ public class CreateChartTest extends SeatsioClientTest {
         assertThat(drawing.get("venueType")).isEqualTo("MIXED");
         assertThat(categories(drawing)).containsExactly(
                 ImmutableMap.of("key", 1.0, "label", "Category 1", "color", "#aaaaaa"),
-                ImmutableMap.of("key", 2.0, "label", "Category 2", "color", "#bbbbbb")
+                ImmutableMap.of("key", "anotherCat", "label", "Category 2", "color", "#bbbbbb")
         );
     }
 

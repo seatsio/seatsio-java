@@ -31,7 +31,7 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.label).isEqualTo("A-1");
         assertThat(reportItem.labels).isEqualTo(new Labels("1", "seat", "A", "row"));
         assertThat(reportItem.categoryLabel).isEqualTo("Cat1");
-        assertThat(reportItem.categoryKey).isEqualTo(9);
+        assertThat(reportItem.categoryKey).isEqualTo("9");
         assertThat(reportItem.ticketType).isEqualTo("ticketType1");
         assertThat(reportItem.orderId).isEqualTo("order1");
         assertThat(reportItem.forSale).isTrue();

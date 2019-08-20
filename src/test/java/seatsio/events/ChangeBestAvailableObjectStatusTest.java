@@ -2,11 +2,9 @@ package seatsio.events;
 
 import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
-import seatsio.SeatsioClient;
 import seatsio.SeatsioClientTest;
 import seatsio.reports.events.EventReportItem;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +38,7 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
         assertThat(reportItem.label).isEqualTo("B-5");
         assertThat(reportItem.labels).isEqualTo(new Labels("5", "seat", "B", "row"));
         assertThat(reportItem.categoryLabel).isEqualTo("Cat1");
-        assertThat(reportItem.categoryKey).isEqualTo(9);
+        assertThat(reportItem.categoryKey).isEqualTo("9");
         assertThat(reportItem.ticketType).isNull();
         assertThat(reportItem.orderId).isNull();
         assertThat(reportItem.forSale).isTrue();

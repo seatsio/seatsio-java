@@ -7,7 +7,7 @@ public class ChartReportItem {
     public String label;
     public Labels labels;
     public String categoryLabel;
-    public Integer categoryKey;
+    public String categoryKey;
     public String objectType;
     public String section;
     public String entrance;

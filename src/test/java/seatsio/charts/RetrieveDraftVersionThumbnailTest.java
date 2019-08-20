@@ -20,6 +20,6 @@ public class RetrieveDraftVersionThumbnailTest extends SeatsioClientTest {
 
         InputStream thumbnail = client.charts.retrieveDraftVersionThumbnail(chart.key);
 
-        assertThat(IOUtils.toString(thumbnail, "UTF-8")).contains("<!DOCTYPE svg");
+        assertThat(IOUtils.toByteArray(thumbnail)).isNotEmpty();
     }
 }

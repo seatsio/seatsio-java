@@ -3,7 +3,6 @@ package seatsio.reports.charts;
 import org.junit.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.events.Labels;
-import seatsio.reports.events.EventReportItem;
 
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,7 @@ public class ChartReportsTest extends SeatsioClientTest {
         assertThat(reportItem.label).isEqualTo("A-1");
         assertThat(reportItem.labels).isEqualTo(new Labels("1", "seat", "A", "row"));
         assertThat(reportItem.categoryLabel).isEqualTo("Cat1");
-        assertThat(reportItem.categoryKey).isEqualTo(9);
+        assertThat(reportItem.categoryKey).isEqualTo("9");
         assertThat(reportItem.section).isNull();
         assertThat(reportItem.entrance).isNull();
         assertThat(reportItem.capacity).isNull();

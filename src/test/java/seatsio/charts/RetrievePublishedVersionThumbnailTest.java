@@ -17,6 +17,6 @@ public class RetrievePublishedVersionThumbnailTest extends SeatsioClientTest {
 
         InputStream thumbnail = client.charts.retrievePublishedVersionThumbnail(chart.key);
 
-        assertThat(IOUtils.toString(thumbnail, "UTF-8")).contains("<!DOCTYPE svg");
+        assertThat(IOUtils.toByteArray(thumbnail)).isNotEmpty();
     }
 }

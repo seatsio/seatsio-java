@@ -1,5 +1,6 @@
 package seatsio.reports.events;
 
+import seatsio.charts.CategoryKey;
 import seatsio.events.Labels;
 import seatsio.util.ValueObject;
 
@@ -11,7 +12,7 @@ public class EventReportItem extends ValueObject {
     public String label;
     public Labels labels;
     public String categoryLabel;
-    public Integer categoryKey;
+    public String categoryKey;
     public String ticketType;
     public String holdToken;
     public String objectType;
