@@ -17,6 +17,7 @@ public class RetrieveObjectStatusTest extends SeatsioClientTest {
         ObjectStatus objectStatus = client.events.retrieveObjectStatus(event.key, "A-1");
 
         assertThat(objectStatus.status).isEqualTo(FREE);
+        assertThat(objectStatus.forSale).isEqualTo(true);
     }
 
 }

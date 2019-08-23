@@ -17,4 +17,5 @@ public class ObjectStatus extends ValueObject {
     public String ticketType;
     public int quantity;
     public Map<?, ?> extraData;
+    public boolean forSale;
 }
