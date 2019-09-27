@@ -18,7 +18,7 @@ public class CopyChartToSubacountTest extends SeatsioClientTest {
 
         Chart copiedChart = client.charts.copyToSubacccount(chart.key, subaccount.id);
 
-        SeatsioClient subaccountClient = new SeatsioClient(subaccount.secretKey, BASE_URL);
+        SeatsioClient subaccountClient = new SeatsioClient(subaccount.secretKey, STAGING_BASE_URL);
         assertThat(copiedChart.name).isEqualTo("my chart");
         Chart retrievedChart = subaccountClient.charts.retrieve(copiedChart.key);
         assertThat(retrievedChart.name).isEqualTo("my chart");

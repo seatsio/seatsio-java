@@ -2,6 +2,7 @@ package seatsio;
 
 import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -15,7 +16,7 @@ import static seatsio.util.UnirestUtil.stringResponse;
 
 public class SeatsioClientTest {
 
-    protected static final String BASE_URL = "https://api-staging.seatsio.net";
+    protected static final String STAGING_BASE_URL = "https://api-staging.seatsio.net";
 
     protected TestUser user;
     protected SeatsioClient client;
@@ -27,11 +28,11 @@ public class SeatsioClientTest {
     }
 
     protected SeatsioClient seatsioClient(String secretKey) {
-        return new SeatsioClient(secretKey, BASE_URL);
+        return new SeatsioClient(secretKey, STAGING_BASE_URL);
     }
 
     private TestUser createTestUser() throws UnirestException {
-        HttpResponse<String> response = post(BASE_URL + "/system/public/users/actions/create-test-user").asString();
+        HttpResponse<String> response = post(STAGING_BASE_URL + "/system/public/users/actions/create-test-user").asString();
 
         return new Gson().fromJson(response.getBody(), TestUser.class);
     }
@@ -52,12 +53,14 @@ public class SeatsioClientTest {
         return createTestChart("/sampleChartWithSections.json");
     }
 
-    protected String createTestChartWithErrors() { return createTestChart("/sampleChartWithErrors.json"); }
+    protected String createTestChartWithErrors() {
+        return createTestChart("/sampleChartWithErrors.json");
+    }
 
     protected String createTestChart(String fileName) {
         String testChartJson = testChartJson(fileName);
         String chartKey = randomUUID().toString();
-        stringResponse(post(BASE_URL + "/system/public/" + user.designerKey + "/charts/" + chartKey)
+        stringResponse(Unirest.post(STAGING_BASE_URL + "/system/public/" + user.designerKey + "/charts/" + chartKey)
                 .body(testChartJson));
         return chartKey;
     }

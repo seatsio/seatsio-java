@@ -3,19 +3,18 @@ package seatsio.reports.events;
 import com.google.gson.reflect.TypeToken;
 import com.mashape.unirest.http.HttpResponse;
 import seatsio.reports.Reports;
+import seatsio.util.UnirestUtil;
 
 import java.util.List;
 import java.util.Map;
 
-import static com.mashape.unirest.http.Unirest.get;
 import static seatsio.json.SeatsioGson.gson;
 import static seatsio.util.UnirestUtil.stringResponse;
 
 public class EventReports extends Reports {
 
-
-    public EventReports(String secretKey, String baseUrl) {
-        super(secretKey, baseUrl, "events");
+    public EventReports(String secretKey, Long accountId, String baseUrl) {
+        super(secretKey, accountId, baseUrl, "events");
     }
 
     public Map<String, List<EventReportItem>> byLabel(String eventKey) {
@@ -98,8 +97,7 @@ public class EventReports extends Reports {
 
 
     private HttpResponse<String> fetchRawSummaryReport(String reportType, String eventKey) {
-        return stringResponse(get(baseUrl + "/reports/events/{key}/{reportType}/summary")
-                .basicAuth(secretKey, null)
+        return stringResponse(UnirestUtil.get(baseUrl + "/reports/events/{key}/{reportType}/summary", secretKey, accountId)
                 .routeParam("key", eventKey)
                 .routeParam("reportType", reportType));
     }

@@ -9,8 +9,8 @@ import java.util.Map;
 public class ChartReports extends Reports {
 
 
-    public ChartReports(String secretKey, String baseUrl) {
-        super(secretKey, baseUrl, "charts");
+    public ChartReports(String secretKey, Long accountId, String baseUrl) {
+        super(secretKey, accountId, baseUrl, "charts");
     }
 
     public Map<String, List<ChartReportItem>> byLabel(String chartKey) {
