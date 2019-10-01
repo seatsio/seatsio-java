@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +15,7 @@ import static com.mashape.unirest.http.Unirest.post;
 import static java.util.UUID.randomUUID;
 import static seatsio.util.UnirestUtil.stringResponse;
 
+@Execution(ExecutionMode.CONCURRENT)
 public class SeatsioClientTest {
 
     protected static final String BASE_URL = "https://api-staging.seatsio.net";
@@ -20,7 +23,7 @@ public class SeatsioClientTest {
     protected TestUser user;
     protected SeatsioClient client;
 
-    @Before
+    @BeforeEach
     public void setup() throws UnirestException {
         user = createTestUser();
         client = seatsioClient(user.secretKey);

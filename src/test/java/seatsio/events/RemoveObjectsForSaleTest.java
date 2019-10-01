@@ -1,14 +1,15 @@
 package seatsio.events;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.SeatsioException;
 import seatsio.charts.Chart;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class RemoveObjectsForSaleTest extends SeatsioClientTest{
+public class RemoveObjectsForSaleTest extends SeatsioClientTest {
 
     @Test
     public void removeAllObjects() {
@@ -47,12 +48,12 @@ public class RemoveObjectsForSaleTest extends SeatsioClientTest{
         assertThat(retrievedEvent.forSaleConfig).isNull();
     }
 
-    @Test(expected = SeatsioException.class)
+    @Test
     public void someObjectsMarkedAsNotForSale() {
         Chart chart = client.charts.create();
         Event event = client.events.create(chart.key);
         client.events.markAsNotForSale(event.key, newArrayList("o1", "o2"), null);
 
-        client.events.removeObjectsForSale(event.key, newArrayList("o2", "o3"));
+        assertThrows(SeatsioException.class, () -> client.events.removeObjectsForSale(event.key, newArrayList("o2", "o3")));
     }
 }

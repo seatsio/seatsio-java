@@ -1,8 +1,12 @@
 package seatsio.charts;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
+import seatsio.SeatsioException;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 public class ValidateChartTest extends SeatsioClientTest {
@@ -18,15 +22,10 @@ public class ValidateChartTest extends SeatsioClientTest {
         assertThat(validationRes.errors).contains("VALIDATE_UNLABELED_OBJECTS");
     }
 
-    @Test(expected = seatsio.SeatsioException.class)
+    @Test
     public void validateDraftChart() {
         String chartKey = createTestChartWithErrors();
 
-
-        client.events.create(chartKey);
-
-        client.charts.update(chartKey, "New name");
-
-        client.charts.validateDraftVersion(chartKey);
+        assertThrows(SeatsioException.class, () -> client.charts.validateDraftVersion(chartKey));
     }
 }
