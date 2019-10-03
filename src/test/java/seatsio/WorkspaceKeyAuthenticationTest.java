@@ -6,7 +6,7 @@ import seatsio.subaccounts.Subaccount;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AccountIdAuthenticationTest extends SeatsioClientTest {
+public class WorkspaceKeyAuthenticationTest extends SeatsioClientTest {
 
     @Test
     public void clientTakesOptionalAccountId() {
