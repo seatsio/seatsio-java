@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class WorkspaceKeyAuthenticationTest extends SeatsioClientTest {
 
     @Test
-    public void clientTakesOptionalAccountId() {
+    public void clientTakesOptionalWorkspaceKey() {
         Subaccount subaccount = client.subaccounts.create();
 
         SeatsioClient subaccountClient = new SeatsioClient(user.secretKey, subaccount.workspaceKey, STAGING_BASE_URL);
