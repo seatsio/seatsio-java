@@ -1,6 +1,6 @@
 package seatsio;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import seatsio.holdTokens.HoldToken;
 import seatsio.subaccounts.Subaccount;
 
@@ -12,10 +12,10 @@ public class AccountIdAuthenticationTest extends SeatsioClientTest {
     public void clientTakesOptionalAccountId() {
         Subaccount subaccount = client.subaccounts.create();
 
-        SeatsioClient subaccountClient = new SeatsioClient(user.secretKey, subaccount.accountId, STAGING_BASE_URL);
+        SeatsioClient subaccountClient = new SeatsioClient(user.secretKey, subaccount.workspaceKey, STAGING_BASE_URL);
         HoldToken holdToken = subaccountClient.holdTokens.create();
 
-        assertThat(holdToken.accountId).isEqualTo(subaccount.accountId);
+        assertThat(holdToken.workspaceKey).isEqualTo(subaccount.workspaceKey);
     }
 
 }

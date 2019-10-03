@@ -17,16 +17,16 @@ import static seatsio.util.UnirestUtil.stringResponse;
 public class PageFetcher<T> {
 
     private final String baseUrl;
-    private final Long accountId;
+    private final String workspaceKey;
     private final String url;
     private final Map<String, String> routeParams;
     private final Map<String, String> queryParams;
     private final String secretKey;
     private final Class<T> clazz;
 
-    public PageFetcher(String baseUrl, String url, String secretKey, Long accountId, Class<T> clazz) {
+    public PageFetcher(String baseUrl, String url, String secretKey, String workspaceKey, Class<T> clazz) {
         this.baseUrl = baseUrl;
-        this.accountId = accountId;
+        this.workspaceKey = workspaceKey;
         this.url = url;
         this.routeParams = new HashMap<>();
         this.queryParams = new HashMap<>();
@@ -34,9 +34,9 @@ public class PageFetcher<T> {
         this.clazz = clazz;
     }
 
-    public PageFetcher(String baseUrl, String url, Map<String, String> routeParams, String secretKey, Long accountId, Class<T> clazz) {
+    public PageFetcher(String baseUrl, String url, Map<String, String> routeParams, String secretKey, String workspaceKey, Class<T> clazz) {
         this.baseUrl = baseUrl;
-        this.accountId = accountId;
+        this.workspaceKey = workspaceKey;
         this.url = url;
         this.routeParams = routeParams;
         this.queryParams = new HashMap<>();
@@ -44,9 +44,9 @@ public class PageFetcher<T> {
         this.clazz = clazz;
     }
 
-    public PageFetcher(String baseUrl, String url, Map<String, String> routeParams, Map<String, String> queryParams, String secretKey, Long accountId, Class<T> clazz) {
+    public PageFetcher(String baseUrl, String url, Map<String, String> routeParams, Map<String, String> queryParams, String secretKey, String workspaceKey, Class<T> clazz) {
         this.baseUrl = baseUrl;
-        this.accountId = accountId;
+        this.workspaceKey = workspaceKey;
         this.url = url;
         this.queryParams = queryParams;
         this.routeParams = routeParams;
@@ -71,7 +71,7 @@ public class PageFetcher<T> {
     }
 
     private HttpRequest buildRequest(Map<String, Object> parameters, Integer pageSize) {
-        HttpRequest request = UnirestUtil.get(baseUrl + "/" + url, secretKey, accountId)
+        HttpRequest request = UnirestUtil.get(baseUrl + "/" + url, secretKey, workspaceKey)
                 .queryString(parameters);
         routeParams.forEach(request::routeParam);
         queryParams.entrySet().stream()

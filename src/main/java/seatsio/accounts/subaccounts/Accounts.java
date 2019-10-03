@@ -9,17 +9,17 @@ import static seatsio.util.UnirestUtil.stringResponse;
 public class Accounts {
 
     private final String secretKey;
-    private final Long accountId;
+    private final String workspaceKey;
     private final String baseUrl;
 
-    public Accounts(String secretKey, Long accountId, String baseUrl) {
+    public Accounts(String secretKey, String workspaceKey, String baseUrl) {
         this.secretKey = secretKey;
-        this.accountId = accountId;
+        this.workspaceKey = workspaceKey;
         this.baseUrl = baseUrl;
     }
 
     public Account retrieveMyAccount() {
-        HttpResponse<String> response = stringResponse(UnirestUtil.get(baseUrl + "/accounts/me", secretKey, accountId));
+        HttpResponse<String> response = stringResponse(UnirestUtil.get(baseUrl + "/accounts/me", secretKey, workspaceKey));
         return gson().fromJson(response.getBody(), Account.class);
     }
 

@@ -14,19 +14,19 @@ import static seatsio.util.UnirestUtil.stringResponse;
 public abstract class Reports {
 
     protected final String secretKey;
-    protected final Long accountId;
+    protected final String workspaceKey;
     protected final String baseUrl;
     private final String reportItemType;
 
-    public Reports(String secretKey, Long accountId, String baseUrl, String reportItemType) {
+    public Reports(String secretKey, String workspaceKey, String baseUrl, String reportItemType) {
         this.secretKey = secretKey;
-        this.accountId = accountId;
+        this.workspaceKey = workspaceKey;
         this.baseUrl = baseUrl;
         this.reportItemType = reportItemType;
     }
 
     private HttpResponse<String> fetchRawReport(String reportType, String chartKey) {
-        return stringResponse(UnirestUtil.get(baseUrl + "/reports/" + reportItemType + "/{key}/{reportType}", secretKey, accountId)
+        return stringResponse(UnirestUtil.get(baseUrl + "/reports/" + reportItemType + "/{key}/{reportType}", secretKey, workspaceKey)
                 .routeParam("key", chartKey)
                 .routeParam("reportType", reportType));
     }

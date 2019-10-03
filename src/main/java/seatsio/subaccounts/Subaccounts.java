@@ -16,18 +16,18 @@ import static seatsio.util.UnirestUtil.stringResponse;
 public class Subaccounts {
 
     private final String secretKey;
-    private final Long accountId;
+    private final String workspaceKey;
     private final String baseUrl;
 
     public final Lister<Subaccount> active;
     public final Lister<Subaccount> inactive;
 
-    public Subaccounts(String secretKey, Long accountId, String baseUrl) {
+    public Subaccounts(String secretKey, String workspaceKey, String baseUrl) {
         this.secretKey = secretKey;
-        this.accountId = accountId;
+        this.workspaceKey = workspaceKey;
         this.baseUrl = baseUrl;
-        this.active = new Lister<>(new PageFetcher<>(baseUrl, "/subaccounts/active", secretKey, accountId, Subaccount.class));
-        this.inactive = new Lister<>(new PageFetcher<>(baseUrl, "/subaccounts/inactive", secretKey, accountId, Subaccount.class));
+        this.active = new Lister<>(new PageFetcher<>(baseUrl, "/subaccounts/active", secretKey, workspaceKey, Subaccount.class));
+        this.inactive = new Lister<>(new PageFetcher<>(baseUrl, "/subaccounts/inactive", secretKey, workspaceKey, Subaccount.class));
     }
 
     public Subaccount create(String name) {
@@ -47,7 +47,7 @@ public class Subaccounts {
                 .withPropertyIfNotNull("name", name)
                 .withPropertyIfNotNull("email", email)
                 .build();
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/subaccounts", secretKey, accountId)
+        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/subaccounts", secretKey, workspaceKey)
                 .body(request.toString()));
         return gson().fromJson(response.getBody(), Subaccount.class);
     }
@@ -61,51 +61,51 @@ public class Subaccounts {
                 .withPropertyIfNotNull("name", name)
                 .withPropertyIfNotNull("email", email)
                 .build();
-        stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{id}", secretKey, accountId)
+        stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{id}", secretKey, workspaceKey)
                 .routeParam("id", Long.toString(id))
                 .body(request.toString()));
     }
 
     public Subaccount create() {
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/subaccounts", secretKey, accountId));
+        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/subaccounts", secretKey, workspaceKey));
         return gson().fromJson(response.getBody(), Subaccount.class);
     }
 
     public Subaccount retrieve(long id) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.get(baseUrl + "/subaccounts/{id}", secretKey, accountId)
+        HttpResponse<String> response = stringResponse(UnirestUtil.get(baseUrl + "/subaccounts/{id}", secretKey, workspaceKey)
                 .routeParam("id", Long.toString(id)));
         return gson().fromJson(response.getBody(), Subaccount.class);
     }
 
     public void activate(long id) {
-        stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{id}/actions/activate", secretKey, accountId)
+        stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{id}/actions/activate", secretKey, workspaceKey)
                 .routeParam("id", Long.toString(id)));
     }
 
     public void deactivate(long id) {
-        stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{id}/actions/deactivate", secretKey, accountId)
+        stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{id}/actions/deactivate", secretKey, workspaceKey)
                 .routeParam("id", Long.toString(id)));
     }
 
     public void regenerateSecretKey(long id) {
-        stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{id}/secret-key/actions/regenerate", secretKey, accountId)
+        stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{id}/secret-key/actions/regenerate", secretKey, workspaceKey)
                 .routeParam("id", Long.toString(id)));
     }
 
     public void regenerateDesignerKey(long id) {
-        stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{id}/designer-key/actions/regenerate", secretKey, accountId)
+        stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{id}/designer-key/actions/regenerate", secretKey, workspaceKey)
                 .routeParam("id", Long.toString(id)));
     }
 
     public Chart copyChartToParent(long id, String chartKey) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{id}/charts/{chartKey}/actions/copy-to/parent", secretKey, accountId)
+        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{id}/charts/{chartKey}/actions/copy-to/parent", secretKey, workspaceKey)
                 .routeParam("id", Long.toString(id))
                 .routeParam("chartKey", chartKey));
         return gson().fromJson(response.getBody(), Chart.class);
     }
 
     public Chart copyChartToSubaccount(long fromId, long toId, String chartKey) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{fromId}/charts/{chartKey}/actions/copy-to/{toId}", secretKey, accountId)
+        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{fromId}/charts/{chartKey}/actions/copy-to/{toId}", secretKey, workspaceKey)
                 .routeParam("fromId", Long.toString(fromId))
                 .routeParam("chartKey", chartKey)
                 .routeParam("toId", Long.toString(toId)));
@@ -157,11 +157,11 @@ public class Subaccounts {
     }
 
     private Lister<Subaccount> list() {
-        return new Lister<>(new PageFetcher<>(baseUrl, "/subaccounts", secretKey, accountId, Subaccount.class));
+        return new Lister<>(new PageFetcher<>(baseUrl, "/subaccounts", secretKey, workspaceKey, Subaccount.class));
     }
 
     private ParameterizedLister<Subaccount> parametrizedList() {
-        return new ParameterizedLister<>(new PageFetcher<>(baseUrl, "/subaccounts", secretKey, accountId, Subaccount.class));
+        return new ParameterizedLister<>(new PageFetcher<>(baseUrl, "/subaccounts", secretKey, workspaceKey, Subaccount.class));
     }
 
     private Map<String, Object> toMap(String filter) {

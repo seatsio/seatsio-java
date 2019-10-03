@@ -31,7 +31,7 @@ public class SeatsioClientTest {
     }
 
     protected SeatsioClient seatsioClient(String secretKey) {
-        return new SeatsioClient(secretKey, STAGING_BASE_URL);
+        return new SeatsioClient(secretKey, null, STAGING_BASE_URL);
     }
 
     private TestUser createTestUser() throws UnirestException {

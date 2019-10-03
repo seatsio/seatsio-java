@@ -16,7 +16,7 @@ public class CreateSubaccountTest extends SeatsioClientTest {
         assertThat(subaccount.publicKey).isNotBlank();
         assertThat(subaccount.name).isEqualTo("joske");
         assertThat(subaccount.active).isTrue();
-        assertThat(subaccount.accountId).isNotZero();
+        assertThat(subaccount.workspaceKey).isNotNull();
     }
 
     @Test
@@ -37,7 +37,7 @@ public class CreateSubaccountTest extends SeatsioClientTest {
         assertThat(subaccount.name).isNull();
         assertThat(subaccount.active).isTrue();
         assertThat(subaccount.email).isEqualTo(email);
-        assertThat(subaccount.accountId).isNotZero();
+        assertThat(subaccount.workspaceKey).isNotNull();
     }
 
     @Test
@@ -51,6 +51,6 @@ public class CreateSubaccountTest extends SeatsioClientTest {
         assertThat(subaccount.name).isEqualTo("jeff");
         assertThat(subaccount.active).isTrue();
         assertThat(subaccount.email).isEqualTo(email);
-        assertThat(subaccount.accountId).isNotZero();
+        assertThat(subaccount.workspaceKey).isNotNull();
     }
 }

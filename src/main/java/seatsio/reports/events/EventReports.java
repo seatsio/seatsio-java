@@ -13,8 +13,8 @@ import static seatsio.util.UnirestUtil.stringResponse;
 
 public class EventReports extends Reports {
 
-    public EventReports(String secretKey, Long accountId, String baseUrl) {
-        super(secretKey, accountId, baseUrl, "events");
+    public EventReports(String secretKey, String workspaceKey, String baseUrl) {
+        super(secretKey, workspaceKey, baseUrl, "events");
     }
 
     public Map<String, List<EventReportItem>> byLabel(String eventKey) {
@@ -97,7 +97,7 @@ public class EventReports extends Reports {
 
 
     private HttpResponse<String> fetchRawSummaryReport(String reportType, String eventKey) {
-        return stringResponse(UnirestUtil.get(baseUrl + "/reports/events/{key}/{reportType}/summary", secretKey, accountId)
+        return stringResponse(UnirestUtil.get(baseUrl + "/reports/events/{key}/{reportType}/summary", secretKey, workspaceKey)
                 .routeParam("key", eventKey)
                 .routeParam("reportType", reportType));
     }

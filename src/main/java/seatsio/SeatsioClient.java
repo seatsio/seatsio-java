@@ -22,28 +22,24 @@ public class SeatsioClient {
     public final ChartReports chartReports;
     public final UsageReports usageReports;
 
-    public SeatsioClient(String secretKey, Long accountId, String baseUrl) {
+    public SeatsioClient(String secretKey, String workspaceKey, String baseUrl) {
         this.baseUrl = baseUrl;
-        this.accounts = new Accounts(secretKey, accountId, baseUrl);
-        this.subaccounts = new Subaccounts(secretKey, accountId, baseUrl);
-        this.holdTokens = new HoldTokens(secretKey, accountId, baseUrl);
-        this.charts = new Charts(secretKey, accountId, baseUrl);
-        this.events = new Events(secretKey, accountId, baseUrl);
-        this.eventReports = new EventReports(secretKey, accountId, baseUrl);
-        this.chartReports = new ChartReports(secretKey, accountId, baseUrl);
-        this.usageReports = new UsageReports(secretKey, accountId, baseUrl);
+        this.accounts = new Accounts(secretKey, workspaceKey, baseUrl);
+        this.subaccounts = new Subaccounts(secretKey, workspaceKey, baseUrl);
+        this.holdTokens = new HoldTokens(secretKey, workspaceKey, baseUrl);
+        this.charts = new Charts(secretKey, workspaceKey, baseUrl);
+        this.events = new Events(secretKey, workspaceKey, baseUrl);
+        this.eventReports = new EventReports(secretKey, workspaceKey, baseUrl);
+        this.chartReports = new ChartReports(secretKey, workspaceKey, baseUrl);
+        this.usageReports = new UsageReports(secretKey, workspaceKey, baseUrl);
     }
 
-    public SeatsioClient(String secretKey, String baseUrl) {
-        this(secretKey, null, baseUrl);
-    }
-
-    public SeatsioClient(String secretKey, Long accountId) {
-        this(secretKey, "https://api.seatsio.net");
+    public SeatsioClient(String secretKey, String workspaceKey) {
+        this(secretKey, workspaceKey, "https://api.seatsio.net");
     }
 
     public SeatsioClient(String secretKey) {
-        this(secretKey, (Long) null);
+        this(secretKey, null);
     }
 
     public String getBaseUrl() {

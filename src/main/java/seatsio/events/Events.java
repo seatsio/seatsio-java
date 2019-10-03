@@ -27,12 +27,12 @@ import static seatsio.util.UnirestUtil.stringResponse;
 public class Events {
 
     private final String secretKey;
-    private final Long accountId;
+    private final String workspaceKey;
     private final String baseUrl;
 
-    public Events(String secretKey, Long accountId, String baseUrl) {
+    public Events(String secretKey, String workspaceKey, String baseUrl) {
         this.secretKey = secretKey;
-        this.accountId = accountId;
+        this.workspaceKey = workspaceKey;
         this.baseUrl = baseUrl;
     }
 
@@ -51,7 +51,7 @@ public class Events {
                 .withProperty("chartKey", chartKey)
                 .withProperty("events", events);
 
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/events/actions/create-multiple", secretKey, accountId)
+        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/events/actions/create-multiple", secretKey, workspaceKey)
                 .body(request.build().toString()));
 
         return gson().fromJson(response.getBody(), EventCreationResult.class).events;
@@ -75,7 +75,7 @@ public class Events {
                 .withPropertyIfNotNull("eventKey", eventKey)
                 .withPropertyIfNotNull("bookWholeTables", bookWholeTables)
                 .withPropertyIfNotNull("tableBookingModes", tableBookingModes);
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/events", secretKey, accountId)
+        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/events", secretKey, workspaceKey)
                 .body(request.build().toString()));
         return gson().fromJson(response.getBody(), Event.class);
     }
@@ -99,24 +99,24 @@ public class Events {
                 .withPropertyIfNotNull("eventKey", newKey)
                 .withPropertyIfNotNull("bookWholeTables", bookWholeTables)
                 .withPropertyIfNotNull("tableBookingModes", tableBookingModes);
-        stringResponse(UnirestUtil.post(baseUrl + "/events/{key}", secretKey, accountId)
+        stringResponse(UnirestUtil.post(baseUrl + "/events/{key}", secretKey, workspaceKey)
                 .routeParam("key", key)
                 .body(request.build().toString()));
     }
 
     public void delete(String key) {
-        stringResponse(UnirestUtil.delete(baseUrl + "/events/{key}", secretKey, accountId)
+        stringResponse(UnirestUtil.delete(baseUrl + "/events/{key}", secretKey, workspaceKey)
                 .routeParam("key", key));
     }
 
     public Event retrieve(String key) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.get(baseUrl + "/events/{key}", secretKey, accountId)
+        HttpResponse<String> response = stringResponse(UnirestUtil.get(baseUrl + "/events/{key}", secretKey, workspaceKey)
                 .routeParam("key", key));
         return gson().fromJson(response.getBody(), Event.class);
     }
 
     public void markAsForSale(String key, List<String> objects, List<String> categories) {
-        stringResponse(UnirestUtil.post(baseUrl + "/events/{key}/actions/mark-as-for-sale", secretKey, accountId)
+        stringResponse(UnirestUtil.post(baseUrl + "/events/{key}/actions/mark-as-for-sale", secretKey, workspaceKey)
                 .routeParam("key", key)
                 .body(forSaleRequest(objects, categories).toString()));
     }
@@ -179,7 +179,7 @@ public class Events {
     }
 
     public void markAsNotForSale(String key, List<String> objects, List<String> categories) {
-        stringResponse(UnirestUtil.post(baseUrl + "/events/{key}/actions/mark-as-not-for-sale", secretKey, accountId)
+        stringResponse(UnirestUtil.post(baseUrl + "/events/{key}/actions/mark-as-not-for-sale", secretKey, workspaceKey)
                 .routeParam("key", key)
                 .body(forSaleRequest(objects, categories).toString()));
     }
@@ -192,7 +192,7 @@ public class Events {
     }
 
     public void markEverythingAsForSale(String key) {
-        stringResponse(UnirestUtil.post(baseUrl + "/events/{key}/actions/mark-everything-as-for-sale", secretKey, accountId)
+        stringResponse(UnirestUtil.post(baseUrl + "/events/{key}/actions/mark-everything-as-for-sale", secretKey, workspaceKey)
                 .routeParam("key", key));
     }
 
@@ -225,7 +225,7 @@ public class Events {
     }
 
     private Lister<Event> list() {
-        return new Lister<>(new PageFetcher<>(baseUrl, "/events", secretKey, accountId, Event.class));
+        return new Lister<>(new PageFetcher<>(baseUrl, "/events", secretKey, workspaceKey, Event.class));
     }
 
     public Lister<StatusChange> statusChanges(String eventKey) {
@@ -242,7 +242,7 @@ public class Events {
                 "/events/{key}/status-changes", ImmutableMap.of("key", eventKey), new HashMap<String, String>() {{
                     put("filter", filter);
                     put("sort", toSort(sortField, sortDirection));
-                }}, secretKey, accountId,
+                }}, secretKey, workspaceKey,
                 StatusChange.class);
         return new Lister<>(pageFetcher);
     }
@@ -260,7 +260,7 @@ public class Events {
     public Lister<StatusChange> statusChangesForObject(String key, String objectId) {
         PageFetcher<StatusChange> pageFetcher = new PageFetcher<>(
                 baseUrl,
-                "/events/{key}/objects/{objectId}/status-changes", ImmutableMap.of("key", key, "objectId", objectId), secretKey, accountId,
+                "/events/{key}/objects/{objectId}/status-changes", ImmutableMap.of("key", key, "objectId", objectId), secretKey, workspaceKey,
                 StatusChange.class);
         return new Lister<>(pageFetcher);
     }
@@ -338,7 +338,7 @@ public class Events {
     }
 
     public BestAvailableResult changeObjectStatus(String eventKey, BestAvailable bestAvailable, String status, String holdToken, String orderId, Boolean keepExtraData) {
-        HttpResponse<String> result = stringResponse(UnirestUtil.post(baseUrl + "/events/{key}/actions/change-object-status", secretKey, accountId)
+        HttpResponse<String> result = stringResponse(UnirestUtil.post(baseUrl + "/events/{key}/actions/change-object-status", secretKey, workspaceKey)
                 .routeParam("key", eventKey)
                 .body(changeObjectStatusRequest(bestAvailable, status, holdToken, orderId, keepExtraData).toString()));
         return gson().fromJson(result.getBody(), BestAvailableResult.class);
@@ -365,7 +365,7 @@ public class Events {
     }
 
     public ChangeObjectStatusResult changeObjectStatus(List<String> eventKeys, List<?> objects, String status, String holdToken, String orderId, Boolean keepExtraData) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/seasons/actions/change-object-status", secretKey, accountId)
+        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/seasons/actions/change-object-status", secretKey, workspaceKey)
                 .queryString("expand", "objects")
                 .body(changeObjectStatusRequest(eventKeys, toObjects(objects), status, holdToken, orderId, keepExtraData).toString()));
         return gson().fromJson(response.getBody(), ChangeObjectStatusResult.class);
@@ -399,7 +399,7 @@ public class Events {
     }
 
     public ObjectStatus retrieveObjectStatus(String key, String object) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.get(baseUrl + "/events/{key}/objects/{object}", secretKey, accountId)
+        HttpResponse<String> response = stringResponse(UnirestUtil.get(baseUrl + "/events/{key}/objects/{object}", secretKey, workspaceKey)
                 .routeParam("key", key)
                 .routeParam("object", object));
         return gson().fromJson(response.getBody(), ObjectStatus.class);
@@ -408,7 +408,7 @@ public class Events {
     public void updateExtraData(String key, String object, Map<String, Object> extraData) {
         JsonObjectBuilder request = aJsonObject();
         request.withProperty("extraData", gson().toJsonTree(extraData));
-        stringResponse(UnirestUtil.post(baseUrl + "/events/{key}/objects/{object}/actions/update-extra-data", secretKey, accountId)
+        stringResponse(UnirestUtil.post(baseUrl + "/events/{key}/objects/{object}/actions/update-extra-data", secretKey, workspaceKey)
                 .routeParam("key", key)
                 .routeParam("object", object)
                 .body(request.build().toString()));
@@ -417,7 +417,7 @@ public class Events {
     public void updateExtraDatas(String key, Map<String, Map<String, Object>> extraData) {
         JsonObjectBuilder request = aJsonObject();
         request.withProperty("extraData", gson().toJsonTree(extraData));
-        stringResponse(UnirestUtil.post(baseUrl + "/events/{key}/actions/update-extra-data", secretKey, accountId)
+        stringResponse(UnirestUtil.post(baseUrl + "/events/{key}/actions/update-extra-data", secretKey, workspaceKey)
                 .routeParam("key", key)
                 .body(request.build().toString()));
     }

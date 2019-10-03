@@ -11,5 +11,5 @@ public class Subaccount extends ValueObject {
     public String name;
     public String email;
     public boolean active;
-    public long accountId;
+    public String workspaceKey;
 }

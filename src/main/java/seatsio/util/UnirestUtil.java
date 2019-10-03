@@ -37,22 +37,22 @@ public class UnirestUtil {
         }
     }
 
-    public static GetRequest get(String url, String secretKey, Long accountId) {
-        return authenticate(Unirest.get(url), secretKey, accountId);
+    public static GetRequest get(String url, String secretKey, String workspaceKey) {
+        return authenticate(Unirest.get(url), secretKey, workspaceKey);
     }
 
-    public static HttpRequestWithBody post(String url, String secretKey, Long accountId) {
-        return authenticate(Unirest.post(url), secretKey, accountId);
+    public static HttpRequestWithBody post(String url, String secretKey, String workspaceKey) {
+        return authenticate(Unirest.post(url), secretKey, workspaceKey);
     }
 
-    public static HttpRequestWithBody delete(String url, String secretKey, Long accountId) {
-        return authenticate(Unirest.delete(url), secretKey, accountId);
+    public static HttpRequestWithBody delete(String url, String secretKey, String workspaceKey) {
+        return authenticate(Unirest.delete(url), secretKey, workspaceKey);
     }
 
-    private static <T extends HttpRequest> T authenticate(T request, String secretKey, Long accountId) {
+    private static <T extends HttpRequest> T authenticate(T request, String secretKey, String workspaceKey) {
         request.basicAuth(secretKey, null);
-        if (accountId != null) {
-            request.header("X-Account-ID", Long.toString(accountId));
+        if (workspaceKey != null) {
+            request.header("X-Workspace-Key", workspaceKey);
         }
         return request;
     }
