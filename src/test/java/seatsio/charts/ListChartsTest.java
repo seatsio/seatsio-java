@@ -1,6 +1,6 @@
 package seatsio.charts;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.events.Event;
 
@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNull;
 
 public class ListChartsTest extends SeatsioClientTest {
 
@@ -111,10 +110,10 @@ public class ListChartsTest extends SeatsioClientTest {
         List<Chart> charts = client.charts.listFirstPage(params, 10).items;
 
         assertThat(charts.get(0).validation.errors)
-            .isEqualTo(Arrays.asList("VALIDATE_DUPLICATE_LABELS", "VALIDATE_UNLABELED_OBJECTS", "VALIDATE_OBJECTS_WITHOUT_CATEGORIES"));
+                .isEqualTo(Arrays.asList("VALIDATE_DUPLICATE_LABELS", "VALIDATE_UNLABELED_OBJECTS", "VALIDATE_OBJECTS_WITHOUT_CATEGORIES"));
 
         assertThat(charts.get(0).validation.warnings)
-            .isEqualTo(Arrays.asList());
+                .isEqualTo(Arrays.asList());
     }
 
     @Test

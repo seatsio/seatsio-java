@@ -1,7 +1,7 @@
 package seatsio.events;
 
 import com.google.common.collect.ImmutableMap;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.SeatsioException;
 
@@ -12,6 +12,7 @@ import java.util.Objects;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static seatsio.events.TableBookingMode.BY_SEAT;
 import static seatsio.events.TableBookingMode.BY_TABLE;
 
@@ -86,12 +87,12 @@ public class CreateEventsTest extends SeatsioClientTest {
         );
     }
 
-    @Test(expected = SeatsioException.class)
+    @Test
     public void errorOnDuplicateKeys() {
         String chartKey = createTestChart();
         List<EventCreationParams> params = newArrayList(new EventCreationParams("event1"), new EventCreationParams("event1"));
 
-        client.events.create(chartKey, params);
+        assertThrows(SeatsioException.class, () -> client.events.create(chartKey, params));
     }
 
 }

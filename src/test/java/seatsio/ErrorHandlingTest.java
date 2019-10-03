@@ -1,32 +1,25 @@
 package seatsio;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ErrorHandlingTest extends SeatsioClientTest {
 
-    @Test(expected = SeatsioException.class)
+    @Test
     public void test400() {
-        try {
-            client.charts.retrieve("unexistingChart");
-        } catch (SeatsioException e) {
-            assertThat(e.getMessage()).contains("GET " + client.getBaseUrl() + "/charts/unexistingChart resulted in a 404 Not Found response. Reason: Chart not found: unexistingChart. Request ID:");
-            assertThat(e.errors).containsExactly(new ApiError("CHART_NOT_FOUND", "Chart not found: unexistingChart"));
-            assertThat(e.requestId).isNotNull();
-            throw e;
-        }
+        SeatsioException e = assertThrows(SeatsioException.class, () -> client.charts.retrieve("unexistingChart"));
+        assertThat(e.getMessage()).contains("GET " + client.getBaseUrl() + "/charts/unexistingChart resulted in a 404 Not Found response. Reason: Chart not found: unexistingChart. Request ID:");
+        assertThat(e.errors).containsExactly(new ApiError("CHART_NOT_FOUND", "Chart not found: unexistingChart"));
+        assertThat(e.requestId).isNotNull();
     }
 
-    @Test(expected = SeatsioException.class)
+    @Test
     public void testWeirdError() {
-        try {
-            new SeatsioClient("", "unknownProtocol://").charts.retrieve("unexistingChart");
-        } catch (SeatsioException e) {
-            assertThat(e.getMessage()).contains("Error while executing GET unknownProtocol:///charts/unexistingChart");
-            assertThat(e.errors).isNull();
-            assertThat(e.requestId).isNull();
-            throw e;
-        }
+        SeatsioException e = assertThrows(SeatsioException.class, () -> new SeatsioClient("", "unknownProtocol://").charts.retrieve("unexistingChart"));
+        assertThat(e.getMessage()).contains("Error while executing GET unknownProtocol:///charts/unexistingChart");
+        assertThat(e.errors).isNull();
+        assertThat(e.requestId).isNull();
     }
 }

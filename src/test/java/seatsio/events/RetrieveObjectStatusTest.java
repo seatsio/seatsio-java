@@ -1,6 +1,6 @@
 package seatsio.events;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 
 import static com.google.common.collect.Lists.newArrayList;

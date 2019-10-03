@@ -1,6 +1,6 @@
 package seatsio.holdTokens;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 
 import java.time.Instant;

@@ -1,7 +1,7 @@
 package seatsio.charts;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 
 import java.io.IOException;
