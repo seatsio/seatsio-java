@@ -19,6 +19,7 @@ public class RetrieveSubaccountTest extends SeatsioClientTest {
         assertThat(retrievedSubaccount.publicKey).isNotBlank();
         assertThat(retrievedSubaccount.name).isEqualTo("joske");
         assertThat(retrievedSubaccount.active).isTrue();
+        assertThat(subaccount.workspaceKey).isNotNull();
     }
 
 }

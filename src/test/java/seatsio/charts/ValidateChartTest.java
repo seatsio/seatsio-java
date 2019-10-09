@@ -1,6 +1,5 @@
 package seatsio.charts;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.SeatsioException;

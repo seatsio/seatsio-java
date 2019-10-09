@@ -9,4 +9,5 @@ public class HoldToken extends ValueObject {
     public String holdToken;
     public Instant expiresAt;
     public long expiresInSeconds;
+    public String workspaceKey;
 }

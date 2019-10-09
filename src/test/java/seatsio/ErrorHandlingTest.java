@@ -17,7 +17,7 @@ public class ErrorHandlingTest extends SeatsioClientTest {
 
     @Test
     public void testWeirdError() {
-        SeatsioException e = assertThrows(SeatsioException.class, () -> new SeatsioClient("", "unknownProtocol://").charts.retrieve("unexistingChart"));
+        SeatsioException e = assertThrows(SeatsioException.class, () -> new SeatsioClient("", null, "unknownProtocol://").charts.retrieve("unexistingChart"));
         assertThat(e.getMessage()).contains("Error while executing GET unknownProtocol:///charts/unexistingChart");
         assertThat(e.errors).isNull();
         assertThat(e.requestId).isNull();

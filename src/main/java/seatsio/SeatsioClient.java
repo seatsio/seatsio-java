@@ -11,7 +11,6 @@ import seatsio.subaccounts.Subaccounts;
 
 public class SeatsioClient {
 
-    private final String secretKey;
     private final String baseUrl;
 
     public final Accounts accounts;
@@ -23,21 +22,24 @@ public class SeatsioClient {
     public final ChartReports chartReports;
     public final UsageReports usageReports;
 
-    public SeatsioClient(String secretKey, String baseUrl) {
-        this.secretKey = secretKey;
+    public SeatsioClient(String secretKey, String workspaceKey, String baseUrl) {
         this.baseUrl = baseUrl;
-        this.accounts = new Accounts(secretKey, baseUrl);
-        this.subaccounts = new Subaccounts(secretKey, baseUrl);
-        this.holdTokens = new HoldTokens(secretKey, baseUrl);
-        this.charts = new Charts(secretKey, baseUrl);
-        this.events = new Events(secretKey, baseUrl);
-        this.eventReports = new EventReports(secretKey, baseUrl);
-        this.chartReports = new ChartReports(secretKey, baseUrl);
-        this.usageReports = new UsageReports(secretKey, baseUrl);
+        this.accounts = new Accounts(secretKey, workspaceKey, baseUrl);
+        this.subaccounts = new Subaccounts(secretKey, workspaceKey, baseUrl);
+        this.holdTokens = new HoldTokens(secretKey, workspaceKey, baseUrl);
+        this.charts = new Charts(secretKey, workspaceKey, baseUrl);
+        this.events = new Events(secretKey, workspaceKey, baseUrl);
+        this.eventReports = new EventReports(secretKey, workspaceKey, baseUrl);
+        this.chartReports = new ChartReports(secretKey, workspaceKey, baseUrl);
+        this.usageReports = new UsageReports(secretKey, workspaceKey, baseUrl);
+    }
+
+    public SeatsioClient(String secretKey, String workspaceKey) {
+        this(secretKey, workspaceKey, "https://api.seatsio.net");
     }
 
     public SeatsioClient(String secretKey) {
-        this(secretKey, "https://api.seatsio.net");
+        this(secretKey, null);
     }
 
     public String getBaseUrl() {
