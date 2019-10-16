@@ -12,10 +12,10 @@ public class WorkspaceKeyAuthenticationTest extends SeatsioClientTest {
     public void clientTakesOptionalWorkspaceKey() {
         Subaccount subaccount = client.subaccounts.create();
 
-        SeatsioClient subaccountClient = new SeatsioClient(user.secretKey, subaccount.workspaceKey, STAGING_BASE_URL);
+        SeatsioClient subaccountClient = new SeatsioClient(user.secretKey, subaccount.workspace.key, STAGING_BASE_URL);
         HoldToken holdToken = subaccountClient.holdTokens.create();
 
-        assertThat(holdToken.workspaceKey).isEqualTo(subaccount.workspaceKey);
+        assertThat(holdToken.workspaceKey).isEqualTo(subaccount.workspace.key);
     }
 
 }
