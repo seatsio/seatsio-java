@@ -63,7 +63,8 @@ public class SeatsioClientTest {
     protected String createTestChart(String fileName) {
         String testChartJson = testChartJson(fileName);
         String chartKey = randomUUID().toString();
-        stringResponse(Unirest.post(STAGING_BASE_URL + "/system/public/" + user.designerKey + "/charts/" + chartKey)
+        stringResponse(Unirest.post(STAGING_BASE_URL + "/system/public/charts/" + chartKey)
+                .basicAuth(user.secretKey, null)
                 .body(testChartJson));
         return chartKey;
     }
