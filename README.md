@@ -42,7 +42,7 @@ dependencies {
 
 ## Java version
 
-You need at least Java 8 to use seatsio-java.
+You need at least Java 8 (with update 101) to use seatsio-java.
 
 ## Versioning
 
