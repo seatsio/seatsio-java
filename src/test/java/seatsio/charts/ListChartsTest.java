@@ -110,7 +110,7 @@ public class ListChartsTest extends SeatsioClientTest {
         List<Chart> charts = client.charts.listFirstPage(params, 10).items;
 
         assertThat(charts.get(0).validation.errors)
-                .isEqualTo(Arrays.asList("VALIDATE_DUPLICATE_LABELS", "VALIDATE_UNLABELED_OBJECTS", "VALIDATE_OBJECTS_WITHOUT_CATEGORIES"));
+                .isEqualTo(Arrays.asList());
 
         assertThat(charts.get(0).validation.warnings)
                 .isEqualTo(Arrays.asList());

@@ -6,6 +6,7 @@ import seatsio.accounts.subaccounts.Account;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static seatsio.accounts.subaccounts.ChartValidationLevel.ERROR;
+import static seatsio.accounts.subaccounts.ChartValidationLevel.OFF;
 
 public class RetrieveMyAccountTest extends SeatsioClientTest {
 
@@ -19,9 +20,7 @@ public class RetrieveMyAccountTest extends SeatsioClientTest {
         assertThat(account.email).isNotBlank();
         assertThat(account.settings.draftChartDrawingsEnabled).isTrue();
         assertThat(account.settings.holdOnSelectForGAs).isTrue();
-        assertThat(account.settings.chartValidation.validateDuplicateLabels).isEqualTo(ERROR);
-        assertThat(account.settings.chartValidation.validateObjectsWithoutCategories).isEqualTo(ERROR);
-        assertThat(account.settings.chartValidation.validateUnlabeledObjects).isEqualTo(ERROR);
+        assertThat(account.settings.chartValidation.validateDuplicateLabels).isEqualTo(OFF);
     }
 
 }
