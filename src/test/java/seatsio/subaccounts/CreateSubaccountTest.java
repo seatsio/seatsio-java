@@ -20,10 +20,10 @@ public class CreateSubaccountTest extends SeatsioClientTest {
     }
 
     @Test
-    public void nameIsOptional() {
+    public void nameGetsGeneratedWhenNotPassedIn() {
         Subaccount subaccount = client.subaccounts.create();
 
-        assertThat(subaccount.name).isNull();
+        assertThat(subaccount.name).isNotNull();
     }
 
     @Test
@@ -34,7 +34,7 @@ public class CreateSubaccountTest extends SeatsioClientTest {
         assertThat(subaccount.secretKey).isNotEmpty();
         assertThat(subaccount.designerKey).isNotEmpty();
         assertThat(subaccount.publicKey).isNotEmpty();
-        assertThat(subaccount.name).isNull();
+        assertThat(subaccount.name).isNotNull();
         assertThat(subaccount.active).isTrue();
         assertThat(subaccount.email).isEqualTo(email);
         assertThat(subaccount.workspace).isNotNull();
