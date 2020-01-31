@@ -18,7 +18,7 @@ public class ListSubaccountsAfterTest extends SeatsioClientTest {
 
         assertThat(subaccounts.items)
                 .extracting(subaccount -> subaccount.id)
-                .containsExactly(subaccount2.id, subaccount1.id);
+                .containsExactly(subaccount2.id, subaccount1.id, user.mainWorkspace.primaryUser.id);
         assertThat(subaccounts.nextPageStartsAfter).isNotPresent();
         assertThat(subaccounts.previousPageEndsBefore).contains(subaccount2.id);
     }

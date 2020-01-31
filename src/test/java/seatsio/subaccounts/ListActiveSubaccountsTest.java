@@ -20,7 +20,7 @@ public class ListActiveSubaccountsTest extends SeatsioClientTest {
 
         assertThat(subaccounts)
                 .extracting(subaccount -> subaccount.id)
-                .containsExactly(subaccount3.id, subaccount1.id);
+                .containsExactly(subaccount3.id, subaccount1.id, user.mainWorkspace.primaryUser.id);
     }
 
 }
