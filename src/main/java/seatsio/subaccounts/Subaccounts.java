@@ -31,21 +31,8 @@ public class Subaccounts {
     }
 
     public Subaccount create(String name) {
-        return doCreate(null, name);
-    }
-
-    public Subaccount createWithEmail(String email) {
-        return doCreate(email, null);
-    }
-
-    public Subaccount createWithEmail(String email, String name) {
-        return doCreate(email, name);
-    }
-
-    public Subaccount doCreate(String email, String name) {
         JsonObject request = aJsonObject()
                 .withPropertyIfNotNull("name", name)
-                .withPropertyIfNotNull("email", email)
                 .build();
         HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/subaccounts", secretKey, workspaceKey)
                 .body(request.toString()));
@@ -53,13 +40,8 @@ public class Subaccounts {
     }
 
     public void update(long id, String name) {
-        update(id, name, null);
-    }
-
-    public void update(long id, String name, String email) {
         JsonObject request = aJsonObject()
                 .withPropertyIfNotNull("name", name)
-                .withPropertyIfNotNull("email", email)
                 .build();
         stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{id}", secretKey, workspaceKey)
                 .routeParam("id", Long.toString(id))

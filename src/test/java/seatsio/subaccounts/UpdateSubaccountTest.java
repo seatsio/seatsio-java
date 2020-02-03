@@ -10,37 +10,21 @@ public class UpdateSubaccountTest extends SeatsioClientTest {
     @Test
     public void test() {
         Subaccount subaccount = client.subaccounts.create("joske");
-        String email = randomEmail();
-
-        client.subaccounts.update(subaccount.id, "jefke", email);
-
-        Subaccount retrievedSubaccount = client.subaccounts.retrieve(subaccount.id);
-        assertThat(retrievedSubaccount.name).isEqualTo("jefke");
-        assertThat(retrievedSubaccount.email).isEqualTo(email);
-    }
-
-    @Test
-    public void emailIsOptional() {
-        String email = randomEmail();
-        Subaccount subaccount = client.subaccounts.createWithEmail(email, "joske");
 
         client.subaccounts.update(subaccount.id, "jefke");
 
         Subaccount retrievedSubaccount = client.subaccounts.retrieve(subaccount.id);
         assertThat(retrievedSubaccount.name).isEqualTo("jefke");
-        assertThat(retrievedSubaccount.email).isEqualTo(email);
     }
 
     @Test
     public void nameIsOptional() {
-        String email = randomEmail();
-        Subaccount subaccount = client.subaccounts.createWithEmail(email, "joske");
+        Subaccount subaccount = client.subaccounts.create("joske");
 
-        client.subaccounts.update(subaccount.id, null, email);
+        client.subaccounts.update(subaccount.id, null);
 
         Subaccount retrievedSubaccount = client.subaccounts.retrieve(subaccount.id);
         assertThat(retrievedSubaccount.name).isNotNull();
-        assertThat(retrievedSubaccount.email).isEqualTo(email);
     }
 
 }

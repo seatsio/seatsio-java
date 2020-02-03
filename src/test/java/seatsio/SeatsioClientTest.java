@@ -40,10 +40,6 @@ public class SeatsioClientTest {
         return new Gson().fromJson(response.getBody(), TestUser.class);
     }
 
-    protected String randomEmail() {
-        return randomUUID().toString() + "@mailinator.com";
-    }
-
     protected String createTestChart() {
         return createTestChart("/sampleChart.json");
     }
