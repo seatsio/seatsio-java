@@ -6,7 +6,6 @@ public class Account extends ValueObject {
 
     public String secretKey;
     public String designerKey;
-    public String publicKey;
     public String email;
     public AccountSettings settings;
 }

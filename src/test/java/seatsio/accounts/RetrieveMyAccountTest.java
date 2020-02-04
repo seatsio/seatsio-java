@@ -16,7 +16,6 @@ public class RetrieveMyAccountTest extends SeatsioClientTest {
 
         assertThat(account.secretKey).isNotBlank();
         assertThat(account.designerKey).isNotBlank();
-        assertThat(account.publicKey).isNotBlank();
         assertThat(account.email).isNotBlank();
         assertThat(account.settings.draftChartDrawingsEnabled).isTrue();
         assertThat(account.settings.holdOnSelectForGAs).isTrue();
