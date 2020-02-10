@@ -5,8 +5,8 @@ import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCod
 
 public class LabelAndType {
 
-    private String label;
-    private String type;
+    public String label;
+    public String type;
 
     protected LabelAndType() {
     }
