@@ -2,11 +2,10 @@ package seatsio.workspaces;
 
 import com.mashape.unirest.http.HttpResponse;
 import seatsio.json.JsonObjectBuilder;
-import seatsio.util.Lister;
-import seatsio.util.Page;
-import seatsio.util.PageFetcher;
-import seatsio.util.UnirestUtil;
+import seatsio.util.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
@@ -57,12 +56,20 @@ public class Workspaces {
         return list().all();
     }
 
+    public Stream<Workspace> listAll(String filter) {
+        return parametrizedList().all(toMap(filter));
+    }
+
     public Page<Workspace> listFirstPage() {
         return listFirstPage(null);
     }
 
     public Page<Workspace> listFirstPage(Integer pageSize) {
         return list().firstPage(pageSize);
+    }
+
+    public Page<Workspace> listFirstPage(Integer pageSize, String filter) {
+        return parametrizedList().firstPage(toMap(filter), pageSize);
     }
 
     public Page<Workspace> listPageAfter(long id) {
@@ -73,6 +80,10 @@ public class Workspaces {
         return list().pageAfter(id, pageSize);
     }
 
+    public Page<Workspace> listPageAfter(long id, Integer pageSize, String filter) {
+        return parametrizedList().pageAfter(id, toMap(filter), pageSize);
+    }
+
     public Page<Workspace> listPageBefore(long id) {
         return listPageBefore(id, null);
     }
@@ -81,8 +92,23 @@ public class Workspaces {
         return list().pageBefore(id, pageSize);
     }
 
+    public Page<Workspace> listPageBefore(long id, Integer pageSize, String filter) {
+        return parametrizedList().pageBefore(id, toMap(filter), pageSize);
+    }
+
     private Lister<Workspace> list() {
         return new Lister<>(new PageFetcher<>(baseUrl, "/workspaces", secretKey, Workspace.class));
     }
 
+    private ParameterizedLister<Workspace> parametrizedList() {
+        return new ParameterizedLister<>(new PageFetcher<>(baseUrl, "/workspaces", secretKey, Workspace.class));
+    }
+
+    private Map<String, Object> toMap(String filter) {
+        HashMap<String, Object> map = new HashMap<>();
+        if (filter != null) {
+            map.put("filter", filter);
+        }
+        return map;
+    }
 }

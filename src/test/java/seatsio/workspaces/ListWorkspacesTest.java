@@ -22,4 +22,17 @@ public class ListWorkspacesTest extends SeatsioClientTest {
                 .containsExactly("ws3", "ws2", "ws1", "Main workspace");
     }
 
+    @Test
+    public void takesFilter() {
+        Workspace ws1 = client.workspaces.create("someWorkspace");
+        Workspace ws2 = client.workspaces.create("anotherWorkspace");
+        Workspace ws3 = client.workspaces.create("anotherAnotherWorkspace");
+
+        Stream<Workspace> workspaces = client.workspaces.listAll("another");
+
+        assertThat(workspaces)
+                .extracting(workspace -> workspace.name)
+                .containsExactly("anotherAnotherWorkspace", "anotherWorkspace");
+    }
+
 }
