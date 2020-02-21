@@ -19,7 +19,7 @@ import static seatsio.util.UnirestUtil.stringResponse;
 @Execution(ExecutionMode.CONCURRENT)
 public class SeatsioClientTest {
 
-    protected static final String STAGING_BASE_URL = "http://localhost:9006";
+    protected static final String STAGING_BASE_URL = "https://api-staging.seatsio.net";
 
     protected TestUser user;
     protected SeatsioClient client;
