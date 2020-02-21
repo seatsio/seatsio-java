@@ -16,7 +16,6 @@ public class CreateSubaccountTest extends SeatsioClientTest {
         assertThat(subaccount.publicKey).isNotBlank();
         assertThat(subaccount.name).isEqualTo("joske");
         assertThat(subaccount.active).isTrue();
-        assertThat(subaccount.workspace).isNotNull();
     }
 
     @Test

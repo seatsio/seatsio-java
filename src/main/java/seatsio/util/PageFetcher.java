@@ -24,6 +24,16 @@ public class PageFetcher<T> {
     private final String secretKey;
     private final Class<T> clazz;
 
+    public PageFetcher(String baseUrl, String url, String secretKey, Class<T> clazz) {
+        this.baseUrl = baseUrl;
+        this.workspaceKey = null;
+        this.url = url;
+        this.routeParams = new HashMap<>();
+        this.queryParams = new HashMap<>();
+        this.secretKey = secretKey;
+        this.clazz = clazz;
+    }
+
     public PageFetcher(String baseUrl, String url, String secretKey, String workspaceKey, Class<T> clazz) {
         this.baseUrl = baseUrl;
         this.workspaceKey = workspaceKey;
