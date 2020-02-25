@@ -8,6 +8,7 @@ import seatsio.reports.charts.ChartReports;
 import seatsio.reports.events.EventReports;
 import seatsio.reports.usage.UsageReports;
 import seatsio.subaccounts.Subaccounts;
+import seatsio.workspaces.Workspaces;
 
 public class SeatsioClient {
 
@@ -15,6 +16,7 @@ public class SeatsioClient {
 
     public final Accounts accounts;
     public final Subaccounts subaccounts;
+    public final Workspaces workspaces;
     public final HoldTokens holdTokens;
     public final Charts charts;
     public final Events events;
@@ -26,6 +28,7 @@ public class SeatsioClient {
         this.baseUrl = baseUrl;
         this.accounts = new Accounts(secretKey, workspaceKey, baseUrl);
         this.subaccounts = new Subaccounts(secretKey, workspaceKey, baseUrl);
+        this.workspaces = new Workspaces(secretKey, baseUrl);
         this.holdTokens = new HoldTokens(secretKey, workspaceKey, baseUrl);
         this.charts = new Charts(secretKey, workspaceKey, baseUrl);
         this.events = new Events(secretKey, workspaceKey, baseUrl);
