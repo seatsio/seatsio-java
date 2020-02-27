@@ -2,15 +2,13 @@ package seatsio.events;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mashape.unirest.http.HttpResponse;
 import seatsio.SeatsioException;
 import seatsio.SortDirection;
 import seatsio.json.JsonObjectBuilder;
-import seatsio.util.Lister;
-import seatsio.util.Page;
-import seatsio.util.PageFetcher;
-import seatsio.util.UnirestUtil;
+import seatsio.util.*;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -20,6 +18,7 @@ import static com.google.common.collect.Sets.*;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static seatsio.events.ObjectStatus.*;
+import static seatsio.json.JsonArrayBuilder.aJsonArray;
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
 import static seatsio.json.SeatsioGson.gson;
 import static seatsio.util.UnirestUtil.stringResponse;
@@ -240,9 +239,9 @@ public class Events {
         PageFetcher<StatusChange> pageFetcher = new PageFetcher<>(
                 baseUrl,
                 "/events/{key}/status-changes", ImmutableMap.of("key", eventKey), new HashMap<String, String>() {{
-                    put("filter", filter);
-                    put("sort", toSort(sortField, sortDirection));
-                }}, secretKey, workspaceKey,
+            put("filter", filter);
+            put("sort", toSort(sortField, sortDirection));
+        }}, secretKey, workspaceKey,
                 StatusChange.class);
         return new Lister<>(pageFetcher);
     }
@@ -371,10 +370,34 @@ public class Events {
         return gson().fromJson(response.getBody(), ChangeObjectStatusResult.class);
     }
 
+    public List<ChangeObjectStatusResult> changeObjectStatus(List<StatusChangeRequest> statusChangeRequests) {
+        List<JsonElement> statusChangeRequestsAsJson = statusChangeRequests.stream().map(s -> changeObjectStatusRequest(s.eventKey, toObjects(s.objects), s.status, s.holdToken, s.orderId, s.keepExtraData)).collect(toList());
+        JsonObject request = aJsonObject()
+                .withProperty("statusChanges", aJsonArray().withItems(statusChangeRequestsAsJson).build())
+                .build();
+        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/events/actions/change-object-status", secretKey, workspaceKey)
+                .queryString("expand", "objects")
+                .body(request.toString()));
+        return gson().fromJson(response.getBody(), ChangeObjectStatusInBatchResult.class).results;
+    }
+
+    private static class ChangeObjectStatusInBatchResult extends ValueObject {
+
+        public List<ChangeObjectStatusResult> results;
+
+    }
+
     private List<ObjectProperties> toObjects(List<?> objects) {
         return objects.stream()
                 .map(ObjectProperties::from)
                 .collect(toList());
+    }
+
+    private JsonObject changeObjectStatusRequest(String eventKey, List<ObjectProperties> objects, String status, String holdToken, String orderId, Boolean keepExtraData) {
+        JsonObjectBuilder request = changeObjectStatusRequestBuilder(status, holdToken, orderId, keepExtraData);
+        request.withProperty("event", eventKey);
+        request.withProperty("objects", objects, object -> gson().toJsonTree(object));
+        return request.build();
     }
 
     private JsonObject changeObjectStatusRequest(List<String> eventKeys, List<ObjectProperties> objects, String status, String holdToken, String orderId, Boolean keepExtraData) {
