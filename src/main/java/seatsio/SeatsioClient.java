@@ -1,6 +1,5 @@
 package seatsio;
 
-import seatsio.accounts.subaccounts.Accounts;
 import seatsio.charts.Charts;
 import seatsio.events.Events;
 import seatsio.holdTokens.HoldTokens;
@@ -14,7 +13,6 @@ public class SeatsioClient {
 
     private final String baseUrl;
 
-    public final Accounts accounts;
     public final Subaccounts subaccounts;
     public final Workspaces workspaces;
     public final HoldTokens holdTokens;
@@ -26,7 +24,6 @@ public class SeatsioClient {
 
     public SeatsioClient(String secretKey, String workspaceKey, String baseUrl) {
         this.baseUrl = baseUrl;
-        this.accounts = new Accounts(secretKey, workspaceKey, baseUrl);
         this.subaccounts = new Subaccounts(secretKey, workspaceKey, baseUrl);
         this.workspaces = new Workspaces(secretKey, baseUrl);
         this.holdTokens = new HoldTokens(secretKey, workspaceKey, baseUrl);

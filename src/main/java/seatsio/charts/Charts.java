@@ -135,10 +135,17 @@ public class Charts {
         return gson().fromJson(response.getBody(), Chart.class);
     }
 
-    public Chart copyToSubacccount(String key, long subaccountId) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/charts/{key}/version/published/actions/copy-to/{subaccountId}", secretKey, workspaceKey)
-                .routeParam("key", key)
+    public Chart copyToSubacccount(String chartKey, long subaccountId) {
+        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/charts/{chartKey}/version/published/actions/copy-to/{subaccountId}", secretKey, workspaceKey)
+                .routeParam("chartKey", chartKey)
                 .routeParam("subaccountId", Long.toString(subaccountId)));
+        return gson().fromJson(response.getBody(), Chart.class);
+    }
+
+    public Chart copyToWorkspace(String chartKey, String toWorkspaceKey) {
+        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/charts/{chartKey}/version/published/actions/copy-to-workspace/{workspaceKey}", secretKey, workspaceKey)
+                .routeParam("chartKey", chartKey)
+                .routeParam("workspaceKey", toWorkspaceKey));
         return gson().fromJson(response.getBody(), Chart.class);
     }
 
