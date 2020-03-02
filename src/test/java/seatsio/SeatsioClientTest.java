@@ -8,6 +8,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import seatsio.subaccounts.Subaccount;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,12 +22,15 @@ public class SeatsioClientTest {
 
     protected static final String STAGING_BASE_URL = "https://api-staging.seatsio.net";
 
-    protected TestUser user;
+    protected User user;
+    protected Subaccount subaccount;
     protected SeatsioClient client;
 
     @BeforeEach
     public void setup() throws UnirestException {
-        user = createTestUser();
+        TestCompany testCompany = createTestCompany();
+        user = testCompany.admin;
+        subaccount = testCompany.subaccount;
         client = seatsioClient(user.secretKey);
     }
 
@@ -34,10 +38,9 @@ public class SeatsioClientTest {
         return new SeatsioClient(secretKey, null, STAGING_BASE_URL);
     }
 
-    private TestUser createTestUser() throws UnirestException {
-        HttpResponse<String> response = post(STAGING_BASE_URL + "/system/public/users/actions/create-test-user").asString();
-
-        return new Gson().fromJson(response.getBody(), TestUser.class);
+    private TestCompany createTestCompany() throws UnirestException {
+        HttpResponse<String> response = post(STAGING_BASE_URL + "/system/public/users/actions/create-test-company").asString();
+        return new Gson().fromJson(response.getBody(), TestCompany.class);
     }
 
     protected String createTestChart() {
