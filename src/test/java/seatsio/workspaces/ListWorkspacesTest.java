@@ -18,8 +18,8 @@ public class ListWorkspacesTest extends SeatsioClientTest {
         Stream<Workspace> workspaces = client.workspaces.listAll();
 
         assertThat(workspaces)
-                .extracting(workspace -> workspace.name)
-                .containsExactly("ws3", "ws2", "ws1", "Main workspace");
+                .extracting(workspace -> workspace.key)
+                .containsExactly(ws3.key, ws2.key, ws1.key, workspace.key);
     }
 
     @Test

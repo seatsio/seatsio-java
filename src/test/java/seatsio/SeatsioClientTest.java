@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import seatsio.subaccounts.Subaccount;
+import seatsio.workspaces.Workspace;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,12 +25,14 @@ public class SeatsioClientTest {
 
     protected User user;
     protected Subaccount subaccount;
+    protected Workspace workspace;
     protected SeatsioClient client;
 
     @BeforeEach
     public void setup() throws UnirestException {
         TestCompany testCompany = createTestCompany();
         user = testCompany.admin;
+        workspace = testCompany.workspace;
         subaccount = testCompany.subaccount;
         client = seatsioClient(user.secretKey);
     }
