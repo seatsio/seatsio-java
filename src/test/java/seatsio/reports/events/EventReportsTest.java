@@ -41,6 +41,10 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.capacity).isNull();
         assertThat(reportItem.objectType).isEqualTo("seat");
         assertThat(reportItem.extraData).isEqualTo(extraData);
+        assertThat(reportItem.hasRestrictedView).isFalse();
+        assertThat(reportItem.isAccessible).isFalse();
+        assertThat(reportItem.isCompanionSeat).isFalse();
+        assertThat(reportItem.displayedObjectType).isNull();
     }
 
     @Test
@@ -72,6 +76,10 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.numHeld).isEqualTo(3);
         assertThat(reportItem.capacity).isEqualTo(100);
         assertThat(reportItem.objectType).isEqualTo("generalAdmission");
+        assertThat(reportItem.hasRestrictedView).isNull();
+        assertThat(reportItem.isAccessible).isNull();
+        assertThat(reportItem.isCompanionSeat).isNull();
+        assertThat(reportItem.displayedObjectType).isNull();
     }
 
     @Test

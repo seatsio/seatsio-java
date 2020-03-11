@@ -25,5 +25,8 @@ public class EventReportItem extends ValueObject {
     public Integer numFree;
     public Integer numHeld;
     public Map<?, ?> extraData;
-
+    public Boolean isAccessible;
+    public Boolean isCompanionSeat;
+    public Boolean hasRestrictedView;
+    public String displayedObjectType;
 }
