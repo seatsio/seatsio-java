@@ -29,14 +29,14 @@ Then you can refer to seatsio-java as a regular package:
 ```
 // build.gradle
 dependencies {
-  compile 'com.github.seatsio:seatsio-java:52.1'
+  compile 'com.github.seatsio:seatsio-java:52.2.0'
 }
 
 // pom.xml
 <dependency>
   <groupId>com.github.seatsio</groupId>
   <artifactId>seatsio-java</artifactId>
-  <version>52.1</version>
+  <version>52.2.0</version>
 </dependency>
 ```
 
@@ -46,9 +46,7 @@ You need at least Java 8 (with update 101) to use seatsio-java.
 
 ## Versioning
 
-seatsio-java only uses major version numbers: 5, 6, 7 etc. Each release - backwards compatible or not - receives a new major version number.
-
-The reason: we want to play safe and assume that each release _might_ break backwards compatibility.
+seatsio-java follows semver since v52.2.0.
 
 ## Examples
 
