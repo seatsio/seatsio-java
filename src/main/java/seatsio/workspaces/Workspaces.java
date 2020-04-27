@@ -1,5 +1,8 @@
 package seatsio.workspaces;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mashape.unirest.http.HttpResponse;
 import seatsio.json.JsonObjectBuilder;
 import seatsio.util.*;
@@ -44,6 +47,16 @@ public class Workspaces {
         stringResponse(UnirestUtil.post(baseUrl + "/workspaces/{key}", secretKey)
                 .routeParam("key", key)
                 .body(request.build().toString()));
+    }
+
+    public String regenerateSecretKey(String key) {
+        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/workspaces/{key}/actions/regenerate-secret-key", secretKey)
+                .routeParam("key", key));
+
+        JsonObject result = new JsonParser()
+                .parse(response.getBody())
+                .getAsJsonObject();
+        return result.getAsJsonPrimitive("secretKey").getAsString();
     }
 
     public Workspace retrieve(String key) {

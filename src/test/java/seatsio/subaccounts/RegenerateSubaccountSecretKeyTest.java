@@ -5,7 +5,7 @@ import seatsio.SeatsioClientTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class RegenerateSecretKeyTest extends SeatsioClientTest {
+public class RegenerateSubaccountSecretKeyTest extends SeatsioClientTest {
 
     @Test
     public void test() {
