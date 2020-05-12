@@ -53,7 +53,7 @@ seatsio-java follows semver since v52.2.0.
 ### Creating a chart and an event
 
 ```java
-SeatsioClient client = new SeatsioClient(<SECRET KEY>); // can be found on https://app.seats.io/settings
+SeatsioClient client = new SeatsioClient(<WORKSPACE SECRET KEY>); // can be found on https://app.seats.io/workspace-settings
 Chart chart = client.charts.create();
 Event event = client.events.create(chart.key);
 System.out.println("Created event with key " + event.key);
@@ -62,35 +62,35 @@ System.out.println("Created event with key " + event.key);
 ### Booking objects
 
 ```java
-SeatsioClient client = new SeatsioClient(<SECRET KEY>);
+SeatsioClient client = new SeatsioClient(<WORKSPACE SECRET KEY>);
 client.events.book(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"));
 ```
 
 ### Releasing objects
 
 ```java
-SeatsioClient client = new SeatsioClient(<SECRET KEY>);
+SeatsioClient client = new SeatsioClient(<WORKSPACE SECRET KEY>);
 client.events.release(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"));
 ```
 
 ### Booking objects that have been held
 
 ```java
-SeatsioClient client = new SeatsioClient(<SECRET KEY>);
+SeatsioClient client = new SeatsioClient(<WORKSPACE SECRET KEY>);
 client.events.book(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"), <A HOLD TOKEN>);
 ```
 
 ### Changing object status
 
 ```java
-SeatsioClient client = new SeatsioClient(<SECRET KEY>);
+SeatsioClient client = new SeatsioClient(<WORKSPACE SECRET KEY>);
 client.events.changeObjectStatus(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"), "unavailable");
 ```
 
 ### Listing all charts
 
 ```java
-SeatsioClient client = new SeatsioClient("<SECRET KEY>");
+SeatsioClient client = new SeatsioClient("<WORKSPACE SECRET KEY>");
 
 Stream<Chart> charts = client.charts.listAll();
 charts.forEach(chart -> {
