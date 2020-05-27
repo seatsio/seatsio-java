@@ -45,6 +45,8 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.isAccessible).isFalse();
         assertThat(reportItem.isCompanionSeat).isFalse();
         assertThat(reportItem.displayedObjectType).isNull();
+        assertThat(reportItem.leftNeighbour).isNull();
+        assertThat(reportItem.rightNeighbour).isEqualTo("A-2");
     }
 
     @Test

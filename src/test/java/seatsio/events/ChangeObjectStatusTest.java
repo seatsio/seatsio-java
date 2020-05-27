@@ -47,6 +47,8 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
         assertThat(reportItem.capacity).isNull();
         assertThat(reportItem.objectType).isEqualTo("seat");
         assertThat(reportItem.extraData).isEqualTo(null);
+        assertThat(reportItem.leftNeighbour).isNull();
+        assertThat(reportItem.rightNeighbour).isEqualTo("A-2");
     }
 
     @Test

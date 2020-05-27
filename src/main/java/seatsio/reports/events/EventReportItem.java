@@ -1,6 +1,5 @@
 package seatsio.reports.events;
 
-import seatsio.charts.CategoryKey;
 import seatsio.events.Labels;
 import seatsio.util.ValueObject;
 
@@ -29,4 +28,7 @@ public class EventReportItem extends ValueObject {
     public Boolean isCompanionSeat;
     public Boolean hasRestrictedView;
     public String displayedObjectType;
+    public String leftNeighbour;
+    public String rightNeighbour;
+
 }

@@ -12,5 +12,7 @@ public class ChartReportItem {
     public String section;
     public String entrance;
     public Integer capacity;
+    public String leftNeighbour;
+    public String rightNeighbour;
 
 }

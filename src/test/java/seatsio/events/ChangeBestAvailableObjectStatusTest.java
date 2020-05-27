@@ -48,6 +48,8 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
         assertThat(reportItem.capacity).isNull();
         assertThat(reportItem.objectType).isEqualTo("seat");
         assertThat(reportItem.extraData).isEqualTo(null);
+        assertThat(reportItem.leftNeighbour).isEqualTo("B-4");
+        assertThat(reportItem.rightNeighbour).isEqualTo("B-6");
     }
 
     @Test
