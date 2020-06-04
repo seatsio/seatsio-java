@@ -16,4 +16,5 @@ public class Event extends ValueObject {
     public Instant createdOn;
     public Instant updatedOn;
     public Map<String, TableBookingMode> tableBookingModes;
+    public Channel[] channels;
 }

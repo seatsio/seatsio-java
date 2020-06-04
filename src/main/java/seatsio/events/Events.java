@@ -114,6 +114,38 @@ public class Events {
         return gson().fromJson(response.getBody(), Event.class);
     }
 
+    public void updateChannels(String key, Map<String, Channel> channels) {
+        stringResponse(UnirestUtil.post(baseUrl + "/events/{key}/channels/update", secretKey, workspaceKey)
+                .routeParam("key", key)
+                .body(updateChannelsRequest(channels))
+        );
+    }
+
+    private String updateChannelsRequest(Map<String, Channel> channels) {
+        return aJsonObject()
+                .withProperty("channels", aJsonObject()
+                        .withProperties(channels, channel -> aJsonObject()
+                                .withProperty("name", channel.name)
+                                .withProperty("color", channel.color)
+                                .withProperty("index", channel.index)
+                                .build())
+                        .build()
+                ).buildAsString();
+    }
+
+    public void assignObjectsToChannel(String key, Map<String, Set<String>> channelKeysAndObjectLabels) {
+        stringResponse(UnirestUtil.post(baseUrl + "/events/{key}/channels/assign-objects", secretKey, workspaceKey)
+                .routeParam("key", key)
+                .body(assignChannelsRequest(channelKeysAndObjectLabels))
+        );
+    }
+
+    private String assignChannelsRequest(Map<String, Set<String>> channelKeysAndObjectLabels) {
+        JsonObjectBuilder config = aJsonObject();
+        channelKeysAndObjectLabels.forEach(config::withProperty);
+        return aJsonObject().withProperty("channelConfig", config.build()).buildAsString();
+    }
+
     public void markAsForSale(String key, List<String> objects, List<String> categories) {
         stringResponse(UnirestUtil.post(baseUrl + "/events/{key}/actions/mark-as-for-sale", secretKey, workspaceKey)
                 .routeParam("key", key)
@@ -184,10 +216,10 @@ public class Events {
     }
 
     private JsonObject forSaleRequest(List<String> objects, List<String> categories) {
-        JsonObjectBuilder request = aJsonObject()
+        return aJsonObject()
                 .withPropertyIfNotNull("objects", objects)
-                .withPropertyIfNotNull("categories", categories);
-        return request.build();
+                .withPropertyIfNotNull("categories", categories)
+                .build();
     }
 
     public void markEverythingAsForSale(String key) {
