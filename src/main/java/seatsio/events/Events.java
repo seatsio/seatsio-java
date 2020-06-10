@@ -36,7 +36,7 @@ public class Events {
     }
 
     public Event create(String chartKey) {
-        return create(chartKey, null, null, null);
+        return create(chartKey, null, null, null, null);
     }
 
     public List<Event> create(String chartKey, List<EventCreationParams> params) {
@@ -57,47 +57,57 @@ public class Events {
     }
 
     public Event create(String chartKey, String eventKey) {
-        return create(chartKey, eventKey, null, null);
+        return create(chartKey, eventKey, null, null, null);
     }
 
     public Event create(String chartKey, String eventKey, Boolean bookWholeTables) {
-        return create(chartKey, eventKey, bookWholeTables, null);
+        return create(chartKey, eventKey, bookWholeTables, null, null);
     }
 
     public Event create(String chartKey, String eventKey, Map<String, TableBookingMode> tableBookingModes) {
-        return create(chartKey, eventKey, null, tableBookingModes);
+        return create(chartKey, eventKey, null, tableBookingModes, null);
     }
 
-    private Event create(String chartKey, String eventKey, Boolean bookWholeTables, Map<String, TableBookingMode> tableBookingModes) {
+    public Event create(String chartKey, String eventKey, Map<String, TableBookingMode> tableBookingModes, String socialDistancingRulesetKey) {
+        return create(chartKey, eventKey, null, tableBookingModes, socialDistancingRulesetKey);
+    }
+
+    private Event create(String chartKey, String eventKey, Boolean bookWholeTables, Map<String, TableBookingMode> tableBookingModes, String socialDistancingRulesetKey) {
         JsonObjectBuilder request = aJsonObject()
                 .withProperty("chartKey", chartKey)
                 .withPropertyIfNotNull("eventKey", eventKey)
                 .withPropertyIfNotNull("bookWholeTables", bookWholeTables)
-                .withPropertyIfNotNull("tableBookingModes", tableBookingModes);
+                .withPropertyIfNotNull("tableBookingModes", tableBookingModes)
+                .withPropertyIfNotNull("socialDistancingRulesetKey", socialDistancingRulesetKey);
         HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/events", secretKey, workspaceKey)
                 .body(request.build().toString()));
         return gson().fromJson(response.getBody(), Event.class);
     }
 
     public void update(String key, String chartKey, String newKey) {
-        update(key, chartKey, newKey, null, null);
+        update(key, chartKey, newKey, null, null, null);
     }
 
 
     public void update(String key, String chartKey, String newKey, Boolean bookWholeTables) {
-        update(key, chartKey, newKey, bookWholeTables, null);
+        update(key, chartKey, newKey, bookWholeTables, null, null);
     }
 
     public void update(String key, String chartKey, String newKey, Map<String, TableBookingMode> tableBookingModes) {
-        update(key, chartKey, newKey, null, tableBookingModes);
+        update(key, chartKey, newKey, null, tableBookingModes, null);
     }
 
-    private void update(String key, String chartKey, String newKey, Boolean bookWholeTables, Map<String, TableBookingMode> tableBookingModes) {
+    public void update(String key, String chartKey, String newKey, Map<String, TableBookingMode> tableBookingModes, String socialDistancingRulesetKey) {
+        update(key, chartKey, newKey, null, tableBookingModes, socialDistancingRulesetKey);
+    }
+
+    private void update(String key, String chartKey, String newKey, Boolean bookWholeTables, Map<String, TableBookingMode> tableBookingModes, String socialDistancingRulesetKey) {
         JsonObjectBuilder request = aJsonObject()
                 .withPropertyIfNotNull("chartKey", chartKey)
                 .withPropertyIfNotNull("eventKey", newKey)
                 .withPropertyIfNotNull("bookWholeTables", bookWholeTables)
-                .withPropertyIfNotNull("tableBookingModes", tableBookingModes);
+                .withPropertyIfNotNull("tableBookingModes", tableBookingModes)
+                .withPropertyIfNotNull("socialDistancingRulesetKey", socialDistancingRulesetKey);
         stringResponse(UnirestUtil.post(baseUrl + "/events/{key}", secretKey, workspaceKey)
                 .routeParam("key", key)
                 .body(request.build().toString()));

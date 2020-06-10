@@ -17,4 +17,5 @@ public class Event extends ValueObject {
     public Instant updatedOn;
     public Map<String, TableBookingMode> tableBookingModes;
     public Channel[] channels;
+    public String socialDistancingRulesetKey;
 }

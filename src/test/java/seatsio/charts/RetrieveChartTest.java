@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.events.Event;
 
+import java.util.HashMap;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RetrieveChartTest extends SeatsioClientTest {
@@ -25,6 +27,7 @@ public class RetrieveChartTest extends SeatsioClientTest {
         assertThat(retrievedChart.events).isNull();
         assertThat(retrievedChart.tags).containsOnly("tag1", "tag2");
         assertThat(retrievedChart.archived).isFalse();
+        assertThat(retrievedChart.socialDistancingRulesets).isEqualTo(new HashMap<>());
     }
 
     @Test

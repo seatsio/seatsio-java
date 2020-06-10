@@ -4,8 +4,10 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.charts.Chart;
+import seatsio.charts.SocialDistancingRuleset;
 
 import java.time.Instant;
+import java.util.Map;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -60,5 +62,16 @@ public class CreateEventTest extends SeatsioClientTest {
         assertThat(event.key).isNotNull();
         assertThat(event.bookWholeTables).isFalse();
         assertThat(event.tableBookingModes).isEqualTo(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT));
+    }
+
+    @Test
+    public void socialDistancingRulesetKeyCanBePassedIn() {
+        String chartKey = createTestChartWithTables();
+        Map<String, SocialDistancingRuleset> rulesets = ImmutableMap.of("ruleset1", new SocialDistancingRuleset(0, "My ruleset"));
+        client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
+
+        Event event = client.events.create(chartKey, null, null, "ruleset1");
+
+        assertThat(event.socialDistancingRulesetKey).isEqualTo("ruleset1");
     }
 }

@@ -1,6 +1,7 @@
 package seatsio.charts;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mashape.unirest.http.HttpResponse;
 import seatsio.json.JsonObjectBuilder;
@@ -161,6 +162,15 @@ public class Charts {
                 .routeParam("tag", tag));
     }
 
+    public void saveSocialDistancingRulesets(String key, Map<String, SocialDistancingRuleset> rulesets) {
+        JsonObject request = aJsonObject()
+                .withProperty("socialDistancingRulesets", gson().toJsonTree(rulesets))
+                .build();
+        stringResponse(UnirestUtil.post(baseUrl + "/charts/{key}/social-distancing-rulesets", secretKey, workspaceKey)
+                .routeParam("key", key)
+                .body(request.toString()));
+    }
+
     public ChartValidationResult validatePublishedVersion(String key) {
         HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/charts/{key}/version/published/actions/validate", secretKey, workspaceKey)
                 .routeParam("key", key));
@@ -221,4 +231,5 @@ public class Charts {
         }
         return chartListParams.asMap();
     }
+
 }
