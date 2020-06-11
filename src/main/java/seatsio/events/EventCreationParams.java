@@ -7,28 +7,40 @@ public class EventCreationParams {
     public final String eventKey;
     public final Boolean bookWholeTables;
     public final Map<String, TableBookingMode> tableBookingModes;
+    public final String socialDistancingRulesetKey;
 
     public EventCreationParams() {
-        eventKey = null;
-        bookWholeTables = null;
-        tableBookingModes = null;
+        this.eventKey = null;
+        this.bookWholeTables = null;
+        this.tableBookingModes = null;
+        this.socialDistancingRulesetKey = null;
     }
 
     public EventCreationParams(String eventKey) {
         this.eventKey = eventKey;
-        bookWholeTables = null;
-        tableBookingModes = null;
+        this.bookWholeTables = null;
+        this.tableBookingModes = null;
+        this.socialDistancingRulesetKey = null;
     }
 
     public EventCreationParams(String eventKey, boolean bookWholeTables) {
         this.eventKey = eventKey;
         this.bookWholeTables = bookWholeTables;
-        tableBookingModes = null;
+        this.tableBookingModes = null;
+        socialDistancingRulesetKey = null;
     }
 
     public EventCreationParams(String eventKey, Map<String, TableBookingMode> tableBookingModes) {
         this.eventKey = eventKey;
-        this.tableBookingModes = tableBookingModes;
         this.bookWholeTables = null;
+        this.tableBookingModes = tableBookingModes;
+        socialDistancingRulesetKey = null;
+    }
+
+    public EventCreationParams(String eventKey, String socialDistancingRulesetKey) {
+        this.eventKey = eventKey;
+        this.bookWholeTables = null;
+        this.tableBookingModes = null;
+        this.socialDistancingRulesetKey = socialDistancingRulesetKey;
     }
 }

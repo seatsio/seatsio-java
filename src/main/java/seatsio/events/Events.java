@@ -45,6 +45,7 @@ public class Events {
                 .withPropertyIfNotNull("eventKey", p.eventKey)
                 .withPropertyIfNotNull("bookWholeTables", p.bookWholeTables)
                 .withPropertyIfNotNull("tableBookingModes", p.tableBookingModes)
+                .withPropertyIfNotNull("socialDistancingRulesetKey", p.socialDistancingRulesetKey)
                 .build()));
         JsonObjectBuilder request = aJsonObject()
                 .withProperty("chartKey", chartKey)

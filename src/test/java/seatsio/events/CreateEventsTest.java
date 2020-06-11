@@ -4,9 +4,11 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.SeatsioException;
+import seatsio.charts.SocialDistancingRuleset;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -85,6 +87,21 @@ public class CreateEventsTest extends SeatsioClientTest {
                 ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT),
                 ImmutableMap.of("T2", BY_TABLE, "T1", BY_SEAT)
         );
+    }
+
+    @Test
+    public void socialDistancingRulesetKeyCanBePassedIn() {
+        String chartKey = createTestChartWithTables();
+        Map<String, SocialDistancingRuleset> rulesets = ImmutableMap.of("ruleset1", new SocialDistancingRuleset(0, "My ruleset"));
+        client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
+        List<EventCreationParams> params = newArrayList(
+                new EventCreationParams(null, "ruleset1"),
+                new EventCreationParams(null, "ruleset1")
+        );
+
+        List<Event> events = client.events.create(chartKey, params);
+
+        assertThat(events).extracting("socialDistancingRulesetKey").containsExactly("ruleset1", "ruleset1");
     }
 
     @Test
