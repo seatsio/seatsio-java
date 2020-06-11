@@ -4,6 +4,7 @@ import seatsio.events.Event;
 import seatsio.util.ValueObject;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class Chart extends ValueObject {
@@ -18,4 +19,5 @@ public class Chart extends ValueObject {
     public List<Event> events;
     public boolean archived;
     public ChartValidationResult validation;
+    public Map<String, SocialDistancingRuleset> socialDistancingRulesets;
 }

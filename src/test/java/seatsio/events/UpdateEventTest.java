@@ -4,6 +4,9 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.charts.Chart;
+import seatsio.charts.SocialDistancingRuleset;
+
+import java.util.Map;
 
 import static java.time.Instant.now;
 import static java.time.temporal.ChronoUnit.MINUTES;
@@ -60,5 +63,37 @@ public class UpdateEventTest extends SeatsioClientTest {
         Event retrievedEvent = client.events.retrieve(event.key);
         assertThat(retrievedEvent.bookWholeTables).isFalse();
         assertThat(retrievedEvent.tableBookingModes).isEqualTo(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT));
+    }
+
+    @Test
+    public void updateSocialDistancingRulesetKey() {
+        String chartKey = createTestChartWithTables();
+        Map<String, SocialDistancingRuleset> rulesets = ImmutableMap.of(
+                "ruleset1", new SocialDistancingRuleset(0, "My first ruleset"),
+                "ruleset2", new SocialDistancingRuleset(0, "My second ruleset")
+        );
+        client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
+        Event event = client.events.create(chartKey, null, null, "ruleset1");
+
+        client.events.update(event.key, null, null, null, "ruleset2");
+
+        Event retrievedEvent = client.events.retrieve(event.key);
+        assertThat(retrievedEvent.socialDistancingRulesetKey).isEqualTo("ruleset2");
+    }
+
+    @Test
+    public void removeSocialDistancingRulesetKey() {
+        String chartKey = createTestChartWithTables();
+        Map<String, SocialDistancingRuleset> rulesets = ImmutableMap.of(
+                "ruleset1", new SocialDistancingRuleset(0, "My first ruleset"),
+                "ruleset2", new SocialDistancingRuleset(0, "My second ruleset")
+        );
+        client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
+        Event event = client.events.create(chartKey, null, null, "ruleset1");
+
+        client.events.update(event.key, null, null, null, "");
+
+        Event retrievedEvent = client.events.retrieve(event.key);
+        assertThat(retrievedEvent.socialDistancingRulesetKey).isNull();
     }
 }
