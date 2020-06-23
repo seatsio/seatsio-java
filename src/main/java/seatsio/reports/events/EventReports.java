@@ -81,12 +81,23 @@ public class EventReports extends Reports {
         return fetchReport("bySection", eventKey, section);
     }
 
+    public Map<String, List<EventReportItem>> bySelectability(String eventKey) {
+        return fetchReport("bySelectability", eventKey);
+    }
+
+    public List<EventReportItem> bySelectability(String eventKey, String selectability) {
+        return fetchReport("bySelectability", eventKey, selectability);
+    }
+
+    public Map<String, EventReportSummaryItem> summaryBySelectability(String eventKey) {
+        return fetchSummaryReport("bySelectability", eventKey);
+    }
+
     @Override
     protected TypeToken<Map<String, List<EventReportItem>>> getTypeToken() {
         return new TypeToken<Map<String, List<EventReportItem>>>() {
         };
     }
-
 
     private Map<String, EventReportSummaryItem> fetchSummaryReport(String reportType, String eventKey) {
         HttpResponse<String> result = fetchRawSummaryReport(reportType, eventKey);
@@ -101,4 +112,5 @@ public class EventReports extends Reports {
                 .routeParam("key", eventKey)
                 .routeParam("reportType", reportType));
     }
+
 }

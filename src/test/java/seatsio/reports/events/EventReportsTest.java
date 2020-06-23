@@ -14,6 +14,8 @@ import java.util.Map;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static seatsio.reports.events.EventReportItem.NOT_SELECTABLE;
+import static seatsio.reports.events.EventReportItem.SELECTABLE;
 
 public class EventReportsTest extends SeatsioClientTest {
 
@@ -47,6 +49,8 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.displayedObjectType).isNull();
         assertThat(reportItem.leftNeighbour).isNull();
         assertThat(reportItem.rightNeighbour).isEqualTo("A-2");
+        assertThat(reportItem.isSelectable).isFalse();
+        assertThat(reportItem.isDisabledBySocialDistancing).isFalse();
     }
 
     @Test
@@ -237,5 +241,28 @@ public class EventReportsTest extends SeatsioClientTest {
         List<EventReportItem> report = client.eventReports.bySection(event.key, "NO_SECTION");
 
         assertThat(report).hasSize(34);
+    }
+
+    @Test
+    public void bySelectability() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        client.events.changeObjectStatus(event.key, asList("A-1", "A-2"), "lolzor");
+
+        Map<String, List<EventReportItem>> report = client.eventReports.bySelectability(event.key);
+
+        assertThat(report.get(SELECTABLE)).hasSize(32);
+        assertThat(report.get(NOT_SELECTABLE)).hasSize(2);
+    }
+
+    @Test
+    public void bySpecificSelectability() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        client.events.changeObjectStatus(event.key, asList("A-1", "A-2"), "lolzor");
+
+        List<EventReportItem> report = client.eventReports.bySelectability(event.key, NOT_SELECTABLE);
+
+        assertThat(report).hasSize(2);
     }
 }
