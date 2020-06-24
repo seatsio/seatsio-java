@@ -7,6 +7,9 @@ import java.util.Map;
 
 public class EventReportItem extends ValueObject {
 
+    public static final String SELECTABLE = "selectable";
+    public static final String NOT_SELECTABLE = "not_selectable";
+
     public String status;
     public String label;
     public Labels labels;
@@ -30,5 +33,7 @@ public class EventReportItem extends ValueObject {
     public String displayedObjectType;
     public String leftNeighbour;
     public String rightNeighbour;
+    public boolean isSelectable;
+    public Boolean isDisabledBySocialDistancing;
 
 }
