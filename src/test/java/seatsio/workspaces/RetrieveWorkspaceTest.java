@@ -17,6 +17,7 @@ public class RetrieveWorkspaceTest extends SeatsioClientTest {
         assertThat(retrievedWorkspace.key).isNotNull();
         assertThat(retrievedWorkspace.secretKey).isNotNull();
         assertThat(retrievedWorkspace.isTest).isFalse();
+        assertThat(retrievedWorkspace.isActive).isTrue();
     }
 
 }
