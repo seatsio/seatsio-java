@@ -8,5 +8,6 @@ public class Workspace extends ValueObject {
     public String key;
     public String secretKey;
     public boolean isTest;
+    public boolean isActive;
 
 }

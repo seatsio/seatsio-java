@@ -15,6 +15,7 @@ public class CreateWorkspaceTest extends SeatsioClientTest {
         assertThat(workspace.key).isNotNull();
         assertThat(workspace.secretKey).isNotNull();
         assertThat(workspace.isTest).isFalse();
+        assertThat(workspace.isActive).isTrue();
     }
 
     @Test
@@ -25,6 +26,7 @@ public class CreateWorkspaceTest extends SeatsioClientTest {
         assertThat(workspace.key).isNotNull();
         assertThat(workspace.secretKey).isNotNull();
         assertThat(workspace.isTest).isTrue();
+        assertThat(workspace.isActive).isTrue();
     }
 
 }
