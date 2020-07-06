@@ -6,6 +6,7 @@ import seatsio.SeatsioClientTest;
 import seatsio.holdTokens.HoldToken;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.newHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static seatsio.events.ObjectStatus.HELD;
 
@@ -61,5 +62,22 @@ public class HoldObjectsTest extends SeatsioClientTest {
         ChangeObjectStatusResult result = client.events.hold(event.key, newArrayList("A-1", "A-2"), holdToken.holdToken);
 
         assertThat(result.objects).containsOnlyKeys("A-1", "A-2");
+    }
+
+    @Test
+    public void channelKeys() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        HoldToken holdToken = client.holdTokens.create();
+        client.events.updateChannels(event.key, ImmutableMap.of(
+                "channelKey1", new Channel("channel 1", "#FFFF99", 1)
+        ));
+        client.events.assignObjectsToChannel(event.key, ImmutableMap.of(
+                "channelKey1", newHashSet("A-1", "A-2")
+        ));
+
+        client.events.hold(event.key, newArrayList("A-1"), holdToken.holdToken, null, true, newHashSet("channelKey1"));
+
+        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").status).isEqualTo(HELD);
     }
 }

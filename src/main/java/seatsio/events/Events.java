@@ -319,6 +319,10 @@ public class Events {
         return changeObjectStatus(eventKey, objects, BOOKED, holdToken, orderId, keepExtraData);
     }
 
+    public ChangeObjectStatusResult book(String eventKey, List<?> objects, String holdToken, String orderId, Boolean keepExtraData, Set<String> channelKeys) {
+        return changeObjectStatus(eventKey, objects, BOOKED, holdToken, orderId, keepExtraData, channelKeys);
+    }
+
     public BestAvailableResult book(String eventKey, BestAvailable bestAvailable) {
         return book(eventKey, bestAvailable, null, null, null);
     }
@@ -343,6 +347,10 @@ public class Events {
         return changeObjectStatus(eventKey, objects, HELD, holdToken, orderId, keepExtraData);
     }
 
+    public ChangeObjectStatusResult hold(String eventKey, List<?> objects, String holdToken, String orderId, Boolean keepExtraData, Set<String> channelKeys) {
+        return changeObjectStatus(eventKey, objects, HELD, holdToken, orderId, keepExtraData, channelKeys);
+    }
+
     public BestAvailableResult hold(String eventKey, BestAvailable bestAvailable, String holdToken) {
         return hold(eventKey, bestAvailable, holdToken, null, null);
     }
@@ -365,6 +373,10 @@ public class Events {
 
     public ChangeObjectStatusResult release(String eventKey, List<?> objects, String holdToken, String orderId, Boolean keepExtraData) {
         return changeObjectStatus(eventKey, objects, FREE, holdToken, orderId, keepExtraData);
+    }
+
+    public ChangeObjectStatusResult release(String eventKey, List<?> objects, String holdToken, String orderId, Boolean keepExtraData, Set<String> channelKeys) {
+        return changeObjectStatus(eventKey, objects, FREE, holdToken, orderId, keepExtraData, channelKeys);
     }
 
     public ChangeObjectStatusResult release(List<String> eventKeys, List<?> objects, String holdToken, String orderId, Boolean keepExtraData) {
@@ -398,6 +410,10 @@ public class Events {
         return changeObjectStatus(singletonList(eventKey), objects, status, holdToken, orderId, keepExtraData);
     }
 
+    public ChangeObjectStatusResult changeObjectStatus(String eventKey, List<?> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Set<String> channelKeys) {
+        return changeObjectStatus(singletonList(eventKey), objects, status, holdToken, orderId, keepExtraData, channelKeys);
+    }
+
     public ChangeObjectStatusResult changeObjectStatus(List<String> eventKeys, List<?> objects, String status) {
         return changeObjectStatus(eventKeys, objects, status, null, null, null);
     }
@@ -406,11 +422,15 @@ public class Events {
         return changeObjectStatus(eventKeys, objects, status, holdToken, null, null);
     }
 
-    public ChangeObjectStatusResult changeObjectStatus(List<String> eventKeys, List<?> objects, String status, String holdToken, String orderId, Boolean keepExtraData) {
+    public ChangeObjectStatusResult changeObjectStatus(List<String> eventKeys, List<?> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Set<String> channelKeys) {
         HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/seasons/actions/change-object-status", secretKey, workspaceKey)
                 .queryString("expand", "objects")
-                .body(changeObjectStatusRequest(eventKeys, toObjects(objects), status, holdToken, orderId, keepExtraData).toString()));
+                .body(changeObjectStatusRequest(eventKeys, toObjects(objects), status, holdToken, orderId, keepExtraData, channelKeys).toString()));
         return gson().fromJson(response.getBody(), ChangeObjectStatusResult.class);
+    }
+
+    public ChangeObjectStatusResult changeObjectStatus(List<String> eventKeys, List<?> objects, String status, String holdToken, String orderId, Boolean keepExtraData) {
+        return this.changeObjectStatus(eventKeys, objects, status, holdToken, orderId, keepExtraData, null);
     }
 
     public List<ChangeObjectStatusResult> changeObjectStatus(List<StatusChangeRequest> statusChangeRequests) {
@@ -437,31 +457,32 @@ public class Events {
     }
 
     private JsonObject changeObjectStatusRequest(String eventKey, List<ObjectProperties> objects, String status, String holdToken, String orderId, Boolean keepExtraData) {
-        JsonObjectBuilder request = changeObjectStatusRequestBuilder(status, holdToken, orderId, keepExtraData);
+        JsonObjectBuilder request = changeObjectStatusRequestBuilder(status, holdToken, orderId, keepExtraData, null);
         request.withProperty("event", eventKey);
         request.withProperty("objects", objects, object -> gson().toJsonTree(object));
         return request.build();
     }
 
-    private JsonObject changeObjectStatusRequest(List<String> eventKeys, List<ObjectProperties> objects, String status, String holdToken, String orderId, Boolean keepExtraData) {
-        JsonObjectBuilder request = changeObjectStatusRequestBuilder(status, holdToken, orderId, keepExtraData);
+    private JsonObject changeObjectStatusRequest(List<String> eventKeys, List<ObjectProperties> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Set<String> channelKeys) {
+        JsonObjectBuilder request = changeObjectStatusRequestBuilder(status, holdToken, orderId, keepExtraData, channelKeys);
         request.withProperty("events", eventKeys);
         request.withProperty("objects", objects, object -> gson().toJsonTree(object));
         return request.build();
     }
 
     private JsonObject changeObjectStatusRequest(BestAvailable bestAvailable, String status, String holdToken, String orderId, Boolean keepExtraData) {
-        JsonObjectBuilder request = changeObjectStatusRequestBuilder(status, holdToken, orderId, keepExtraData);
+        JsonObjectBuilder request = changeObjectStatusRequestBuilder(status, holdToken, orderId, keepExtraData, null);
         request.withProperty("bestAvailable", gson().toJsonTree(bestAvailable));
         return request.build();
     }
 
-    private JsonObjectBuilder changeObjectStatusRequestBuilder(String status, String holdToken, String orderId, Boolean keepExtraData) {
+    private JsonObjectBuilder changeObjectStatusRequestBuilder(String status, String holdToken, String orderId, Boolean keepExtraData, Set<String> channelKeys) {
         return aJsonObject()
                 .withProperty("status", status)
                 .withPropertyIfNotNull("holdToken", holdToken)
                 .withPropertyIfNotNull("orderId", orderId)
-                .withPropertyIfNotNull("keepExtraData", keepExtraData);
+                .withPropertyIfNotNull("keepExtraData", keepExtraData)
+                .withPropertyIfNotNull("channelKeys", channelKeys);
     }
 
     public ObjectStatus retrieveObjectStatus(String key, String object) {
