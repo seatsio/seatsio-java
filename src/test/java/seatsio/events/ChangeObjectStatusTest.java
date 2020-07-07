@@ -7,6 +7,7 @@ import seatsio.holdTokens.HoldToken;
 import seatsio.reports.events.EventReportItem;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.newHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static seatsio.events.ObjectStatus.FREE;
 
@@ -191,5 +192,21 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
 
         ObjectStatus status2 = client.events.retrieveObjectStatus(event.key, "A-2");
         assertThat(status2.extraData).isEqualTo(ImmutableMap.of("foo", "baz"));
+    }
+
+    @Test
+    public void channelKeys() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        client.events.updateChannels(event.key, ImmutableMap.of(
+                "channelKey1", new Channel("channel 1", "#FFFF99", 1)
+        ));
+        client.events.assignObjectsToChannel(event.key, ImmutableMap.of(
+                "channelKey1", newHashSet("A-1", "A-2")
+        ));
+
+        client.events.changeObjectStatus(event.key, newArrayList("A-1"), "someStatus", null, null, true, newHashSet("channelKey1"));
+
+        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").status).isEqualTo("someStatus");
     }
 }
