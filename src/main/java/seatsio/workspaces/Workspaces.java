@@ -68,6 +68,11 @@ public class Workspaces {
                 .routeParam("key", key));
     }
 
+    public void setDefault(String key) {
+        stringResponse(UnirestUtil.post(baseUrl + "/workspaces/actions/set-default/{key}", secretKey)
+                .routeParam("key", key));
+    }
+
     public Workspace retrieve(String key) {
         HttpResponse<String> response = stringResponse(UnirestUtil.get(baseUrl + "/workspaces/{key}", secretKey)
                 .routeParam("key", key));

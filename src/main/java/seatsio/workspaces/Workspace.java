@@ -9,5 +9,6 @@ public class Workspace extends ValueObject {
     public String secretKey;
     public boolean isTest;
     public boolean isActive;
+    public boolean isDefault;
 
 }
