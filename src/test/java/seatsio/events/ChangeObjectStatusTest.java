@@ -30,7 +30,7 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        ChangeObjectStatusResult result = client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo", null, "order1", null);
+        ChangeObjectStatusResult result = client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo", null, "order1", null, null, null);
 
         assertThat(result.objects).hasSize(1);
         EventReportItem reportItem = result.objects.get("A-1");
@@ -105,7 +105,7 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        client.events.changeObjectStatus(event.key, newArrayList("A-1", "A-2"), "foo", null, "order1", null);
+        client.events.changeObjectStatus(event.key, newArrayList("A-1", "A-2"), "foo", null, "order1", null, null, null);
 
         assertThat(client.events.retrieveObjectStatus(event.key, "A-1").orderId).isEqualTo("order1");
         assertThat(client.events.retrieveObjectStatus(event.key, "A-2").orderId).isEqualTo("order1");
@@ -117,7 +117,7 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
         client.events.updateExtraData(event.key, "A-1", ImmutableMap.of("foo", "bar"));
 
-        client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo", null, "order1", true);
+        client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo", null, "order1", true, null, null);
 
         assertThat(client.events.retrieveObjectStatus(event.key, "A-1").extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
     }
@@ -128,7 +128,7 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
         client.events.updateExtraData(event.key, "A-1", ImmutableMap.of("foo", "bar"));
 
-        client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo", null, "order1", false);
+        client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo", null, "order1", false, null, null);
 
         assertThat(client.events.retrieveObjectStatus(event.key, "A-1").extraData).isNull();
     }
@@ -139,7 +139,7 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
         client.events.updateExtraData(event.key, "A-1", ImmutableMap.of("foo", "bar"));
 
-        client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo", null, "order1", null);
+        client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo", null, "order1", null, null, null);
 
         assertThat(client.events.retrieveObjectStatus(event.key, "A-1").extraData).isNull();
     }
@@ -205,7 +205,23 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
                 "channelKey1", newHashSet("A-1", "A-2")
         ));
 
-        client.events.changeObjectStatus(event.key, newArrayList("A-1"), "someStatus", null, null, true, newHashSet("channelKey1"));
+        client.events.changeObjectStatus(event.key, newArrayList("A-1"), "someStatus", null, null, true, null, newHashSet("channelKey1"));
+
+        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").status).isEqualTo("someStatus");
+    }
+
+    @Test
+    public void ignoreChannels() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        client.events.updateChannels(event.key, ImmutableMap.of(
+                "channelKey1", new Channel("channel 1", "#FFFF99", 1)
+        ));
+        client.events.assignObjectsToChannel(event.key, ImmutableMap.of(
+                "channelKey1", newHashSet("A-1", "A-2")
+        ));
+
+        client.events.changeObjectStatus(event.key, newArrayList("A-1"), "someStatus", null, null, true, true, null);
 
         assertThat(client.events.retrieveObjectStatus(event.key, "A-1").status).isEqualTo("someStatus");
     }

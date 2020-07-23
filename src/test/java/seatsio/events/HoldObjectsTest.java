@@ -35,7 +35,7 @@ public class HoldObjectsTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
         HoldToken holdToken = client.holdTokens.create();
 
-        client.events.hold(event.key, newArrayList("A-1", "A-2"), holdToken.holdToken, "order1", null);
+        client.events.hold(event.key, newArrayList("A-1", "A-2"), holdToken.holdToken, "order1", null, null, null);
 
         assertThat(client.events.retrieveObjectStatus(event.key, "A-1").orderId).isEqualTo("order1");
         assertThat(client.events.retrieveObjectStatus(event.key, "A-2").orderId).isEqualTo("order1");
@@ -48,7 +48,7 @@ public class HoldObjectsTest extends SeatsioClientTest {
         HoldToken holdToken = client.holdTokens.create();
         client.events.updateExtraData(event.key, "A-1", ImmutableMap.of("foo", "bar"));
 
-        client.events.hold(event.key, newArrayList("A-1"), holdToken.holdToken, null, true);
+        client.events.hold(event.key, newArrayList("A-1"), holdToken.holdToken, null, true, null, null);
 
         assertThat(client.events.retrieveObjectStatus(event.key, "A-1").extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
     }
@@ -76,7 +76,24 @@ public class HoldObjectsTest extends SeatsioClientTest {
                 "channelKey1", newHashSet("A-1", "A-2")
         ));
 
-        client.events.hold(event.key, newArrayList("A-1"), holdToken.holdToken, null, true, newHashSet("channelKey1"));
+        client.events.hold(event.key, newArrayList("A-1"), holdToken.holdToken, null, true, null, newHashSet("channelKey1"));
+
+        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").status).isEqualTo(HELD);
+    }
+
+    @Test
+    public void ignoreChannels() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        HoldToken holdToken = client.holdTokens.create();
+        client.events.updateChannels(event.key, ImmutableMap.of(
+                "channelKey1", new Channel("channel 1", "#FFFF99", 1)
+        ));
+        client.events.assignObjectsToChannel(event.key, ImmutableMap.of(
+                "channelKey1", newHashSet("A-1", "A-2")
+        ));
+
+        client.events.hold(event.key, newArrayList("A-1"), holdToken.holdToken, null, true, true, null);
 
         assertThat(client.events.retrieveObjectStatus(event.key, "A-1").status).isEqualTo(HELD);
     }
