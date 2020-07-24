@@ -406,7 +406,7 @@ public class Events {
     }
 
     public List<ChangeObjectStatusResult> changeObjectStatus(List<StatusChangeRequest> statusChangeRequests) {
-        List<JsonElement> statusChangeRequestsAsJson = statusChangeRequests.stream().map(s -> changeObjectStatusRequest(s.eventKey, toObjects(s.objects), s.status, s.holdToken, s.orderId, s.keepExtraData, null, null)).collect(toList());
+        List<JsonElement> statusChangeRequestsAsJson = statusChangeRequests.stream().map(s -> changeObjectStatusRequest(s.eventKey, toObjects(s.objects), s.status, s.holdToken, s.orderId, s.keepExtraData, s.ignoreChannels, s.channelKeys)).collect(toList());
         JsonObject request = aJsonObject()
                 .withProperty("statusChanges", aJsonArray().withItems(statusChangeRequestsAsJson).build())
                 .build();
