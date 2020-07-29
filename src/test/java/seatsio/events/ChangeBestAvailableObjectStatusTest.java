@@ -72,11 +72,23 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
                 ImmutableMap.of("foo", "baz")
         );
 
-        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(2, null, extraData), "foo");
+        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(2, null, extraData, null), "foo");
 
         assertThat(bestAvailableResult.objects).containsOnly("B-4", "B-5");
         assertThat(client.events.retrieveObjectStatus(event.key, "B-4").extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
         assertThat(client.events.retrieveObjectStatus(event.key, "B-5").extraData).isEqualTo(ImmutableMap.of("foo", "baz"));
+    }
+
+    @Test
+    public void ticketTypes() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(2, null, null, newArrayList("adult", "child")), "foo");
+
+        assertThat(bestAvailableResult.objects).containsOnly("B-4", "B-5");
+        assertThat(client.events.retrieveObjectStatus(event.key, "B-4").ticketType).isEqualTo("adult");
+        assertThat(client.events.retrieveObjectStatus(event.key, "B-5").ticketType).isEqualTo("child");
     }
 
     @Test
