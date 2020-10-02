@@ -3,11 +3,13 @@ package seatsio.reports.events;
 import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
+import seatsio.events.Channel;
 import seatsio.events.Event;
 
 import java.util.Map;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.newHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static seatsio.events.ObjectStatus.BOOKED;
 import static seatsio.events.ObjectStatus.FREE;
@@ -31,6 +33,7 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withByCategoryKey(ImmutableMap.of("9", 1))
                 .withByCategoryLabel(ImmutableMap.of("Cat1", 1))
                 .withBySelectability(ImmutableMap.of(NOT_SELECTABLE, 1))
+                .withByChannel(ImmutableMap.of("NO_CHANNEL", 1))
                 .build();
         EventReportSummaryItem freeReport = anEventReportSummaryItem()
                 .withCount(231)
@@ -38,6 +41,7 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withByCategoryKey(ImmutableMap.of("9", 115, "10", 116))
                 .withByCategoryLabel(ImmutableMap.of("Cat1", 115, "Cat2", 116))
                 .withBySelectability(ImmutableMap.of(SELECTABLE, 231))
+                .withByChannel(ImmutableMap.of("NO_CHANNEL", 231))
                 .build();
         assertThat(report).isEqualTo(ImmutableMap.of(BOOKED, bookedReport, FREE, freeReport));
     }
@@ -55,12 +59,14 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withBySection(ImmutableMap.of("NO_SECTION", 116))
                 .withByStatus(ImmutableMap.of(BOOKED, 1, FREE, 115))
                 .withBySelectability(ImmutableMap.of(SELECTABLE, 115, NOT_SELECTABLE, 1))
+                .withByChannel(ImmutableMap.of("NO_CHANNEL", 116))
                 .build();
         EventReportSummaryItem cat10Report = anEventReportSummaryItem()
                 .withCount(116)
                 .withBySection(ImmutableMap.of("NO_SECTION", 116))
                 .withByStatus(ImmutableMap.of(FREE, 116))
                 .withBySelectability(ImmutableMap.of(SELECTABLE, 116))
+                .withByChannel(ImmutableMap.of("NO_CHANNEL", 116))
                 .build();
         assertThat(report).isEqualTo(ImmutableMap.of("9", cat9Report, "10", cat10Report));
     }
@@ -78,12 +84,14 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withBySection(ImmutableMap.of("NO_SECTION", 116))
                 .withByStatus(ImmutableMap.of(BOOKED, 1, FREE, 115))
                 .withBySelectability(ImmutableMap.of(SELECTABLE, 115, NOT_SELECTABLE, 1))
+                .withByChannel(ImmutableMap.of("NO_CHANNEL", 116))
                 .build();
         EventReportSummaryItem cat2Report = anEventReportSummaryItem()
                 .withCount(116)
                 .withBySection(ImmutableMap.of("NO_SECTION", 116))
                 .withByStatus(ImmutableMap.of(FREE, 116))
                 .withBySelectability(ImmutableMap.of(SELECTABLE, 116))
+                .withByChannel(ImmutableMap.of("NO_CHANNEL", 116))
                 .build();
         assertThat(report).isEqualTo(ImmutableMap.of("Cat1", cat1Report, "Cat2", cat2Report));
     }
@@ -102,6 +110,7 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withByCategoryKey(ImmutableMap.of("9", 116, "10", 116))
                 .withByCategoryLabel(ImmutableMap.of("Cat1", 116, "Cat2", 116))
                 .withBySelectability(ImmutableMap.of(SELECTABLE, 231, NOT_SELECTABLE, 1))
+                .withByChannel(ImmutableMap.of("NO_CHANNEL", 232))
                 .build();
         assertThat(report).isEqualTo(ImmutableMap.of("NO_SECTION", noSectionReport));
     }
@@ -120,6 +129,7 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withByStatus(ImmutableMap.of(FREE, 231))
                 .withByCategoryKey(ImmutableMap.of("9", 115, "10", 116))
                 .withByCategoryLabel(ImmutableMap.of("Cat1", 115, "Cat2", 116))
+                .withByChannel(ImmutableMap.of("NO_CHANNEL", 231))
                 .build();
         EventReportSummaryItem notSelectableReport = anEventReportSummaryItem()
                 .withCount(1)
@@ -127,8 +137,37 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withByStatus(ImmutableMap.of(BOOKED, 1))
                 .withByCategoryKey(ImmutableMap.of("9", 1))
                 .withByCategoryLabel(ImmutableMap.of("Cat1", 1))
+                .withByChannel(ImmutableMap.of("NO_CHANNEL", 1))
                 .build();
         assertThat(report).isEqualTo(ImmutableMap.of(SELECTABLE, selectableReport, NOT_SELECTABLE, notSelectableReport));
+    }
+
+    @Test
+    public void summaryByChannel() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        client.events.updateChannels(event.key, ImmutableMap.of("channel1", new Channel("Channel 1", "#FFFF99", 1)));
+        client.events.assignObjectsToChannel(event.key, ImmutableMap.of("channel1", newHashSet("A-1", "A-2")));
+
+        Map<String, EventReportSummaryItem> report = client.eventReports.summaryByChannel(event.key);
+
+        EventReportSummaryItem channel1Report = anEventReportSummaryItem()
+                .withCount(2)
+                .withBySection(ImmutableMap.of("NO_SECTION", 2))
+                .withByCategoryKey(ImmutableMap.of("9", 2))
+                .withByCategoryLabel(ImmutableMap.of("Cat1", 2))
+                .withBySelectability(ImmutableMap.of(SELECTABLE, 2))
+                .withByStatus(ImmutableMap.of(FREE, 2))
+                .build();
+        EventReportSummaryItem noChannelReport = anEventReportSummaryItem()
+                .withCount(230)
+                .withBySection(ImmutableMap.of("NO_SECTION", 230))
+                .withByCategoryKey(ImmutableMap.of("9", 114, "10", 116))
+                .withByCategoryLabel(ImmutableMap.of("Cat1", 114, "Cat2", 116))
+                .withBySelectability(ImmutableMap.of(SELECTABLE, 230))
+                .withByStatus(ImmutableMap.of(FREE, 230))
+                .build();
+        assertThat(report).isEqualTo(ImmutableMap.of("channel1", channel1Report, "NO_CHANNEL", noChannelReport));
     }
 
 }

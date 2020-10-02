@@ -3,6 +3,7 @@ package seatsio.reports.events;
 import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
+import seatsio.events.Channel;
 import seatsio.events.Event;
 import seatsio.events.Labels;
 import seatsio.events.ObjectProperties;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static seatsio.reports.events.EventReportItem.NOT_SELECTABLE;
@@ -25,6 +27,8 @@ public class EventReportsTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
         Map<String, String> extraData = ImmutableMap.of("foo", "bar");
         client.events.book(event.key, asList(new ObjectProperties("A-1", "ticketType1", extraData)), null, "order1", null, null, null);
+        client.events.updateChannels(event.key, ImmutableMap.of("channel1", new Channel("Channel 1", "#FFFF99", 1)));
+        client.events.assignObjectsToChannel(event.key, ImmutableMap.of("channel1", newHashSet("A-1")));
 
         Map<String, List<EventReportItem>> report = client.eventReports.byLabel(event.key);
 
@@ -51,6 +55,7 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.rightNeighbour).isEqualTo("A-2");
         assertThat(reportItem.isSelectable).isFalse();
         assertThat(reportItem.isDisabledBySocialDistancing).isFalse();
+        assertThat(reportItem.channel).isEqualTo("channel1");
     }
 
     @Test
@@ -262,6 +267,31 @@ public class EventReportsTest extends SeatsioClientTest {
         client.events.changeObjectStatus(event.key, asList("A-1", "A-2"), "lolzor");
 
         List<EventReportItem> report = client.eventReports.bySelectability(event.key, NOT_SELECTABLE);
+
+        assertThat(report).hasSize(2);
+    }
+
+    @Test
+    public void byChannel() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        client.events.updateChannels(event.key, ImmutableMap.of("channel1", new Channel("Channel 1", "#FFFF99", 1)));
+        client.events.assignObjectsToChannel(event.key, ImmutableMap.of("channel1", newHashSet("A-1", "A-2")));
+
+        Map<String, List<EventReportItem>> report = client.eventReports.byChannel(event.key);
+
+        assertThat(report.get("channel1")).hasSize(2);
+        assertThat(report.get("NO_CHANNEL")).hasSize(32);
+    }
+
+    @Test
+    public void bySpecificChannel() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        client.events.updateChannels(event.key, ImmutableMap.of("channel1", new Channel("Channel 1", "#FFFF99", 1)));
+        client.events.assignObjectsToChannel(event.key, ImmutableMap.of("channel1", newHashSet("A-1", "A-2")));
+
+        List<EventReportItem> report = client.eventReports.byChannel(event.key, "channel1");
 
         assertThat(report).hasSize(2);
     }

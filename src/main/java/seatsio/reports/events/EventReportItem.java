@@ -35,5 +35,6 @@ public class EventReportItem extends ValueObject {
     public String rightNeighbour;
     public boolean isSelectable;
     public Boolean isDisabledBySocialDistancing;
+    public String channel;
 
 }

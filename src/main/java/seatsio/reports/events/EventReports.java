@@ -81,6 +81,18 @@ public class EventReports extends Reports {
         return fetchReport("bySection", eventKey, section);
     }
 
+    public Map<String, List<EventReportItem>> byChannel(String eventKey) {
+        return fetchReport("byChannel", eventKey);
+    }
+
+    public Map<String, EventReportSummaryItem> summaryByChannel(String channelKey) {
+        return fetchSummaryReport("byChannel", channelKey);
+    }
+
+    public List<EventReportItem> byChannel(String eventKey, String channelKey) {
+        return fetchReport("byChannel", eventKey, channelKey);
+    }
+
     public Map<String, List<EventReportItem>> bySelectability(String eventKey) {
         return fetchReport("bySelectability", eventKey);
     }

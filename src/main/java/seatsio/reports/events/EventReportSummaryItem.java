@@ -12,4 +12,5 @@ public class EventReportSummaryItem extends ValueObject {
     public Map<String, Integer> byCategoryLabel;
     public Map<String, Integer> bySection;
     public Map<String, Integer> bySelectability;
+    public Map<String, Integer> byChannel;
 }
