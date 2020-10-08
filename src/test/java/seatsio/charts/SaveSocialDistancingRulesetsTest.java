@@ -15,7 +15,7 @@ public class SaveSocialDistancingRulesetsTest extends SeatsioClientTest {
     public void saveRulesets() {
         Chart chart = client.charts.create();
         Map<String, SocialDistancingRuleset> rulesets = ImmutableMap.of(
-                "ruleset1", new SocialDistancingRuleset(0, "My first ruleset", 1, true, 2, 1, newHashSet("A-1"), newHashSet("A-2")),
+                "ruleset1", new SocialDistancingRuleset(0, "My first ruleset", 1, true, 2, 1, 10, 0, false, newHashSet("A-1"), newHashSet("A-2")),
                 "ruleset2", new SocialDistancingRuleset(1, "My second ruleset")
         );
 
