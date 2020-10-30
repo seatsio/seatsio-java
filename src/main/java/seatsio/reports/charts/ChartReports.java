@@ -1,5 +1,6 @@
 package seatsio.reports.charts;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.reflect.TypeToken;
 import seatsio.reports.Reports;
 
@@ -13,17 +14,23 @@ public class ChartReports extends Reports {
         super(secretKey, workspaceKey, baseUrl, "charts");
     }
 
-    public Map<String, List<ChartReportItem>> byLabel(String chartKey) {
-        return fetchReport("byLabel", chartKey);
+    public Map<String, List<ChartReportItem>> byLabel(String chartKey, ChartReportBookWholeTablesMode bookWholeTablesMode) {
+        return fetchChartReport("byLabel", chartKey, bookWholeTablesMode);
     }
 
-    public Map<String, List<ChartReportItem>> byCategoryKey(String chartKey) {
-        return fetchReport("byCategoryKey", chartKey);
+    public Map<String, List<ChartReportItem>> byCategoryKey(String chartKey, ChartReportBookWholeTablesMode bookWholeTablesMode) {
+        return fetchChartReport("byCategoryKey", chartKey, bookWholeTablesMode);
     }
 
-    public Map<String, List<ChartReportItem>> byCategoryLabel(String chartKey) {
-        return fetchReport("byCategoryLabel", chartKey);
+    public Map<String, List<ChartReportItem>> byCategoryLabel(String chartKey, ChartReportBookWholeTablesMode bookWholeTablesMode) {
+        return fetchChartReport("byCategoryLabel", chartKey, bookWholeTablesMode);
     }
+
+    private Map<String, List<ChartReportItem>> fetchChartReport(String reportType, String chartKey, ChartReportBookWholeTablesMode bookWholeTablesMode) {
+        Map<String, Object> queryParams = bookWholeTablesMode == null ? null : ImmutableMap.of("bookWholeTables", bookWholeTablesMode.queryParam());
+        return fetchReport(reportType, chartKey, queryParams);
+    }
+
 
     protected TypeToken<Map<String, List<ChartReportItem>>> getTypeToken() {
         return new TypeToken<Map<String, List<ChartReportItem>>>() {

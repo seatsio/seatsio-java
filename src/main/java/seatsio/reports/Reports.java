@@ -25,20 +25,25 @@ public abstract class Reports {
         this.reportItemType = reportItemType;
     }
 
-    private HttpResponse<String> fetchRawReport(String reportType, String chartKey) {
+    private HttpResponse<String> fetchRawReport(String reportType, String key, Map<String, Object> queryParams) {
         return stringResponse(UnirestUtil.get(baseUrl + "/reports/" + reportItemType + "/{key}/{reportType}", secretKey, workspaceKey)
-                .routeParam("key", chartKey)
+                .queryString(queryParams)
+                .routeParam("key", key)
                 .routeParam("reportType", reportType));
     }
 
-    protected final <T> Map<String, List<T>> fetchReport(String reportType, String chartKey) {
-        HttpResponse<String> result = fetchRawReport(reportType, chartKey);
+    protected final <T> Map<String, List<T>> fetchReport(String reportType, String key) {
+        return fetchReport(reportType, key, null);
+    }
+
+    protected final <T> Map<String, List<T>> fetchReport(String reportType, String key, Map<String, Object> queryParams) {
+        HttpResponse<String> result = fetchRawReport(reportType, key, queryParams);
         TypeToken<Map<String, List<T>>> typeToken = getTypeToken();
         return gson().fromJson(result.getBody(), typeToken.getType());
     }
 
-    protected <T> List<T> fetchReport(String reportType, String eventKey, String filter) {
-        return (List<T>) fetchReport(reportType, eventKey).getOrDefault(filter, new ArrayList<>());
+    protected <T> List<T> fetchReportFiltered(String reportType, String eventKey, String filter) {
+        return (List<T>) fetchReport(reportType, eventKey, null).getOrDefault(filter, new ArrayList<>());
     }
 
     protected abstract <T> TypeToken<Map<String, List<T>>> getTypeToken();

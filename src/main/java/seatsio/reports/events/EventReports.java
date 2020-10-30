@@ -22,7 +22,7 @@ public class EventReports extends Reports {
     }
 
     public List<EventReportItem> byLabel(String eventKey, String label) {
-        return fetchReport("byLabel", eventKey, label);
+        return fetchReportFiltered("byLabel", eventKey, label);
     }
 
     public Map<String, List<EventReportItem>> byStatus(String eventKey) {
@@ -30,7 +30,7 @@ public class EventReports extends Reports {
     }
 
     public List<EventReportItem> byStatus(String eventKey, String status) {
-        return fetchReport("byStatus", eventKey, status);
+        return fetchReportFiltered("byStatus", eventKey, status);
     }
 
     public Map<String, EventReportSummaryItem> summaryByStatus(String eventKey) {
@@ -46,7 +46,7 @@ public class EventReports extends Reports {
     }
 
     public List<EventReportItem> byCategoryLabel(String eventKey, String categorylabel) {
-        return fetchReport("byCategoryLabel", eventKey, categorylabel);
+        return fetchReportFiltered("byCategoryLabel", eventKey, categorylabel);
     }
 
     public Map<String, List<EventReportItem>> byCategoryKey(String eventKey) {
@@ -58,7 +58,7 @@ public class EventReports extends Reports {
     }
 
     public List<EventReportItem> byCategoryKey(String eventKey, String categorykey) {
-        return fetchReport("byCategoryKey", eventKey, categorykey);
+        return fetchReportFiltered("byCategoryKey", eventKey, categorykey);
     }
 
     public Map<String, List<EventReportItem>> byOrderId(String eventKey) {
@@ -66,7 +66,7 @@ public class EventReports extends Reports {
     }
 
     public List<EventReportItem> byOrderId(String eventKey, String orderId) {
-        return fetchReport("byOrderId", eventKey, orderId);
+        return fetchReportFiltered("byOrderId", eventKey, orderId);
     }
 
     public Map<String, List<EventReportItem>> bySection(String eventKey) {
@@ -78,7 +78,7 @@ public class EventReports extends Reports {
     }
 
     public List<EventReportItem> bySection(String eventKey, String section) {
-        return fetchReport("bySection", eventKey, section);
+        return fetchReportFiltered("bySection", eventKey, section);
     }
 
     public Map<String, List<EventReportItem>> byChannel(String eventKey) {
@@ -90,7 +90,7 @@ public class EventReports extends Reports {
     }
 
     public List<EventReportItem> byChannel(String eventKey, String channelKey) {
-        return fetchReport("byChannel", eventKey, channelKey);
+        return fetchReportFiltered("byChannel", eventKey, channelKey);
     }
 
     public Map<String, List<EventReportItem>> bySelectability(String eventKey) {
@@ -98,7 +98,7 @@ public class EventReports extends Reports {
     }
 
     public List<EventReportItem> bySelectability(String eventKey, String selectability) {
-        return fetchReport("bySelectability", eventKey, selectability);
+        return fetchReportFiltered("bySelectability", eventKey, selectability);
     }
 
     public Map<String, EventReportSummaryItem> summaryBySelectability(String eventKey) {
