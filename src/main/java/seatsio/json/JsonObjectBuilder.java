@@ -101,7 +101,7 @@ public class JsonObjectBuilder {
         return withProperty(propertyName, values);
     }
 
-    public JsonObjectBuilder withPropertyIfNotNull(String propertyName, Map<?, ?> value) {
+    public JsonObjectBuilder withPropertyIfNotNull(String propertyName, Object value) {
         if (value == null) {
             return this;
         }

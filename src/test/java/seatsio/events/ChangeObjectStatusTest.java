@@ -75,7 +75,7 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
     @Test
     public void table() {
         String chartKey = createTestChartWithTables();
-        Event event = client.events.create(chartKey, null, true);
+        Event event = client.events.create(chartKey, null, TableBookingConfig.allByTable());
 
         ChangeObjectStatusResult result = client.events.changeObjectStatus(event.key, newArrayList("T1"), "foo");
 

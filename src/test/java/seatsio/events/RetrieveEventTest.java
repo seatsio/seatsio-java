@@ -2,7 +2,6 @@ package seatsio.events;
 
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
-import seatsio.charts.Chart;
 
 import java.time.Instant;
 
@@ -21,7 +20,7 @@ public class RetrieveEventTest extends SeatsioClientTest {
         assertThat(retrievedEvent.id).isNotZero();
         assertThat(retrievedEvent.key).isNotNull();
         assertThat(retrievedEvent.chartKey).isEqualTo(chartKey);
-        assertThat(retrievedEvent.bookWholeTables).isFalse();
+        assertThat(retrievedEvent.tableBookingConfig).isEqualTo(TableBookingConfig.inherit());
         assertThat(retrievedEvent.forSaleConfig).isNull();
         assertThat(retrievedEvent.supportsBestAvailable).isTrue();
         Instant now = Instant.now();

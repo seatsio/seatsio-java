@@ -43,26 +43,14 @@ public class UpdateEventTest extends SeatsioClientTest {
     }
 
     @Test
-    public void updateBookWholeTables() {
-        Chart chart = client.charts.create();
-        Event event = client.events.create(chart.key);
-
-        client.events.update(event.key, null, null, true);
-
-        Event retrievedEvent = client.events.retrieve(event.key);
-        assertThat(retrievedEvent.bookWholeTables).isTrue();
-    }
-
-    @Test
-    public void updateTableBookingModes() {
+    public void updateTableBookingConfig() {
         String chartKey = createTestChartWithTables();
         Event event = client.events.create(chartKey);
 
-        client.events.update(event.key, null, null, ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT));
+        client.events.update(event.key, null, null, TableBookingConfig.custom(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT)));
 
         Event retrievedEvent = client.events.retrieve(event.key);
-        assertThat(retrievedEvent.bookWholeTables).isFalse();
-        assertThat(retrievedEvent.tableBookingModes).isEqualTo(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT));
+        assertThat(retrievedEvent.tableBookingConfig).isEqualTo(TableBookingConfig.custom(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT)));
     }
 
     @Test

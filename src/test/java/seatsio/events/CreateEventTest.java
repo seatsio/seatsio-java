@@ -25,7 +25,7 @@ public class CreateEventTest extends SeatsioClientTest {
         assertThat(event.id).isNotZero();
         assertThat(event.key).isNotNull();
         assertThat(event.chartKey).isEqualTo(chartKey);
-        assertThat(event.bookWholeTables).isFalse();
+        assertThat(event.tableBookingConfig).isEqualTo(TableBookingConfig.inherit());
         assertThat(event.supportsBestAvailable).isTrue();
         assertThat(event.forSaleConfig).isNull();
         Instant now = Instant.now();
@@ -40,28 +40,16 @@ public class CreateEventTest extends SeatsioClientTest {
         Event event = client.events.create(chart.key, "eventje");
 
         assertThat(event.key).isEqualTo("eventje");
-        assertThat(event.bookWholeTables).isFalse();
     }
 
     @Test
-    public void bookWholeTablesCanBePassedIn() {
-        Chart chart = client.charts.create();
-
-        Event event = client.events.create(chart.key, null, true);
-
-        assertThat(event.key).isNotNull();
-        assertThat(event.bookWholeTables).isTrue();
-    }
-
-    @Test
-    public void tableBookingModesCanBePassedIn() {
+    public void tableBookingConfigCanBePassedIn() {
         String chartKey = createTestChartWithTables();
 
-        Event event = client.events.create(chartKey, null, ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT));
+        Event event = client.events.create(chartKey, null, TableBookingConfig.custom(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT)));
 
         assertThat(event.key).isNotNull();
-        assertThat(event.bookWholeTables).isFalse();
-        assertThat(event.tableBookingModes).isEqualTo(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT));
+        assertThat(event.tableBookingConfig).isEqualTo(TableBookingConfig.custom(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT)));
     }
 
     @Test

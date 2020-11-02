@@ -3,7 +3,6 @@ package seatsio.events;
 import seatsio.util.ValueObject;
 
 import java.time.Instant;
-import java.util.Map;
 
 public class Event extends ValueObject {
 
@@ -11,11 +10,10 @@ public class Event extends ValueObject {
     public String key;
     public String chartKey;
     public ForSaleConfig forSaleConfig;
-    public boolean bookWholeTables;
     public Boolean supportsBestAvailable;
     public Instant createdOn;
     public Instant updatedOn;
-    public Map<String, TableBookingMode> tableBookingModes;
+    public TableBookingConfig tableBookingConfig;
     public Channel[] channels;
     public String socialDistancingRulesetKey;
 }

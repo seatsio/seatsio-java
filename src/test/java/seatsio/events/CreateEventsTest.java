@@ -44,7 +44,7 @@ public class CreateEventsTest extends SeatsioClientTest {
         assertThat(event.id).isNotZero();
         assertThat(event.key).isNotNull();
         assertThat(event.chartKey).isEqualTo(chartKey);
-        assertThat(event.bookWholeTables).isFalse();
+        assertThat(event.tableBookingConfig).isEqualTo(TableBookingConfig.inherit());
         assertThat(event.supportsBestAvailable).isNull();
         assertThat(event.forSaleConfig).isNull();
         Instant now = Instant.now();
@@ -63,29 +63,18 @@ public class CreateEventsTest extends SeatsioClientTest {
     }
 
     @Test
-    public void bookWholeTablesCanBePassedIn() {
-        String chartKey = createTestChart();
-        List<EventCreationParams> params = newArrayList(new EventCreationParams(null, true), new EventCreationParams(null, false));
-
-        List<Event> events = client.events.create(chartKey, params);
-
-        assertThat(events).extracting("bookWholeTables").containsExactly(true, false);
-    }
-
-    @Test
-    public void tableBookingModesCanBePassedIn() {
+    public void tableBookingConfigCanBePassedIn() {
         String chartKey = createTestChartWithTables();
         List<EventCreationParams> params = newArrayList(
-                new EventCreationParams(null, ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT)),
-                new EventCreationParams(null, ImmutableMap.of("T1", BY_SEAT, "T2", BY_TABLE))
+                new EventCreationParams(null, TableBookingConfig.custom(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT))),
+                new EventCreationParams(null, TableBookingConfig.custom(ImmutableMap.of("T1", BY_SEAT, "T2", BY_TABLE)))
         );
 
         List<Event> events = client.events.create(chartKey, params);
 
-        assertThat(events).extracting("bookWholeTables").containsExactly(false, false);
-        assertThat(events).extracting("tableBookingModes").containsExactly(
-                ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT),
-                ImmutableMap.of("T2", BY_TABLE, "T1", BY_SEAT)
+        assertThat(events).extracting("tableBookingConfig").containsExactly(
+                TableBookingConfig.custom(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT)),
+                TableBookingConfig.custom(ImmutableMap.of("T2", BY_TABLE, "T1", BY_SEAT))
         );
     }
 

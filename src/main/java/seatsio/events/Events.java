@@ -36,15 +36,33 @@ public class Events {
     }
 
     public Event create(String chartKey) {
-        return create(chartKey, null, null, null, null);
+        return create(chartKey, null, null, null);
+    }
+
+    public Event create(String chartKey, String eventKey) {
+        return create(chartKey, eventKey, null, null);
+    }
+
+    public Event create(String chartKey, String eventKey, TableBookingConfig tableBookingConfig) {
+        return create(chartKey, eventKey, tableBookingConfig, null);
+    }
+
+    public Event create(String chartKey, String eventKey, TableBookingConfig tableBookingConfig, String socialDistancingRulesetKey) {
+        JsonObjectBuilder request = aJsonObject()
+                .withProperty("chartKey", chartKey)
+                .withPropertyIfNotNull("eventKey", eventKey)
+                .withPropertyIfNotNull("tableBookingConfig", tableBookingConfig)
+                .withPropertyIfNotNull("socialDistancingRulesetKey", socialDistancingRulesetKey);
+        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/events", secretKey, workspaceKey)
+                .body(request.build().toString()));
+        return gson().fromJson(response.getBody(), Event.class);
     }
 
     public List<Event> create(String chartKey, List<EventCreationParams> params) {
         JsonArray events = new JsonArray();
         params.forEach(p -> events.add(aJsonObject()
                 .withPropertyIfNotNull("eventKey", p.eventKey)
-                .withPropertyIfNotNull("bookWholeTables", p.bookWholeTables)
-                .withPropertyIfNotNull("tableBookingModes", p.tableBookingModes)
+                .withPropertyIfNotNull("tableBookingConfig", p.tableBookingConfig)
                 .withPropertyIfNotNull("socialDistancingRulesetKey", p.socialDistancingRulesetKey)
                 .build()));
         JsonObjectBuilder request = aJsonObject()
@@ -57,57 +75,20 @@ public class Events {
         return gson().fromJson(response.getBody(), EventCreationResult.class).events;
     }
 
-    public Event create(String chartKey, String eventKey) {
-        return create(chartKey, eventKey, null, null, null);
-    }
-
-    public Event create(String chartKey, String eventKey, Boolean bookWholeTables) {
-        return create(chartKey, eventKey, bookWholeTables, null, null);
-    }
-
-    public Event create(String chartKey, String eventKey, Map<String, TableBookingMode> tableBookingModes) {
-        return create(chartKey, eventKey, null, tableBookingModes, null);
-    }
-
-    public Event create(String chartKey, String eventKey, Map<String, TableBookingMode> tableBookingModes, String socialDistancingRulesetKey) {
-        return create(chartKey, eventKey, null, tableBookingModes, socialDistancingRulesetKey);
-    }
-
-    private Event create(String chartKey, String eventKey, Boolean bookWholeTables, Map<String, TableBookingMode> tableBookingModes, String socialDistancingRulesetKey) {
-        JsonObjectBuilder request = aJsonObject()
-                .withProperty("chartKey", chartKey)
-                .withPropertyIfNotNull("eventKey", eventKey)
-                .withPropertyIfNotNull("bookWholeTables", bookWholeTables)
-                .withPropertyIfNotNull("tableBookingModes", tableBookingModes)
-                .withPropertyIfNotNull("socialDistancingRulesetKey", socialDistancingRulesetKey);
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/events", secretKey, workspaceKey)
-                .body(request.build().toString()));
-        return gson().fromJson(response.getBody(), Event.class);
-    }
-
     public void update(String key, String chartKey, String newKey) {
-        update(key, chartKey, newKey, null, null, null);
+        update(key, chartKey, newKey, null, null);
     }
 
 
-    public void update(String key, String chartKey, String newKey, Boolean bookWholeTables) {
-        update(key, chartKey, newKey, bookWholeTables, null, null);
+    public void update(String key, String chartKey, String newKey, TableBookingConfig tableBookingConfig) {
+        update(key, chartKey, newKey, tableBookingConfig, null);
     }
 
-    public void update(String key, String chartKey, String newKey, Map<String, TableBookingMode> tableBookingModes) {
-        update(key, chartKey, newKey, null, tableBookingModes, null);
-    }
-
-    public void update(String key, String chartKey, String newKey, Map<String, TableBookingMode> tableBookingModes, String socialDistancingRulesetKey) {
-        update(key, chartKey, newKey, null, tableBookingModes, socialDistancingRulesetKey);
-    }
-
-    private void update(String key, String chartKey, String newKey, Boolean bookWholeTables, Map<String, TableBookingMode> tableBookingModes, String socialDistancingRulesetKey) {
+    public void update(String key, String chartKey, String newKey, TableBookingConfig tableBookingConfig, String socialDistancingRulesetKey) {
         JsonObjectBuilder request = aJsonObject()
                 .withPropertyIfNotNull("chartKey", chartKey)
                 .withPropertyIfNotNull("eventKey", newKey)
-                .withPropertyIfNotNull("bookWholeTables", bookWholeTables)
-                .withPropertyIfNotNull("tableBookingModes", tableBookingModes)
+                .withPropertyIfNotNull("tableBookingConfig", tableBookingConfig)
                 .withPropertyIfNotNull("socialDistancingRulesetKey", socialDistancingRulesetKey);
         stringResponse(UnirestUtil.post(baseUrl + "/events/{key}", secretKey, workspaceKey)
                 .routeParam("key", key)
