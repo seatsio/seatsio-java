@@ -11,42 +11,143 @@ public class SocialDistancingRuleset extends ValueObject {
     public String name;
     public int numberOfDisabledSeatsToTheSides;
     public boolean disableSeatsInFrontAndBehind;
+    public boolean disableDiagonalSeatsInFrontAndBehind;
     public int numberOfDisabledAisleSeats;
     public int maxGroupSize;
     public int maxOccupancyAbsolute;
     public int maxOccupancyPercentage;
     public boolean oneGroupPerTable;
     public boolean fixedGroupLayout;
-    public Set<String> disabledSeats;
-    public Set<String> enabledSeats;
+    public Set<String> disabledSeats = new HashSet<>();
+    public Set<String> enabledSeats = new HashSet<>();
 
-    SocialDistancingRuleset() {
+    public static RuleBasedSocialDistancingRulesetBuilder ruleBased(String name) {
+        return new RuleBasedSocialDistancingRulesetBuilder(name);
     }
 
-    public SocialDistancingRuleset(int index, String name, int numberOfDisabledSeatsToTheSides, boolean disableSeatsInFrontAndBehind, int numberOfDisabledAisleSeats, int maxGroupSize, int maxOccupancyAbsolute, int maxOccupancyPercentage, boolean oneGroupPerTable, boolean fixedGroupLayout, Set<String> disabledSeats, Set<String> enabledSeats) {
-        this.index = index;
-        this.name = name;
-        this.numberOfDisabledSeatsToTheSides = numberOfDisabledSeatsToTheSides;
-        this.disableSeatsInFrontAndBehind = disableSeatsInFrontAndBehind;
-        this.numberOfDisabledAisleSeats = numberOfDisabledAisleSeats;
-        this.maxGroupSize = maxGroupSize;
-        this.maxOccupancyAbsolute = maxOccupancyAbsolute;
-        this.maxOccupancyPercentage = maxOccupancyPercentage;
-        this.oneGroupPerTable = oneGroupPerTable;
-        this.fixedGroupLayout = fixedGroupLayout;
-        this.disabledSeats = disabledSeats;
-        this.enabledSeats = enabledSeats;
+    public static FixedSocialDistancingRulesetBuilder fixed(String name) {
+        return new FixedSocialDistancingRulesetBuilder(name);
     }
 
-    public SocialDistancingRuleset(int index, String name) {
-        this(index, name, 0, false, 0, 0, 0, 0, false, false, new HashSet<>(), new HashSet<>());
+    public static class FixedSocialDistancingRulesetBuilder {
+
+        public int index;
+        public String name;
+        public Set<String> disabledSeats = new HashSet<>();
+
+        public FixedSocialDistancingRulesetBuilder(String name) {
+            this.name = name;
+        }
+
+        public FixedSocialDistancingRulesetBuilder withIndex(int index) {
+            this.index = index;
+            return this;
+        }
+
+        public FixedSocialDistancingRulesetBuilder withDisabledSeats(Set<String> disabledSeats) {
+            this.disabledSeats = disabledSeats;
+            return this;
+        }
+
+        public SocialDistancingRuleset build() {
+            SocialDistancingRuleset ruleset = new SocialDistancingRuleset();
+            ruleset.index = index;
+            ruleset.name = name;
+            ruleset.fixedGroupLayout = true;
+            ruleset.disabledSeats = disabledSeats;
+            return ruleset;
+        }
     }
 
-    public static SocialDistancingRuleset ruleBased(int index, String name, int numberOfDisabledSeatsToTheSides, boolean disableSeatsInFrontAndBehind, int numberOfDisabledAisleSeats, int maxGroupSize, int maxOccupancyAbsolute, int maxOccupancyPercentage, boolean oneGroupPerTable, Set<String> disabledSeats, Set<String> enabledSeats) {
-        return new SocialDistancingRuleset(index, name, numberOfDisabledSeatsToTheSides, disableSeatsInFrontAndBehind, numberOfDisabledAisleSeats, maxGroupSize, maxOccupancyAbsolute, maxOccupancyPercentage, oneGroupPerTable, false, disabledSeats, enabledSeats);
-    }
+    public static class RuleBasedSocialDistancingRulesetBuilder {
 
-    public static SocialDistancingRuleset fixed(int index, String name, Set<String> disabledSeats) {
-        return new SocialDistancingRuleset(index, name, 0, false, 0, 0, 0, 0, false, true, disabledSeats, new HashSet<>());
+        public int index;
+        public String name;
+        public int numberOfDisabledSeatsToTheSides;
+        public boolean disableSeatsInFrontAndBehind;
+        public boolean disableDiagonalSeatsInFrontAndBehind;
+        public int numberOfDisabledAisleSeats;
+        public int maxGroupSize;
+        public int maxOccupancyAbsolute;
+        public int maxOccupancyPercentage;
+        public boolean oneGroupPerTable;
+        public Set<String> disabledSeats = new HashSet<>();
+        public Set<String> enabledSeats = new HashSet<>();
+
+        public RuleBasedSocialDistancingRulesetBuilder(String name) {
+            this.name = name;
+        }
+
+        public RuleBasedSocialDistancingRulesetBuilder withIndex(int index) {
+            this.index = index;
+            return this;
+        }
+
+        public RuleBasedSocialDistancingRulesetBuilder withNumberOfDisabledSeatsToTheSides(int numberOfDisabledSeatsToTheSides) {
+            this.numberOfDisabledSeatsToTheSides = numberOfDisabledSeatsToTheSides;
+            return this;
+        }
+
+        public RuleBasedSocialDistancingRulesetBuilder withDisableSeatsInFrontAndBehind(boolean disableSeatsInFrontAndBehind) {
+            this.disableSeatsInFrontAndBehind = disableSeatsInFrontAndBehind;
+            return this;
+        }
+
+        public RuleBasedSocialDistancingRulesetBuilder withDisableDiagonalSeatsInFrontAndBehind(boolean disableDiagonalSeatsInFrontAndBehind) {
+            this.disableDiagonalSeatsInFrontAndBehind = disableDiagonalSeatsInFrontAndBehind;
+            return this;
+        }
+
+        public RuleBasedSocialDistancingRulesetBuilder withNumberOfDisabledAisleSeats(int numberOfDisabledAisleSeats) {
+            this.numberOfDisabledAisleSeats = numberOfDisabledAisleSeats;
+            return this;
+        }
+
+        public RuleBasedSocialDistancingRulesetBuilder withMaxGroupSize(int maxGroupSize) {
+            this.maxGroupSize = maxGroupSize;
+            return this;
+        }
+
+        public RuleBasedSocialDistancingRulesetBuilder withMaxOccupancyAbsolute(int maxOccupancyAbsolute) {
+            this.maxOccupancyAbsolute = maxOccupancyAbsolute;
+            return this;
+        }
+
+        public RuleBasedSocialDistancingRulesetBuilder withMaxOccupancyPercentage(int maxOccupancyPercentage) {
+            this.maxOccupancyPercentage = maxOccupancyPercentage;
+            return this;
+        }
+
+        public RuleBasedSocialDistancingRulesetBuilder withOneGroupPerTable(boolean oneGroupPerTable) {
+            this.oneGroupPerTable = oneGroupPerTable;
+            return this;
+        }
+
+        public RuleBasedSocialDistancingRulesetBuilder withDisabledSeats(Set<String> disabledSeats) {
+            this.disabledSeats = disabledSeats;
+            return this;
+        }
+
+        public RuleBasedSocialDistancingRulesetBuilder withEnabledSeats(Set<String> enabledSeats) {
+            this.enabledSeats = enabledSeats;
+            return this;
+        }
+
+        public SocialDistancingRuleset build() {
+            SocialDistancingRuleset ruleset = new SocialDistancingRuleset();
+            ruleset.index = index;
+            ruleset.name = name;
+            ruleset.numberOfDisabledSeatsToTheSides = numberOfDisabledSeatsToTheSides;
+            ruleset.disableSeatsInFrontAndBehind = disableSeatsInFrontAndBehind;
+            ruleset.disableDiagonalSeatsInFrontAndBehind = disableDiagonalSeatsInFrontAndBehind;
+            ruleset.maxGroupSize = maxGroupSize;
+            ruleset.maxOccupancyAbsolute = maxOccupancyAbsolute;
+            ruleset.maxOccupancyPercentage = maxOccupancyPercentage;
+            ruleset.oneGroupPerTable = oneGroupPerTable;
+            ruleset.fixedGroupLayout = false;
+            ruleset.disabledSeats = disabledSeats;
+            ruleset.enabledSeats = enabledSeats;
+            return ruleset;
+        }
     }
 }

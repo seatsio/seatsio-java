@@ -81,7 +81,7 @@ public class CreateEventsTest extends SeatsioClientTest {
     @Test
     public void socialDistancingRulesetKeyCanBePassedIn() {
         String chartKey = createTestChartWithTables();
-        Map<String, SocialDistancingRuleset> rulesets = ImmutableMap.of("ruleset1", new SocialDistancingRuleset(0, "My ruleset"));
+        Map<String, SocialDistancingRuleset> rulesets = ImmutableMap.of("ruleset1", SocialDistancingRuleset.ruleBased("My ruleset").build());
         client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
         List<EventCreationParams> params = newArrayList(
                 new EventCreationParams(null, "ruleset1"),

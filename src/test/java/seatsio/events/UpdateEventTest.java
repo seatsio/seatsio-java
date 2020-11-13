@@ -57,8 +57,8 @@ public class UpdateEventTest extends SeatsioClientTest {
     public void updateSocialDistancingRulesetKey() {
         String chartKey = createTestChartWithTables();
         Map<String, SocialDistancingRuleset> rulesets = ImmutableMap.of(
-                "ruleset1", new SocialDistancingRuleset(0, "My first ruleset"),
-                "ruleset2", new SocialDistancingRuleset(0, "My second ruleset")
+                "ruleset1", SocialDistancingRuleset.ruleBased("My first ruleset").build(),
+                "ruleset2", SocialDistancingRuleset.ruleBased("My second ruleset").build()
         );
         client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
         Event event = client.events.create(chartKey, null, null, "ruleset1");
@@ -73,8 +73,8 @@ public class UpdateEventTest extends SeatsioClientTest {
     public void removeSocialDistancingRulesetKey() {
         String chartKey = createTestChartWithTables();
         Map<String, SocialDistancingRuleset> rulesets = ImmutableMap.of(
-                "ruleset1", new SocialDistancingRuleset(0, "My first ruleset"),
-                "ruleset2", new SocialDistancingRuleset(0, "My second ruleset")
+                "ruleset1", SocialDistancingRuleset.ruleBased("My first ruleset").build(),
+                "ruleset2", SocialDistancingRuleset.ruleBased("My second ruleset").build()
         );
         client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
         Event event = client.events.create(chartKey, null, null, "ruleset1");
