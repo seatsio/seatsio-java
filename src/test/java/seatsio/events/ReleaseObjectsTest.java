@@ -30,7 +30,7 @@ public class ReleaseObjectsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
         HoldToken holdToken = client.holdTokens.create();
-        client.events.hold(event.key, newArrayList("A-1", "A-2"), holdToken.holdToken, null, null, null, null);
+        client.events.hold(event.key, newArrayList("A-1", "A-2"), holdToken.holdToken);
 
         client.events.release(event.key, newArrayList("A-1", "A-2"), holdToken.holdToken);
 
@@ -75,7 +75,7 @@ public class ReleaseObjectsTest extends SeatsioClientTest {
         client.events.assignObjectsToChannel(event.key, ImmutableMap.of(
                 "channelKey1", newHashSet("A-1", "A-2")
         ));
-        client.events.book(event.key, newArrayList("A-1"), null, null, true, null, newHashSet("channelKey1"));
+        client.events.book(event.key, newArrayList("A-1"), null, null, true, null, newHashSet("channelKey1"), null);
 
         client.events.release(event.key, newArrayList("A-1"), null, null, true, null, newHashSet("channelKey1"));
 
@@ -92,7 +92,7 @@ public class ReleaseObjectsTest extends SeatsioClientTest {
         client.events.assignObjectsToChannel(event.key, ImmutableMap.of(
                 "channelKey1", newHashSet("A-1", "A-2")
         ));
-        client.events.book(event.key, newArrayList("A-1"), null, null, true, true, null);
+        client.events.book(event.key, newArrayList("A-1"), null, null, true, true, null, null);
 
         client.events.release(event.key, newArrayList("A-1"), null, null, true, true, null);
 

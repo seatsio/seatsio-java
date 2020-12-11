@@ -26,7 +26,7 @@ public class EventReportsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
         Map<String, String> extraData = ImmutableMap.of("foo", "bar");
-        client.events.book(event.key, asList(new ObjectProperties("A-1", "ticketType1", extraData)), null, "order1", null, null, null);
+        client.events.book(event.key, asList(new ObjectProperties("A-1", "ticketType1", extraData)), null, "order1", null, null, null, null);
         client.events.updateChannels(event.key, ImmutableMap.of("channel1", new Channel("Channel 1", "#FFFF99", 1)));
         client.events.assignObjectsToChannel(event.key, ImmutableMap.of("channel1", newHashSet("A-1")));
 
@@ -206,8 +206,8 @@ public class EventReportsTest extends SeatsioClientTest {
     public void byOrderId() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.book(event.key, asList("A-1", "A-2"), null, "order1", null, null, null);
-        client.events.book(event.key, asList("A-3"), null, "order2", null, null, null);
+        client.events.book(event.key, asList("A-1", "A-2"), null, "order1", null, null, null, null);
+        client.events.book(event.key, asList("A-3"), null, "order2", null, null, null, null);
 
         Map<String, List<EventReportItem>> report = client.eventReports.byOrderId(event.key);
 
@@ -220,8 +220,8 @@ public class EventReportsTest extends SeatsioClientTest {
     public void bySpecificOrderId() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.book(event.key, asList("A-1", "A-2"), null, "order1", null, null, null);
-        client.events.book(event.key, asList("A-3"), null, "order2", null, null, null);
+        client.events.book(event.key, asList("A-1", "A-2"), null, "order1", null, null, null, null);
+        client.events.book(event.key, asList("A-3"), null, "order2", null, null, null, null);
 
         List<EventReportItem> report = client.eventReports.byOrderId(event.key, "order1");
 

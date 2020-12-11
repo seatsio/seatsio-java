@@ -154,8 +154,6 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
                 "channelKey1", newHashSet("B-5")
         ));
 
-        client.events.changeObjectStatus(event.key, newArrayList("A-1"), "someStatus", null, null, true, true, null);
-
         BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(1), "foo", null, null, null, true, null);
 
         assertThat(bestAvailableResult.objects).containsOnly("B-5");
