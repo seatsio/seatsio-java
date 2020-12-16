@@ -21,7 +21,7 @@ import static seatsio.util.UnirestUtil.stringResponse;
 @Execution(ExecutionMode.CONCURRENT)
 public class SeatsioClientTest {
 
-    protected static final String STAGING_BASE_URL = "https://api-staging.seatsio.net";
+    protected static final String STAGING_BASE_URL = "http://localhost:24146";
 
     protected User user;
     protected Subaccount subaccount;
