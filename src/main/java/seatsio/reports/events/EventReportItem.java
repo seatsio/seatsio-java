@@ -10,6 +10,10 @@ public class EventReportItem extends ValueObject {
     public static final String SELECTABLE = "selectable";
     public static final String NOT_SELECTABLE = "not_selectable";
 
+    public static final String NO_CHANNEL = "NO_CHANNEL";
+    public static final String NO_SECTION = "NO_SECTION";
+    public static final String NO_ORDER_ID = "NO_ORDER_ID";
+
     public String status;
     public String label;
     public Labels labels;
