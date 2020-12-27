@@ -21,6 +21,7 @@ public class EventReportsDeepSummaryTest extends SeatsioClientTest {
 
         Map<String, EventReportDeepSummaryItem> report = client.eventReports.deepSummaryByStatus(event.key);
 
+        assertThat(report.get(BOOKED).count).isEqualTo(1);
         assertThat(report.get(BOOKED).bySection.get(NO_SECTION).count).isEqualTo(1);
         assertThat(report.get(BOOKED).bySection.get(NO_SECTION).bySelectability.get(NOT_SELECTABLE)).isEqualTo(1);
     }
@@ -33,6 +34,7 @@ public class EventReportsDeepSummaryTest extends SeatsioClientTest {
 
         Map<String, EventReportDeepSummaryItem> report = client.eventReports.deepSummaryByCategoryKey(event.key);
 
+        assertThat(report.get("9").count).isEqualTo(116);
         assertThat(report.get("9").bySection.get(NO_SECTION).count).isEqualTo(116);
         assertThat(report.get("9").bySection.get(NO_SECTION).bySelectability.get(NOT_SELECTABLE)).isEqualTo(1);
     }
@@ -45,6 +47,7 @@ public class EventReportsDeepSummaryTest extends SeatsioClientTest {
 
         Map<String, EventReportDeepSummaryItem> report = client.eventReports.deepSummaryByCategoryLabel(event.key);
 
+        assertThat(report.get("Cat1").count).isEqualTo(116);
         assertThat(report.get("Cat1").bySection.get(NO_SECTION).count).isEqualTo(116);
         assertThat(report.get("Cat1").bySection.get(NO_SECTION).bySelectability.get(NOT_SELECTABLE)).isEqualTo(1);
     }
