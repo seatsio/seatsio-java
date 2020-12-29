@@ -4,6 +4,6 @@ import java.util.List;
 
 public class UsageDetails {
 
-    public UsageWorkspace workspace;
+    public Long workspace;
     public List<UsageByChart> usageByChart;
 }
