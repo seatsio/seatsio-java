@@ -22,6 +22,7 @@ public class EventReportItem extends ValueObject {
     public String ticketType;
     public String holdToken;
     public String objectType;
+    public Boolean bookAsAWhole;
     public String orderId;
     public boolean forSale;
     public String section;
