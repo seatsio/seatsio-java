@@ -6,6 +6,7 @@ import seatsio.SeatsioClientTest;
 import seatsio.events.Channel;
 import seatsio.events.Event;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -67,7 +68,14 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withBySelectability(ImmutableMap.of(SELECTABLE, 116))
                 .withByChannel(ImmutableMap.of(NO_CHANNEL, 116))
                 .build();
-        assertThat(report).isEqualTo(ImmutableMap.of("9", cat9Report, "10", cat10Report));
+        EventReportSummaryItem noCategoryReport = anEventReportSummaryItem()
+                .withCount(0)
+                .withBySection(new HashMap<>())
+                .withByStatus(new HashMap<>())
+                .withBySelectability(new HashMap<>())
+                .withByChannel(new HashMap<>())
+                .build();
+        assertThat(report).isEqualTo(ImmutableMap.of("9", cat9Report, "10", cat10Report, "NO_CATEGORY", noCategoryReport));
     }
 
     @Test
@@ -92,7 +100,14 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withBySelectability(ImmutableMap.of(SELECTABLE, 116))
                 .withByChannel(ImmutableMap.of(NO_CHANNEL, 116))
                 .build();
-        assertThat(report).isEqualTo(ImmutableMap.of("Cat1", cat1Report, "Cat2", cat2Report));
+        EventReportSummaryItem noCategoryReport = anEventReportSummaryItem()
+                .withCount(0)
+                .withBySection(new HashMap<>())
+                .withByStatus(new HashMap<>())
+                .withBySelectability(new HashMap<>())
+                .withByChannel(new HashMap<>())
+                .build();
+        assertThat(report).isEqualTo(ImmutableMap.of("Cat1", cat1Report, "Cat2", cat2Report, "NO_CATEGORY", noCategoryReport));
     }
 
     @Test
