@@ -21,8 +21,6 @@ import static seatsio.util.UnirestUtil.stringResponse;
 @Execution(ExecutionMode.CONCURRENT)
 public class SeatsioClientTest {
 
-    protected static final String STAGING_BASE_URL = "https://api-staging.seatsio.net";
-
     protected User user;
     protected Subaccount subaccount;
     protected Workspace workspace;
@@ -38,11 +36,19 @@ public class SeatsioClientTest {
     }
 
     protected SeatsioClient seatsioClient(String secretKey) {
-        return new SeatsioClient(secretKey, null, STAGING_BASE_URL);
+        return new SeatsioClient(secretKey, null, apiUrl());
+    }
+
+    protected static String apiUrl() {
+        String url = System.getenv("API_URL");
+        if (url != null) {
+            return url;
+        }
+        return "https://api-staging.seatsio.net";
     }
 
     private TestCompany createTestCompany() throws UnirestException {
-        HttpResponse<String> response = post(STAGING_BASE_URL + "/system/public/users/actions/create-test-company").asString();
+        HttpResponse<String> response = post(apiUrl() + "/system/public/users/actions/create-test-company").asString();
         return new Gson().fromJson(response.getBody(), TestCompany.class);
     }
 
@@ -65,7 +71,7 @@ public class SeatsioClientTest {
     protected String createTestChart(String fileName) {
         String testChartJson = testChartJson(fileName);
         String chartKey = randomUUID().toString();
-        stringResponse(Unirest.post(STAGING_BASE_URL + "/system/public/charts/" + chartKey)
+        stringResponse(Unirest.post(apiUrl() + "/system/public/charts/" + chartKey)
                 .basicAuth(user.secretKey, null)
                 .body(testChartJson));
         return chartKey;

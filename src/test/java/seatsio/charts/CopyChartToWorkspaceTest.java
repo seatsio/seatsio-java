@@ -18,7 +18,7 @@ public class CopyChartToWorkspaceTest extends SeatsioClientTest {
 
         Chart copiedChart = client.charts.copyToWorkspace(chart.key, workspace.key);
 
-        SeatsioClient workspaceClient = new SeatsioClient(workspace.secretKey, null, STAGING_BASE_URL);
+        SeatsioClient workspaceClient = new SeatsioClient(workspace.secretKey, null, apiUrl());
         assertThat(copiedChart.name).isEqualTo("my chart");
         Chart retrievedChart = workspaceClient.charts.retrieve(copiedChart.key);
         assertThat(retrievedChart.name).isEqualTo("my chart");
