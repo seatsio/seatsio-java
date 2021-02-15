@@ -2,7 +2,6 @@ package seatsio.workspaces;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mashape.unirest.http.HttpResponse;
 import seatsio.json.JsonObjectBuilder;
 import seatsio.util.*;
 
@@ -33,10 +32,10 @@ public class Workspaces {
                 .withProperty("name", name)
                 .withPropertyIfNotNull("isTest", isTest);
 
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/workspaces", secretKey)
+        String response = stringResponse(UnirestUtil.post(baseUrl + "/workspaces", secretKey)
                 .body(request.build().toString()));
 
-        return gson().fromJson(response.getBody(), Workspace.class);
+        return gson().fromJson(response, Workspace.class);
     }
 
     public void update(String key, String name) {
@@ -49,11 +48,10 @@ public class Workspaces {
     }
 
     public String regenerateSecretKey(String key) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/workspaces/{key}/actions/regenerate-secret-key", secretKey)
+        String response = stringResponse(UnirestUtil.post(baseUrl + "/workspaces/{key}/actions/regenerate-secret-key", secretKey)
                 .routeParam("key", key));
 
-        JsonObject result = new JsonParser()
-                .parse(response.getBody())
+        JsonObject result = JsonParser.parseString(response)
                 .getAsJsonObject();
         return result.getAsJsonPrimitive("secretKey").getAsString();
     }
@@ -74,9 +72,9 @@ public class Workspaces {
     }
 
     public Workspace retrieve(String key) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.get(baseUrl + "/workspaces/{key}", secretKey)
+        String response = stringResponse(UnirestUtil.get(baseUrl + "/workspaces/{key}", secretKey)
                 .routeParam("key", key));
-        return gson().fromJson(response.getBody(), Workspace.class);
+        return gson().fromJson(response, Workspace.class);
     }
 
     public Stream<Workspace> listAll() {

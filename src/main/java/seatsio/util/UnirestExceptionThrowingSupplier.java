@@ -1,8 +1,8 @@
 package seatsio.util;
 
-import com.mashape.unirest.http.exceptions.UnirestException;
+import kong.unirest.UnirestException;
 
 public interface UnirestExceptionThrowingSupplier<T> {
 
-    public T get() throws UnirestException;
+    T get() throws UnirestException;
 }

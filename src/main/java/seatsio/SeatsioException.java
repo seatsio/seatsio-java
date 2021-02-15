@@ -1,10 +1,8 @@
 package seatsio;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.request.HttpRequest;
+import kong.unirest.HttpRequest;
+import kong.unirest.RawResponse;
 
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import static java.util.stream.Collectors.joining;
@@ -23,17 +21,17 @@ public class SeatsioException extends RuntimeException {
         super("Error while executing " + request.getHttpMethod() + " " + request.getUrl(), t);
     }
 
-    private SeatsioException(List<ApiError> errors, String requestId, HttpRequest request, HttpResponse response) {
+    private SeatsioException(List<ApiError> errors, String requestId, HttpRequest request, RawResponse response) {
         super(exceptionMessage(errors, requestId, request, response));
         this.errors = errors;
         this.requestId = requestId;
     }
 
-    private SeatsioException(HttpRequest request, HttpResponse response) {
+    private SeatsioException(HttpRequest request, RawResponse response) {
         super(exceptionMessage(request, response));
     }
 
-    public static SeatsioException from(HttpRequest request, HttpResponse response) {
+    public static SeatsioException from(HttpRequest request, RawResponse response) {
         if (response.getHeaders().getFirst("Content-Type").contains("application/json")) {
             SeatsioException parsedException = fromJson(response);
             return new SeatsioException(parsedException.errors, parsedException.requestId, request, response);
@@ -41,22 +39,18 @@ public class SeatsioException extends RuntimeException {
         return new SeatsioException(request, response);
     }
 
-    private static String exceptionMessage(List<ApiError> errors, String requestId, HttpRequest request, HttpResponse response) {
+    private static String exceptionMessage(List<ApiError> errors, String requestId, HttpRequest request, RawResponse response) {
         String exceptionMessage = request.getHttpMethod() + " " + request.getUrl() + " resulted in a " + response.getStatus() + " " + response.getStatusText() + " response.";
         exceptionMessage += " Reason: " + errors.stream().map(ApiError::getMessage).collect(joining(", ")) + ".";
         exceptionMessage += " Request ID: " + requestId;
         return exceptionMessage;
     }
 
-    private static String exceptionMessage(HttpRequest request, HttpResponse response) {
+    private static String exceptionMessage(HttpRequest request, RawResponse response) {
         return request.getHttpMethod() + " " + request.getUrl() + " resulted in a " + response.getStatus() + " " + response.getStatusText() + " response.";
     }
 
-    private static SeatsioException fromJson(HttpResponse<?> response) {
-        try {
-            return gson().fromJson(new InputStreamReader(response.getRawBody(), "UTF-8"), SeatsioException.class);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+    private static SeatsioException fromJson(RawResponse response) {
+        return gson().fromJson(response.getContentAsString(), SeatsioException.class);
     }
 }

@@ -1,7 +1,6 @@
 package seatsio.subaccounts;
 
 import com.google.gson.JsonObject;
-import com.mashape.unirest.http.HttpResponse;
 import seatsio.charts.Chart;
 import seatsio.util.*;
 
@@ -34,9 +33,9 @@ public class Subaccounts {
         JsonObject request = aJsonObject()
                 .withPropertyIfNotNull("name", name)
                 .build();
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/subaccounts", secretKey, workspaceKey)
+        String response = stringResponse(UnirestUtil.post(baseUrl + "/subaccounts", secretKey, workspaceKey)
                 .body(request.toString()));
-        return gson().fromJson(response.getBody(), Subaccount.class);
+        return gson().fromJson(response, Subaccount.class);
     }
 
     public void update(long id, String name) {
@@ -49,14 +48,14 @@ public class Subaccounts {
     }
 
     public Subaccount create() {
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/subaccounts", secretKey, workspaceKey));
-        return gson().fromJson(response.getBody(), Subaccount.class);
+        String response = stringResponse(UnirestUtil.post(baseUrl + "/subaccounts", secretKey, workspaceKey));
+        return gson().fromJson(response, Subaccount.class);
     }
 
     public Subaccount retrieve(long id) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.get(baseUrl + "/subaccounts/{id}", secretKey, workspaceKey)
+        String response = stringResponse(UnirestUtil.get(baseUrl + "/subaccounts/{id}", secretKey, workspaceKey)
                 .routeParam("id", Long.toString(id)));
-        return gson().fromJson(response.getBody(), Subaccount.class);
+        return gson().fromJson(response, Subaccount.class);
     }
 
     public void activate(long id) {
@@ -80,18 +79,18 @@ public class Subaccounts {
     }
 
     public Chart copyChartToParent(long id, String chartKey) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{id}/charts/{chartKey}/actions/copy-to/parent", secretKey, workspaceKey)
+        String response = stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{id}/charts/{chartKey}/actions/copy-to/parent", secretKey, workspaceKey)
                 .routeParam("id", Long.toString(id))
                 .routeParam("chartKey", chartKey));
-        return gson().fromJson(response.getBody(), Chart.class);
+        return gson().fromJson(response, Chart.class);
     }
 
     public Chart copyChartToSubaccount(long fromId, long toId, String chartKey) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{fromId}/charts/{chartKey}/actions/copy-to/{toId}", secretKey, workspaceKey)
+        String response = stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{fromId}/charts/{chartKey}/actions/copy-to/{toId}", secretKey, workspaceKey)
                 .routeParam("fromId", Long.toString(fromId))
                 .routeParam("chartKey", chartKey)
                 .routeParam("toId", Long.toString(toId)));
-        return gson().fromJson(response.getBody(), Chart.class);
+        return gson().fromJson(response, Chart.class);
     }
 
     public Stream<Subaccount> listAll() {
