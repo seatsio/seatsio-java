@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mashape.unirest.http.HttpResponse;
+import kong.unirest.HttpResponse;
 import seatsio.SeatsioException;
 import seatsio.SortDirection;
 import seatsio.json.JsonObjectBuilder;
@@ -53,9 +53,9 @@ public class Events {
                 .withPropertyIfNotNull("eventKey", eventKey)
                 .withPropertyIfNotNull("tableBookingConfig", tableBookingConfig)
                 .withPropertyIfNotNull("socialDistancingRulesetKey", socialDistancingRulesetKey);
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/events", secretKey, workspaceKey)
+        String response = stringResponse(UnirestUtil.post(baseUrl + "/events", secretKey, workspaceKey)
                 .body(request.build().toString()));
-        return gson().fromJson(response.getBody(), Event.class);
+        return gson().fromJson(response, Event.class);
     }
 
     public List<Event> create(String chartKey, List<EventCreationParams> params) {
@@ -69,10 +69,10 @@ public class Events {
                 .withProperty("chartKey", chartKey)
                 .withProperty("events", events);
 
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/events/actions/create-multiple", secretKey, workspaceKey)
+        String response = stringResponse(UnirestUtil.post(baseUrl + "/events/actions/create-multiple", secretKey, workspaceKey)
                 .body(request.build().toString()));
 
-        return gson().fromJson(response.getBody(), EventCreationResult.class).events;
+        return gson().fromJson(response, EventCreationResult.class).events;
     }
 
     public void update(String key, String chartKey, String newKey) {
@@ -101,9 +101,9 @@ public class Events {
     }
 
     public Event retrieve(String key) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.get(baseUrl + "/events/{key}", secretKey, workspaceKey)
+        String response = stringResponse(UnirestUtil.get(baseUrl + "/events/{key}", secretKey, workspaceKey)
                 .routeParam("key", key));
-        return gson().fromJson(response.getBody(), Event.class);
+        return gson().fromJson(response, Event.class);
     }
 
     public void updateChannels(String key, Map<String, Channel> channels) {
@@ -361,10 +361,10 @@ public class Events {
     }
 
     public BestAvailableResult changeObjectStatus(String eventKey, BestAvailable bestAvailable, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
-        HttpResponse<String> result = stringResponse(UnirestUtil.post(baseUrl + "/events/{key}/actions/change-object-status", secretKey, workspaceKey)
+        String result = stringResponse(UnirestUtil.post(baseUrl + "/events/{key}/actions/change-object-status", secretKey, workspaceKey)
                 .routeParam("key", eventKey)
                 .body(changeObjectStatusRequest(bestAvailable, status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys).toString()));
-        return gson().fromJson(result.getBody(), BestAvailableResult.class);
+        return gson().fromJson(result, BestAvailableResult.class);
     }
 
     public ChangeObjectStatusResult changeObjectStatus(String eventKey, List<?> objects, String status) {
@@ -380,10 +380,10 @@ public class Events {
     }
 
     public ChangeObjectStatusResult changeObjectStatus(List<String> eventKeys, List<?> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Boolean ignoreSocialDistancing) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/seasons/actions/change-object-status", secretKey, workspaceKey)
+        String response = stringResponse(UnirestUtil.post(baseUrl + "/seasons/actions/change-object-status", secretKey, workspaceKey)
                 .queryString("expand", "objects")
                 .body(changeObjectStatusRequest(eventKeys, toObjects(objects), status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, ignoreSocialDistancing).toString()));
-        return gson().fromJson(response.getBody(), ChangeObjectStatusResult.class);
+        return gson().fromJson(response, ChangeObjectStatusResult.class);
     }
 
     public List<ChangeObjectStatusResult> changeObjectStatus(List<StatusChangeRequest> statusChangeRequests) {
@@ -391,10 +391,10 @@ public class Events {
         JsonObject request = aJsonObject()
                 .withProperty("statusChanges", aJsonArray().withItems(statusChangeRequestsAsJson).build())
                 .build();
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/events/actions/change-object-status", secretKey, workspaceKey)
+        String response = stringResponse(UnirestUtil.post(baseUrl + "/events/actions/change-object-status", secretKey, workspaceKey)
                 .queryString("expand", "objects")
                 .body(request.toString()));
-        return gson().fromJson(response.getBody(), ChangeObjectStatusInBatchResult.class).results;
+        return gson().fromJson(response, ChangeObjectStatusInBatchResult.class).results;
     }
 
     private static class ChangeObjectStatusInBatchResult extends ValueObject {
@@ -441,10 +441,10 @@ public class Events {
     }
 
     public ObjectStatus retrieveObjectStatus(String key, String object) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.get(baseUrl + "/events/{key}/objects/{object}", secretKey, workspaceKey)
+        String response = stringResponse(UnirestUtil.get(baseUrl + "/events/{key}/objects/{object}", secretKey, workspaceKey)
                 .routeParam("key", key)
                 .routeParam("object", object));
-        return gson().fromJson(response.getBody(), ObjectStatus.class);
+        return gson().fromJson(response, ObjectStatus.class);
     }
 
     public void updateExtraData(String key, String object, Map<String, Object> extraData) {

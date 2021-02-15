@@ -3,11 +3,9 @@ package seatsio.charts;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mashape.unirest.http.HttpResponse;
 import seatsio.json.JsonObjectBuilder;
 import seatsio.util.*;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,15 +32,15 @@ public class Charts {
     }
 
     public Chart retrieve(String key) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.get(baseUrl + "/charts/{key}", secretKey, workspaceKey)
+        String response = stringResponse(UnirestUtil.get(baseUrl + "/charts/{key}", secretKey, workspaceKey)
                 .routeParam("key", key));
-        return gson().fromJson(response.getBody(), Chart.class);
+        return gson().fromJson(response, Chart.class);
     }
 
     public Chart retrieveWithEvents(String key) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.get(baseUrl + "/charts/{key}?expand=events", secretKey, workspaceKey)
+        String response = stringResponse(UnirestUtil.get(baseUrl + "/charts/{key}?expand=events", secretKey, workspaceKey)
                 .routeParam("key", key));
-        return gson().fromJson(response.getBody(), Chart.class);
+        return gson().fromJson(response, Chart.class);
     }
 
     public Chart create() {
@@ -62,33 +60,31 @@ public class Charts {
                 .withPropertyIfNotNull("name", name)
                 .withPropertyIfNotNull("venueType", venueType)
                 .withPropertyIfNotNull("categories", categories, category -> gson().toJsonTree(category));
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/charts", secretKey, workspaceKey)
+        String response = stringResponse(UnirestUtil.post(baseUrl + "/charts", secretKey, workspaceKey)
                 .body(request.build().toString()));
-        return gson().fromJson(response.getBody(), Chart.class);
+        return gson().fromJson(response, Chart.class);
     }
 
     public Map<?, ?> retrievePublishedVersion(String key) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.get(baseUrl + "/charts/{key}/version/published", secretKey, workspaceKey)
+        String response = stringResponse(UnirestUtil.get(baseUrl + "/charts/{key}/version/published", secretKey, workspaceKey)
                 .routeParam("key", key));
-        return gson().fromJson(response.getBody(), Map.class);
+        return gson().fromJson(response, Map.class);
     }
 
-    public InputStream retrievePublishedVersionThumbnail(String key) {
-        HttpResponse<InputStream> response = binaryResponse(UnirestUtil.get(baseUrl + "/charts/{key}/version/published/thumbnail", secretKey, workspaceKey)
+    public byte[] retrievePublishedVersionThumbnail(String key) {
+        return binaryResponse(UnirestUtil.get(baseUrl + "/charts/{key}/version/published/thumbnail", secretKey, workspaceKey)
                 .routeParam("key", key));
-        return response.getBody();
     }
 
     public Map<?, ?> retrieveDraftVersion(String key) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.get(baseUrl + "/charts/{key}/version/draft", secretKey, workspaceKey)
+        String response = stringResponse(UnirestUtil.get(baseUrl + "/charts/{key}/version/draft", secretKey, workspaceKey)
                 .routeParam("key", key));
-        return gson().fromJson(response.getBody(), Map.class);
+        return gson().fromJson(response, Map.class);
     }
 
-    public InputStream retrieveDraftVersionThumbnail(String key) {
-        HttpResponse<InputStream> response = binaryResponse(UnirestUtil.get(baseUrl + "/charts/{key}/version/draft/thumbnail", secretKey, workspaceKey)
+    public byte[] retrieveDraftVersionThumbnail(String key) {
+        return binaryResponse(UnirestUtil.get(baseUrl + "/charts/{key}/version/draft/thumbnail", secretKey, workspaceKey)
                 .routeParam("key", key));
-        return response.getBody();
     }
 
     public void update(String key, String name) {
@@ -105,9 +101,9 @@ public class Charts {
     }
 
     public Chart copy(String key) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/charts/{key}/version/published/actions/copy", secretKey, workspaceKey)
+        String response = stringResponse(UnirestUtil.post(baseUrl + "/charts/{key}/version/published/actions/copy", secretKey, workspaceKey)
                 .routeParam("key", key));
-        return gson().fromJson(response.getBody(), Chart.class);
+        return gson().fromJson(response, Chart.class);
     }
 
     public void moveToArchive(String key) {
@@ -131,23 +127,23 @@ public class Charts {
     }
 
     public Chart copyDraftVersion(String key) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/charts/{key}/version/draft/actions/copy", secretKey, workspaceKey)
+        String response = stringResponse(UnirestUtil.post(baseUrl + "/charts/{key}/version/draft/actions/copy", secretKey, workspaceKey)
                 .routeParam("key", key));
-        return gson().fromJson(response.getBody(), Chart.class);
+        return gson().fromJson(response, Chart.class);
     }
 
     public Chart copyToSubacccount(String chartKey, long subaccountId) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/charts/{chartKey}/version/published/actions/copy-to/{subaccountId}", secretKey, workspaceKey)
+        String response = stringResponse(UnirestUtil.post(baseUrl + "/charts/{chartKey}/version/published/actions/copy-to/{subaccountId}", secretKey, workspaceKey)
                 .routeParam("chartKey", chartKey)
                 .routeParam("subaccountId", Long.toString(subaccountId)));
-        return gson().fromJson(response.getBody(), Chart.class);
+        return gson().fromJson(response, Chart.class);
     }
 
     public Chart copyToWorkspace(String chartKey, String toWorkspaceKey) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/charts/{chartKey}/version/published/actions/copy-to-workspace/{workspaceKey}", secretKey, workspaceKey)
+        String response = stringResponse(UnirestUtil.post(baseUrl + "/charts/{chartKey}/version/published/actions/copy-to-workspace/{workspaceKey}", secretKey, workspaceKey)
                 .routeParam("chartKey", chartKey)
                 .routeParam("workspaceKey", toWorkspaceKey));
-        return gson().fromJson(response.getBody(), Chart.class);
+        return gson().fromJson(response, Chart.class);
     }
 
     public void addTag(String key, String tag) {
@@ -172,20 +168,20 @@ public class Charts {
     }
 
     public ChartValidationResult validatePublishedVersion(String key) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/charts/{key}/version/published/actions/validate", secretKey, workspaceKey)
+        String response = stringResponse(UnirestUtil.post(baseUrl + "/charts/{key}/version/published/actions/validate", secretKey, workspaceKey)
                 .routeParam("key", key));
-        return gson().fromJson(response.getBody(), ChartValidationResult.class);
+        return gson().fromJson(response, ChartValidationResult.class);
     }
 
     public ChartValidationResult validateDraftVersion(String key) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.post(baseUrl + "/charts/{key}/version/draft/actions/validate", secretKey, workspaceKey)
+        String response = stringResponse(UnirestUtil.post(baseUrl + "/charts/{key}/version/draft/actions/validate", secretKey, workspaceKey)
                 .routeParam("key", key));
-        return gson().fromJson(response.getBody(), ChartValidationResult.class);
+        return gson().fromJson(response, ChartValidationResult.class);
     }
 
     public List<String> listAllTags() {
-        HttpResponse<String> response = stringResponse(UnirestUtil.get(baseUrl + "/charts/tags", secretKey, workspaceKey));
-        JsonElement tags = new JsonParser().parse(response.getBody()).getAsJsonObject().get("tags");
+        String response = stringResponse(UnirestUtil.get(baseUrl + "/charts/tags", secretKey, workspaceKey));
+        JsonElement tags = JsonParser.parseString(response).getAsJsonObject().get("tags");
         return gson().fromJson(tags, List.class);
     }
 

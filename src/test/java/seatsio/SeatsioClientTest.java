@@ -1,9 +1,9 @@
 package seatsio;
 
 import com.google.gson.Gson;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
+import kong.unirest.UnirestException;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.parallel.Execution;
@@ -14,8 +14,8 @@ import seatsio.workspaces.Workspace;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static com.mashape.unirest.http.Unirest.post;
 import static java.util.UUID.randomUUID;
+import static kong.unirest.Unirest.post;
 import static seatsio.util.UnirestUtil.stringResponse;
 
 @Execution(ExecutionMode.CONCURRENT)
@@ -71,7 +71,7 @@ public class SeatsioClientTest {
     protected String createTestChart(String fileName) {
         String testChartJson = testChartJson(fileName);
         String chartKey = randomUUID().toString();
-        stringResponse(Unirest.post(apiUrl() + "/system/public/charts/" + chartKey)
+        stringResponse(post(apiUrl() + "/system/public/charts/" + chartKey)
                 .basicAuth(user.secretKey, null)
                 .body(testChartJson));
         return chartKey;

@@ -1,7 +1,6 @@
 package seatsio.reports;
 
 import com.google.gson.reflect.TypeToken;
-import com.mashape.unirest.http.HttpResponse;
 import seatsio.util.UnirestUtil;
 
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public abstract class Reports {
         this.reportItemType = reportItemType;
     }
 
-    private HttpResponse<String> fetchRawReport(String reportType, String key, Map<String, Object> queryParams) {
+    private String fetchRawReport(String reportType, String key, Map<String, Object> queryParams) {
         return stringResponse(UnirestUtil.get(baseUrl + "/reports/" + reportItemType + "/{key}/{reportType}", secretKey, workspaceKey)
                 .queryString(queryParams)
                 .routeParam("key", key)
@@ -37,9 +36,9 @@ public abstract class Reports {
     }
 
     protected final <T> Map<String, List<T>> fetchReport(String reportType, String key, Map<String, Object> queryParams) {
-        HttpResponse<String> result = fetchRawReport(reportType, key, queryParams);
+        String result = fetchRawReport(reportType, key, queryParams);
         TypeToken<Map<String, List<T>>> typeToken = getTypeToken();
-        return gson().fromJson(result.getBody(), typeToken.getType());
+        return gson().fromJson(result, typeToken.getType());
     }
 
     protected <T> List<T> fetchReportFiltered(String reportType, String eventKey, String filter) {

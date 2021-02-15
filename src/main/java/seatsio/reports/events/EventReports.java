@@ -1,7 +1,6 @@
 package seatsio.reports.events;
 
 import com.google.gson.reflect.TypeToken;
-import com.mashape.unirest.http.HttpResponse;
 import seatsio.reports.Reports;
 import seatsio.util.UnirestUtil;
 
@@ -136,26 +135,26 @@ public class EventReports extends Reports {
     }
 
     private Map<String, EventReportSummaryItem> fetchSummaryReport(String reportType, String eventKey) {
-        HttpResponse<String> result = fetchRawSummaryReport(reportType, eventKey);
+        String result = fetchRawSummaryReport(reportType, eventKey);
         TypeToken<Map<String, EventReportSummaryItem>> typeToken = new TypeToken<Map<String, EventReportSummaryItem>>() {
         };
-        return gson().fromJson(result.getBody(), typeToken.getType());
+        return gson().fromJson(result, typeToken.getType());
     }
 
-    private HttpResponse<String> fetchRawSummaryReport(String reportType, String eventKey) {
+    private String fetchRawSummaryReport(String reportType, String eventKey) {
         return stringResponse(UnirestUtil.get(baseUrl + "/reports/events/{key}/{reportType}/summary", secretKey, workspaceKey)
                 .routeParam("key", eventKey)
                 .routeParam("reportType", reportType));
     }
 
     private Map<String, EventReportDeepSummaryItem> fetchDeepSummaryReport(String reportType, String eventKey) {
-        HttpResponse<String> result = fetchRawDeepSummaryReport(reportType, eventKey);
+        String result = fetchRawDeepSummaryReport(reportType, eventKey);
         TypeToken<Map<String, EventReportDeepSummaryItem>> typeToken = new TypeToken<Map<String, EventReportDeepSummaryItem>>() {
         };
-        return gson().fromJson(result.getBody(), typeToken.getType());
+        return gson().fromJson(result, typeToken.getType());
     }
 
-    private HttpResponse<String> fetchRawDeepSummaryReport(String reportType, String eventKey) {
+    private String fetchRawDeepSummaryReport(String reportType, String eventKey) {
         return stringResponse(UnirestUtil.get(baseUrl + "/reports/events/{key}/{reportType}/summary/deep", secretKey, workspaceKey)
                 .routeParam("key", eventKey)
                 .routeParam("reportType", reportType));

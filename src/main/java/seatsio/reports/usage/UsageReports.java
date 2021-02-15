@@ -1,7 +1,6 @@
 package seatsio.reports.usage;
 
 import com.google.gson.reflect.TypeToken;
-import com.mashape.unirest.http.HttpResponse;
 import seatsio.reports.usage.detailsForEventInMonth.UsageForObject;
 import seatsio.reports.usage.detailsForMonth.UsageDetails;
 import seatsio.reports.usage.summaryForMonths.UsageSummaryForMonth;
@@ -25,26 +24,26 @@ public class UsageReports {
     }
 
     public List<UsageSummaryForMonth> summaryForAllMonths() {
-        HttpResponse<String> response = stringResponse(UnirestUtil.get(baseUrl + "/reports/usage", secretKey, workspaceKey));
+        String response = stringResponse(UnirestUtil.get(baseUrl + "/reports/usage", secretKey, workspaceKey));
         TypeToken<List<UsageSummaryForMonth>> typeToken = new TypeToken<List<UsageSummaryForMonth>>() {
         };
-        return gson().fromJson(response.getBody(), typeToken.getType());
+        return gson().fromJson(response, typeToken.getType());
     }
 
     public List<UsageDetails> detailsForMonth(Month month) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.get(baseUrl + "/reports/usage/month/{month}", secretKey, workspaceKey)
+        String response = stringResponse(UnirestUtil.get(baseUrl + "/reports/usage/month/{month}", secretKey, workspaceKey)
                 .routeParam("month", month.serialize()));
         TypeToken<List<UsageDetails>> typeToken = new TypeToken<List<UsageDetails>>() {
         };
-        return gson().fromJson(response.getBody(), typeToken.getType());
+        return gson().fromJson(response, typeToken.getType());
     }
 
     public List<UsageForObject> detailsForEventInMonth(long eventId, Month month) {
-        HttpResponse<String> response = stringResponse(UnirestUtil.get(baseUrl + "/reports/usage/month/{month}/event/{eventId}", secretKey, workspaceKey)
+        String response = stringResponse(UnirestUtil.get(baseUrl + "/reports/usage/month/{month}/event/{eventId}", secretKey, workspaceKey)
                 .routeParam("month", month.serialize())
                 .routeParam("eventId", Long.toString(eventId)));
         TypeToken<List<UsageForObject>> typeToken = new TypeToken<List<UsageForObject>>() {
         };
-        return gson().fromJson(response.getBody(), typeToken.getType());
+        return gson().fromJson(response, typeToken.getType());
     }
 }
