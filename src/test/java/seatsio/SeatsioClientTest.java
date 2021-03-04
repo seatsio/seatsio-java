@@ -2,7 +2,6 @@ package seatsio;
 
 import com.google.gson.Gson;
 import kong.unirest.HttpResponse;
-import kong.unirest.Unirest;
 import kong.unirest.UnirestException;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,8 +19,6 @@ import static seatsio.util.UnirestUtil.stringResponse;
 
 @Execution(ExecutionMode.CONCURRENT)
 public class SeatsioClientTest {
-
-    protected static final String STAGING_BASE_URL = "https://api-staging.seatsio.net";
 
     protected User user;
     protected Subaccount subaccount;

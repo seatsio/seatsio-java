@@ -2,7 +2,7 @@ package seatsio;
 
 public enum Region {
 
-    EU("eu"), US("us");
+    EU("eu"), NA("na"), SA("sa"), OC("oc");
 
     private static final String BASE_URL = "https://api-{region}.seatsio.net";
 
