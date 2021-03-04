@@ -1,9 +1,9 @@
 package seatsio;
 
 import com.google.gson.Gson;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
+import kong.unirest.UnirestException;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.parallel.Execution;
@@ -14,14 +14,14 @@ import seatsio.workspaces.Workspace;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static com.mashape.unirest.http.Unirest.post;
 import static java.util.UUID.randomUUID;
+import static kong.unirest.Unirest.post;
 import static seatsio.util.UnirestUtil.stringResponse;
 
 @Execution(ExecutionMode.CONCURRENT)
 public class SeatsioClientTest {
 
-    protected static final String STAGING_BASE_URL = "http://localhost:24146";
+    protected static final String STAGING_BASE_URL = "https://api-staging.seatsio.net";
 
     protected User user;
     protected Subaccount subaccount;
@@ -38,11 +38,19 @@ public class SeatsioClientTest {
     }
 
     protected SeatsioClient seatsioClient(String secretKey) {
-        return new SeatsioClient(secretKey, null, STAGING_BASE_URL);
+        return new SeatsioClient(secretKey, null, apiUrl());
+    }
+
+    protected static String apiUrl() {
+        String url = System.getenv("API_URL");
+        if (url != null) {
+            return url;
+        }
+        return "https://api-staging.seatsio.net";
     }
 
     private TestCompany createTestCompany() throws UnirestException {
-        HttpResponse<String> response = post(STAGING_BASE_URL + "/system/public/users/actions/create-test-company").asString();
+        HttpResponse<String> response = post(apiUrl() + "/system/public/users/actions/create-test-company").asString();
         return new Gson().fromJson(response.getBody(), TestCompany.class);
     }
 
@@ -65,7 +73,7 @@ public class SeatsioClientTest {
     protected String createTestChart(String fileName) {
         String testChartJson = testChartJson(fileName);
         String chartKey = randomUUID().toString();
-        stringResponse(Unirest.post(STAGING_BASE_URL + "/system/public/charts/" + chartKey)
+        stringResponse(post(apiUrl() + "/system/public/charts/" + chartKey)
                 .basicAuth(user.secretKey, null)
                 .body(testChartJson));
         return chartKey;

@@ -1,5 +1,6 @@
 # seatsio-java, the official Seats.io Java client library
 
+![Build](https://github.com/seatsio/seatsio-java/workflows/Build/badge.svg)
 [![](https://jitpack.io/v/seatsio/seatsio-java.svg)](https://jitpack.io/#seatsio/seatsio-java)
 
 ## Installing seatsio-java
@@ -29,14 +30,14 @@ Then you can refer to seatsio-java as a regular package:
 ```
 // build.gradle
 dependencies {
-  compile 'com.github.seatsio:seatsio-java:60.0.0'
+  compile 'com.github.seatsio:seatsio-java:62.2.0'
 }
 
 // pom.xml
 <dependency>
   <groupId>com.github.seatsio</groupId>
   <artifactId>seatsio-java</artifactId>
-  <version>60.0.0</version>
+  <version>62.2.0</version>
 </dependency>
 ```
 

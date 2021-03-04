@@ -40,6 +40,7 @@ public class ChartReportsTest extends SeatsioClientTest {
         ChartReportItem reportItem = report.get("GA1").get(0);
         assertThat(reportItem.capacity).isEqualTo(100);
         assertThat(reportItem.objectType).isEqualTo("generalAdmission");
+        assertThat(reportItem.bookAsAWhole).isEqualTo(false);
     }
 
 

@@ -16,8 +16,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static seatsio.reports.events.EventReportItem.NOT_SELECTABLE;
-import static seatsio.reports.events.EventReportItem.SELECTABLE;
+import static seatsio.reports.events.EventReportItem.*;
 
 public class EventReportsTest extends SeatsioClientTest {
 
@@ -87,6 +86,7 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.numHeld).isEqualTo(3);
         assertThat(reportItem.capacity).isEqualTo(100);
         assertThat(reportItem.objectType).isEqualTo("generalAdmission");
+        assertThat(reportItem.bookAsAWhole).isEqualTo(false);
         assertThat(reportItem.hasRestrictedView).isNull();
         assertThat(reportItem.isAccessible).isNull();
         assertThat(reportItem.isCompanionSeat).isNull();
@@ -213,7 +213,7 @@ public class EventReportsTest extends SeatsioClientTest {
 
         assertThat(report.get("order1")).hasSize(2);
         assertThat(report.get("order2")).hasSize(1);
-        assertThat(report.get("NO_ORDER_ID")).hasSize(31);
+        assertThat(report.get(NO_ORDER_ID)).hasSize(31);
     }
 
     @Test
@@ -235,7 +235,7 @@ public class EventReportsTest extends SeatsioClientTest {
 
         Map<String, List<EventReportItem>> report = client.eventReports.bySection(event.key);
 
-        assertThat(report.get("NO_SECTION")).hasSize(34);
+        assertThat(report.get(NO_SECTION)).hasSize(34);
     }
 
     @Test
@@ -243,7 +243,7 @@ public class EventReportsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        List<EventReportItem> report = client.eventReports.bySection(event.key, "NO_SECTION");
+        List<EventReportItem> report = client.eventReports.bySection(event.key, NO_SECTION);
 
         assertThat(report).hasSize(34);
     }

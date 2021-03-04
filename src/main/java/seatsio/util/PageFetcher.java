@@ -4,8 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.request.HttpRequest;
+import kong.unirest.HttpRequest;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -94,8 +93,8 @@ public class PageFetcher<T> {
     }
 
     private Page<T> fetch(HttpRequest request) {
-        HttpResponse<String> response = stringResponse(request);
-        JsonObject responseJson = new JsonParser().parse(response.getBody()).getAsJsonObject();
+        String response = stringResponse(request);
+        JsonObject responseJson = JsonParser.parseString(response).getAsJsonObject();
         List<T> items = asList(responseJson.getAsJsonArray("items"), clazz);
         return new Page<T>(
                 items,

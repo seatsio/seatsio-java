@@ -1,39 +1,44 @@
 package seatsio.util;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mashape.unirest.request.BaseRequest;
-import com.mashape.unirest.request.GetRequest;
-import com.mashape.unirest.request.HttpRequest;
-import com.mashape.unirest.request.HttpRequestWithBody;
+import kong.unirest.*;
 import seatsio.SeatsioException;
 
-import java.io.InputStream;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static com.google.common.base.Charsets.UTF_8;
 
 public class UnirestUtil {
 
-    public static HttpResponse<String> stringResponse(BaseRequest request) {
-        return handleExceptions(request, request::asString);
+    public static String stringResponse(HttpRequest request) {
+        byte[] response = execute(request);
+        return new String(response, UTF_8);
     }
 
-    public static HttpResponse<InputStream> binaryResponse(BaseRequest request) {
-        return handleExceptions(request, request::asBinary);
+    public static byte[] binaryResponse(HttpRequest request) {
+        return execute(request);
     }
 
-    private static <T> HttpResponse<T> handleExceptions(BaseRequest request, UnirestExceptionThrowingSupplier<HttpResponse<T>> s) {
-        HttpResponse<T> response = execute(request, s);
-        if (response.getStatus() >= 400) {
-            throw SeatsioException.from(request.getHttpRequest(), response);
-        }
-        return response;
-    }
+    private static byte[] execute(HttpRequest request) {
+        AtomicReference<byte[]> normalResponse = new AtomicReference<>();
+        AtomicReference<SeatsioException> errorResponse = new AtomicReference<>();
 
-    private static <T> HttpResponse<T> execute(BaseRequest request, UnirestExceptionThrowingSupplier<HttpResponse<T>> s) {
         try {
-            return s.get();
-        } catch (UnirestException | RuntimeException e) {
-            throw new SeatsioException(e, request.getHttpRequest());
+            request.thenConsume(r -> {
+                RawResponse rawResponse = (RawResponse) r;
+                if (rawResponse.getStatus() >= 400) {
+                    errorResponse.set(SeatsioException.from(request, rawResponse));
+                } else {
+                    normalResponse.set(rawResponse.getContentAsBytes());
+                }
+            });
+        } catch (RuntimeException e) {
+            throw new SeatsioException(e, request);
+        }
+
+        if (normalResponse.get() != null) {
+            return normalResponse.get();
+        } else {
+            throw errorResponse.get();
         }
     }
 

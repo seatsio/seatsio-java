@@ -9,6 +9,7 @@ public class ChartReportItem {
     public String categoryLabel;
     public String categoryKey;
     public String objectType;
+    public Boolean bookAsAWhole;
     public String section;
     public String entrance;
     public Integer capacity;

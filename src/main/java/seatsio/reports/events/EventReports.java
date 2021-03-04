@@ -1,7 +1,6 @@
 package seatsio.reports.events;
 
 import com.google.gson.reflect.TypeToken;
-import com.mashape.unirest.http.HttpResponse;
 import seatsio.reports.Reports;
 import seatsio.util.UnirestUtil;
 
@@ -37,12 +36,20 @@ public class EventReports extends Reports {
         return fetchSummaryReport("byStatus", eventKey);
     }
 
+    public Map<String, EventReportDeepSummaryItem> deepSummaryByStatus(String eventKey) {
+        return fetchDeepSummaryReport("byStatus", eventKey);
+    }
+
     public Map<String, List<EventReportItem>> byCategoryLabel(String eventKey) {
         return fetchReport("byCategoryLabel", eventKey);
     }
 
     public Map<String, EventReportSummaryItem> summaryByCategoryLabel(String eventKey) {
         return fetchSummaryReport("byCategoryLabel", eventKey);
+    }
+
+    public Map<String, EventReportDeepSummaryItem> deepSummaryByCategoryLabel(String eventKey) {
+        return fetchDeepSummaryReport("byCategoryLabel", eventKey);
     }
 
     public List<EventReportItem> byCategoryLabel(String eventKey, String categorylabel) {
@@ -55,6 +62,10 @@ public class EventReports extends Reports {
 
     public Map<String, EventReportSummaryItem> summaryByCategoryKey(String eventKey) {
         return fetchSummaryReport("byCategoryKey", eventKey);
+    }
+
+    public Map<String, EventReportDeepSummaryItem> deepSummaryByCategoryKey(String eventKey) {
+        return fetchDeepSummaryReport("byCategoryKey", eventKey);
     }
 
     public List<EventReportItem> byCategoryKey(String eventKey, String categorykey) {
@@ -77,6 +88,10 @@ public class EventReports extends Reports {
         return fetchSummaryReport("bySection", eventKey);
     }
 
+    public Map<String, EventReportDeepSummaryItem> deepSummaryBySection(String eventKey) {
+        return fetchDeepSummaryReport("bySection", eventKey);
+    }
+
     public List<EventReportItem> bySection(String eventKey, String section) {
         return fetchReportFiltered("bySection", eventKey, section);
     }
@@ -87,6 +102,10 @@ public class EventReports extends Reports {
 
     public Map<String, EventReportSummaryItem> summaryByChannel(String channelKey) {
         return fetchSummaryReport("byChannel", channelKey);
+    }
+
+    public Map<String, EventReportDeepSummaryItem> deepSummaryByChannel(String channelKey) {
+        return fetchDeepSummaryReport("byChannel", channelKey);
     }
 
     public List<EventReportItem> byChannel(String eventKey, String channelKey) {
@@ -105,6 +124,10 @@ public class EventReports extends Reports {
         return fetchSummaryReport("bySelectability", eventKey);
     }
 
+    public Map<String, EventReportDeepSummaryItem> deepSummaryBySelectability(String eventKey) {
+        return fetchDeepSummaryReport("bySelectability", eventKey);
+    }
+
     @Override
     protected TypeToken<Map<String, List<EventReportItem>>> getTypeToken() {
         return new TypeToken<Map<String, List<EventReportItem>>>() {
@@ -112,15 +135,27 @@ public class EventReports extends Reports {
     }
 
     private Map<String, EventReportSummaryItem> fetchSummaryReport(String reportType, String eventKey) {
-        HttpResponse<String> result = fetchRawSummaryReport(reportType, eventKey);
+        String result = fetchRawSummaryReport(reportType, eventKey);
         TypeToken<Map<String, EventReportSummaryItem>> typeToken = new TypeToken<Map<String, EventReportSummaryItem>>() {
         };
-        return gson().fromJson(result.getBody(), typeToken.getType());
+        return gson().fromJson(result, typeToken.getType());
     }
 
-
-    private HttpResponse<String> fetchRawSummaryReport(String reportType, String eventKey) {
+    private String fetchRawSummaryReport(String reportType, String eventKey) {
         return stringResponse(UnirestUtil.get(baseUrl + "/reports/events/{key}/{reportType}/summary", secretKey, workspaceKey)
+                .routeParam("key", eventKey)
+                .routeParam("reportType", reportType));
+    }
+
+    private Map<String, EventReportDeepSummaryItem> fetchDeepSummaryReport(String reportType, String eventKey) {
+        String result = fetchRawDeepSummaryReport(reportType, eventKey);
+        TypeToken<Map<String, EventReportDeepSummaryItem>> typeToken = new TypeToken<Map<String, EventReportDeepSummaryItem>>() {
+        };
+        return gson().fromJson(result, typeToken.getType());
+    }
+
+    private String fetchRawDeepSummaryReport(String reportType, String eventKey) {
+        return stringResponse(UnirestUtil.get(baseUrl + "/reports/events/{key}/{reportType}/summary/deep", secretKey, workspaceKey)
                 .routeParam("key", eventKey)
                 .routeParam("reportType", reportType));
     }

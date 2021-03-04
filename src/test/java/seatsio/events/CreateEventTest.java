@@ -43,13 +43,23 @@ public class CreateEventTest extends SeatsioClientTest {
     }
 
     @Test
-    public void tableBookingConfigCanBePassedIn() {
+    public void tableBookingConfigCustomCanBePassedIn() {
         String chartKey = createTestChartWithTables();
 
         Event event = client.events.create(chartKey, null, TableBookingConfig.custom(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT)));
 
         assertThat(event.key).isNotNull();
         assertThat(event.tableBookingConfig).isEqualTo(TableBookingConfig.custom(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT)));
+    }
+
+    @Test
+    public void tableBookingConfigInheritCanBePassedIn() {
+        String chartKey = createTestChartWithTables();
+
+        Event event = client.events.create(chartKey, null, TableBookingConfig.inherit());
+
+        assertThat(event.key).isNotNull();
+        assertThat(event.tableBookingConfig).isEqualTo(TableBookingConfig.inherit());
     }
 
     @Test
