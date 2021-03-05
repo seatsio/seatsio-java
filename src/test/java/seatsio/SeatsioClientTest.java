@@ -43,7 +43,7 @@ public class SeatsioClientTest {
         if (url != null) {
             return url;
         }
-        return "https://api-staging.seatsio.net";
+        return "https://api-staging-eu.seatsio.net";
     }
 
     private TestCompany createTestCompany() throws UnirestException {
