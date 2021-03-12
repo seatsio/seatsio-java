@@ -30,14 +30,14 @@ Then you can refer to seatsio-java as a regular package:
 ```
 // build.gradle
 dependencies {
-  compile 'com.github.seatsio:seatsio-java:62.2.0'
+  compile 'com.github.seatsio:seatsio-java:63.0.0'
 }
 
 // pom.xml
 <dependency>
   <groupId>com.github.seatsio</groupId>
   <artifactId>seatsio-java</artifactId>
-  <version>62.2.0</version>
+  <version>63.0.0</version>
 </dependency>
 ```
 
@@ -54,7 +54,7 @@ seatsio-java follows semver since v52.2.0.
 ### Creating a chart and an event
 
 ```java
-SeatsioClient client = new SeatsioClient(<WORKSPACE SECRET KEY>); // can be found on https://app.seats.io/workspace-settings
+SeatsioClient client = new SeatsioClient(Region.EU, <WORKSPACE SECRET KEY>); // secret key can be found on https://app.seats.io/workspace-settings
 Chart chart = client.charts.create();
 Event event = client.events.create(chart.key);
 System.out.println("Created event with key " + event.key);
@@ -63,35 +63,35 @@ System.out.println("Created event with key " + event.key);
 ### Booking objects
 
 ```java
-SeatsioClient client = new SeatsioClient(<WORKSPACE SECRET KEY>);
+SeatsioClient client = new SeatsioClient(Region.EU, <WORKSPACE SECRET KEY>);
 client.events.book(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"));
 ```
 
 ### Releasing objects
 
 ```java
-SeatsioClient client = new SeatsioClient(<WORKSPACE SECRET KEY>);
+SeatsioClient client = new SeatsioClient(Region.EU, <WORKSPACE SECRET KEY>);
 client.events.release(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"));
 ```
 
 ### Booking objects that have been held
 
 ```java
-SeatsioClient client = new SeatsioClient(<WORKSPACE SECRET KEY>);
+SeatsioClient client = new SeatsioClient(Region.EU, <WORKSPACE SECRET KEY>);
 client.events.book(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"), <A HOLD TOKEN>);
 ```
 
 ### Changing object status
 
 ```java
-SeatsioClient client = new SeatsioClient(<WORKSPACE SECRET KEY>);
+SeatsioClient client = new SeatsioClient(Region.EU, <WORKSPACE SECRET KEY>);
 client.events.changeObjectStatus(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"), "unavailable");
 ```
 
 ### Listing all charts
 
 ```java
-SeatsioClient client = new SeatsioClient("<WORKSPACE SECRET KEY>");
+SeatsioClient client = new SeatsioClient(Region.EU, "<WORKSPACE SECRET KEY>");
 
 Stream<Chart> charts = client.charts.listAll();
 charts.forEach(chart -> {
@@ -137,7 +137,7 @@ for(Chart chart: charts.items) {
 ### Creating a workspace
 
 ```java
-SeatsioClient client = new SeatsioClient(<COMPANY ADMIN KEY>);
+SeatsioClient client = new SeatsioClient(Region.EU, <COMPANY ADMIN KEY>);
 client.workspaces.create("a workspace");
 ```
 

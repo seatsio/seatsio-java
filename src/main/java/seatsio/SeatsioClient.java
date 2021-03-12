@@ -34,15 +34,16 @@ public class SeatsioClient {
         this.usageReports = new UsageReports(secretKey, workspaceKey, baseUrl);
     }
 
-    public SeatsioClient(String secretKey, String workspaceKey) {
-        this(secretKey, workspaceKey, "https://api.seatsio.net");
+    public SeatsioClient(Region region, String secretKey, String workspaceKey) {
+        this(secretKey, workspaceKey, region.getUrl());
     }
 
-    public SeatsioClient(String secretKey) {
-        this(secretKey, null);
+    public SeatsioClient(Region region, String secretKey) {
+        this(region, secretKey, null);
     }
 
     public String getBaseUrl() {
         return baseUrl;
     }
+
 }
