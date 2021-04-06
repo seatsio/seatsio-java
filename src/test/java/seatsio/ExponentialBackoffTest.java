@@ -33,7 +33,7 @@ public class ExponentialBackoffTest {
         } catch (SeatsioException e) {
             assertThat(e.getMessage()).isEqualTo("GET https://httpbin.org/status/400 resulted in a 400 BAD REQUEST response.");
             long waitTime = Instant.now().toEpochMilli() - start.toEpochMilli();
-            assertThat(waitTime).isLessThan(5000);
+            assertThat(waitTime).isLessThan(2000);
         }
     }
 
