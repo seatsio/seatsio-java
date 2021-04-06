@@ -9,36 +9,38 @@ import static com.google.common.base.Charsets.UTF_8;
 
 public class UnirestUtil {
 
+    private static int MAX_RETRIES = 5;
+
     public static String stringResponse(HttpRequest request) {
-        byte[] response = execute(request);
+        byte[] response = execute(request, 0);
         return new String(response, UTF_8);
     }
 
     public static byte[] binaryResponse(HttpRequest request) {
-        return execute(request);
+        return execute(request, 0);
     }
 
-    private static byte[] execute(HttpRequest request) {
-        AtomicReference<byte[]> normalResponse = new AtomicReference<>();
-        AtomicReference<SeatsioException> errorResponse = new AtomicReference<>();
-
+    private static byte[] execute(HttpRequest request, int retryCount) {
         try {
-            request.thenConsume(r -> {
-                RawResponse rawResponse = (RawResponse) r;
-                if (rawResponse.getStatus() >= 400) {
-                    errorResponse.set(SeatsioException.from(request, rawResponse));
-                } else {
-                    normalResponse.set(rawResponse.getContentAsBytes());
-                }
-            });
-        } catch (RuntimeException e) {
+            AtomicReference<RawResponse> response = new AtomicReference<>();
+            request.thenConsume(r -> response.set((RawResponse) r));
+            if (retryCount >= MAX_RETRIES || response.get().getStatus() != 429) {
+                return processResponse(request, response);
+            } else {
+                long waitTime = (long) Math.pow(2, retryCount + 2) * 100;
+                sleep(waitTime);
+                return execute(request, ++retryCount);
+            }
+        } catch (UnirestException e) {
             throw new SeatsioException(e, request);
         }
+    }
 
-        if (normalResponse.get() != null) {
-            return normalResponse.get();
+    private static byte[] processResponse(HttpRequest request, AtomicReference<RawResponse> response) {
+        if (response.get().getStatus() >= 400) {
+            throw SeatsioException.from(request, response.get());
         } else {
-            throw errorResponse.get();
+            return response.get().getContentAsBytes();
         }
     }
 
@@ -70,4 +72,11 @@ public class UnirestUtil {
         return request;
     }
 
+    public static void sleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
