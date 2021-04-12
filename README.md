@@ -30,14 +30,14 @@ Then you can refer to seatsio-java as a regular package:
 ```
 // build.gradle
 dependencies {
-  compile 'com.github.seatsio:seatsio-java:63.0.0'
+  compile 'com.github.seatsio:seatsio-java:64.0.0'
 }
 
 // pom.xml
 <dependency>
   <groupId>com.github.seatsio</groupId>
   <artifactId>seatsio-java</artifactId>
-  <version>63.0.0</version>
+  <version>64.0.0</version>
 </dependency>
 ```
 
@@ -149,3 +149,10 @@ This exception contains a message string describing what went wrong, and also tw
 
 - `errors`: a list of errors that the server returned. In most cases, this array will contain only one element, an instance of ApiError, containing an error code and a message.
 - `requestId`: the identifier of the request you made. Please mention this to us when you have questions, as it will make debugging easier.
+
+## Rate limiting - exponential backoff
+
+This library supports [exponential backoff](https://en.wikipedia.org/wiki/Exponential_backoff).
+
+When you send too many concurrent requests, the server returns an error `429 - Too Many Requests`. The client reacts to this by waiting for a while, and then retrying the request.
+If the request still fails with an error `429`, it waits a little longer, and try again. This happens at most 5 times, before giving up (after approximately 15 seconds).

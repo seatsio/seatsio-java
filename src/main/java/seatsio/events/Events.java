@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import kong.unirest.HttpResponse;
 import seatsio.SeatsioException;
 import seatsio.SortDirection;
 import seatsio.json.JsonObjectBuilder;
