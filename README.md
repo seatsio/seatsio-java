@@ -1,6 +1,6 @@
 # seatsio-java, the official Seats.io Java client library
 
-![Build](https://github.com/seatsio/seatsio-java/workflows/Build/badge.svg)
+[![Build](https://github.com/seatsio/seatsio-java/workflows/Build/badge.svg)](https://github.com/seatsio/seatsio-java/actions/workflows/build.yml)
 [![](https://jitpack.io/v/seatsio/seatsio-java.svg)](https://jitpack.io/#seatsio/seatsio-java)
 
 ## Installing seatsio-java
