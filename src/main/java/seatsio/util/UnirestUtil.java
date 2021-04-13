@@ -23,9 +23,13 @@ public class UnirestUtil {
     private static byte[] execute(HttpRequest request, int retryCount) {
         try {
             AtomicReference<RawResponse> response = new AtomicReference<>();
-            request.thenConsume(r -> response.set((RawResponse) r));
+            AtomicReference<byte[]> responseBody = new AtomicReference<>();
+            request.thenConsume(r -> {
+                response.set((RawResponse) r);
+                responseBody.set(response.get().getContentAsBytes());
+            });
             if (retryCount >= MAX_RETRIES || response.get().getStatus() != 429) {
-                return processResponse(request, response);
+                return processResponse(request, response.get(), responseBody.get());
             } else {
                 long waitTime = (long) Math.pow(2, retryCount + 2) * 100;
                 sleep(waitTime);
@@ -36,11 +40,11 @@ public class UnirestUtil {
         }
     }
 
-    private static byte[] processResponse(HttpRequest request, AtomicReference<RawResponse> response) {
-        if (response.get().getStatus() >= 400) {
-            throw SeatsioException.from(request, response.get());
+    private static byte[] processResponse(HttpRequest request, RawResponse response, byte[] responseBody) {
+        if (response.getStatus() >= 400) {
+            throw SeatsioException.from(request, response, responseBody);
         } else {
-            return response.get().getContentAsBytes();
+            return responseBody;
         }
     }
 

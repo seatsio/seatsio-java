@@ -5,6 +5,7 @@ import kong.unirest.RawResponse;
 
 import java.util.List;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.joining;
 import static seatsio.json.SeatsioGson.gson;
 
@@ -31,9 +32,9 @@ public class SeatsioException extends RuntimeException {
         super(exceptionMessage(request, response));
     }
 
-    public static SeatsioException from(HttpRequest request, RawResponse response) {
+    public static SeatsioException from(HttpRequest request, RawResponse response, byte[] responseBody) {
         if (response.getHeaders().getFirst("Content-Type").contains("application/json")) {
-            SeatsioException parsedException = fromJson(response);
+            SeatsioException parsedException = fromJson(responseBody);
             return new SeatsioException(parsedException.errors, parsedException.requestId, request, response);
         }
         return new SeatsioException(request, response);
@@ -50,7 +51,7 @@ public class SeatsioException extends RuntimeException {
         return request.getHttpMethod() + " " + request.getUrl() + " resulted in a " + response.getStatus() + " " + response.getStatusText() + " response.";
     }
 
-    private static SeatsioException fromJson(RawResponse response) {
-        return gson().fromJson(response.getContentAsString(), SeatsioException.class);
+    private static SeatsioException fromJson(byte[] responseBody) {
+        return gson().fromJson(new String(responseBody, UTF_8), SeatsioException.class);
     }
 }
