@@ -9,7 +9,7 @@ repositories {
 dependencies {
     compile 'org.apache.commons:commons-lang3:3.7'
     compile 'com.google.code.gson:gson:2.8.6'
-    compile 'com.konghq:unirest-java:3.11.09'
+    compile 'com.konghq:unirest-java:3.11.11'
     compile 'com.google.guava:guava:23.6-jre'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
