@@ -27,6 +27,18 @@ public class EventReportsDeepSummaryTest extends SeatsioClientTest {
     }
 
     @Test
+    public void deepSummaryByObjectType() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        Map<String, EventReportDeepSummaryItem> report = client.eventReports.deepSummaryByObjectType(event.key);
+
+        assertThat(report.get("seat").count).isEqualTo(32);
+        assertThat(report.get("seat").bySection.get(NO_SECTION).count).isEqualTo(32);
+        assertThat(report.get("seat").bySection.get(NO_SECTION).bySelectability.get(SELECTABLE)).isEqualTo(32);
+    }
+
+    @Test
     public void deepSummaryByCategoryKey() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);

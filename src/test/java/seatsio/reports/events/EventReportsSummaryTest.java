@@ -47,6 +47,48 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
     }
 
     @Test
+    public void summaryByObjectType() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        Map<String, EventReportSummaryItem> report = client.eventReports.summaryByObjectType(event.key);
+
+        EventReportSummaryItem seatReport = anEventReportSummaryItem()
+                .withCount(32)
+                .withBySection(ImmutableMap.of(NO_SECTION, 32))
+                .withByCategoryKey(ImmutableMap.of("9", 16, "10", 16))
+                .withByCategoryLabel(ImmutableMap.of("Cat1", 16, "Cat2", 16))
+                .withBySelectability(ImmutableMap.of(SELECTABLE, 32))
+                .withByChannel(ImmutableMap.of(NO_CHANNEL, 32))
+                .withByStatus(ImmutableMap.of(FREE, 32))
+                .build();
+        EventReportSummaryItem generalAdmissionReport = anEventReportSummaryItem()
+                .withCount(200)
+                .withBySection(ImmutableMap.of(NO_SECTION, 200))
+                .withByCategoryKey(ImmutableMap.of("9", 100, "10", 100))
+                .withByCategoryLabel(ImmutableMap.of("Cat1", 100, "Cat2", 100))
+                .withBySelectability(ImmutableMap.of(SELECTABLE, 200))
+                .withByChannel(ImmutableMap.of(NO_CHANNEL, 200))
+                .withByStatus(ImmutableMap.of(FREE, 200))
+                .build();
+        EventReportSummaryItem emptyReport = anEventReportSummaryItem()
+                .withCount(0)
+                .withBySection(ImmutableMap.of())
+                .withByCategoryKey(ImmutableMap.of())
+                .withByCategoryLabel(ImmutableMap.of())
+                .withBySelectability(ImmutableMap.of())
+                .withByChannel(ImmutableMap.of())
+                .withByStatus(ImmutableMap.of())
+                .build();
+        assertThat(report).isEqualTo(ImmutableMap.of(
+                "seat", seatReport,
+                "generalAdmission", generalAdmissionReport,
+                "booth", emptyReport,
+                "table", emptyReport
+        ));
+    }
+
+    @Test
     public void summaryByCategoryKey() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);

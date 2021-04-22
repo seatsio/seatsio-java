@@ -40,6 +40,22 @@ public class EventReports extends Reports {
         return fetchDeepSummaryReport("byStatus", eventKey);
     }
 
+    public Map<String, List<EventReportItem>> byObjectType(String eventKey) {
+        return fetchReport("byObjectType", eventKey);
+    }
+
+    public List<EventReportItem> byObjectType(String eventKey, String status) {
+        return fetchReportFiltered("byObjectType", eventKey, status);
+    }
+
+    public Map<String, EventReportSummaryItem> summaryByObjectType(String eventKey) {
+        return fetchSummaryReport("byObjectType", eventKey);
+    }
+
+    public Map<String, EventReportDeepSummaryItem> deepSummaryByObjectType(String eventKey) {
+        return fetchDeepSummaryReport("byObjectType", eventKey);
+    }
+
     public Map<String, List<EventReportItem>> byCategoryLabel(String eventKey) {
         return fetchReport("byCategoryLabel", eventKey);
     }

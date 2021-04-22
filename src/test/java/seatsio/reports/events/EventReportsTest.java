@@ -140,6 +140,28 @@ public class EventReportsTest extends SeatsioClientTest {
     }
 
     @Test
+    public void byObjectType() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        Map<String, List<EventReportItem>> report = client.eventReports.byObjectType(event.key);
+
+        assertThat(report.get("seat")).hasSize(32);
+        assertThat(report.get("generalAdmission")).hasSize(2);
+        assertThat(report.get("booth")).hasSize(0);
+    }
+
+    @Test
+    public void bySpecificObjectType() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        List<EventReportItem> report = client.eventReports.byObjectType(event.key, "seat");
+
+        assertThat(report).hasSize(32);
+    }
+
+    @Test
     public void byCategoryLabel() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
