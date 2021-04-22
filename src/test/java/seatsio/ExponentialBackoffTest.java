@@ -39,7 +39,7 @@ public class ExponentialBackoffTest {
 
     @Test
     public void returnsSuccessfullyWhenTheServerSendsA429FirstAndThenASuccessfulResponse() {
-        for (int i = 0; i < 20; ++i) {
+        for (int i = 0; i < 10; ++i) {
             stringResponse(get("https://httpbin.org/status/429:0.25,204:0.75", "secretKey"));
         }
     }
