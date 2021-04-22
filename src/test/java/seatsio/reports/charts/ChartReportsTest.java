@@ -43,7 +43,6 @@ public class ChartReportsTest extends SeatsioClientTest {
         assertThat(reportItem.bookAsAWhole).isEqualTo(false);
     }
 
-
     @Test
     public void byLabel() {
         String chartKey = createTestChart();
@@ -52,6 +51,16 @@ public class ChartReportsTest extends SeatsioClientTest {
 
         assertThat(report.get("A-1")).hasSize(1);
         assertThat(report.get("A-2")).hasSize(1);
+    }
+
+    @Test
+    public void byObjectType() {
+        String chartKey = createTestChart();
+
+        Map<String, List<ChartReportItem>> report = client.chartReports.byObjectType(chartKey, null);
+
+        assertThat(report.get("seat")).hasSize(32);
+        assertThat(report.get("generalAdmission")).hasSize(2);
     }
 
     @Test
