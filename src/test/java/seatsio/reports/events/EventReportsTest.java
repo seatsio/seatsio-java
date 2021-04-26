@@ -55,6 +55,7 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.isSelectable).isFalse();
         assertThat(reportItem.isDisabledBySocialDistancing).isFalse();
         assertThat(reportItem.channel).isEqualTo("channel1");
+        assertThat(reportItem.distanceToFocalPoint).isNotNull();
     }
 
     @Test

@@ -29,6 +29,7 @@ public class ChartReportsTest extends SeatsioClientTest {
         assertThat(reportItem.objectType).isEqualTo("seat");
         assertThat(reportItem.leftNeighbour).isNull();
         assertThat(reportItem.rightNeighbour).isEqualTo("A-2");
+        assertThat(reportItem.distanceToFocalPoint).isNotNull();
     }
 
     @Test

@@ -41,5 +41,6 @@ public class EventReportItem extends ValueObject {
     public boolean isSelectable;
     public Boolean isDisabledBySocialDistancing;
     public String channel;
+    public Double distanceToFocalPoint;
 
 }

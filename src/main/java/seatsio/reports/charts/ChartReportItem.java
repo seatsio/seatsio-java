@@ -15,5 +15,6 @@ public class ChartReportItem {
     public Integer capacity;
     public String leftNeighbour;
     public String rightNeighbour;
+    public Double distanceToFocalPoint;
 
 }
