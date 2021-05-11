@@ -52,16 +52,8 @@ public class UnirestUtil {
         return authenticate(Unirest.get(url), secretKey, workspaceKey);
     }
 
-    public static GetRequest get(String url, String secretKey) {
-        return authenticate(Unirest.get(url), secretKey, null);
-    }
-
     public static HttpRequestWithBody post(String url, String secretKey, String workspaceKey) {
         return authenticate(Unirest.post(url), secretKey, workspaceKey);
-    }
-
-    public static HttpRequestWithBody post(String url, String secretKey) {
-        return authenticate(Unirest.post(url), secretKey, null);
     }
 
     public static HttpRequestWithBody delete(String url, String secretKey, String workspaceKey) {

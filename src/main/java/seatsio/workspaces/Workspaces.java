@@ -16,11 +16,18 @@ import static seatsio.util.UnirestUtil.stringResponse;
 public class Workspaces {
 
     private final String secretKey;
+    private final String workspaceKey;
     private final String baseUrl;
 
-    public Workspaces(String secretKey, String baseUrl) {
+    public final WorkspaceLister<Workspace> active;
+    public final WorkspaceLister<Workspace> inactive;
+
+    public Workspaces(String secretKey, String workspaceKey, String baseUrl) {
         this.secretKey = secretKey;
+        this.workspaceKey = workspaceKey;
         this.baseUrl = baseUrl;
+        this.active = new WorkspaceLister<>(new PageFetcher<>(baseUrl, "/workspaces/active", secretKey, workspaceKey, Workspace.class));
+        this.inactive = new WorkspaceLister<>(new PageFetcher<>(baseUrl, "/workspaces/inactive", secretKey, workspaceKey, Workspace.class));
     }
 
     public Workspace create(String name) {
@@ -32,7 +39,7 @@ public class Workspaces {
                 .withProperty("name", name)
                 .withPropertyIfNotNull("isTest", isTest);
 
-        String response = stringResponse(UnirestUtil.post(baseUrl + "/workspaces", secretKey)
+        String response = stringResponse(UnirestUtil.post(baseUrl + "/workspaces", secretKey, workspaceKey)
                 .body(request.build().toString()));
 
         return gson().fromJson(response, Workspace.class);
@@ -42,13 +49,13 @@ public class Workspaces {
         JsonObjectBuilder request = aJsonObject()
                 .withProperty("name", name);
 
-        stringResponse(UnirestUtil.post(baseUrl + "/workspaces/{key}", secretKey)
+        stringResponse(UnirestUtil.post(baseUrl + "/workspaces/{key}", secretKey, workspaceKey)
                 .routeParam("key", key)
                 .body(request.build().toString()));
     }
 
     public String regenerateSecretKey(String key) {
-        String response = stringResponse(UnirestUtil.post(baseUrl + "/workspaces/{key}/actions/regenerate-secret-key", secretKey)
+        String response = stringResponse(UnirestUtil.post(baseUrl + "/workspaces/{key}/actions/regenerate-secret-key", secretKey, workspaceKey)
                 .routeParam("key", key));
 
         JsonObject result = JsonParser.parseString(response)
@@ -57,22 +64,22 @@ public class Workspaces {
     }
 
     public void activate(String key) {
-        stringResponse(UnirestUtil.post(baseUrl + "/workspaces/{key}/actions/activate", secretKey)
+        stringResponse(UnirestUtil.post(baseUrl + "/workspaces/{key}/actions/activate", secretKey, workspaceKey)
                 .routeParam("key", key));
     }
 
     public void deactivate(String key) {
-        stringResponse(UnirestUtil.post(baseUrl + "/workspaces/{key}/actions/deactivate", secretKey)
+        stringResponse(UnirestUtil.post(baseUrl + "/workspaces/{key}/actions/deactivate", secretKey, workspaceKey)
                 .routeParam("key", key));
     }
 
     public void setDefault(String key) {
-        stringResponse(UnirestUtil.post(baseUrl + "/workspaces/actions/set-default/{key}", secretKey)
+        stringResponse(UnirestUtil.post(baseUrl + "/workspaces/actions/set-default/{key}", secretKey, workspaceKey)
                 .routeParam("key", key));
     }
 
     public Workspace retrieve(String key) {
-        String response = stringResponse(UnirestUtil.get(baseUrl + "/workspaces/{key}", secretKey)
+        String response = stringResponse(UnirestUtil.get(baseUrl + "/workspaces/{key}", secretKey, workspaceKey)
                 .routeParam("key", key));
         return gson().fromJson(response, Workspace.class);
     }
@@ -129,7 +136,7 @@ public class Workspaces {
         return new ParameterizedLister<>(new PageFetcher<>(baseUrl, "/workspaces", secretKey, Workspace.class));
     }
 
-    private Map<String, Object> toMap(String filter) {
+    protected static Map<String, Object> toMap(String filter) {
         HashMap<String, Object> map = new HashMap<>();
         if (filter != null) {
             map.put("filter", filter);

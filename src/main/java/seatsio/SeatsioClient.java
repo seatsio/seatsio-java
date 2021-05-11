@@ -25,7 +25,7 @@ public class SeatsioClient {
     public SeatsioClient(String secretKey, String workspaceKey, String baseUrl) {
         this.baseUrl = baseUrl;
         this.subaccounts = new Subaccounts(secretKey, workspaceKey, baseUrl);
-        this.workspaces = new Workspaces(secretKey, baseUrl);
+        this.workspaces = new Workspaces(secretKey, workspaceKey, baseUrl);
         this.holdTokens = new HoldTokens(secretKey, workspaceKey, baseUrl);
         this.charts = new Charts(secretKey, workspaceKey, baseUrl);
         this.events = new Events(secretKey, workspaceKey, baseUrl);
