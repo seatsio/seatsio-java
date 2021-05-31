@@ -1,9 +1,8 @@
 package seatsio.events;
 
-import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
-import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
+import seatsio.util.ValueObject;
 
-public class Entrance {
+public class Entrance extends ValueObject {
 
     private String label;
 
@@ -14,13 +13,4 @@ public class Entrance {
         this.label = label;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        return reflectionEquals(this, obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return reflectionHashCode(this);
-    }
 }

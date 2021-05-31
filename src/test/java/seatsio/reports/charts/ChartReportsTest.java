@@ -2,6 +2,7 @@ package seatsio.reports.charts;
 
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
+import seatsio.events.IDs;
 import seatsio.events.Labels;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class ChartReportsTest extends SeatsioClientTest {
         ChartReportItem reportItem = report.get("A-1").get(0);
         assertThat(reportItem.label).isEqualTo("A-1");
         assertThat(reportItem.labels).isEqualTo(new Labels("1", "seat", "A", "row"));
+        assertThat(reportItem.ids).isEqualTo(new IDs("1", "A", null));
         assertThat(reportItem.categoryLabel).isEqualTo("Cat1");
         assertThat(reportItem.categoryKey).isEqualTo("9");
         assertThat(reportItem.section).isNull();

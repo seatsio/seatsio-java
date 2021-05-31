@@ -40,6 +40,7 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
         assertThat(reportItem.status).isEqualTo("foo");
         assertThat(reportItem.label).isEqualTo("A-1");
         assertThat(reportItem.labels).isEqualTo(new Labels("1", "seat", "A", "row"));
+        assertThat(reportItem.ids).isEqualTo(new IDs("1", "A", null));
         assertThat(reportItem.categoryLabel).isEqualTo("Cat1");
         assertThat(reportItem.categoryKey).isEqualTo("9");
         assertThat(reportItem.ticketType).isNull();

@@ -38,6 +38,7 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
         assertThat(reportItem.status).isEqualTo("foo");
         assertThat(reportItem.label).isEqualTo("B-5");
         assertThat(reportItem.labels).isEqualTo(new Labels("5", "seat", "B", "row"));
+        assertThat(reportItem.ids).isEqualTo(new IDs("5", "B", null));
         assertThat(reportItem.categoryLabel).isEqualTo("Cat1");
         assertThat(reportItem.categoryKey).isEqualTo("9");
         assertThat(reportItem.ticketType).isNull();

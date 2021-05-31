@@ -44,6 +44,7 @@ public class BookObjectsTest extends SeatsioClientTest {
         assertThat(result.objects.get("Section A-A-1").entrance).isEqualTo("Entrance 1");
         assertThat(result.objects.get("Section A-A-1").section).isEqualTo("Section A");
         assertThat(result.objects.get("Section A-A-1").labels).isEqualTo(new Labels("1", "seat", "A", "row", "Section A"));
+        assertThat(result.objects.get("Section A-A-1").ids).isEqualTo(new IDs("1", "A", "Section A"));
     }
 
     @Test

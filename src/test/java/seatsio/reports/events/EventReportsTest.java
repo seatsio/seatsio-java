@@ -3,10 +3,7 @@ package seatsio.reports.events;
 import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
-import seatsio.events.Channel;
-import seatsio.events.Event;
-import seatsio.events.Labels;
-import seatsio.events.ObjectProperties;
+import seatsio.events.*;
 import seatsio.holdTokens.HoldToken;
 
 import java.util.List;
@@ -35,6 +32,7 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.status).isEqualTo("booked");
         assertThat(reportItem.label).isEqualTo("A-1");
         assertThat(reportItem.labels).isEqualTo(new Labels("1", "seat", "A", "row"));
+        assertThat(reportItem.ids).isEqualTo(new IDs("1", "A", null));
         assertThat(reportItem.categoryLabel).isEqualTo("Cat1");
         assertThat(reportItem.categoryKey).isEqualTo("9");
         assertThat(reportItem.ticketType).isEqualTo("ticketType1");
