@@ -80,7 +80,7 @@ public class ListStatusChangesTest extends SeatsioClientTest {
         client.events.changeObjectStatus(event.key, asList("A-2"), "s2");
         client.events.changeObjectStatus(event.key, asList("A-3"), "s3");
 
-        Stream<StatusChange> statusChanges = client.events.statusChanges(event.key, null, "date", null).all();
+        Stream<StatusChange> statusChanges = client.events.statusChanges(event.key, null, "objectLabel", null).all();
 
         assertThat(statusChanges)
                 .extracting(statusChange -> statusChange.status)
@@ -95,7 +95,7 @@ public class ListStatusChangesTest extends SeatsioClientTest {
         client.events.changeObjectStatus(event.key, asList("A-2"), "s2");
         client.events.changeObjectStatus(event.key, asList("A-3"), "s3");
 
-        Lister<StatusChange> allStatusChanges = client.events.statusChanges(event.key, null, "date", null);
+        Lister<StatusChange> allStatusChanges = client.events.statusChanges(event.key, null, "objectLabel", null);
         List<StatusChange> list = allStatusChanges.all().collect(toList());
 
         Page<StatusChange> statusChanges = allStatusChanges.pageBefore(list.get(list.size() - 1).id);
@@ -113,7 +113,7 @@ public class ListStatusChangesTest extends SeatsioClientTest {
         client.events.changeObjectStatus(event.key, asList("A-2"), "s2");
         client.events.changeObjectStatus(event.key, asList("A-3"), "s3");
 
-        Lister<StatusChange> allStatusChanges = client.events.statusChanges(event.key, null, "date", null);
+        Lister<StatusChange> allStatusChanges = client.events.statusChanges(event.key, null, "objectLabel", null);
         List<StatusChange> list = allStatusChanges.all().collect(toList());
 
         Page<StatusChange> statusChanges = allStatusChanges.pageAfter(list.get(0).id);
@@ -131,7 +131,7 @@ public class ListStatusChangesTest extends SeatsioClientTest {
         client.events.changeObjectStatus(event.key, asList("A-2"), "s2");
         client.events.changeObjectStatus(event.key, asList("A-3"), "s3");
 
-        Stream<StatusChange> statusChanges = client.events.statusChanges(event.key, null, "date", DESC).all();
+        Stream<StatusChange> statusChanges = client.events.statusChanges(event.key, null, "objectLabel", DESC).all();
 
         assertThat(statusChanges)
                 .extracting(statusChange -> statusChange.status)
