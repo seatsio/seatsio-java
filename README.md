@@ -1,4 +1,4 @@
-# seatsio-java, the official Seats.io Java client library
+# seatsio-java, the official seats.io Java client library
 
 [![Build](https://github.com/seatsio/seatsio-java/workflows/Build/badge.svg)](https://github.com/seatsio/seatsio-java/actions/workflows/build.yml)
 [![](https://jitpack.io/v/seatsio/seatsio-java.svg)](https://jitpack.io/#seatsio/seatsio-java)
@@ -156,3 +156,13 @@ This library supports [exponential backoff](https://en.wikipedia.org/wiki/Expone
 
 When you send too many concurrent requests, the server returns an error `429 - Too Many Requests`. The client reacts to this by waiting for a while, and then retrying the request.
 If the request still fails with an error `429`, it waits a little longer, and try again. This happens at most 5 times, before giving up (after approximately 15 seconds).
+
+## Multi-threading
+
+It's perfectly fine to re-use an instance of `SeatsioClient` in different threads. All methods are thread-safe.
+
+## Connection pooling
+
+We manage a connection pool under the hood, to avoid having to reconnect to the seats.io server on every call. This pool supports 200 concurrent connections.
+
+The connection pool is shared between all instances of `SeatsioClient`.
