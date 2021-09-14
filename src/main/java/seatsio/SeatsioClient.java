@@ -7,11 +7,13 @@ import seatsio.reports.charts.ChartReports;
 import seatsio.reports.events.EventReports;
 import seatsio.reports.usage.UsageReports;
 import seatsio.subaccounts.Subaccounts;
+import seatsio.util.UnirestWrapper;
 import seatsio.workspaces.Workspaces;
 
 public class SeatsioClient {
 
     private final String baseUrl;
+    private final UnirestWrapper unirest;
 
     public final Subaccounts subaccounts;
     public final Workspaces workspaces;
@@ -22,16 +24,18 @@ public class SeatsioClient {
     public final ChartReports chartReports;
     public final UsageReports usageReports;
 
+
     public SeatsioClient(String secretKey, String workspaceKey, String baseUrl) {
         this.baseUrl = baseUrl;
-        this.subaccounts = new Subaccounts(secretKey, workspaceKey, baseUrl);
-        this.workspaces = new Workspaces(secretKey, workspaceKey, baseUrl);
-        this.holdTokens = new HoldTokens(secretKey, workspaceKey, baseUrl);
-        this.charts = new Charts(secretKey, workspaceKey, baseUrl);
-        this.events = new Events(secretKey, workspaceKey, baseUrl);
-        this.eventReports = new EventReports(secretKey, workspaceKey, baseUrl);
-        this.chartReports = new ChartReports(secretKey, workspaceKey, baseUrl);
-        this.usageReports = new UsageReports(secretKey, workspaceKey, baseUrl);
+        this.unirest = new UnirestWrapper(secretKey, workspaceKey);
+        this.subaccounts = new Subaccounts(baseUrl, unirest);
+        this.workspaces = new Workspaces(baseUrl, unirest);
+        this.holdTokens = new HoldTokens(baseUrl, unirest);
+        this.charts = new Charts(baseUrl, unirest);
+        this.events = new Events(baseUrl, unirest);
+        this.eventReports = new EventReports(baseUrl, unirest);
+        this.chartReports = new ChartReports(baseUrl, unirest);
+        this.usageReports = new UsageReports(baseUrl, unirest);
     }
 
     public SeatsioClient(Region region, String secretKey, String workspaceKey) {
@@ -40,6 +44,11 @@ public class SeatsioClient {
 
     public SeatsioClient(Region region, String secretKey) {
         this(region, secretKey, null);
+    }
+
+    public SeatsioClient maxRetries(int maxRetries) {
+        unirest.maxRetries(maxRetries);
+        return this;
     }
 
     public String getBaseUrl() {

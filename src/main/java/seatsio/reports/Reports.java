@@ -1,31 +1,28 @@
 package seatsio.reports;
 
 import com.google.gson.reflect.TypeToken;
-import seatsio.util.UnirestUtil;
+import seatsio.util.UnirestWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static seatsio.json.SeatsioGson.gson;
-import static seatsio.util.UnirestUtil.stringResponse;
 
 public abstract class Reports {
 
-    protected final String secretKey;
-    protected final String workspaceKey;
     protected final String baseUrl;
     private final String reportItemType;
+    private final UnirestWrapper unirest;
 
-    public Reports(String secretKey, String workspaceKey, String baseUrl, String reportItemType) {
-        this.secretKey = secretKey;
-        this.workspaceKey = workspaceKey;
+    public Reports(String baseUrl, String reportItemType, UnirestWrapper unirest) {
         this.baseUrl = baseUrl;
         this.reportItemType = reportItemType;
+        this.unirest = unirest;
     }
 
     private String fetchRawReport(String reportType, String key, Map<String, Object> queryParams) {
-        return stringResponse(UnirestUtil.get(baseUrl + "/reports/" + reportItemType + "/{key}/{reportType}", secretKey, workspaceKey)
+        return unirest.stringResponse(UnirestWrapper.get(baseUrl + "/reports/" + reportItemType + "/{key}/{reportType}")
                 .queryString(queryParams)
                 .routeParam("key", key)
                 .routeParam("reportType", reportType));

@@ -11,55 +11,41 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static seatsio.json.SeatsioGson.gson;
-import static seatsio.util.UnirestUtil.stringResponse;
+import static seatsio.util.UnirestWrapper.get;
 
 public class PageFetcher<T> {
 
     private final String baseUrl;
-    private final String workspaceKey;
     private final String url;
+    private final UnirestWrapper unirest;
     private final Map<String, String> routeParams;
     private final Map<String, String> queryParams;
-    private final String secretKey;
     private final Class<T> clazz;
 
-    public PageFetcher(String baseUrl, String url, String secretKey, Class<T> clazz) {
+    public PageFetcher(String baseUrl, String url, UnirestWrapper unirest, Class<T> clazz) {
         this.baseUrl = baseUrl;
-        this.workspaceKey = null;
+        this.unirest = unirest;
         this.url = url;
         this.routeParams = new HashMap<>();
         this.queryParams = new HashMap<>();
-        this.secretKey = secretKey;
         this.clazz = clazz;
     }
 
-    public PageFetcher(String baseUrl, String url, String secretKey, String workspaceKey, Class<T> clazz) {
+    public PageFetcher(String baseUrl, String url, Map<String, String> routeParams, UnirestWrapper unirest, Class<T> clazz) {
         this.baseUrl = baseUrl;
-        this.workspaceKey = workspaceKey;
-        this.url = url;
-        this.routeParams = new HashMap<>();
-        this.queryParams = new HashMap<>();
-        this.secretKey = secretKey;
-        this.clazz = clazz;
-    }
-
-    public PageFetcher(String baseUrl, String url, Map<String, String> routeParams, String secretKey, String workspaceKey, Class<T> clazz) {
-        this.baseUrl = baseUrl;
-        this.workspaceKey = workspaceKey;
         this.url = url;
         this.routeParams = routeParams;
+        this.unirest = unirest;
         this.queryParams = new HashMap<>();
-        this.secretKey = secretKey;
         this.clazz = clazz;
     }
 
-    public PageFetcher(String baseUrl, String url, Map<String, String> routeParams, Map<String, String> queryParams, String secretKey, String workspaceKey, Class<T> clazz) {
+    public PageFetcher(String baseUrl, String url, Map<String, String> routeParams, Map<String, String> queryParams, UnirestWrapper unirest, Class<T> clazz) {
         this.baseUrl = baseUrl;
-        this.workspaceKey = workspaceKey;
         this.url = url;
         this.queryParams = queryParams;
         this.routeParams = routeParams;
-        this.secretKey = secretKey;
+        this.unirest = unirest;
         this.clazz = clazz;
     }
 
@@ -80,7 +66,7 @@ public class PageFetcher<T> {
     }
 
     private HttpRequest buildRequest(Map<String, Object> parameters, Integer pageSize) {
-        HttpRequest request = UnirestUtil.get(baseUrl + "/" + url, secretKey, workspaceKey)
+        HttpRequest request = get(baseUrl + "/" + url)
                 .queryString(parameters);
         routeParams.forEach(request::routeParam);
         queryParams.entrySet().stream()
@@ -93,7 +79,7 @@ public class PageFetcher<T> {
     }
 
     private Page<T> fetch(HttpRequest request) {
-        String response = stringResponse(request);
+        String response = unirest.stringResponse(request);
         JsonObject responseJson = JsonParser.parseString(response).getAsJsonObject();
         List<T> items = asList(responseJson.getAsJsonArray("items"), clazz);
         return new Page<T>(

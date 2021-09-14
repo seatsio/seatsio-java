@@ -10,30 +10,27 @@ import java.util.stream.Stream;
 
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
 import static seatsio.json.SeatsioGson.gson;
-import static seatsio.util.UnirestUtil.stringResponse;
 
 public class Subaccounts {
 
-    private final String secretKey;
-    private final String workspaceKey;
     private final String baseUrl;
+    private final UnirestWrapper unirest;
 
     public final Lister<Subaccount> active;
     public final Lister<Subaccount> inactive;
 
-    public Subaccounts(String secretKey, String workspaceKey, String baseUrl) {
-        this.secretKey = secretKey;
-        this.workspaceKey = workspaceKey;
+    public Subaccounts(String baseUrl, UnirestWrapper unirest) {
         this.baseUrl = baseUrl;
-        this.active = new Lister<>(new PageFetcher<>(baseUrl, "/subaccounts/active", secretKey, workspaceKey, Subaccount.class));
-        this.inactive = new Lister<>(new PageFetcher<>(baseUrl, "/subaccounts/inactive", secretKey, workspaceKey, Subaccount.class));
+        this.active = new Lister<>(new PageFetcher<>(baseUrl, "/subaccounts/active", unirest, Subaccount.class));
+        this.inactive = new Lister<>(new PageFetcher<>(baseUrl, "/subaccounts/inactive", unirest, Subaccount.class));
+        this.unirest = unirest;
     }
 
     public Subaccount create(String name) {
         JsonObject request = aJsonObject()
                 .withPropertyIfNotNull("name", name)
                 .build();
-        String response = stringResponse(UnirestUtil.post(baseUrl + "/subaccounts", secretKey, workspaceKey)
+        String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/subaccounts")
                 .body(request.toString()));
         return gson().fromJson(response, Subaccount.class);
     }
@@ -42,51 +39,51 @@ public class Subaccounts {
         JsonObject request = aJsonObject()
                 .withPropertyIfNotNull("name", name)
                 .build();
-        stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{id}", secretKey, workspaceKey)
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/subaccounts/{id}")
                 .routeParam("id", Long.toString(id))
                 .body(request.toString()));
     }
 
     public Subaccount create() {
-        String response = stringResponse(UnirestUtil.post(baseUrl + "/subaccounts", secretKey, workspaceKey));
+        String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/subaccounts"));
         return gson().fromJson(response, Subaccount.class);
     }
 
     public Subaccount retrieve(long id) {
-        String response = stringResponse(UnirestUtil.get(baseUrl + "/subaccounts/{id}", secretKey, workspaceKey)
+        String response = unirest.stringResponse(UnirestWrapper.get(baseUrl + "/subaccounts/{id}")
                 .routeParam("id", Long.toString(id)));
         return gson().fromJson(response, Subaccount.class);
     }
 
     public void activate(long id) {
-        stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{id}/actions/activate", secretKey, workspaceKey)
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/subaccounts/{id}/actions/activate")
                 .routeParam("id", Long.toString(id)));
     }
 
     public void deactivate(long id) {
-        stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{id}/actions/deactivate", secretKey, workspaceKey)
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/subaccounts/{id}/actions/deactivate")
                 .routeParam("id", Long.toString(id)));
     }
 
     public void regenerateSecretKey(long id) {
-        stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{id}/secret-key/actions/regenerate", secretKey, workspaceKey)
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/subaccounts/{id}/secret-key/actions/regenerate")
                 .routeParam("id", Long.toString(id)));
     }
 
     public void regenerateDesignerKey(long id) {
-        stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{id}/designer-key/actions/regenerate", secretKey, workspaceKey)
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/subaccounts/{id}/designer-key/actions/regenerate")
                 .routeParam("id", Long.toString(id)));
     }
 
     public Chart copyChartToParent(long id, String chartKey) {
-        String response = stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{id}/charts/{chartKey}/actions/copy-to/parent", secretKey, workspaceKey)
+        String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/subaccounts/{id}/charts/{chartKey}/actions/copy-to/parent")
                 .routeParam("id", Long.toString(id))
                 .routeParam("chartKey", chartKey));
         return gson().fromJson(response, Chart.class);
     }
 
     public Chart copyChartToSubaccount(long fromId, long toId, String chartKey) {
-        String response = stringResponse(UnirestUtil.post(baseUrl + "/subaccounts/{fromId}/charts/{chartKey}/actions/copy-to/{toId}", secretKey, workspaceKey)
+        String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/subaccounts/{fromId}/charts/{chartKey}/actions/copy-to/{toId}")
                 .routeParam("fromId", Long.toString(fromId))
                 .routeParam("chartKey", chartKey)
                 .routeParam("toId", Long.toString(toId)));
@@ -138,11 +135,11 @@ public class Subaccounts {
     }
 
     private Lister<Subaccount> list() {
-        return new Lister<>(new PageFetcher<>(baseUrl, "/subaccounts", secretKey, workspaceKey, Subaccount.class));
+        return new Lister<>(new PageFetcher<>(baseUrl, "/subaccounts", unirest, Subaccount.class));
     }
 
     private ParameterizedLister<Subaccount> parametrizedList() {
-        return new ParameterizedLister<>(new PageFetcher<>(baseUrl, "/subaccounts", secretKey, workspaceKey, Subaccount.class));
+        return new ParameterizedLister<>(new PageFetcher<>(baseUrl, "/subaccounts", unirest, Subaccount.class));
     }
 
     private Map<String, Object> toMap(String filter) {

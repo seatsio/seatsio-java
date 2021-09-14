@@ -4,34 +4,32 @@ import com.google.gson.reflect.TypeToken;
 import seatsio.reports.usage.detailsForEventInMonth.UsageForObject;
 import seatsio.reports.usage.detailsForMonth.UsageDetails;
 import seatsio.reports.usage.summaryForMonths.UsageSummaryForMonth;
-import seatsio.util.UnirestUtil;
+import seatsio.util.UnirestWrapper;
 
 import java.util.List;
 
 import static seatsio.json.SeatsioGson.gson;
-import static seatsio.util.UnirestUtil.stringResponse;
+import static seatsio.util.UnirestWrapper.get;
 
 public class UsageReports {
 
-    private final String secretKey;
-    private final String workspaceKey;
     private final String baseUrl;
+    private final UnirestWrapper unirest;
 
-    public UsageReports(String secretKey, String workspaceKey, String baseUrl) {
-        this.secretKey = secretKey;
-        this.workspaceKey = workspaceKey;
+    public UsageReports(String baseUrl, UnirestWrapper unirest) {
         this.baseUrl = baseUrl;
+        this.unirest = unirest;
     }
 
     public List<UsageSummaryForMonth> summaryForAllMonths() {
-        String response = stringResponse(UnirestUtil.get(baseUrl + "/reports/usage", secretKey, workspaceKey));
+        String response = unirest.stringResponse(get(baseUrl + "/reports/usage"));
         TypeToken<List<UsageSummaryForMonth>> typeToken = new TypeToken<List<UsageSummaryForMonth>>() {
         };
         return gson().fromJson(response, typeToken.getType());
     }
 
     public List<UsageDetails> detailsForMonth(Month month) {
-        String response = stringResponse(UnirestUtil.get(baseUrl + "/reports/usage/month/{month}", secretKey, workspaceKey)
+        String response = unirest.stringResponse(get(baseUrl + "/reports/usage/month/{month}")
                 .routeParam("month", month.serialize()));
         TypeToken<List<UsageDetails>> typeToken = new TypeToken<List<UsageDetails>>() {
         };
@@ -39,7 +37,7 @@ public class UsageReports {
     }
 
     public List<UsageForObject> detailsForEventInMonth(long eventId, Month month) {
-        String response = stringResponse(UnirestUtil.get(baseUrl + "/reports/usage/month/{month}/event/{eventId}", secretKey, workspaceKey)
+        String response = unirest.stringResponse(get(baseUrl + "/reports/usage/month/{month}/event/{eventId}")
                 .routeParam("month", month.serialize())
                 .routeParam("eventId", Long.toString(eventId)));
         TypeToken<List<UsageForObject>> typeToken = new TypeToken<List<UsageForObject>>() {

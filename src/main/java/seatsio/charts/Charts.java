@@ -13,32 +13,29 @@ import java.util.stream.Stream;
 
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
 import static seatsio.json.SeatsioGson.gson;
-import static seatsio.util.UnirestUtil.binaryResponse;
-import static seatsio.util.UnirestUtil.stringResponse;
+import static seatsio.util.UnirestWrapper.get;
 
 public class Charts {
 
-    private final String secretKey;
-    private final String workspaceKey;
     private final String baseUrl;
+    private final UnirestWrapper unirest;
 
     public final Lister<Chart> archive;
 
-    public Charts(String secretKey, String workspaceKey, String baseUrl) {
-        this.secretKey = secretKey;
-        this.workspaceKey = workspaceKey;
+    public Charts(String baseUrl, UnirestWrapper unirest) {
         this.baseUrl = baseUrl;
-        this.archive = new Lister<>(new PageFetcher<>(baseUrl, "/charts/archive", secretKey, workspaceKey, Chart.class));
+        this.archive = new Lister<>(new PageFetcher<>(baseUrl, "/charts/archive", unirest, Chart.class));
+        this.unirest = unirest;
     }
 
     public Chart retrieve(String key) {
-        String response = stringResponse(UnirestUtil.get(baseUrl + "/charts/{key}", secretKey, workspaceKey)
+        String response = unirest.stringResponse(get(baseUrl + "/charts/{key}")
                 .routeParam("key", key));
         return gson().fromJson(response, Chart.class);
     }
 
     public Chart retrieveWithEvents(String key) {
-        String response = stringResponse(UnirestUtil.get(baseUrl + "/charts/{key}?expand=events", secretKey, workspaceKey)
+        String response = unirest.stringResponse(get(baseUrl + "/charts/{key}?expand=events")
                 .routeParam("key", key));
         return gson().fromJson(response, Chart.class);
     }
@@ -60,30 +57,30 @@ public class Charts {
                 .withPropertyIfNotNull("name", name)
                 .withPropertyIfNotNull("venueType", venueType)
                 .withPropertyIfNotNull("categories", categories, category -> gson().toJsonTree(category));
-        String response = stringResponse(UnirestUtil.post(baseUrl + "/charts", secretKey, workspaceKey)
+        String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/charts")
                 .body(request.build().toString()));
         return gson().fromJson(response, Chart.class);
     }
 
     public Map<?, ?> retrievePublishedVersion(String key) {
-        String response = stringResponse(UnirestUtil.get(baseUrl + "/charts/{key}/version/published", secretKey, workspaceKey)
+        String response = unirest.stringResponse(get(baseUrl + "/charts/{key}/version/published")
                 .routeParam("key", key));
         return gson().fromJson(response, Map.class);
     }
 
     public byte[] retrievePublishedVersionThumbnail(String key) {
-        return binaryResponse(UnirestUtil.get(baseUrl + "/charts/{key}/version/published/thumbnail", secretKey, workspaceKey)
+        return unirest.binaryResponse(get(baseUrl + "/charts/{key}/version/published/thumbnail")
                 .routeParam("key", key));
     }
 
     public Map<?, ?> retrieveDraftVersion(String key) {
-        String response = stringResponse(UnirestUtil.get(baseUrl + "/charts/{key}/version/draft", secretKey, workspaceKey)
+        String response = unirest.stringResponse(get(baseUrl + "/charts/{key}/version/draft")
                 .routeParam("key", key));
         return gson().fromJson(response, Map.class);
     }
 
     public byte[] retrieveDraftVersionThumbnail(String key) {
-        return binaryResponse(UnirestUtil.get(baseUrl + "/charts/{key}/version/draft/thumbnail", secretKey, workspaceKey)
+        return unirest.binaryResponse(get(baseUrl + "/charts/{key}/version/draft/thumbnail")
                 .routeParam("key", key));
     }
 
@@ -95,65 +92,65 @@ public class Charts {
         JsonObjectBuilder request = aJsonObject()
                 .withPropertyIfNotNull("name", name)
                 .withPropertyIfNotNull("categories", categories, category -> gson().toJsonTree(category));
-        stringResponse(UnirestUtil.post(baseUrl + "/charts/{key}", secretKey, workspaceKey)
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/charts/{key}")
                 .routeParam("key", key)
                 .body(request.build().toString()));
     }
 
     public Chart copy(String key) {
-        String response = stringResponse(UnirestUtil.post(baseUrl + "/charts/{key}/version/published/actions/copy", secretKey, workspaceKey)
+        String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/charts/{key}/version/published/actions/copy")
                 .routeParam("key", key));
         return gson().fromJson(response, Chart.class);
     }
 
     public void moveToArchive(String key) {
-        stringResponse(UnirestUtil.post(baseUrl + "/charts/{key}/actions/move-to-archive", secretKey, workspaceKey)
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/charts/{key}/actions/move-to-archive")
                 .routeParam("key", key));
     }
 
     public void moveOutOfArchive(String key) {
-        stringResponse(UnirestUtil.post(baseUrl + "/charts/{key}/actions/move-out-of-archive", secretKey, workspaceKey)
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/charts/{key}/actions/move-out-of-archive")
                 .routeParam("key", key));
     }
 
     public void publishDraftVersion(String key) {
-        stringResponse(UnirestUtil.post(baseUrl + "/charts/{key}/version/draft/actions/publish", secretKey, workspaceKey)
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/charts/{key}/version/draft/actions/publish")
                 .routeParam("key", key));
     }
 
     public void discardDraftVersion(String key) {
-        stringResponse(UnirestUtil.post(baseUrl + "/charts/{key}/version/draft/actions/discard", secretKey, workspaceKey)
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/charts/{key}/version/draft/actions/discard")
                 .routeParam("key", key));
     }
 
     public Chart copyDraftVersion(String key) {
-        String response = stringResponse(UnirestUtil.post(baseUrl + "/charts/{key}/version/draft/actions/copy", secretKey, workspaceKey)
+        String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/charts/{key}/version/draft/actions/copy")
                 .routeParam("key", key));
         return gson().fromJson(response, Chart.class);
     }
 
     public Chart copyToSubacccount(String chartKey, long subaccountId) {
-        String response = stringResponse(UnirestUtil.post(baseUrl + "/charts/{chartKey}/version/published/actions/copy-to/{subaccountId}", secretKey, workspaceKey)
+        String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/charts/{chartKey}/version/published/actions/copy-to/{subaccountId}")
                 .routeParam("chartKey", chartKey)
                 .routeParam("subaccountId", Long.toString(subaccountId)));
         return gson().fromJson(response, Chart.class);
     }
 
     public Chart copyToWorkspace(String chartKey, String toWorkspaceKey) {
-        String response = stringResponse(UnirestUtil.post(baseUrl + "/charts/{chartKey}/version/published/actions/copy-to-workspace/{workspaceKey}", secretKey, workspaceKey)
+        String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/charts/{chartKey}/version/published/actions/copy-to-workspace/{workspaceKey}")
                 .routeParam("chartKey", chartKey)
                 .routeParam("workspaceKey", toWorkspaceKey));
         return gson().fromJson(response, Chart.class);
     }
 
     public void addTag(String key, String tag) {
-        stringResponse(UnirestUtil.post(baseUrl + "/charts/{key}/tags/{tag}", secretKey, workspaceKey)
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/charts/{key}/tags/{tag}")
                 .routeParam("key", key)
                 .routeParam("tag", tag));
     }
 
     public void removeTag(String key, String tag) {
-        stringResponse(UnirestUtil.delete(baseUrl + "/charts/{key}/tags/{tag}", secretKey, workspaceKey)
+        unirest.stringResponse(UnirestWrapper.delete(baseUrl + "/charts/{key}/tags/{tag}")
                 .routeParam("key", key)
                 .routeParam("tag", tag));
     }
@@ -162,25 +159,25 @@ public class Charts {
         JsonObject request = aJsonObject()
                 .withProperty("socialDistancingRulesets", gson().toJsonTree(rulesets))
                 .build();
-        stringResponse(UnirestUtil.post(baseUrl + "/charts/{key}/social-distancing-rulesets", secretKey, workspaceKey)
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/charts/{key}/social-distancing-rulesets")
                 .routeParam("key", key)
                 .body(request.toString()));
     }
 
     public ChartValidationResult validatePublishedVersion(String key) {
-        String response = stringResponse(UnirestUtil.post(baseUrl + "/charts/{key}/version/published/actions/validate", secretKey, workspaceKey)
+        String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/charts/{key}/version/published/actions/validate")
                 .routeParam("key", key));
         return gson().fromJson(response, ChartValidationResult.class);
     }
 
     public ChartValidationResult validateDraftVersion(String key) {
-        String response = stringResponse(UnirestUtil.post(baseUrl + "/charts/{key}/version/draft/actions/validate", secretKey, workspaceKey)
+        String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/charts/{key}/version/draft/actions/validate")
                 .routeParam("key", key));
         return gson().fromJson(response, ChartValidationResult.class);
     }
 
     public List<String> listAllTags() {
-        String response = stringResponse(UnirestUtil.get(baseUrl + "/charts/tags", secretKey, workspaceKey));
+        String response = unirest.stringResponse(get(baseUrl + "/charts/tags"));
         JsonElement tags = JsonParser.parseString(response).getAsJsonObject().get("tags");
         return gson().fromJson(tags, List.class);
     }
@@ -218,7 +215,7 @@ public class Charts {
     }
 
     private ParameterizedLister<Chart> list() {
-        return new ParameterizedLister<>(new PageFetcher<>(baseUrl, "/charts", secretKey, workspaceKey, Chart.class));
+        return new ParameterizedLister<>(new PageFetcher<>(baseUrl, "/charts", unirest, Chart.class));
     }
 
     private Map<String, Object> toMap(ChartListParams chartListParams) {

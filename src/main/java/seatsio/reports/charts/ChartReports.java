@@ -3,15 +3,15 @@ package seatsio.reports.charts;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.reflect.TypeToken;
 import seatsio.reports.Reports;
+import seatsio.util.UnirestWrapper;
 
 import java.util.List;
 import java.util.Map;
 
 public class ChartReports extends Reports {
 
-
-    public ChartReports(String secretKey, String workspaceKey, String baseUrl) {
-        super(secretKey, workspaceKey, baseUrl, "charts");
+    public ChartReports(String baseUrl, UnirestWrapper unirest) {
+        super(baseUrl, "charts", unirest);
     }
 
     public Map<String, List<ChartReportItem>> byLabel(String chartKey, ChartReportBookWholeTablesMode bookWholeTablesMode) {

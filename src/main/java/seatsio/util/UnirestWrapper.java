@@ -7,29 +7,37 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static com.google.common.base.Charsets.UTF_8;
 
-public class UnirestUtil {
+public class UnirestWrapper {
 
-    private static int MAX_RETRIES = 5;
     private static UnirestInstance unirest = new UnirestInstance(new Config().concurrency(200, 200));
 
-    public static String stringResponse(HttpRequest request) {
+    private int maxRetries = 5;
+    private final String secretKey;
+    private final String workspaceKey;
+
+    public UnirestWrapper(String secretKey, String workspaceKey) {
+        this.secretKey = secretKey;
+        this.workspaceKey = workspaceKey;
+    }
+
+    public String stringResponse(HttpRequest request) {
         byte[] response = execute(request, 0);
         return new String(response, UTF_8);
     }
 
-    public static byte[] binaryResponse(HttpRequest request) {
+    public byte[] binaryResponse(HttpRequest request) {
         return execute(request, 0);
     }
 
-    private static byte[] execute(HttpRequest request, int retryCount) {
+    private byte[] execute(HttpRequest request, int retryCount) {
         try {
             AtomicReference<RawResponse> response = new AtomicReference<>();
             AtomicReference<byte[]> responseBody = new AtomicReference<>();
-            request.thenConsume(r -> {
+            authenticate(request, secretKey, workspaceKey).thenConsume(r -> {
                 response.set((RawResponse) r);
                 responseBody.set(response.get().getContentAsBytes());
             });
-            if (retryCount >= MAX_RETRIES || response.get().getStatus() != 429) {
+            if (retryCount >= maxRetries || response.get().getStatus() != 429) {
                 return processResponse(request, response.get(), responseBody.get());
             } else {
                 long waitTime = (long) Math.pow(2, retryCount + 2) * 100;
@@ -41,7 +49,7 @@ public class UnirestUtil {
         }
     }
 
-    private static byte[] processResponse(HttpRequest request, RawResponse response, byte[] responseBody) {
+    private byte[] processResponse(HttpRequest request, RawResponse response, byte[] responseBody) {
         if (response.getStatus() >= 400) {
             throw SeatsioException.from(request, response, responseBody);
         } else {
@@ -49,19 +57,19 @@ public class UnirestUtil {
         }
     }
 
-    public static GetRequest get(String url, String secretKey, String workspaceKey) {
-        return authenticate(unirest.get(url), secretKey, workspaceKey);
+    public static GetRequest get(String url) {
+        return unirest.get(url);
     }
 
-    public static HttpRequestWithBody post(String url, String secretKey, String workspaceKey) {
-        return authenticate(unirest.post(url), secretKey, workspaceKey);
+    public static HttpRequestWithBody post(String url) {
+        return unirest.post(url);
     }
 
-    public static HttpRequestWithBody delete(String url, String secretKey, String workspaceKey) {
-        return authenticate(unirest.delete(url), secretKey, workspaceKey);
+    public static HttpRequestWithBody delete(String url) {
+        return unirest.delete(url);
     }
 
-    private static <T extends HttpRequest> T authenticate(T request, String secretKey, String workspaceKey) {
+    private <T extends HttpRequest> T authenticate(T request, String secretKey, String workspaceKey) {
         request.basicAuth(secretKey, null);
         if (workspaceKey != null) {
             request.header("X-Workspace-Key", workspaceKey);
@@ -75,5 +83,10 @@ public class UnirestUtil {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public UnirestWrapper maxRetries(int maxRetries) {
+        this.maxRetries = maxRetries;
+        return this;
     }
 }

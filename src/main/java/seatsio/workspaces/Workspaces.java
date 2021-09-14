@@ -11,23 +11,20 @@ import java.util.stream.Stream;
 
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
 import static seatsio.json.SeatsioGson.gson;
-import static seatsio.util.UnirestUtil.stringResponse;
 
 public class Workspaces {
 
-    private final String secretKey;
-    private final String workspaceKey;
     private final String baseUrl;
+    private final UnirestWrapper unirest;
 
     public final WorkspaceLister<Workspace> active;
     public final WorkspaceLister<Workspace> inactive;
 
-    public Workspaces(String secretKey, String workspaceKey, String baseUrl) {
-        this.secretKey = secretKey;
-        this.workspaceKey = workspaceKey;
+    public Workspaces(String baseUrl, UnirestWrapper unirest) {
         this.baseUrl = baseUrl;
-        this.active = new WorkspaceLister<>(new PageFetcher<>(baseUrl, "/workspaces/active", secretKey, workspaceKey, Workspace.class));
-        this.inactive = new WorkspaceLister<>(new PageFetcher<>(baseUrl, "/workspaces/inactive", secretKey, workspaceKey, Workspace.class));
+        this.active = new WorkspaceLister<>(new PageFetcher<>(baseUrl, "/workspaces/active", unirest, Workspace.class));
+        this.inactive = new WorkspaceLister<>(new PageFetcher<>(baseUrl, "/workspaces/inactive", unirest, Workspace.class));
+        this.unirest = unirest;
     }
 
     public Workspace create(String name) {
@@ -39,7 +36,7 @@ public class Workspaces {
                 .withProperty("name", name)
                 .withPropertyIfNotNull("isTest", isTest);
 
-        String response = stringResponse(UnirestUtil.post(baseUrl + "/workspaces", secretKey, workspaceKey)
+        String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/workspaces")
                 .body(request.build().toString()));
 
         return gson().fromJson(response, Workspace.class);
@@ -49,13 +46,13 @@ public class Workspaces {
         JsonObjectBuilder request = aJsonObject()
                 .withProperty("name", name);
 
-        stringResponse(UnirestUtil.post(baseUrl + "/workspaces/{key}", secretKey, workspaceKey)
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/workspaces/{key}")
                 .routeParam("key", key)
                 .body(request.build().toString()));
     }
 
     public String regenerateSecretKey(String key) {
-        String response = stringResponse(UnirestUtil.post(baseUrl + "/workspaces/{key}/actions/regenerate-secret-key", secretKey, workspaceKey)
+        String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/workspaces/{key}/actions/regenerate-secret-key")
                 .routeParam("key", key));
 
         JsonObject result = JsonParser.parseString(response)
@@ -64,22 +61,22 @@ public class Workspaces {
     }
 
     public void activate(String key) {
-        stringResponse(UnirestUtil.post(baseUrl + "/workspaces/{key}/actions/activate", secretKey, workspaceKey)
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/workspaces/{key}/actions/activate")
                 .routeParam("key", key));
     }
 
     public void deactivate(String key) {
-        stringResponse(UnirestUtil.post(baseUrl + "/workspaces/{key}/actions/deactivate", secretKey, workspaceKey)
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/workspaces/{key}/actions/deactivate")
                 .routeParam("key", key));
     }
 
     public void setDefault(String key) {
-        stringResponse(UnirestUtil.post(baseUrl + "/workspaces/actions/set-default/{key}", secretKey, workspaceKey)
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/workspaces/actions/set-default/{key}")
                 .routeParam("key", key));
     }
 
     public Workspace retrieve(String key) {
-        String response = stringResponse(UnirestUtil.get(baseUrl + "/workspaces/{key}", secretKey, workspaceKey)
+        String response = unirest.stringResponse(UnirestWrapper.get(baseUrl + "/workspaces/{key}")
                 .routeParam("key", key));
         return gson().fromJson(response, Workspace.class);
     }
@@ -129,11 +126,11 @@ public class Workspaces {
     }
 
     private Lister<Workspace> list() {
-        return new Lister<>(new PageFetcher<>(baseUrl, "/workspaces", secretKey, Workspace.class));
+        return new Lister<>(new PageFetcher<>(baseUrl, "/workspaces", unirest, Workspace.class));
     }
 
     private ParameterizedLister<Workspace> parametrizedList() {
-        return new ParameterizedLister<>(new PageFetcher<>(baseUrl, "/workspaces", secretKey, Workspace.class));
+        return new ParameterizedLister<>(new PageFetcher<>(baseUrl, "/workspaces", unirest, Workspace.class));
     }
 
     protected static Map<String, Object> toMap(String filter) {

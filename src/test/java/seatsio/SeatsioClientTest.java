@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import seatsio.subaccounts.Subaccount;
+import seatsio.util.UnirestWrapper;
 import seatsio.workspaces.Workspace;
 
 import java.io.IOException;
@@ -15,7 +16,6 @@ import java.io.InputStream;
 
 import static java.util.UUID.randomUUID;
 import static kong.unirest.Unirest.post;
-import static seatsio.util.UnirestUtil.stringResponse;
 
 @Execution(ExecutionMode.CONCURRENT)
 public class SeatsioClientTest {
@@ -70,8 +70,8 @@ public class SeatsioClientTest {
     protected String createTestChart(String fileName) {
         String testChartJson = testChartJson(fileName);
         String chartKey = randomUUID().toString();
-        stringResponse(post(apiUrl() + "/system/public/charts/" + chartKey)
-                .basicAuth(user.secretKey, null)
+        UnirestWrapper unirest = new UnirestWrapper(user.secretKey, null);
+        unirest.stringResponse(post(apiUrl() + "/system/public/charts/" + chartKey)
                 .body(testChartJson));
         return chartKey;
     }

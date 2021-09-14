@@ -2,18 +2,21 @@ package seatsio.reports.events;
 
 import com.google.gson.reflect.TypeToken;
 import seatsio.reports.Reports;
-import seatsio.util.UnirestUtil;
+import seatsio.util.UnirestWrapper;
 
 import java.util.List;
 import java.util.Map;
 
 import static seatsio.json.SeatsioGson.gson;
-import static seatsio.util.UnirestUtil.stringResponse;
+import static seatsio.util.UnirestWrapper.get;
 
 public class EventReports extends Reports {
 
-    public EventReports(String secretKey, String workspaceKey, String baseUrl) {
-        super(secretKey, workspaceKey, baseUrl, "events");
+    private final UnirestWrapper unirest;
+
+    public EventReports(String baseUrl, UnirestWrapper unirest) {
+        super(baseUrl, "events", unirest);
+        this.unirest = unirest;
     }
 
     public Map<String, List<EventReportItem>> byLabel(String eventKey) {
@@ -158,7 +161,7 @@ public class EventReports extends Reports {
     }
 
     private String fetchRawSummaryReport(String reportType, String eventKey) {
-        return stringResponse(UnirestUtil.get(baseUrl + "/reports/events/{key}/{reportType}/summary", secretKey, workspaceKey)
+        return unirest.stringResponse(get(baseUrl + "/reports/events/{key}/{reportType}/summary")
                 .routeParam("key", eventKey)
                 .routeParam("reportType", reportType));
     }
@@ -171,7 +174,7 @@ public class EventReports extends Reports {
     }
 
     private String fetchRawDeepSummaryReport(String reportType, String eventKey) {
-        return stringResponse(UnirestUtil.get(baseUrl + "/reports/events/{key}/{reportType}/summary/deep", secretKey, workspaceKey)
+        return unirest.stringResponse(get(baseUrl + "/reports/events/{key}/{reportType}/summary/deep")
                 .routeParam("key", eventKey)
                 .routeParam("reportType", reportType));
     }
