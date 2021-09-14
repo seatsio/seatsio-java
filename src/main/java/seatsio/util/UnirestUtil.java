@@ -10,6 +10,7 @@ import static com.google.common.base.Charsets.UTF_8;
 public class UnirestUtil {
 
     private static int MAX_RETRIES = 5;
+    private static UnirestInstance unirest = new UnirestInstance(new Config().concurrency(200, 200));
 
     public static String stringResponse(HttpRequest request) {
         byte[] response = execute(request, 0);
@@ -49,15 +50,15 @@ public class UnirestUtil {
     }
 
     public static GetRequest get(String url, String secretKey, String workspaceKey) {
-        return authenticate(Unirest.get(url), secretKey, workspaceKey);
+        return authenticate(unirest.get(url), secretKey, workspaceKey);
     }
 
     public static HttpRequestWithBody post(String url, String secretKey, String workspaceKey) {
-        return authenticate(Unirest.post(url), secretKey, workspaceKey);
+        return authenticate(unirest.post(url), secretKey, workspaceKey);
     }
 
     public static HttpRequestWithBody delete(String url, String secretKey, String workspaceKey) {
-        return authenticate(Unirest.delete(url), secretKey, workspaceKey);
+        return authenticate(unirest.delete(url), secretKey, workspaceKey);
     }
 
     private static <T extends HttpRequest> T authenticate(T request, String secretKey, String workspaceKey) {
