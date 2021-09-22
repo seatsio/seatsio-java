@@ -2,6 +2,7 @@ package seatsio;
 
 import kong.unirest.HttpRequest;
 import kong.unirest.RawResponse;
+import seatsio.exceptions.RateLimitExceededException;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class SeatsioException extends RuntimeException {
         super("Error while executing " + request.getHttpMethod() + " " + request.getUrl(), t);
     }
 
-    private SeatsioException(List<ApiError> errors, String requestId, HttpRequest request, RawResponse response) {
+    protected SeatsioException(List<ApiError> errors, String requestId, HttpRequest request, RawResponse response) {
         super(exceptionMessage(errors, requestId, request, response));
         this.errors = errors;
         this.requestId = requestId;
@@ -35,6 +36,9 @@ public class SeatsioException extends RuntimeException {
     public static SeatsioException from(HttpRequest request, RawResponse response, byte[] responseBody) {
         if (response.getHeaders().getFirst("Content-Type").contains("application/json")) {
             SeatsioException parsedException = fromJson(responseBody);
+            if (response.getStatus() == 429) {
+                return new RateLimitExceededException(parsedException.errors, parsedException.requestId, request, response);
+            }
             return new SeatsioException(parsedException.errors, parsedException.requestId, request, response);
         }
         return new SeatsioException(request, response);

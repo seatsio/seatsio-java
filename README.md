@@ -30,14 +30,14 @@ Then you can refer to seatsio-java as a regular package:
 ```
 // build.gradle
 dependencies {
-  compile 'com.github.seatsio:seatsio-java:65.1.0'
+  compile 'com.github.seatsio:seatsio-java:65.2.0'
 }
 
 // pom.xml
 <dependency>
   <groupId>com.github.seatsio</groupId>
   <artifactId>seatsio-java</artifactId>
-  <version>65.1.0</version>
+  <version>65.2.0</version>
 </dependency>
 ```
 
@@ -157,13 +157,15 @@ This library supports [exponential backoff](https://en.wikipedia.org/wiki/Expone
 When you send too many concurrent requests, the server returns an error `429 - Too Many Requests`. The client reacts to this by waiting for a while, and then retrying the request.
 If the request still fails with an error `429`, it waits a little longer, and try again. By default this happens 5 times, before giving up (after approximately 15 seconds).
 
+We throw a `RateLimitExceededException` (which is a subclass of `SeatsioException`) when exponential backoff eventually fails.
+
 To change the maximum number of retries, create the `SeatsioClient` as follows:
 
 ```java
 SeatsioClient client = new SeatsioClient(Region.EU, <WORKSPACE SECRET KEY>).maxRetries(3);
 ```
 
-Passing in 0 disables exponential backoff completely. In that case, the client will never retry a failed request. 
+Passing in 0 disables exponential backoff completely. In that case, the client will never retry a failed request.
 
 ## Multi-threading
 
