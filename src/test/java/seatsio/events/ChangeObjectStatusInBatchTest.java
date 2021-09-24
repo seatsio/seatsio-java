@@ -25,10 +25,10 @@ public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
         ));
 
         assertThat(result.get(0).objects.get("A-1").status).isEqualTo("lolzor");
-        assertThat(client.events.retrieveObjectStatus(event1.key, "A-1").status).isEqualTo("lolzor");
+        assertThat(client.events.retrieveObjectInfo(event1.key, "A-1").status).isEqualTo("lolzor");
 
         assertThat(result.get(1).objects.get("A-2").status).isEqualTo("lolzor");
-        assertThat(client.events.retrieveObjectStatus(event2.key, "A-2").status).isEqualTo("lolzor");
+        assertThat(client.events.retrieveObjectInfo(event2.key, "A-2").status).isEqualTo("lolzor");
     }
 
     @Test

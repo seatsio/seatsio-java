@@ -1,6 +1,7 @@
 package seatsio.reports.events;
 
 import com.google.gson.reflect.TypeToken;
+import seatsio.events.ObjectInfo;
 import seatsio.reports.Reports;
 import seatsio.util.UnirestWrapper;
 
@@ -19,19 +20,19 @@ public class EventReports extends Reports {
         this.unirest = unirest;
     }
 
-    public Map<String, List<EventReportItem>> byLabel(String eventKey) {
+    public Map<String, List<ObjectInfo>> byLabel(String eventKey) {
         return fetchReport("byLabel", eventKey);
     }
 
-    public List<EventReportItem> byLabel(String eventKey, String label) {
+    public List<ObjectInfo> byLabel(String eventKey, String label) {
         return fetchReportFiltered("byLabel", eventKey, label);
     }
 
-    public Map<String, List<EventReportItem>> byStatus(String eventKey) {
+    public Map<String, List<ObjectInfo>> byStatus(String eventKey) {
         return fetchReport("byStatus", eventKey);
     }
 
-    public List<EventReportItem> byStatus(String eventKey, String status) {
+    public List<ObjectInfo> byStatus(String eventKey, String status) {
         return fetchReportFiltered("byStatus", eventKey, status);
     }
 
@@ -43,11 +44,11 @@ public class EventReports extends Reports {
         return fetchDeepSummaryReport("byStatus", eventKey);
     }
 
-    public Map<String, List<EventReportItem>> byObjectType(String eventKey) {
+    public Map<String, List<ObjectInfo>> byObjectType(String eventKey) {
         return fetchReport("byObjectType", eventKey);
     }
 
-    public List<EventReportItem> byObjectType(String eventKey, String status) {
+    public List<ObjectInfo> byObjectType(String eventKey, String status) {
         return fetchReportFiltered("byObjectType", eventKey, status);
     }
 
@@ -59,7 +60,7 @@ public class EventReports extends Reports {
         return fetchDeepSummaryReport("byObjectType", eventKey);
     }
 
-    public Map<String, List<EventReportItem>> byCategoryLabel(String eventKey) {
+    public Map<String, List<ObjectInfo>> byCategoryLabel(String eventKey) {
         return fetchReport("byCategoryLabel", eventKey);
     }
 
@@ -71,11 +72,11 @@ public class EventReports extends Reports {
         return fetchDeepSummaryReport("byCategoryLabel", eventKey);
     }
 
-    public List<EventReportItem> byCategoryLabel(String eventKey, String categorylabel) {
+    public List<ObjectInfo> byCategoryLabel(String eventKey, String categorylabel) {
         return fetchReportFiltered("byCategoryLabel", eventKey, categorylabel);
     }
 
-    public Map<String, List<EventReportItem>> byCategoryKey(String eventKey) {
+    public Map<String, List<ObjectInfo>> byCategoryKey(String eventKey) {
         return fetchReport("byCategoryKey", eventKey);
     }
 
@@ -87,19 +88,19 @@ public class EventReports extends Reports {
         return fetchDeepSummaryReport("byCategoryKey", eventKey);
     }
 
-    public List<EventReportItem> byCategoryKey(String eventKey, String categorykey) {
+    public List<ObjectInfo> byCategoryKey(String eventKey, String categorykey) {
         return fetchReportFiltered("byCategoryKey", eventKey, categorykey);
     }
 
-    public Map<String, List<EventReportItem>> byOrderId(String eventKey) {
+    public Map<String, List<ObjectInfo>> byOrderId(String eventKey) {
         return fetchReport("byOrderId", eventKey);
     }
 
-    public List<EventReportItem> byOrderId(String eventKey, String orderId) {
+    public List<ObjectInfo> byOrderId(String eventKey, String orderId) {
         return fetchReportFiltered("byOrderId", eventKey, orderId);
     }
 
-    public Map<String, List<EventReportItem>> bySection(String eventKey) {
+    public Map<String, List<ObjectInfo>> bySection(String eventKey) {
         return fetchReport("bySection", eventKey);
     }
 
@@ -111,11 +112,11 @@ public class EventReports extends Reports {
         return fetchDeepSummaryReport("bySection", eventKey);
     }
 
-    public List<EventReportItem> bySection(String eventKey, String section) {
+    public List<ObjectInfo> bySection(String eventKey, String section) {
         return fetchReportFiltered("bySection", eventKey, section);
     }
 
-    public Map<String, List<EventReportItem>> byChannel(String eventKey) {
+    public Map<String, List<ObjectInfo>> byChannel(String eventKey) {
         return fetchReport("byChannel", eventKey);
     }
 
@@ -127,15 +128,15 @@ public class EventReports extends Reports {
         return fetchDeepSummaryReport("byChannel", channelKey);
     }
 
-    public List<EventReportItem> byChannel(String eventKey, String channelKey) {
+    public List<ObjectInfo> byChannel(String eventKey, String channelKey) {
         return fetchReportFiltered("byChannel", eventKey, channelKey);
     }
 
-    public Map<String, List<EventReportItem>> bySelectability(String eventKey) {
+    public Map<String, List<ObjectInfo>> bySelectability(String eventKey) {
         return fetchReport("bySelectability", eventKey);
     }
 
-    public List<EventReportItem> bySelectability(String eventKey, String selectability) {
+    public List<ObjectInfo> bySelectability(String eventKey, String selectability) {
         return fetchReportFiltered("bySelectability", eventKey, selectability);
     }
 
@@ -148,8 +149,8 @@ public class EventReports extends Reports {
     }
 
     @Override
-    protected TypeToken<Map<String, List<EventReportItem>>> getTypeToken() {
-        return new TypeToken<Map<String, List<EventReportItem>>>() {
+    protected TypeToken<Map<String, List<ObjectInfo>>> getTypeToken() {
+        return new TypeToken<Map<String, List<ObjectInfo>>>() {
         };
     }
 

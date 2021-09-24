@@ -11,7 +11,7 @@ import java.util.Map;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
-import static seatsio.events.ObjectStatus.HELD;
+import static seatsio.events.ObjectInfo.HELD;
 
 public class HoldObjectsTest extends SeatsioClientTest {
 
@@ -23,11 +23,11 @@ public class HoldObjectsTest extends SeatsioClientTest {
 
         client.events.hold(event.key, newArrayList("A-1", "A-2"), holdToken.holdToken);
 
-        ObjectStatus status1 = client.events.retrieveObjectStatus(event.key, "A-1");
+        ObjectInfo status1 = client.events.retrieveObjectInfo(event.key, "A-1");
         assertThat(status1.status).isEqualTo(HELD);
         assertThat(status1.holdToken).isEqualTo(holdToken.holdToken);
 
-        ObjectStatus status2 = client.events.retrieveObjectStatus(event.key, "A-2");
+        ObjectInfo status2 = client.events.retrieveObjectInfo(event.key, "A-2");
         assertThat(status2.status).isEqualTo(HELD);
         assertThat(status2.holdToken).isEqualTo(holdToken.holdToken);
     }
@@ -40,8 +40,8 @@ public class HoldObjectsTest extends SeatsioClientTest {
 
         client.events.hold(event.key, newArrayList("A-1", "A-2"), holdToken.holdToken, "order1", null, null, null, null);
 
-        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").orderId).isEqualTo("order1");
-        assertThat(client.events.retrieveObjectStatus(event.key, "A-2").orderId).isEqualTo("order1");
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").orderId).isEqualTo("order1");
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-2").orderId).isEqualTo("order1");
     }
 
     @Test
@@ -53,7 +53,7 @@ public class HoldObjectsTest extends SeatsioClientTest {
 
         client.events.hold(event.key, newArrayList("A-1"), holdToken.holdToken, null, true, null, null, null);
 
-        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
     }
 
     @Test
@@ -81,7 +81,7 @@ public class HoldObjectsTest extends SeatsioClientTest {
 
         client.events.hold(event.key, newArrayList("A-1"), holdToken.holdToken, null, true, null, newHashSet("channelKey1"), null);
 
-        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").status).isEqualTo(HELD);
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").status).isEqualTo(HELD);
     }
 
     @Test
@@ -98,7 +98,7 @@ public class HoldObjectsTest extends SeatsioClientTest {
 
         client.events.hold(event.key, newArrayList("A-1"), holdToken.holdToken, null, true, true, null, null);
 
-        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").status).isEqualTo(HELD);
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").status).isEqualTo(HELD);
     }
 
     @Test
@@ -115,6 +115,6 @@ public class HoldObjectsTest extends SeatsioClientTest {
 
         client.events.hold(event.key, newArrayList("A-1"), holdToken.holdToken, null, null, null, null, true);
 
-        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").status).isEqualTo(HELD);
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").status).isEqualTo(HELD);
     }
 }

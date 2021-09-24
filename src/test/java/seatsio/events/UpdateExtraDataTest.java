@@ -19,7 +19,7 @@ public class UpdateExtraDataTest extends SeatsioClientTest {
 
         client.events.updateExtraData(event.key, "A-1", extraData);
 
-        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").extraData).isEqualTo(extraData);
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").extraData).isEqualTo(extraData);
     }
 
 }

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import seatsio.SeatsioException;
 import seatsio.SortDirection;
 import seatsio.json.JsonObjectBuilder;
@@ -16,7 +17,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.*;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
-import static seatsio.events.ObjectStatus.*;
+import static seatsio.events.ObjectInfo.*;
 import static seatsio.json.JsonArrayBuilder.aJsonArray;
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
 import static seatsio.json.SeatsioGson.gson;
@@ -436,11 +437,20 @@ public class Events {
                 .withPropertyIfNotNull("ignoreSocialDistancing", ignoreSocialDistancing);
     }
 
-    public ObjectStatus retrieveObjectStatus(String key, String object) {
+    public ObjectInfo retrieveObjectInfo(String key, String object) {
         String response = unirest.stringResponse(UnirestWrapper.get(baseUrl + "/events/{key}/objects/{object}")
                 .routeParam("key", key)
                 .routeParam("object", object));
-        return gson().fromJson(response, ObjectStatus.class);
+        return gson().fromJson(response, ObjectInfo.class);
+    }
+
+    public Map<String, ObjectInfo> retrieveObjectInfos(String key, List<String> labels) {
+        String response = unirest.stringResponse(UnirestWrapper.get(baseUrl + "/events/{key}/objects")
+                .queryString("label", labels)
+                .routeParam("key", key));
+        TypeToken<Map<String, ObjectInfo>> typeToken = new TypeToken<Map<String, ObjectInfo>>() {
+        };
+        return gson().fromJson(response, typeToken.getType());
     }
 
     public void updateExtraData(String key, String object, Map<String, Object> extraData) {

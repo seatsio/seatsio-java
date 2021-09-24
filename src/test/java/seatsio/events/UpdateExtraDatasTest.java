@@ -19,8 +19,8 @@ public class UpdateExtraDatasTest extends SeatsioClientTest {
 
         client.events.updateExtraDatas(event.key, ImmutableMap.of("A-1", extraData1, "A-2", extraData2));
 
-        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").extraData).isEqualTo(extraData1);
-        assertThat(client.events.retrieveObjectStatus(event.key, "A-2").extraData).isEqualTo(extraData2);
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").extraData).isEqualTo(extraData1);
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-2").extraData).isEqualTo(extraData2);
     }
 
 }

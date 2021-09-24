@@ -8,7 +8,7 @@ import seatsio.holdTokens.HoldToken;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
-import static seatsio.events.ObjectStatus.FREE;
+import static seatsio.events.ObjectInfo.FREE;
 
 public class ReleaseObjectsTest extends SeatsioClientTest {
 
@@ -20,8 +20,8 @@ public class ReleaseObjectsTest extends SeatsioClientTest {
 
         ChangeObjectStatusResult result = client.events.release(event.key, newArrayList("A-1", "A-2"));
 
-        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").status).isEqualTo(FREE);
-        assertThat(client.events.retrieveObjectStatus(event.key, "A-2").status).isEqualTo(FREE);
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").status).isEqualTo(FREE);
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-2").status).isEqualTo(FREE);
         assertThat(result.objects).containsOnlyKeys("A-1", "A-2");
     }
 
@@ -34,11 +34,11 @@ public class ReleaseObjectsTest extends SeatsioClientTest {
 
         client.events.release(event.key, newArrayList("A-1", "A-2"), holdToken.holdToken);
 
-        ObjectStatus status1 = client.events.retrieveObjectStatus(event.key, "A-1");
+        ObjectInfo status1 = client.events.retrieveObjectInfo(event.key, "A-1");
         assertThat(status1.status).isEqualTo(FREE);
         assertThat(status1.holdToken).isNull();
 
-        ObjectStatus status2 = client.events.retrieveObjectStatus(event.key, "A-2");
+        ObjectInfo status2 = client.events.retrieveObjectInfo(event.key, "A-2");
         assertThat(status2.status).isEqualTo(FREE);
         assertThat(status2.holdToken).isNull();
     }
@@ -50,8 +50,8 @@ public class ReleaseObjectsTest extends SeatsioClientTest {
 
         client.events.release(event.key, newArrayList("A-1", "A-2"), null, "order1", null, null, null);
 
-        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").orderId).isEqualTo("order1");
-        assertThat(client.events.retrieveObjectStatus(event.key, "A-2").orderId).isEqualTo("order1");
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").orderId).isEqualTo("order1");
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-2").orderId).isEqualTo("order1");
     }
 
     @Test
@@ -62,7 +62,7 @@ public class ReleaseObjectsTest extends SeatsioClientTest {
 
         client.events.release(event.key, newArrayList("A-1"), null, null, true, null, null);
 
-        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
     }
 
     @Test
@@ -79,7 +79,7 @@ public class ReleaseObjectsTest extends SeatsioClientTest {
 
         client.events.release(event.key, newArrayList("A-1"), null, null, true, null, newHashSet("channelKey1"));
 
-        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").status).isEqualTo(FREE);
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").status).isEqualTo(FREE);
     }
 
     @Test
@@ -96,6 +96,6 @@ public class ReleaseObjectsTest extends SeatsioClientTest {
 
         client.events.release(event.key, newArrayList("A-1"), null, null, true, true, null);
 
-        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").status).isEqualTo(FREE);
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").status).isEqualTo(FREE);
     }
 }

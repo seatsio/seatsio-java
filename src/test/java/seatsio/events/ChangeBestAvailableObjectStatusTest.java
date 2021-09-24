@@ -3,7 +3,6 @@ package seatsio.events;
 import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
-import seatsio.reports.events.EventReportItem;
 
 import java.util.List;
 import java.util.Map;
@@ -34,7 +33,7 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
         BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(1), "foo");
 
         assertThat(bestAvailableResult.objectDetails).hasSize(1);
-        EventReportItem reportItem = bestAvailableResult.objectDetails.get("B-5");
+        ObjectInfo reportItem = bestAvailableResult.objectDetails.get("B-5");
         assertThat(reportItem.status).isEqualTo("foo");
         assertThat(reportItem.label).isEqualTo("B-5");
         assertThat(reportItem.labels).isEqualTo(new Labels("5", "seat", "B", "row"));
@@ -76,8 +75,8 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
         BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(2, null, extraData, null), "foo");
 
         assertThat(bestAvailableResult.objects).containsOnly("B-4", "B-5");
-        assertThat(client.events.retrieveObjectStatus(event.key, "B-4").extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
-        assertThat(client.events.retrieveObjectStatus(event.key, "B-5").extraData).isEqualTo(ImmutableMap.of("foo", "baz"));
+        assertThat(client.events.retrieveObjectInfo(event.key, "B-4").extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
+        assertThat(client.events.retrieveObjectInfo(event.key, "B-5").extraData).isEqualTo(ImmutableMap.of("foo", "baz"));
     }
 
     @Test
@@ -88,8 +87,8 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
         BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(2, null, null, newArrayList("adult", "child")), "foo");
 
         assertThat(bestAvailableResult.objects).containsOnly("B-4", "B-5");
-        assertThat(client.events.retrieveObjectStatus(event.key, "B-4").ticketType).isEqualTo("adult");
-        assertThat(client.events.retrieveObjectStatus(event.key, "B-5").ticketType).isEqualTo("child");
+        assertThat(client.events.retrieveObjectInfo(event.key, "B-4").ticketType).isEqualTo("adult");
+        assertThat(client.events.retrieveObjectInfo(event.key, "B-5").ticketType).isEqualTo("child");
     }
 
     @Test
@@ -101,7 +100,7 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
         BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(1), "foo", null, null, true, null, null);
 
         assertThat(bestAvailableResult.objects).containsOnly("B-5");
-        assertThat(client.events.retrieveObjectStatus(event.key, "B-5").extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
+        assertThat(client.events.retrieveObjectInfo(event.key, "B-5").extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
     }
 
     @Test
@@ -113,7 +112,7 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
         BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(1), "foo", null, null, false, null, null);
 
         assertThat(bestAvailableResult.objects).containsOnly("B-5");
-        assertThat(client.events.retrieveObjectStatus(event.key, "B-5").extraData).isNull();
+        assertThat(client.events.retrieveObjectInfo(event.key, "B-5").extraData).isNull();
     }
 
     @Test
@@ -125,7 +124,7 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
         BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(1), "foo", null, null, null, null, null);
 
         assertThat(bestAvailableResult.objects).containsOnly("B-5");
-        assertThat(client.events.retrieveObjectStatus(event.key, "B-5").extraData).isNull();
+        assertThat(client.events.retrieveObjectInfo(event.key, "B-5").extraData).isNull();
     }
 
     @Test

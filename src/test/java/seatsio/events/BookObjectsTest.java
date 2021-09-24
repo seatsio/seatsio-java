@@ -11,8 +11,8 @@ import java.util.Map;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
-import static seatsio.events.ObjectStatus.BOOKED;
-import static seatsio.events.ObjectStatus.FREE;
+import static seatsio.events.ObjectInfo.BOOKED;
+import static seatsio.events.ObjectInfo.FREE;
 
 public class BookObjectsTest extends SeatsioClientTest {
 
@@ -23,9 +23,9 @@ public class BookObjectsTest extends SeatsioClientTest {
 
         ChangeObjectStatusResult result = client.events.book(event.key, newArrayList("A-1", "A-2"));
 
-        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").status).isEqualTo(BOOKED);
-        assertThat(client.events.retrieveObjectStatus(event.key, "A-2").status).isEqualTo(BOOKED);
-        assertThat(client.events.retrieveObjectStatus(event.key, "A-3").status).isEqualTo(FREE);
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").status).isEqualTo(BOOKED);
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-2").status).isEqualTo(BOOKED);
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-3").status).isEqualTo(FREE);
         assertThat(result.objects).containsOnlyKeys("A-1", "A-2");
     }
 
@@ -36,9 +36,9 @@ public class BookObjectsTest extends SeatsioClientTest {
 
         ChangeObjectStatusResult result = client.events.book(event.key, newArrayList("Section A-A-1", "Section A-A-2"));
 
-        assertThat(client.events.retrieveObjectStatus(event.key, "Section A-A-1").status).isEqualTo(BOOKED);
-        assertThat(client.events.retrieveObjectStatus(event.key, "Section A-A-2").status).isEqualTo(BOOKED);
-        assertThat(client.events.retrieveObjectStatus(event.key, "Section A-A-3").status).isEqualTo(FREE);
+        assertThat(client.events.retrieveObjectInfo(event.key, "Section A-A-1").status).isEqualTo(BOOKED);
+        assertThat(client.events.retrieveObjectInfo(event.key, "Section A-A-2").status).isEqualTo(BOOKED);
+        assertThat(client.events.retrieveObjectInfo(event.key, "Section A-A-3").status).isEqualTo(FREE);
 
         assertThat(result.objects).containsOnlyKeys("Section A-A-1", "Section A-A-2");
         assertThat(result.objects.get("Section A-A-1").entrance).isEqualTo("Entrance 1");
@@ -56,11 +56,11 @@ public class BookObjectsTest extends SeatsioClientTest {
 
         client.events.book(event.key, newArrayList("A-1", "A-2"), holdToken.holdToken);
 
-        ObjectStatus status1 = client.events.retrieveObjectStatus(event.key, "A-1");
+        ObjectInfo status1 = client.events.retrieveObjectInfo(event.key, "A-1");
         assertThat(status1.status).isEqualTo(BOOKED);
         assertThat(status1.holdToken).isNull();
 
-        ObjectStatus status2 = client.events.retrieveObjectStatus(event.key, "A-2");
+        ObjectInfo status2 = client.events.retrieveObjectInfo(event.key, "A-2");
         assertThat(status2.status).isEqualTo(BOOKED);
         assertThat(status2.holdToken).isNull();
     }
@@ -72,8 +72,8 @@ public class BookObjectsTest extends SeatsioClientTest {
 
         client.events.book(event.key, newArrayList("A-1", "A-2"), null, "order1", null, null, null, null);
 
-        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").orderId).isEqualTo("order1");
-        assertThat(client.events.retrieveObjectStatus(event.key, "A-2").orderId).isEqualTo("order1");
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").orderId).isEqualTo("order1");
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-2").orderId).isEqualTo("order1");
     }
 
     @Test
@@ -84,7 +84,7 @@ public class BookObjectsTest extends SeatsioClientTest {
 
         client.events.book(event.key, newArrayList("A-1"), null, null, true, null, null, null);
 
-        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
     }
 
     @Test
@@ -100,7 +100,7 @@ public class BookObjectsTest extends SeatsioClientTest {
 
         client.events.book(event.key, newArrayList("A-1"), null, null, true, null, newHashSet("channelKey1"), null);
 
-        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").status).isEqualTo(BOOKED);
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").status).isEqualTo(BOOKED);
     }
 
     @Test
@@ -116,7 +116,7 @@ public class BookObjectsTest extends SeatsioClientTest {
 
         client.events.book(event.key, newArrayList("A-1"), null, null, true, true, null, null);
 
-        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").status).isEqualTo(BOOKED);
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").status).isEqualTo(BOOKED);
     }
 
     @Test
@@ -132,7 +132,7 @@ public class BookObjectsTest extends SeatsioClientTest {
 
         client.events.book(event.key, newArrayList("A-1"), null, null, null, null, null, true);
 
-        assertThat(client.events.retrieveObjectStatus(event.key, "A-1").status).isEqualTo(BOOKED);
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").status).isEqualTo(BOOKED);
     }
 
 }

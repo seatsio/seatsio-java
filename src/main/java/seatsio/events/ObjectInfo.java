@@ -1,12 +1,10 @@
-package seatsio.reports.events;
+package seatsio.events;
 
-import seatsio.events.IDs;
-import seatsio.events.Labels;
 import seatsio.util.ValueObject;
 
 import java.util.Map;
 
-public class EventReportItem extends ValueObject {
+public class ObjectInfo extends ValueObject {
 
     public static final String SELECTABLE = "selectable";
     public static final String NOT_SELECTABLE = "not_selectable";
@@ -14,6 +12,10 @@ public class EventReportItem extends ValueObject {
     public static final String NO_CHANNEL = "NO_CHANNEL";
     public static final String NO_SECTION = "NO_SECTION";
     public static final String NO_ORDER_ID = "NO_ORDER_ID";
+
+    public static final String FREE = "free";
+    public static final String BOOKED = "booked";
+    public static final String HELD = "reservedByToken";
 
     public String status;
     public String label;
@@ -44,5 +46,6 @@ public class EventReportItem extends ValueObject {
     public Boolean isDisabledBySocialDistancing;
     public String channel;
     public Double distanceToFocalPoint;
+    public Map<String, Map<String, Integer>> holds;
 
 }
