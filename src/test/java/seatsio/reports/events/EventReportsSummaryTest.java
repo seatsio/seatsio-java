@@ -12,9 +12,9 @@ import java.util.Map;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
-import static seatsio.events.ObjectInfo.BOOKED;
-import static seatsio.events.ObjectInfo.FREE;
-import static seatsio.events.ObjectInfo.*;
+import static seatsio.events.EventObjectInfo.BOOKED;
+import static seatsio.events.EventObjectInfo.FREE;
+import static seatsio.events.EventObjectInfo.*;
 import static seatsio.reports.events.EventReportSummaryItemBuilder.anEventReportSummaryItem;
 
 public class EventReportsSummaryTest extends SeatsioClientTest {

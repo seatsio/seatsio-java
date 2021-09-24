@@ -33,7 +33,7 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
         BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(1), "foo");
 
         assertThat(bestAvailableResult.objectDetails).hasSize(1);
-        ObjectInfo reportItem = bestAvailableResult.objectDetails.get("B-5");
+        EventObjectInfo reportItem = bestAvailableResult.objectDetails.get("B-5");
         assertThat(reportItem.status).isEqualTo("foo");
         assertThat(reportItem.label).isEqualTo("B-5");
         assertThat(reportItem.labels).isEqualTo(new Labels("5", "seat", "B", "row"));

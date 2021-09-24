@@ -4,5 +4,5 @@ import java.util.Map;
 
 public class ChangeObjectStatusResult {
 
-    public Map<String, ObjectInfo> objects;
+    public Map<String, EventObjectInfo> objects;
 }

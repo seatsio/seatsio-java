@@ -4,7 +4,7 @@ import seatsio.util.ValueObject;
 
 import java.util.Map;
 
-public class ObjectInfo extends ValueObject {
+public class EventObjectInfo extends ValueObject {
 
     public static final String SELECTABLE = "selectable";
     public static final String NOT_SELECTABLE = "not_selectable";

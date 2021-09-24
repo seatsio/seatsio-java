@@ -11,7 +11,7 @@ import java.util.Map;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
-import static seatsio.events.ObjectInfo.HELD;
+import static seatsio.events.EventObjectInfo.HELD;
 
 public class HoldObjectsTest extends SeatsioClientTest {
 
@@ -23,11 +23,11 @@ public class HoldObjectsTest extends SeatsioClientTest {
 
         client.events.hold(event.key, newArrayList("A-1", "A-2"), holdToken.holdToken);
 
-        ObjectInfo status1 = client.events.retrieveObjectInfo(event.key, "A-1");
+        EventObjectInfo status1 = client.events.retrieveObjectInfo(event.key, "A-1");
         assertThat(status1.status).isEqualTo(HELD);
         assertThat(status1.holdToken).isEqualTo(holdToken.holdToken);
 
-        ObjectInfo status2 = client.events.retrieveObjectInfo(event.key, "A-2");
+        EventObjectInfo status2 = client.events.retrieveObjectInfo(event.key, "A-2");
         assertThat(status2.status).isEqualTo(HELD);
         assertThat(status2.holdToken).isEqualTo(holdToken.holdToken);
     }

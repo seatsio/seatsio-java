@@ -1,9 +1,9 @@
-package seatsio.reports.charts;
+package seatsio.charts;
 
 import seatsio.events.IDs;
 import seatsio.events.Labels;
 
-public class ChartReportItem {
+public class ChartObjectInfo {
 
     public String label;
     public Labels labels;

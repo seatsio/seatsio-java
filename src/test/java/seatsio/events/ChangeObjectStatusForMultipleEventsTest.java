@@ -37,10 +37,10 @@ public class ChangeObjectStatusForMultipleEventsTest extends SeatsioClientTest {
 
         client.events.book(asList(event1.key, event2.key), newArrayList("A-1", "A-2"), null, null, null, null, null, null);
 
-        assertThat(client.events.retrieveObjectInfo(event1.key, "A-1").status).isEqualTo(ObjectInfo.BOOKED);
-        assertThat(client.events.retrieveObjectInfo(event1.key, "A-2").status).isEqualTo(ObjectInfo.BOOKED);
-        assertThat(client.events.retrieveObjectInfo(event2.key, "A-1").status).isEqualTo(ObjectInfo.BOOKED);
-        assertThat(client.events.retrieveObjectInfo(event2.key, "A-2").status).isEqualTo(ObjectInfo.BOOKED);
+        assertThat(client.events.retrieveObjectInfo(event1.key, "A-1").status).isEqualTo(EventObjectInfo.BOOKED);
+        assertThat(client.events.retrieveObjectInfo(event1.key, "A-2").status).isEqualTo(EventObjectInfo.BOOKED);
+        assertThat(client.events.retrieveObjectInfo(event2.key, "A-1").status).isEqualTo(EventObjectInfo.BOOKED);
+        assertThat(client.events.retrieveObjectInfo(event2.key, "A-2").status).isEqualTo(EventObjectInfo.BOOKED);
     }
 
     @Test
@@ -52,10 +52,10 @@ public class ChangeObjectStatusForMultipleEventsTest extends SeatsioClientTest {
 
         client.events.hold(asList(event1.key, event2.key), newArrayList("A-1", "A-2"), token.holdToken, null, null, null, null, null);
 
-        assertThat(client.events.retrieveObjectInfo(event1.key, "A-1").status).isEqualTo(ObjectInfo.HELD);
-        assertThat(client.events.retrieveObjectInfo(event1.key, "A-2").status).isEqualTo(ObjectInfo.HELD);
-        assertThat(client.events.retrieveObjectInfo(event2.key, "A-1").status).isEqualTo(ObjectInfo.HELD);
-        assertThat(client.events.retrieveObjectInfo(event2.key, "A-2").status).isEqualTo(ObjectInfo.HELD);
+        assertThat(client.events.retrieveObjectInfo(event1.key, "A-1").status).isEqualTo(EventObjectInfo.HELD);
+        assertThat(client.events.retrieveObjectInfo(event1.key, "A-2").status).isEqualTo(EventObjectInfo.HELD);
+        assertThat(client.events.retrieveObjectInfo(event2.key, "A-1").status).isEqualTo(EventObjectInfo.HELD);
+        assertThat(client.events.retrieveObjectInfo(event2.key, "A-2").status).isEqualTo(EventObjectInfo.HELD);
     }
 
     @Test
@@ -67,10 +67,10 @@ public class ChangeObjectStatusForMultipleEventsTest extends SeatsioClientTest {
 
         client.events.release(asList(event1.key, event2.key), newArrayList("A-1", "A-2"), null, null, null, null, null);
 
-        assertThat(client.events.retrieveObjectInfo(event1.key, "A-1").status).isEqualTo(ObjectInfo.FREE);
-        assertThat(client.events.retrieveObjectInfo(event1.key, "A-2").status).isEqualTo(ObjectInfo.FREE);
-        assertThat(client.events.retrieveObjectInfo(event2.key, "A-1").status).isEqualTo(ObjectInfo.FREE);
-        assertThat(client.events.retrieveObjectInfo(event2.key, "A-2").status).isEqualTo(ObjectInfo.FREE);
+        assertThat(client.events.retrieveObjectInfo(event1.key, "A-1").status).isEqualTo(EventObjectInfo.FREE);
+        assertThat(client.events.retrieveObjectInfo(event1.key, "A-2").status).isEqualTo(EventObjectInfo.FREE);
+        assertThat(client.events.retrieveObjectInfo(event2.key, "A-1").status).isEqualTo(EventObjectInfo.FREE);
+        assertThat(client.events.retrieveObjectInfo(event2.key, "A-2").status).isEqualTo(EventObjectInfo.FREE);
     }
 
     @Test
@@ -86,10 +86,10 @@ public class ChangeObjectStatusForMultipleEventsTest extends SeatsioClientTest {
         client.events.update(event1.key, null, null, null, "ruleset");
         client.events.update(event2.key, null, null, null, "ruleset");
 
-        client.events.changeObjectStatus(asList(event1.key, event2.key), newArrayList("A-1"), ObjectInfo.BOOKED, null, null, null, null, null, true);
+        client.events.changeObjectStatus(asList(event1.key, event2.key), newArrayList("A-1"), EventObjectInfo.BOOKED, null, null, null, null, null, true);
 
-        assertThat(client.events.retrieveObjectInfo(event1.key, "A-1").status).isEqualTo(ObjectInfo.BOOKED);
-        assertThat(client.events.retrieveObjectInfo(event2.key, "A-1").status).isEqualTo(ObjectInfo.BOOKED);
+        assertThat(client.events.retrieveObjectInfo(event1.key, "A-1").status).isEqualTo(EventObjectInfo.BOOKED);
+        assertThat(client.events.retrieveObjectInfo(event2.key, "A-1").status).isEqualTo(EventObjectInfo.BOOKED);
     }
 
 }

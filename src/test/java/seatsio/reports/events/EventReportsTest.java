@@ -13,7 +13,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static seatsio.events.ObjectInfo.*;
+import static seatsio.events.EventObjectInfo.*;
 
 public class EventReportsTest extends SeatsioClientTest {
 
@@ -26,9 +26,9 @@ public class EventReportsTest extends SeatsioClientTest {
         client.events.updateChannels(event.key, ImmutableMap.of("channel1", new Channel("Channel 1", "#FFFF99", 1)));
         client.events.assignObjectsToChannel(event.key, ImmutableMap.of("channel1", newHashSet("A-1")));
 
-        Map<String, List<ObjectInfo>> report = client.eventReports.byLabel(event.key);
+        Map<String, List<EventObjectInfo>> report = client.eventReports.byLabel(event.key);
 
-        ObjectInfo reportItem = report.get("A-1").get(0);
+        EventObjectInfo reportItem = report.get("A-1").get(0);
         assertThat(reportItem.status).isEqualTo("booked");
         assertThat(reportItem.label).isEqualTo("A-1");
         assertThat(reportItem.labels).isEqualTo(new Labels("1", "seat", "A", "row"));
@@ -63,9 +63,9 @@ public class EventReportsTest extends SeatsioClientTest {
         HoldToken holdToken = client.holdTokens.create();
         client.events.hold(event.key, newArrayList("A-1"), holdToken.holdToken);
 
-        Map<String, List<ObjectInfo>> report = client.eventReports.byLabel(event.key);
+        Map<String, List<EventObjectInfo>> report = client.eventReports.byLabel(event.key);
 
-        ObjectInfo reportItem = report.get("A-1").get(0);
+        EventObjectInfo reportItem = report.get("A-1").get(0);
         assertThat(reportItem.holdToken).isEqualTo(holdToken.holdToken);
     }
 
@@ -77,9 +77,9 @@ public class EventReportsTest extends SeatsioClientTest {
         String holdToken = client.holdTokens.create().holdToken;
         client.events.hold(event.key, asList(new ObjectProperties("GA1", 3)), holdToken);
 
-        Map<String, List<ObjectInfo>> report = client.eventReports.byLabel(event.key);
+        Map<String, List<EventObjectInfo>> report = client.eventReports.byLabel(event.key);
 
-        ObjectInfo reportItem = report.get("GA1").get(0);
+        EventObjectInfo reportItem = report.get("GA1").get(0);
         assertThat(reportItem.numBooked).isEqualTo(5);
         assertThat(reportItem.numFree).isEqualTo(92);
         assertThat(reportItem.numHeld).isEqualTo(3);
@@ -99,7 +99,7 @@ public class EventReportsTest extends SeatsioClientTest {
         client.events.changeObjectStatus(event.key, asList("A-1", "A-2"), "lolzor");
         client.events.changeObjectStatus(event.key, asList("A-3"), "booked");
 
-        Map<String, List<ObjectInfo>> report = client.eventReports.byStatus(event.key);
+        Map<String, List<EventObjectInfo>> report = client.eventReports.byStatus(event.key);
 
         assertThat(report.get("lolzor")).hasSize(2);
         assertThat(report.get("booked")).hasSize(1);
@@ -111,7 +111,7 @@ public class EventReportsTest extends SeatsioClientTest {
         String chartKey = client.charts.create().key;
         Event event = client.events.create(chartKey);
 
-        Map<String, List<ObjectInfo>> report = client.eventReports.byStatus(event.key);
+        Map<String, List<EventObjectInfo>> report = client.eventReports.byStatus(event.key);
 
         assertThat(report).isEmpty();
     }
@@ -123,7 +123,7 @@ public class EventReportsTest extends SeatsioClientTest {
         client.events.changeObjectStatus(event.key, asList("A-1", "A-2"), "lolzor");
         client.events.changeObjectStatus(event.key, asList("A-3"), "booked");
 
-        List<ObjectInfo> report = client.eventReports.byStatus(event.key, "lolzor");
+        List<EventObjectInfo> report = client.eventReports.byStatus(event.key, "lolzor");
 
         assertThat(report).hasSize(2);
     }
@@ -133,7 +133,7 @@ public class EventReportsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        List<ObjectInfo> report = client.eventReports.byStatus(event.key, "lolzor");
+        List<EventObjectInfo> report = client.eventReports.byStatus(event.key, "lolzor");
 
         assertThat(report).isEmpty();
     }
@@ -143,7 +143,7 @@ public class EventReportsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        Map<String, List<ObjectInfo>> report = client.eventReports.byObjectType(event.key);
+        Map<String, List<EventObjectInfo>> report = client.eventReports.byObjectType(event.key);
 
         assertThat(report.get("seat")).hasSize(32);
         assertThat(report.get("generalAdmission")).hasSize(2);
@@ -155,7 +155,7 @@ public class EventReportsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        List<ObjectInfo> report = client.eventReports.byObjectType(event.key, "seat");
+        List<EventObjectInfo> report = client.eventReports.byObjectType(event.key, "seat");
 
         assertThat(report).hasSize(32);
     }
@@ -165,7 +165,7 @@ public class EventReportsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        Map<String, List<ObjectInfo>> report = client.eventReports.byCategoryLabel(event.key);
+        Map<String, List<EventObjectInfo>> report = client.eventReports.byCategoryLabel(event.key);
 
         assertThat(report.get("Cat1")).hasSize(17);
         assertThat(report.get("Cat2")).hasSize(17);
@@ -176,7 +176,7 @@ public class EventReportsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        List<ObjectInfo> report = client.eventReports.byCategoryLabel(event.key, "Cat1");
+        List<EventObjectInfo> report = client.eventReports.byCategoryLabel(event.key, "Cat1");
 
         assertThat(report).hasSize(17);
     }
@@ -186,7 +186,7 @@ public class EventReportsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        Map<String, List<ObjectInfo>> report = client.eventReports.byCategoryKey(event.key);
+        Map<String, List<EventObjectInfo>> report = client.eventReports.byCategoryKey(event.key);
 
         assertThat(report.get("9")).hasSize(17);
         assertThat(report.get("10")).hasSize(17);
@@ -197,7 +197,7 @@ public class EventReportsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        List<ObjectInfo> report = client.eventReports.byCategoryKey(event.key, "9");
+        List<EventObjectInfo> report = client.eventReports.byCategoryKey(event.key, "9");
 
         assertThat(report).hasSize(17);
     }
@@ -207,7 +207,7 @@ public class EventReportsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        Map<String, List<ObjectInfo>> report = client.eventReports.byLabel(event.key);
+        Map<String, List<EventObjectInfo>> report = client.eventReports.byLabel(event.key);
 
         assertThat(report.get("A-1")).hasSize(1);
         assertThat(report.get("A-2")).hasSize(1);
@@ -218,7 +218,7 @@ public class EventReportsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        List<ObjectInfo> report = client.eventReports.byLabel(event.key, "A-1");
+        List<EventObjectInfo> report = client.eventReports.byLabel(event.key, "A-1");
 
         assertThat(report).hasSize(1);
     }
@@ -230,7 +230,7 @@ public class EventReportsTest extends SeatsioClientTest {
         client.events.book(event.key, asList("A-1", "A-2"), null, "order1", null, null, null, null);
         client.events.book(event.key, asList("A-3"), null, "order2", null, null, null, null);
 
-        Map<String, List<ObjectInfo>> report = client.eventReports.byOrderId(event.key);
+        Map<String, List<EventObjectInfo>> report = client.eventReports.byOrderId(event.key);
 
         assertThat(report.get("order1")).hasSize(2);
         assertThat(report.get("order2")).hasSize(1);
@@ -244,7 +244,7 @@ public class EventReportsTest extends SeatsioClientTest {
         client.events.book(event.key, asList("A-1", "A-2"), null, "order1", null, null, null, null);
         client.events.book(event.key, asList("A-3"), null, "order2", null, null, null, null);
 
-        List<ObjectInfo> report = client.eventReports.byOrderId(event.key, "order1");
+        List<EventObjectInfo> report = client.eventReports.byOrderId(event.key, "order1");
 
         assertThat(report).hasSize(2);
     }
@@ -254,7 +254,7 @@ public class EventReportsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        Map<String, List<ObjectInfo>> report = client.eventReports.bySection(event.key);
+        Map<String, List<EventObjectInfo>> report = client.eventReports.bySection(event.key);
 
         assertThat(report.get(NO_SECTION)).hasSize(34);
     }
@@ -264,7 +264,7 @@ public class EventReportsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        List<ObjectInfo> report = client.eventReports.bySection(event.key, NO_SECTION);
+        List<EventObjectInfo> report = client.eventReports.bySection(event.key, NO_SECTION);
 
         assertThat(report).hasSize(34);
     }
@@ -275,7 +275,7 @@ public class EventReportsTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
         client.events.changeObjectStatus(event.key, asList("A-1", "A-2"), "lolzor");
 
-        Map<String, List<ObjectInfo>> report = client.eventReports.bySelectability(event.key);
+        Map<String, List<EventObjectInfo>> report = client.eventReports.bySelectability(event.key);
 
         assertThat(report.get(SELECTABLE)).hasSize(32);
         assertThat(report.get(NOT_SELECTABLE)).hasSize(2);
@@ -287,7 +287,7 @@ public class EventReportsTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
         client.events.changeObjectStatus(event.key, asList("A-1", "A-2"), "lolzor");
 
-        List<ObjectInfo> report = client.eventReports.bySelectability(event.key, NOT_SELECTABLE);
+        List<EventObjectInfo> report = client.eventReports.bySelectability(event.key, NOT_SELECTABLE);
 
         assertThat(report).hasSize(2);
     }
@@ -299,7 +299,7 @@ public class EventReportsTest extends SeatsioClientTest {
         client.events.updateChannels(event.key, ImmutableMap.of("channel1", new Channel("Channel 1", "#FFFF99", 1)));
         client.events.assignObjectsToChannel(event.key, ImmutableMap.of("channel1", newHashSet("A-1", "A-2")));
 
-        Map<String, List<ObjectInfo>> report = client.eventReports.byChannel(event.key);
+        Map<String, List<EventObjectInfo>> report = client.eventReports.byChannel(event.key);
 
         assertThat(report.get("channel1")).hasSize(2);
         assertThat(report.get("NO_CHANNEL")).hasSize(32);
@@ -312,7 +312,7 @@ public class EventReportsTest extends SeatsioClientTest {
         client.events.updateChannels(event.key, ImmutableMap.of("channel1", new Channel("Channel 1", "#FFFF99", 1)));
         client.events.assignObjectsToChannel(event.key, ImmutableMap.of("channel1", newHashSet("A-1", "A-2")));
 
-        List<ObjectInfo> report = client.eventReports.byChannel(event.key, "channel1");
+        List<EventObjectInfo> report = client.eventReports.byChannel(event.key, "channel1");
 
         assertThat(report).hasSize(2);
     }

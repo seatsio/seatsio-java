@@ -8,8 +8,8 @@ import java.util.Map;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static seatsio.events.ObjectInfo.BOOKED;
-import static seatsio.events.ObjectInfo.*;
+import static seatsio.events.EventObjectInfo.BOOKED;
+import static seatsio.events.EventObjectInfo.*;
 
 public class EventReportsDeepSummaryTest extends SeatsioClientTest {
 

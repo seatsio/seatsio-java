@@ -11,8 +11,8 @@ import java.util.Map;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
-import static seatsio.events.ObjectInfo.BOOKED;
-import static seatsio.events.ObjectInfo.FREE;
+import static seatsio.events.EventObjectInfo.BOOKED;
+import static seatsio.events.EventObjectInfo.FREE;
 
 public class BookObjectsTest extends SeatsioClientTest {
 
@@ -56,11 +56,11 @@ public class BookObjectsTest extends SeatsioClientTest {
 
         client.events.book(event.key, newArrayList("A-1", "A-2"), holdToken.holdToken);
 
-        ObjectInfo status1 = client.events.retrieveObjectInfo(event.key, "A-1");
+        EventObjectInfo status1 = client.events.retrieveObjectInfo(event.key, "A-1");
         assertThat(status1.status).isEqualTo(BOOKED);
         assertThat(status1.holdToken).isNull();
 
-        ObjectInfo status2 = client.events.retrieveObjectInfo(event.key, "A-2");
+        EventObjectInfo status2 = client.events.retrieveObjectInfo(event.key, "A-2");
         assertThat(status2.status).isEqualTo(BOOKED);
         assertThat(status2.holdToken).isNull();
     }

@@ -8,7 +8,7 @@ import seatsio.holdTokens.HoldToken;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
-import static seatsio.events.ObjectInfo.FREE;
+import static seatsio.events.EventObjectInfo.FREE;
 
 public class ReleaseObjectsTest extends SeatsioClientTest {
 
@@ -34,11 +34,11 @@ public class ReleaseObjectsTest extends SeatsioClientTest {
 
         client.events.release(event.key, newArrayList("A-1", "A-2"), holdToken.holdToken);
 
-        ObjectInfo status1 = client.events.retrieveObjectInfo(event.key, "A-1");
+        EventObjectInfo status1 = client.events.retrieveObjectInfo(event.key, "A-1");
         assertThat(status1.status).isEqualTo(FREE);
         assertThat(status1.holdToken).isNull();
 
-        ObjectInfo status2 = client.events.retrieveObjectInfo(event.key, "A-2");
+        EventObjectInfo status2 = client.events.retrieveObjectInfo(event.key, "A-2");
         assertThat(status2.status).isEqualTo(FREE);
         assertThat(status2.holdToken).isNull();
     }
