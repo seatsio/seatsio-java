@@ -437,11 +437,8 @@ public class Events {
                 .withPropertyIfNotNull("ignoreSocialDistancing", ignoreSocialDistancing);
     }
 
-    public EventObjectInfo retrieveObjectInfo(String key, String object) {
-        String response = unirest.stringResponse(UnirestWrapper.get(baseUrl + "/events/{key}/objects/{object}")
-                .routeParam("key", key)
-                .routeParam("object", object));
-        return gson().fromJson(response, EventObjectInfo.class);
+    public EventObjectInfo retrieveObjectInfo(String key, String label) {
+        return retrieveObjectInfos(key, newArrayList(label)).get(label);
     }
 
     public Map<String, EventObjectInfo> retrieveObjectInfos(String key, List<String> labels) {
