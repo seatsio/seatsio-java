@@ -101,6 +101,22 @@ charts.forEach(chart -> {
 
 Note: `listAll()` returns a stream, which under the hood calls the seats.io API to fetch charts page by page. So multiple API calls may be done underneath to fetch all charts.
 
+### Retrieving object category and status
+
+```java
+SeatsioClient client = new SeatsioClient(Region.EU, "<WORKSPACE SECRET KEY>");
+
+Map<String, EventObjectInfo> eventObjectInfos = client.events.retrieveObjectInfos(event.key, newArrayList("A-1", "A-2"));
+
+System.out.println(eventObjectInfos.get("A-1").categoryLabel);
+System.out.println(eventObjectInfos.get("A-1").categoryKey);
+System.out.println(eventObjectInfos.get("A-1").status);
+
+System.out.println(eventObjectInfos.get("A-2").categoryLabel);
+System.out.println(eventObjectInfos.get("A-2").categoryKey);
+System.out.println(eventObjectInfos.get("A-2").status);
+```
+
 ### Listing charts page by page
 
 E.g. to show charts in a paginated list on a dashboard.
