@@ -101,7 +101,7 @@ charts.forEach(chart -> {
 
 Note: `listAll()` returns a stream, which under the hood calls the seats.io API to fetch charts page by page. So multiple API calls may be done underneath to fetch all charts.
 
-### Retrieving object category and status
+### Retrieving object category and status (and other information)
 
 ```java
 SeatsioClient client = new SeatsioClient(Region.EU, "<WORKSPACE SECRET KEY>");
