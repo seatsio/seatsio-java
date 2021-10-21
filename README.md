@@ -54,7 +54,7 @@ seatsio-java follows semver since v52.2.0.
 ### Creating a chart and an event
 
 ```java
-SeatsioClient client = new SeatsioClient(Region.EU, <WORKSPACE SECRET KEY>); // secret key can be found on https://app.seats.io/workspace-settings
+SeatsioClient client = new SeatsioClient(Region.EU, <WORKSPACE SECRET KEY>); // workspace secret key can be found on https://app.seats.io/workspace-settings
 Chart chart = client.charts.create();
 Event event = client.events.create(chart.key);
 System.out.println("Created event with key " + event.key);
@@ -155,6 +155,15 @@ for(Chart chart: charts.items) {
 ```java
 SeatsioClient client = new SeatsioClient(Region.EU, <COMPANY ADMIN KEY>);
 client.workspaces.create("a workspace");
+```
+
+### Creating a chart and an event with the company admin key
+
+```java
+SeatsioClient client = new SeatsioClient(Region.EU, <COMPANY ADMIN KEY>, <WORKSPACE PUBLIC KEY>); // workspace public key can be found on https://app.seats.io/workspace-settings
+Chart chart = client.charts.create();
+Event event = client.events.create(chart.key);
+System.out.println("Created event with key " + event.key);
 ```
 
 ## Error handling
