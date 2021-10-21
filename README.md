@@ -153,14 +153,16 @@ for(Chart chart: charts.items) {
 ### Creating a workspace
 
 ```java
-SeatsioClient client = new SeatsioClient(Region.EU, <COMPANY ADMIN KEY>);
-client.workspaces.create("a workspace");
+SeatsioClient client = new SeatsioClient(Region.EU, <COMPANY ADMIN KEY>); // company admin key can be found on https://app.seats.io/company-settings
+        client.workspaces.create("a workspace");
 ```
 
 ### Creating a chart and an event with the company admin key
 
 ```java
-SeatsioClient client = new SeatsioClient(Region.EU, <COMPANY ADMIN KEY>, <WORKSPACE PUBLIC KEY>); // workspace public key can be found on https://app.seats.io/workspace-settings
+// company admin key can be found on https://app.seats.io/company-settings
+// workspace public key can be found on https://app.seats.io/workspace-settings
+SeatsioClient client = new SeatsioClient(Region.EU, <COMPANY ADMIN KEY>, <WORKSPACE PUBLIC KEY>);
 Chart chart = client.charts.create();
 Event event = client.events.create(chart.key);
 System.out.println("Created event with key " + event.key);
