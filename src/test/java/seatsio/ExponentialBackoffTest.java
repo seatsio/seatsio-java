@@ -15,7 +15,7 @@ public class ExponentialBackoffTest {
     public void abortsEventuallyIfServerKeepsReturning429() {
         Instant start = Instant.now();
         try {
-            new UnirestWrapper("secretKey", null).stringResponse(get("https://mockbin.org/bin/5d0a27eb-1f70-49f6-a582-dda4ba35199a"));
+            new UnirestWrapper("secretKey", null).stringResponse(get("https://mockbin.org/bin/0381d6f4-0155-4b8c-937b-73d3d88b2a3f"));
             throw new RuntimeException("Should have failed");
         } catch (RateLimitExceededException e) {
             long waitTime = Instant.now().toEpochMilli() - start.toEpochMilli();
@@ -41,10 +41,10 @@ public class ExponentialBackoffTest {
     public void abortsDirectlyIfMaxRetries0AndServerReturns429() {
         Instant start = Instant.now();
         try {
-            new UnirestWrapper("secretKey", null).maxRetries(0).stringResponse(get("https://mockbin.org/bin/5d0a27eb-1f70-49f6-a582-dda4ba35199a"));
+            new UnirestWrapper("secretKey", null).maxRetries(0).stringResponse(get("https://mockbin.org/bin/0381d6f4-0155-4b8c-937b-73d3d88b2a3f"));
             throw new RuntimeException("Should have failed");
         } catch (SeatsioException e) {
-            assertThat(e.getMessage()).isEqualTo("GET https://mockbin.org/bin/5d0a27eb-1f70-49f6-a582-dda4ba35199a resulted in a 429 Too Many Requests response. Reason: Rate limit exceeded. Request ID: null");
+            assertThat(e.getMessage()).isEqualTo("GET https://mockbin.org/bin/0381d6f4-0155-4b8c-937b-73d3d88b2a3f resulted in a 429 Too Many Requests response. Reason: Rate limit exceeded. Request ID: 123456");
             long waitTime = Instant.now().toEpochMilli() - start.toEpochMilli();
             assertThat(waitTime).isLessThan(2000);
         }
