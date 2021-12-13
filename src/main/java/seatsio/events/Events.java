@@ -384,7 +384,10 @@ public class Events {
     }
 
     public List<ChangeObjectStatusResult> changeObjectStatus(List<StatusChangeRequest> statusChangeRequests) {
-        List<JsonElement> statusChangeRequestsAsJson = statusChangeRequests.stream().map(s -> changeObjectStatusRequest(s.eventKey, toObjects(s.objects), s.status, s.holdToken, s.orderId, s.keepExtraData, s.ignoreChannels, s.channelKeys, null)).collect(toList());
+        List<JsonElement> statusChangeRequestsAsJson = statusChangeRequests
+                .stream()
+                .map(s -> changeObjectStatusRequest(s.eventKey, toObjects(s.objects), s.status, s.holdToken, s.orderId, s.keepExtraData, s.ignoreChannels, s.channelKeys, null, s.allowedPreviousStatuses, s.rejectedPreviousStatuses))
+                .collect(toList());
         JsonObject request = aJsonObject()
                 .withProperty("statusChanges", aJsonArray().withItems(statusChangeRequestsAsJson).build())
                 .build();
@@ -406,10 +409,12 @@ public class Events {
                 .collect(toList());
     }
 
-    private JsonObject changeObjectStatusRequest(String eventKey, List<ObjectProperties> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Boolean ignoreSocialDistancing) {
+    private JsonObject changeObjectStatusRequest(String eventKey, List<ObjectProperties> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Boolean ignoreSocialDistancing, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses) {
         JsonObjectBuilder request = changeObjectStatusRequestBuilder(status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, ignoreSocialDistancing);
         request.withProperty("event", eventKey);
         request.withProperty("objects", objects, object -> gson().toJsonTree(object));
+        request.withPropertyIfNotNull("allowedPreviousStatuses", allowedPreviousStatuses);
+        request.withPropertyIfNotNull("rejectedPreviousStatuses", rejectedPreviousStatuses);
         return request.build();
     }
 

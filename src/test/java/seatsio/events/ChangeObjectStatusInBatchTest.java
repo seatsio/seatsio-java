@@ -1,14 +1,17 @@
 package seatsio.events;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
+import seatsio.SeatsioException;
 
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
 
@@ -65,5 +68,37 @@ public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
         ));
 
         assertThat(result.get(0).objects.get("A-1").status).isEqualTo("lolzor");
+    }
+
+    @Test
+    public void allowedPreviousStatus() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        try {
+            client.events.changeObjectStatus(newArrayList(
+                    new StatusChangeRequest(event.key, newArrayList("A-1"), "lolzor", null, null, null, true, null, Sets.newHashSet("MustBeThisStatus"), null)
+            ));
+            fail("expected exception");
+        } catch (SeatsioException e) {
+            assertThat(e.errors).hasSize(1);
+            assertThat(e.errors.get(0).getCode()).isEqualTo("ILLEGAL_STATUS_CHANGE");
+        }
+    }
+
+    @Test
+    public void rejectedPreviousStatus() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        try {
+            client.events.changeObjectStatus(newArrayList(
+                    new StatusChangeRequest(event.key, newArrayList("A-1"), "lolzor", null, null, null, true, null, null, Sets.newHashSet("free"))
+            ));
+            fail("expected exception");
+        } catch (SeatsioException e) {
+            assertThat(e.errors).hasSize(1);
+            assertThat(e.errors.get(0).getCode()).isEqualTo("ILLEGAL_STATUS_CHANGE");
+        }
     }
 }
