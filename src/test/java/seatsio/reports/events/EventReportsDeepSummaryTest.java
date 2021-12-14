@@ -23,7 +23,7 @@ public class EventReportsDeepSummaryTest extends SeatsioClientTest {
 
         assertThat(report.get(BOOKED).count).isEqualTo(1);
         assertThat(report.get(BOOKED).bySection.get(NO_SECTION).count).isEqualTo(1);
-        assertThat(report.get(BOOKED).bySection.get(NO_SECTION).bySelectability.get(NOT_SELECTABLE)).isEqualTo(1);
+        assertThat(report.get(BOOKED).bySection.get(NO_SECTION).byAvailability.get(NOT_AVAILABLE)).isEqualTo(1);
     }
 
     @Test
@@ -35,7 +35,7 @@ public class EventReportsDeepSummaryTest extends SeatsioClientTest {
 
         assertThat(report.get("seat").count).isEqualTo(32);
         assertThat(report.get("seat").bySection.get(NO_SECTION).count).isEqualTo(32);
-        assertThat(report.get("seat").bySection.get(NO_SECTION).bySelectability.get(SELECTABLE)).isEqualTo(32);
+        assertThat(report.get("seat").bySection.get(NO_SECTION).byAvailability.get(AVAILABLE)).isEqualTo(32);
     }
 
     @Test
@@ -48,7 +48,7 @@ public class EventReportsDeepSummaryTest extends SeatsioClientTest {
 
         assertThat(report.get("9").count).isEqualTo(116);
         assertThat(report.get("9").bySection.get(NO_SECTION).count).isEqualTo(116);
-        assertThat(report.get("9").bySection.get(NO_SECTION).bySelectability.get(NOT_SELECTABLE)).isEqualTo(1);
+        assertThat(report.get("9").bySection.get(NO_SECTION).byAvailability.get(NOT_AVAILABLE)).isEqualTo(1);
     }
 
     @Test
@@ -61,7 +61,7 @@ public class EventReportsDeepSummaryTest extends SeatsioClientTest {
 
         assertThat(report.get("Cat1").count).isEqualTo(116);
         assertThat(report.get("Cat1").bySection.get(NO_SECTION).count).isEqualTo(116);
-        assertThat(report.get("Cat1").bySection.get(NO_SECTION).bySelectability.get(NOT_SELECTABLE)).isEqualTo(1);
+        assertThat(report.get("Cat1").bySection.get(NO_SECTION).byAvailability.get(NOT_AVAILABLE)).isEqualTo(1);
     }
 
     @Test
@@ -74,20 +74,20 @@ public class EventReportsDeepSummaryTest extends SeatsioClientTest {
 
         assertThat(report.get(NO_SECTION).count).isEqualTo(232);
         assertThat(report.get(NO_SECTION).byCategoryLabel.get("Cat1").count).isEqualTo(116);
-        assertThat(report.get(NO_SECTION).byCategoryLabel.get("Cat1").bySelectability.get(NOT_SELECTABLE)).isEqualTo(1);
+        assertThat(report.get(NO_SECTION).byCategoryLabel.get("Cat1").byAvailability.get(NOT_AVAILABLE)).isEqualTo(1);
     }
 
     @Test
-    public void deepSummaryBySelectability() {
+    public void deepSummaryByAvailability() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
         client.events.book(event.key, newArrayList("A-1"));
 
-        Map<String, EventReportDeepSummaryItem> report = client.eventReports.deepSummaryBySelectability(event.key);
+        Map<String, EventReportDeepSummaryItem> report = client.eventReports.deepSummaryByAvailability(event.key);
 
-        assertThat(report.get(NOT_SELECTABLE).count).isEqualTo(1);
-        assertThat(report.get(NOT_SELECTABLE).byCategoryLabel.get("Cat1").count).isEqualTo(1);
-        assertThat(report.get(NOT_SELECTABLE).byCategoryLabel.get("Cat1").bySection.get(NO_SECTION)).isEqualTo(1);
+        assertThat(report.get(NOT_AVAILABLE).count).isEqualTo(1);
+        assertThat(report.get(NOT_AVAILABLE).byCategoryLabel.get("Cat1").count).isEqualTo(1);
+        assertThat(report.get(NOT_AVAILABLE).byCategoryLabel.get("Cat1").bySection.get(NO_SECTION)).isEqualTo(1);
     }
 
     @Test

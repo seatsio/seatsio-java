@@ -132,20 +132,20 @@ public class EventReports extends Reports {
         return fetchReportFiltered("byChannel", eventKey, channelKey);
     }
 
-    public Map<String, List<EventObjectInfo>> bySelectability(String eventKey) {
-        return fetchReport("bySelectability", eventKey);
+    public Map<String, List<EventObjectInfo>> byAvailability(String eventKey) {
+        return fetchReport("byAvailability", eventKey);
     }
 
-    public List<EventObjectInfo> bySelectability(String eventKey, String selectability) {
-        return fetchReportFiltered("bySelectability", eventKey, selectability);
+    public List<EventObjectInfo> byAvailability(String eventKey, String availability) {
+        return fetchReportFiltered("byAvailability", eventKey, availability);
     }
 
-    public Map<String, EventReportSummaryItem> summaryBySelectability(String eventKey) {
-        return fetchSummaryReport("bySelectability", eventKey);
+    public Map<String, EventReportSummaryItem> summaryByAvailability(String eventKey) {
+        return fetchSummaryReport("byAvailability", eventKey);
     }
 
-    public Map<String, EventReportDeepSummaryItem> deepSummaryBySelectability(String eventKey) {
-        return fetchDeepSummaryReport("bySelectability", eventKey);
+    public Map<String, EventReportDeepSummaryItem> deepSummaryByAvailability(String eventKey) {
+        return fetchDeepSummaryReport("byAvailability", eventKey);
     }
 
     @Override

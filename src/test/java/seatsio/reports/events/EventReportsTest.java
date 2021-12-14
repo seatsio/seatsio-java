@@ -50,7 +50,7 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.displayedObjectType).isNull();
         assertThat(reportItem.leftNeighbour).isNull();
         assertThat(reportItem.rightNeighbour).isEqualTo("A-2");
-        assertThat(reportItem.isSelectable).isFalse();
+        assertThat(reportItem.isAvailable).isFalse();
         assertThat(reportItem.isDisabledBySocialDistancing).isFalse();
         assertThat(reportItem.channel).isEqualTo("channel1");
         assertThat(reportItem.distanceToFocalPoint).isNotNull();
@@ -270,24 +270,24 @@ public class EventReportsTest extends SeatsioClientTest {
     }
 
     @Test
-    public void bySelectability() {
+    public void byAvailability() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
         client.events.changeObjectStatus(event.key, asList("A-1", "A-2"), "lolzor");
 
-        Map<String, List<EventObjectInfo>> report = client.eventReports.bySelectability(event.key);
+        Map<String, List<EventObjectInfo>> report = client.eventReports.byAvailability(event.key);
 
-        assertThat(report.get(SELECTABLE)).hasSize(32);
-        assertThat(report.get(NOT_SELECTABLE)).hasSize(2);
+        assertThat(report.get(AVAILABLE)).hasSize(32);
+        assertThat(report.get(NOT_AVAILABLE)).hasSize(2);
     }
 
     @Test
-    public void bySpecificSelectability() {
+    public void bySpecificAvailability() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
         client.events.changeObjectStatus(event.key, asList("A-1", "A-2"), "lolzor");
 
-        List<EventObjectInfo> report = client.eventReports.bySelectability(event.key, NOT_SELECTABLE);
+        List<EventObjectInfo> report = client.eventReports.byAvailability(event.key, NOT_AVAILABLE);
 
         assertThat(report).hasSize(2);
     }

@@ -6,8 +6,8 @@ import java.util.Map;
 
 public class EventObjectInfo extends ValueObject {
 
-    public static final String SELECTABLE = "selectable";
-    public static final String NOT_SELECTABLE = "not_selectable";
+    public static final String AVAILABLE = "available";
+    public static final String NOT_AVAILABLE = "not_available";
 
     public static final String NO_CHANNEL = "NO_CHANNEL";
     public static final String NO_SECTION = "NO_SECTION";
@@ -42,7 +42,7 @@ public class EventObjectInfo extends ValueObject {
     public String displayedObjectType;
     public String leftNeighbour;
     public String rightNeighbour;
-    public boolean isSelectable;
+    public boolean isAvailable;
     public Boolean isDisabledBySocialDistancing;
     public String channel;
     public Double distanceToFocalPoint;

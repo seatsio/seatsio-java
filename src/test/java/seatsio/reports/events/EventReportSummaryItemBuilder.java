@@ -9,7 +9,7 @@ public class EventReportSummaryItemBuilder {
     private Map<String, Integer> byCategoryKey;
     private Map<String, Integer> byCategoryLabel;
     private Map<String, Integer> byStatus;
-    private Map<String, Integer> bySelectability;
+    private Map<String, Integer> byAvailability;
     private Map<String, Integer> byChannel;
 
     public static EventReportSummaryItemBuilder anEventReportSummaryItem() {
@@ -41,8 +41,8 @@ public class EventReportSummaryItemBuilder {
         return this;
     }
 
-    public EventReportSummaryItemBuilder withBySelectability(Map<String, Integer> bySelectability) {
-        this.bySelectability = bySelectability;
+    public EventReportSummaryItemBuilder withByAvailability(Map<String, Integer> byAvailability) {
+        this.byAvailability = byAvailability;
         return this;
     }
 
@@ -58,7 +58,7 @@ public class EventReportSummaryItemBuilder {
         eventSummaryReportItem.byCategoryKey = byCategoryKey;
         eventSummaryReportItem.byCategoryLabel = byCategoryLabel;
         eventSummaryReportItem.bySection = bySection;
-        eventSummaryReportItem.bySelectability = bySelectability;
+        eventSummaryReportItem.byAvailability = byAvailability;
         eventSummaryReportItem.byChannel = byChannel;
         return eventSummaryReportItem;
     }
