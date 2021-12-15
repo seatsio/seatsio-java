@@ -1,8 +1,10 @@
 package seatsio.events;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
+import seatsio.SeatsioException;
 import seatsio.charts.SocialDistancingRuleset;
 import seatsio.holdTokens.HoldToken;
 
@@ -11,6 +13,7 @@ import java.util.Map;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static seatsio.events.EventObjectInfo.FREE;
 
 public class ChangeObjectStatusTest extends SeatsioClientTest {
@@ -243,5 +246,33 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
         client.events.changeObjectStatus(event.key, newArrayList("A-1"), "someStatus", null, null, null, null, null, true);
 
         assertThat(client.events.retrieveObjectInfo(event.key, "A-1").status).isEqualTo("someStatus");
+    }
+
+    @Test
+    public void allowedPreviousStatus() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        try {
+            client.events.changeObjectStatus(event.key, newArrayList("A-1"), "someStatus", null, null, null, null, null, true, Sets.newHashSet("onlyAllowedPreviousStatus"), null);
+            fail("expected exception");
+        } catch (SeatsioException e) {
+            assertThat(e.errors).hasSize(1);
+            assertThat(e.errors.get(0).getCode()).isEqualTo("ILLEGAL_STATUS_CHANGE");
+        }
+    }
+
+    @Test
+    public void rejectedPreviousStatus() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        try {
+            client.events.changeObjectStatus(event.key, newArrayList("A-1"), "someStatus", null, null, null, null, null, true, null, Sets.newHashSet("free"));
+            fail("expected exception");
+        } catch (SeatsioException e) {
+            assertThat(e.errors).hasSize(1);
+            assertThat(e.errors.get(0).getCode()).isEqualTo("ILLEGAL_STATUS_CHANGE");
+        }
     }
 }
