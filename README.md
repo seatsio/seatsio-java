@@ -55,7 +55,7 @@ seatsio-java follows semver since v52.2.0.
 
 To use this library, you'll need to create a `SeatsioClient`:
 
-```js
+```java
 import seatsio.SeatsioClient;
 import seatsio.Region;
 
