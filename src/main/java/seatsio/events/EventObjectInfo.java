@@ -9,6 +9,9 @@ public class EventObjectInfo extends ValueObject {
     public static final String AVAILABLE = "available";
     public static final String NOT_AVAILABLE = "not_available";
 
+    public static final String NOT_FOR_SALE = "not_for_sale";
+    public static final String DISABLED_BY_SOCIAL_DISTANCING = "disabled_by_social_distancing";
+
     public static final String NO_CHANNEL = "NO_CHANNEL";
     public static final String NO_SECTION = "NO_SECTION";
     public static final String NO_ORDER_ID = "NO_ORDER_ID";
@@ -43,6 +46,7 @@ public class EventObjectInfo extends ValueObject {
     public String leftNeighbour;
     public String rightNeighbour;
     public boolean isAvailable;
+    public String availabilityReason;
     public Boolean isDisabledBySocialDistancing;
     public String channel;
     public Double distanceToFocalPoint;

@@ -51,6 +51,7 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.leftNeighbour).isNull();
         assertThat(reportItem.rightNeighbour).isEqualTo("A-2");
         assertThat(reportItem.isAvailable).isFalse();
+        assertThat(reportItem.availabilityReason).isEqualTo("booked");
         assertThat(reportItem.isDisabledBySocialDistancing).isFalse();
         assertThat(reportItem.channel).isEqualTo("channel1");
         assertThat(reportItem.distanceToFocalPoint).isNotNull();
@@ -288,6 +289,29 @@ public class EventReportsTest extends SeatsioClientTest {
         client.events.changeObjectStatus(event.key, asList("A-1", "A-2"), "lolzor");
 
         List<EventObjectInfo> report = client.eventReports.byAvailability(event.key, NOT_AVAILABLE);
+
+        assertThat(report).hasSize(2);
+    }
+
+    @Test
+    public void byAvailabilityReason() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        client.events.changeObjectStatus(event.key, asList("A-1", "A-2"), "lolzor");
+
+        Map<String, List<EventObjectInfo>> report = client.eventReports.byAvailabilityReason(event.key);
+
+        assertThat(report.get(AVAILABLE)).hasSize(32);
+        assertThat(report.get("lolzor")).hasSize(2);
+    }
+
+    @Test
+    public void bySpecificAvailabilityReason() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        client.events.changeObjectStatus(event.key, asList("A-1", "A-2"), "lolzor");
+
+        List<EventObjectInfo> report = client.eventReports.byAvailabilityReason(event.key, "lolzor");
 
         assertThat(report).hasSize(2);
     }

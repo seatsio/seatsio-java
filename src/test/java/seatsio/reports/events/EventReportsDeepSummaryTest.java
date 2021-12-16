@@ -91,6 +91,19 @@ public class EventReportsDeepSummaryTest extends SeatsioClientTest {
     }
 
     @Test
+    public void deepSummaryByAvailabilityReason() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        client.events.book(event.key, newArrayList("A-1"));
+
+        Map<String, EventReportDeepSummaryItem> report = client.eventReports.deepSummaryByAvailabilityReason(event.key);
+
+        assertThat(report.get(BOOKED).count).isEqualTo(1);
+        assertThat(report.get(BOOKED).byCategoryLabel.get("Cat1").count).isEqualTo(1);
+        assertThat(report.get(BOOKED).byCategoryLabel.get("Cat1").bySection.get(NO_SECTION)).isEqualTo(1);
+    }
+
+    @Test
     public void deepSummaryByChannel() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);

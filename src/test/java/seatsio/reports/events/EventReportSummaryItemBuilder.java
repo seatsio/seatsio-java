@@ -1,5 +1,7 @@
 package seatsio.reports.events;
 
+import com.google.common.collect.ImmutableMap;
+
 import java.util.Map;
 
 public class EventReportSummaryItemBuilder {
@@ -10,6 +12,7 @@ public class EventReportSummaryItemBuilder {
     private Map<String, Integer> byCategoryLabel;
     private Map<String, Integer> byStatus;
     private Map<String, Integer> byAvailability;
+    private Map<String, Integer> byAvailabilityReason;
     private Map<String, Integer> byChannel;
 
     public static EventReportSummaryItemBuilder anEventReportSummaryItem() {
@@ -46,6 +49,11 @@ public class EventReportSummaryItemBuilder {
         return this;
     }
 
+    public EventReportSummaryItemBuilder withByAvailabilityReason(Map<String, Integer> byAvailabilityReason) {
+        this.byAvailabilityReason = byAvailabilityReason;
+        return this;
+    }
+
     public EventReportSummaryItemBuilder withByChannel(Map<String, Integer> byChannel) {
         this.byChannel = byChannel;
         return this;
@@ -59,6 +67,7 @@ public class EventReportSummaryItemBuilder {
         eventSummaryReportItem.byCategoryLabel = byCategoryLabel;
         eventSummaryReportItem.bySection = bySection;
         eventSummaryReportItem.byAvailability = byAvailability;
+        eventSummaryReportItem.byAvailabilityReason = byAvailabilityReason;
         eventSummaryReportItem.byChannel = byChannel;
         return eventSummaryReportItem;
     }
