@@ -51,10 +51,38 @@ seatsio-java follows semver since v52.2.0.
 
 ## Examples
 
+### General instructions
+
+To use this library, you'll need to create a `SeatsioClient`:
+
+```js
+import seatsio.SeatsioClient;
+import seatsio.Region;
+
+SeatsioClient client = new SeatsioClient(Region.EU, <WORKSPACE SECRET KEY>);
+...
+```
+
+You can find your _workspace secret key_ in the [settings section of the workspace](https://app.seats.io/workspace-settings). It is important that you keep your _secret key_ private and not expose it in-browser calls unless it is password protected.
+
+The region should correspond to the region of your account:
+
+- `Region.EU`: Europe
+- `Region.NA`: North-America
+- `Region.SA`: South-America
+- `Region.OC`: Oceania
+
+If you're unsure about your region, have a look at your [company settings page](https://app.seats.io/company-settings).
+
 ### Creating a chart and an event
 
 ```java
-SeatsioClient client = new SeatsioClient(Region.EU, <WORKSPACE SECRET KEY>); // workspace secret key can be found on https://app.seats.io/workspace-settings
+import seatsio.SeatsioClient;
+import seatsio.Region;
+import seatsio.charts.Chart;
+import seatsio.events.Event;
+
+SeatsioClient client = new SeatsioClient(Region.EU, <WORKSPACE SECRET KEY>);
 Chart chart = client.charts.create();
 Event event = client.events.create(chart.key);
 System.out.println("Created event with key " + event.key);
@@ -63,6 +91,10 @@ System.out.println("Created event with key " + event.key);
 ### Booking objects
 
 ```java
+import seatsio.SeatsioClient;
+import seatsio.Region;
+import seatsio.events.Event;
+
 SeatsioClient client = new SeatsioClient(Region.EU, <WORKSPACE SECRET KEY>);
 client.events.book(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"));
 ```
@@ -70,6 +102,9 @@ client.events.book(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"));
 ### Releasing objects
 
 ```java
+import seatsio.SeatsioClient;
+import seatsio.Region;
+
 SeatsioClient client = new SeatsioClient(Region.EU, <WORKSPACE SECRET KEY>);
 client.events.release(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"));
 ```
@@ -77,6 +112,9 @@ client.events.release(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"));
 ### Booking objects that have been held
 
 ```java
+import seatsio.SeatsioClient;
+import seatsio.Region;
+
 SeatsioClient client = new SeatsioClient(Region.EU, <WORKSPACE SECRET KEY>);
 client.events.book(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"), <A HOLD TOKEN>);
 ```
@@ -84,6 +122,9 @@ client.events.book(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"), <A HOLD TOKEN>);
 ### Changing object status
 
 ```java
+import seatsio.SeatsioClient;
+import seatsio.Region;
+
 SeatsioClient client = new SeatsioClient(Region.EU, <WORKSPACE SECRET KEY>);
 client.events.changeObjectStatus(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"), "unavailable");
 ```
@@ -91,6 +132,10 @@ client.events.changeObjectStatus(<AN EVENT KEY>, Arrays.asList("A-1", "A-2"), "u
 ### Listing all charts
 
 ```java
+import seatsio.SeatsioClient;
+import seatsio.Region;
+import seatsio.charts.Chart;
+
 SeatsioClient client = new SeatsioClient(Region.EU, "<WORKSPACE SECRET KEY>");
 
 Stream<Chart> charts = client.charts.listAll();
@@ -104,6 +149,10 @@ Note: `listAll()` returns a stream, which under the hood calls the seats.io API 
 ### Retrieving object category and status (and other information)
 
 ```java
+import seatsio.SeatsioClient;
+import seatsio.Region;
+import seatsio.events.EventObjectInfo;
+
 SeatsioClient client = new SeatsioClient(Region.EU, "<WORKSPACE SECRET KEY>");
 
 Map<String, EventObjectInfo> eventObjectInfos = client.events.retrieveObjectInfos(event.key, newArrayList("A-1", "A-2"));
@@ -153,13 +202,21 @@ for(Chart chart: charts.items) {
 ### Creating a workspace
 
 ```java
+import seatsio.SeatsioClient;
+import seatsio.Region;
+
 SeatsioClient client = new SeatsioClient(Region.EU, <COMPANY ADMIN KEY>); // company admin key can be found on https://app.seats.io/company-settings
-        client.workspaces.create("a workspace");
+client.workspaces.create("a workspace");
 ```
 
 ### Creating a chart and an event with the company admin key
 
 ```java
+import seatsio.SeatsioClient;
+import seatsio.Region;
+import seatsio.charts.Chart;
+import seatsio.events.Event;
+
 // company admin key can be found on https://app.seats.io/company-settings
 // workspace public key can be found on https://app.seats.io/workspace-settings
 SeatsioClient client = new SeatsioClient(Region.EU, <COMPANY ADMIN KEY>, <WORKSPACE PUBLIC KEY>);
