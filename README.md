@@ -49,7 +49,7 @@ You need at least Java 8 (with update 101) to use seatsio-java.
 
 seatsio-java follows semver since v52.2.0.
 
-## Examples
+## Usage
 
 ### General instructions
 
