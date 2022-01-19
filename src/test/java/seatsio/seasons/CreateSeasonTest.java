@@ -1,7 +1,6 @@
 package seatsio.seasons;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.charts.Chart;
@@ -28,8 +27,11 @@ public class CreateSeasonTest extends SeatsioClientTest {
 
         assertThat(season.id).isNotZero();
         assertThat(season.key).isNotNull();
+        assertThat(season.partialSeasonKeys).isEmpty();
 
         Event seasonEvent = season.seasonEvent;
+        assertThat(seasonEvent.id).isNotZero();
+        assertThat(seasonEvent.key).isEqualTo(season.key);
         assertThat(seasonEvent.chartKey).isEqualTo(chartKey);
         assertThat(seasonEvent.tableBookingConfig).isEqualTo(TableBookingConfig.inherit());
         assertThat(seasonEvent.supportsBestAvailable).isTrue();
@@ -45,7 +47,7 @@ public class CreateSeasonTest extends SeatsioClientTest {
     public void keyCanBePassedIn() {
         Chart chart = client.charts.create();
 
-        Season season = client.seasons.create(chart.key, "aSeason", 0);
+        Season season = client.seasons.create(chart.key, "aSeason", 0, null, null);
 
         assertThat(season.key).isEqualTo("aSeason");
     }
@@ -54,7 +56,7 @@ public class CreateSeasonTest extends SeatsioClientTest {
     public void numberOfEventsCanBePassedIn() {
         Chart chart = client.charts.create();
 
-        Season season = client.seasons.create(chart.key, "aSeason", 2);
+        Season season = client.seasons.create(chart.key, "aSeason", 2, null, null);
 
         assertThat(season.events).hasSize(2);
     }
@@ -63,8 +65,43 @@ public class CreateSeasonTest extends SeatsioClientTest {
     public void eventKeysCanBePassedIn() {
         Chart chart = client.charts.create();
 
-        Season season = client.seasons.create(chart.key, "aSeason", newArrayList("event1", "event2"));
+        Season season = client.seasons.create(chart.key, "aSeason", newArrayList("event1", "event2"), null, null);
 
         assertThat(season.events).extracting(event -> event.key).containsExactly("event1", "event2");
     }
+
+    @Test
+    public void tableBookingConfigCustomCanBePassedIn() {
+        String chartKey = createTestChartWithTables();
+
+        Season season = client.seasons.create(chartKey, null, null, TableBookingConfig.custom(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT)), null);
+
+        assertThat(season.key).isNotNull();
+        Event seasonEvent = season.seasonEvent;
+        assertThat(seasonEvent.tableBookingConfig).isEqualTo(TableBookingConfig.custom(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT)));
+    }
+
+    @Test
+    public void tableBookingConfigInheritCanBePassedIn() {
+        String chartKey = createTestChartWithTables();
+
+        Season season = client.seasons.create(chartKey, null, null, TableBookingConfig.inherit(), null);
+
+        assertThat(season.key).isNotNull();
+        Event seasonEvent = season.seasonEvent;
+        assertThat(seasonEvent.tableBookingConfig).isEqualTo(TableBookingConfig.inherit());
+    }
+
+    @Test
+    public void socialDistancingRulesetKeyCanBePassedIn() {
+        String chartKey = createTestChartWithTables();
+        Map<String, SocialDistancingRuleset> rulesets = ImmutableMap.of("ruleset1", SocialDistancingRuleset.ruleBased("My ruleset").build());
+        client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
+
+        Season season = client.seasons.create(chartKey, null, null, null, "ruleset1");
+
+        Event seasonEvent = season.seasonEvent;
+        assertThat(seasonEvent.socialDistancingRulesetKey).isEqualTo("ruleset1");
+    }
+
 }
