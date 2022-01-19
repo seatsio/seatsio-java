@@ -1,6 +1,6 @@
 package seatsio;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import seatsio.exceptions.RateLimitExceededException;
 import seatsio.util.UnirestWrapper;
@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static seatsio.util.UnirestWrapper.get;
 
 // ignore until mockbin is working again
-@Ignore
+@Disabled
 public class ExponentialBackoffTest {
 
     @Test
