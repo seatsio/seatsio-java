@@ -1,6 +1,5 @@
 package seatsio.seasons;
 
-import seatsio.events.TableBookingConfig;
 import seatsio.json.JsonObjectBuilder;
 import seatsio.util.Lister;
 import seatsio.util.Page;
@@ -25,25 +24,17 @@ public class Seasons {
     }
 
     public Season create(String chartKey) {
-        return create(chartKey, null, null, null, null, null);
+        return create(chartKey, new SeasonParams());
     }
 
-    public Season create(String chartKey, String key, List<String> eventKeys, TableBookingConfig tableBookingConfig, String socialDistancingRulesetKey) {
-        return create(chartKey, key, eventKeys, null, tableBookingConfig, socialDistancingRulesetKey);
-    }
-
-    public Season create(String chartKey, String key, int numberOfEvents, TableBookingConfig tableBookingConfig, String socialDistancingRulesetKey) {
-        return create(chartKey, key, null, numberOfEvents, tableBookingConfig, socialDistancingRulesetKey);
-    }
-
-    public Season create(String chartKey, String key, List<String> eventKeys, Integer numberOfEvents, TableBookingConfig tableBookingConfig, String socialDistancingRulesetKey) {
+    public Season create(String chartKey, SeasonParams seasonParams) {
         JsonObjectBuilder request = aJsonObject()
                 .withProperty("chartKey", chartKey)
-                .withPropertyIfNotNull("key", key)
-                .withPropertyIfNotNull("eventKeys", eventKeys)
-                .withPropertyIfNotNull("numberOfEvents", numberOfEvents)
-                .withPropertyIfNotNull("tableBookingConfig", tableBookingConfig)
-                .withPropertyIfNotNull("socialDistancingRulesetKey", socialDistancingRulesetKey);
+                .withPropertyIfNotNull("key", seasonParams.key())
+                .withPropertyIfNotNull("eventKeys", seasonParams.eventKeys())
+                .withPropertyIfNotNull("numberOfEvents", seasonParams.numberOfEvents())
+                .withPropertyIfNotNull("tableBookingConfig", seasonParams.tableBookingConfig())
+                .withPropertyIfNotNull("socialDistancingRulesetKey", seasonParams.socialDistancingRulesetKey());
         String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/seasons")
                 .body(request.build().toString()));
         return gson().fromJson(response, Season.class);

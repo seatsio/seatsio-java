@@ -11,7 +11,7 @@ public class DeletePartialSeasonTest extends SeatsioClientTest {
     @Test
     public void test() {
         String chartKey = createTestChart();
-        client.seasons.create(chartKey, "aSeason", null, null, null);
+        client.seasons.create(chartKey, new SeasonParams().key("aSeason"));
         client.seasons.createPartialSeason("aSeason", "aPartialSeason", null);
 
         client.seasons.deletePartialSeason("aSeason", "aPartialSeason");

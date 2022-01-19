@@ -11,7 +11,7 @@ public class AddEventsToPartialSeasonTest extends SeatsioClientTest {
     @Test
     public void test() {
         String chartKey = createTestChart();
-        client.seasons.create(chartKey, "aSeason", newArrayList("event1", "event2"), null, null);
+        client.seasons.create(chartKey, new SeasonParams().key("aSeason").eventKeys(newArrayList("event1", "event2")));
         client.seasons.createPartialSeason("aSeason", "aPartialSeason", null);
 
         Season updatedPartialSeason = client.seasons.addEventsToPartialSeason("aSeason", "aPartialSeason", newArrayList("event1", "event2"));
