@@ -1,5 +1,6 @@
 package seatsio;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import seatsio.exceptions.RateLimitExceededException;
 import seatsio.util.UnirestWrapper;
@@ -9,6 +10,8 @@ import java.time.Instant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static seatsio.util.UnirestWrapper.get;
 
+// ignore until mockbin is working again
+@Disabled
 public class ExponentialBackoffTest {
 
     @Test
