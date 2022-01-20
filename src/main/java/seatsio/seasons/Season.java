@@ -12,6 +12,5 @@ public class Season extends ValueObject {
     public String key;
     public Event seasonEvent;
     public List<Event> events;
-    public TableBookingConfig tableBookingConfig;
     public List<String> partialSeasonKeys;
 }
