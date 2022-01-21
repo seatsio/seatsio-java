@@ -66,7 +66,7 @@ public class PageFetcher<T> {
     }
 
     private HttpRequest buildRequest(Map<String, Object> parameters, Integer pageSize) {
-        HttpRequest request = get(baseUrl + "/" + url)
+        HttpRequest request = get(baseUrl + url)
                 .queryString(parameters);
         routeParams.forEach(request::routeParam);
         queryParams.entrySet().stream()
