@@ -10,10 +10,23 @@ public class Category extends ValueObject {
     private final Boolean accessible;
 
     public Category(CategoryKey key, String label, String color) {
-        this.key = key;
-        this.label = label;
-        this.color = color;
-        this.accessible = false;
+        this(key, label, color, false);
+    }
+
+    public Category(String key, String label, String color, Boolean accessible) {
+        this(CategoryKey.of(key), label, color, accessible);
+    }
+
+    public Category(Long key, String label, String color, Boolean accessible) {
+        this(CategoryKey.of(key), label, color, accessible);
+    }
+
+    public Category(String key, String label, String color) {
+        this(CategoryKey.of(key), label, color);
+    }
+
+    public Category(Long key, String label, String color) {
+        this(CategoryKey.of(key), label, color);
     }
 
     public Category(CategoryKey key, String label, String color, Boolean accessible) {
