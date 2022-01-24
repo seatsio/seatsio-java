@@ -54,8 +54,8 @@ public class CreateChartTest extends SeatsioClientTest {
     @Test
     public void categories() {
         List<Category> categories = Lists.newArrayList(
-                new Category(CategoryKey.of(1L), "Category 1", "#aaaaaa"),
-                new Category(CategoryKey.of("anotherCat"), "Category 2", "#bbbbbb", true)
+                new Category(1L, "Category 1", "#aaaaaa"),
+                new Category("anotherCat", "Category 2", "#bbbbbb", true)
         );
         Chart chart = client.charts.create(null, null, categories);
 
