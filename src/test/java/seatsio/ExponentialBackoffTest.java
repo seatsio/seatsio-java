@@ -1,7 +1,6 @@
 package seatsio;
 
 import org.junit.jupiter.api.Test;
-import seatsio.exceptions.RateLimitExceededException;
 import seatsio.util.UnirestWrapper;
 
 import java.time.Instant;
