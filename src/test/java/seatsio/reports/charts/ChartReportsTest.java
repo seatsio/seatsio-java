@@ -123,4 +123,14 @@ public class ChartReportsTest extends SeatsioClientTest {
         assertThat(report.get("Cat2")).hasSize(17);
     }
 
+    @Test
+    public void bySection() {
+        String chartKey = createTestChartWithSections();
+
+        Map<String, List<ChartObjectInfo>> report = client.chartReports.bySection(chartKey, null);
+
+        assertThat(report.get("Section A")).hasSize(36);
+        assertThat(report.get("Section B")).hasSize(35);
+    }
+
 }

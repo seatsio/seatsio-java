@@ -170,17 +170,10 @@ public class EventReports extends Reports {
         };
     }
 
-    private Map<String, EventReportSummaryItem> fetchSummaryReport(String reportType, String eventKey) {
-        String result = fetchRawSummaryReport(reportType, eventKey);
-        TypeToken<Map<String, EventReportSummaryItem>> typeToken = new TypeToken<Map<String, EventReportSummaryItem>>() {
+    @Override
+    protected TypeToken<Map<String, EventReportSummaryItem>> getSummaryTypeToken() {
+        return new TypeToken<Map<String, EventReportSummaryItem>>() {
         };
-        return gson().fromJson(result, typeToken.getType());
-    }
-
-    private String fetchRawSummaryReport(String reportType, String eventKey) {
-        return unirest.stringResponse(get(baseUrl + "/reports/events/{key}/{reportType}/summary")
-                .routeParam("key", eventKey)
-                .routeParam("reportType", reportType));
     }
 
     private Map<String, EventReportDeepSummaryItem> fetchDeepSummaryReport(String reportType, String eventKey) {
