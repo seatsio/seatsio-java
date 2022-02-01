@@ -37,9 +37,9 @@ public class CreateEventTest extends SeatsioClientTest {
     public void eventKeyCanBePassedIn() {
         Chart chart = client.charts.create();
 
-        Event event = client.events.create(chart.key, "eventje");
+        Event event = client.events.create(chart.key, "anEvent");
 
-        assertThat(event.key).isEqualTo("eventje");
+        assertThat(event.key).isEqualTo("anEvent");
     }
 
     @Test

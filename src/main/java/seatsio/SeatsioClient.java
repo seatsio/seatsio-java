@@ -6,6 +6,7 @@ import seatsio.holdTokens.HoldTokens;
 import seatsio.reports.charts.ChartReports;
 import seatsio.reports.events.EventReports;
 import seatsio.reports.usage.UsageReports;
+import seatsio.seasons.Seasons;
 import seatsio.subaccounts.Subaccounts;
 import seatsio.util.UnirestWrapper;
 import seatsio.workspaces.Workspaces;
@@ -20,6 +21,7 @@ public class SeatsioClient {
     public final HoldTokens holdTokens;
     public final Charts charts;
     public final Events events;
+    public final Seasons seasons;
     public final EventReports eventReports;
     public final ChartReports chartReports;
     public final UsageReports usageReports;
@@ -33,6 +35,7 @@ public class SeatsioClient {
         this.holdTokens = new HoldTokens(baseUrl, unirest);
         this.charts = new Charts(baseUrl, unirest);
         this.events = new Events(baseUrl, unirest);
+        this.seasons = new Seasons(baseUrl, unirest);
         this.eventReports = new EventReports(baseUrl, unirest);
         this.chartReports = new ChartReports(baseUrl, unirest);
         this.usageReports = new UsageReports(baseUrl, unirest);
