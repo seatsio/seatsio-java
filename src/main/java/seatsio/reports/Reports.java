@@ -45,17 +45,22 @@ public abstract class Reports {
 
     protected abstract <T> TypeToken<Map<String, List<T>>> getTypeToken();
 
-    protected <T> Map<String, T> fetchSummaryReport(String reportType, String eventKey) {
-        String result = fetchRawSummaryReport(reportType, eventKey);
+    protected <T> Map<String, T> fetchSummaryReport(String reportType, String key) {
+        return fetchSummaryReport(reportType, key, null);
+    }
+
+    protected <T> Map<String, T> fetchSummaryReport(String reportType, String key, Map<String, Object> queryParams) {
+        String result = fetchRawSummaryReport(reportType, key, queryParams);
         TypeToken<Map<String, T>> typeToken = getSummaryTypeToken();
         return gson().fromJson(result, typeToken.getType());
     }
 
     protected abstract <T> TypeToken<Map<String, T>> getSummaryTypeToken();
 
-    private String fetchRawSummaryReport(String reportType, String eventKey) {
+    private String fetchRawSummaryReport(String reportType, String key, Map<String, Object> queryParams) {
         return unirest.stringResponse(get(baseUrl + "/reports/" + reportItemType + "/{key}/{reportType}/summary")
-                .routeParam("key", eventKey)
+                .queryString(queryParams)
+                .routeParam("key", key)
                 .routeParam("reportType", reportType));
     }
 }
