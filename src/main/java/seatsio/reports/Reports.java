@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import static seatsio.json.SeatsioGson.gson;
+import static seatsio.util.UnirestWrapper.get;
 
 public abstract class Reports {
 
@@ -43,4 +44,23 @@ public abstract class Reports {
     }
 
     protected abstract <T> TypeToken<Map<String, List<T>>> getTypeToken();
+
+    protected <T> Map<String, T> fetchSummaryReport(String reportType, String key) {
+        return fetchSummaryReport(reportType, key, null);
+    }
+
+    protected <T> Map<String, T> fetchSummaryReport(String reportType, String key, Map<String, Object> queryParams) {
+        String result = fetchRawSummaryReport(reportType, key, queryParams);
+        TypeToken<Map<String, T>> typeToken = getSummaryTypeToken();
+        return gson().fromJson(result, typeToken.getType());
+    }
+
+    protected abstract <T> TypeToken<Map<String, T>> getSummaryTypeToken();
+
+    private String fetchRawSummaryReport(String reportType, String key, Map<String, Object> queryParams) {
+        return unirest.stringResponse(get(baseUrl + "/reports/" + reportItemType + "/{key}/{reportType}/summary")
+                .queryString(queryParams)
+                .routeParam("key", key)
+                .routeParam("reportType", reportType));
+    }
 }

@@ -1,7 +1,6 @@
 package seatsio;
 
 import org.junit.jupiter.api.Test;
-import seatsio.exceptions.RateLimitExceededException;
 import seatsio.util.UnirestWrapper;
 
 import java.time.Instant;
@@ -15,9 +14,10 @@ public class ExponentialBackoffTest {
     public void abortsEventuallyIfServerKeepsReturning429() {
         Instant start = Instant.now();
         try {
-            new UnirestWrapper("secretKey", null).stringResponse(get("https://mockbin.org/bin/0381d6f4-0155-4b8c-937b-73d3d88b2a3f"));
+            new UnirestWrapper("secretKey", null).stringResponse(get("https://httpbin.org/status/429"));
             throw new RuntimeException("Should have failed");
-        } catch (RateLimitExceededException e) {
+        } catch (SeatsioException e) {
+            // TODO: check for RateLimitExceededException when httpbin supports status 429 with a JSON response body
             long waitTime = Instant.now().toEpochMilli() - start.toEpochMilli();
             assertThat(waitTime).isGreaterThan(10000);
             assertThat(waitTime).isLessThan(20000);
@@ -28,10 +28,10 @@ public class ExponentialBackoffTest {
     public void abortsDirectlyIfServerReturnsOtherErrorThan429() {
         Instant start = Instant.now();
         try {
-            new UnirestWrapper("secretKey", null).stringResponse(get("https://mockbin.org/bin/1eea3aab-2bb2-4f92-99c2-50d942fb6294"));
+            new UnirestWrapper("secretKey", null).stringResponse(get("https://httpbin.org/status/400"));
             throw new RuntimeException("Should have failed");
         } catch (SeatsioException e) {
-            assertThat(e.getMessage()).isEqualTo("GET https://mockbin.org/bin/1eea3aab-2bb2-4f92-99c2-50d942fb6294 resulted in a 400 Bad Request response.");
+            assertThat(e.getMessage()).isEqualTo("GET https://httpbin.org/status/400 resulted in a 400 BAD REQUEST response.");
             long waitTime = Instant.now().toEpochMilli() - start.toEpochMilli();
             assertThat(waitTime).isLessThan(2000);
         }
@@ -41,10 +41,10 @@ public class ExponentialBackoffTest {
     public void abortsDirectlyIfMaxRetries0AndServerReturns429() {
         Instant start = Instant.now();
         try {
-            new UnirestWrapper("secretKey", null).maxRetries(0).stringResponse(get("https://mockbin.org/bin/0381d6f4-0155-4b8c-937b-73d3d88b2a3f"));
+            new UnirestWrapper("secretKey", null).maxRetries(0).stringResponse(get("https://httpbin.org/status/429"));
             throw new RuntimeException("Should have failed");
         } catch (SeatsioException e) {
-            assertThat(e.getMessage()).isEqualTo("GET https://mockbin.org/bin/0381d6f4-0155-4b8c-937b-73d3d88b2a3f resulted in a 429 Too Many Requests response. Reason: Rate limit exceeded. Request ID: 123456");
+            assertThat(e.getMessage()).isEqualTo("GET https://httpbin.org/status/429 resulted in a 429 TOO MANY REQUESTS response.");
             long waitTime = Instant.now().toEpochMilli() - start.toEpochMilli();
             assertThat(waitTime).isLessThan(2000);
         }

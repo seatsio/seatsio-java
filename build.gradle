@@ -7,15 +7,15 @@ repositories {
 }
 
 dependencies {
-    compile 'org.apache.commons:commons-lang3:3.12.0'
-    compile 'com.google.code.gson:gson:2.8.9'
-    compile 'com.konghq:unirest-java:3.13.4'
-    compile 'com.google.guava:guava:31.0.1-jre'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'com.google.code.gson:gson:2.8.9'
+    implementation 'com.konghq:unirest-java:3.13.4'
+    implementation 'com.google.guava:guava:31.0.1-jre'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
-    testCompile 'org.assertj:assertj-core:3.21.0'
-    testCompile 'commons-io:commons-io:2.11.0'
-    testRuntime "org.slf4j:slf4j-api:1.7.32"
+    testImplementation 'org.assertj:assertj-core:3.21.0'
+    testImplementation 'commons-io:commons-io:2.11.0'
+    testRuntimeOnly "org.slf4j:slf4j-api:1.7.32"
 }
 
 test {

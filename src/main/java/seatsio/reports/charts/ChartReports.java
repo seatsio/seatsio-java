@@ -23,17 +23,41 @@ public class ChartReports extends Reports {
         return fetchChartReport("byObjectType", chartKey, bookWholeTablesMode);
     }
 
+    public Map<String, ChartReportSummaryItem> summaryByObjectType(String eventKey, ChartReportBookWholeTablesMode bookWholeTablesMode) {
+        return fetchSummaryReport("byObjectType", eventKey, toQueryParams(bookWholeTablesMode));
+    }
+
     public Map<String, List<ChartObjectInfo>> byCategoryKey(String chartKey, ChartReportBookWholeTablesMode bookWholeTablesMode) {
         return fetchChartReport("byCategoryKey", chartKey, bookWholeTablesMode);
+    }
+
+    public Map<String, ChartReportSummaryItem> summaryByCategoryKey(String eventKey, ChartReportBookWholeTablesMode bookWholeTablesMode) {
+        return fetchSummaryReport("byCategoryKey", eventKey, toQueryParams(bookWholeTablesMode));
     }
 
     public Map<String, List<ChartObjectInfo>> byCategoryLabel(String chartKey, ChartReportBookWholeTablesMode bookWholeTablesMode) {
         return fetchChartReport("byCategoryLabel", chartKey, bookWholeTablesMode);
     }
 
+    public Map<String, ChartReportSummaryItem> summaryByCategoryLabel(String eventKey, ChartReportBookWholeTablesMode bookWholeTablesMode) {
+        return fetchSummaryReport("byCategoryLabel", eventKey, toQueryParams(bookWholeTablesMode));
+    }
+
+    public Map<String, List<ChartObjectInfo>> bySection(String chartKey, ChartReportBookWholeTablesMode bookWholeTablesMode) {
+        return fetchChartReport("bySection", chartKey, bookWholeTablesMode);
+    }
+
+    public Map<String, ChartReportSummaryItem> summaryBySection(String eventKey, ChartReportBookWholeTablesMode bookWholeTablesMode) {
+        return fetchSummaryReport("bySection", eventKey, toQueryParams(bookWholeTablesMode));
+    }
+
     private Map<String, List<ChartObjectInfo>> fetchChartReport(String reportType, String chartKey, ChartReportBookWholeTablesMode bookWholeTablesMode) {
-        Map<String, Object> queryParams = bookWholeTablesMode == null ? null : ImmutableMap.of("bookWholeTables", bookWholeTablesMode.queryParam());
+        Map<String, Object> queryParams = toQueryParams(bookWholeTablesMode);
         return fetchReport(reportType, chartKey, queryParams);
+    }
+
+    private Map<String, Object> toQueryParams(ChartReportBookWholeTablesMode bookWholeTablesMode) {
+        return bookWholeTablesMode == null ? null : ImmutableMap.of("bookWholeTables", bookWholeTablesMode.queryParam());
     }
 
     protected TypeToken<Map<String, List<ChartObjectInfo>>> getTypeToken() {
@@ -41,4 +65,9 @@ public class ChartReports extends Reports {
         };
     }
 
+    @Override
+    protected TypeToken<Map<String, ChartReportSummaryItem>> getSummaryTypeToken() {
+        return new TypeToken<Map<String, ChartReportSummaryItem>>() {
+        };
+    }
 }
