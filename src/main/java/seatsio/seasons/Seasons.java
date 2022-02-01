@@ -40,16 +40,6 @@ public class Seasons {
         return gson().fromJson(response, Season.class);
     }
 
-    public Season createPartialSeason(String topLevelSeasonKey, String key, List<String> eventKeys) {
-        JsonObjectBuilder request = aJsonObject()
-                .withPropertyIfNotNull("key", key)
-                .withPropertyIfNotNull("eventKeys", eventKeys);
-        String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/seasons/{topLevelSeasonKey}/partial-seasons")
-                .routeParam("topLevelSeasonKey", topLevelSeasonKey)
-                .body(request.build().toString()));
-        return gson().fromJson(response, Season.class);
-    }
-
     public Stream<Season> listAll() {
         return list().all();
     }
@@ -88,22 +78,9 @@ public class Seasons {
         return gson().fromJson(response, Season.class);
     }
 
-    public Season retrievePartialSeason(String seasonKey, String partialSeasonKey) {
-        String response = unirest.stringResponse(UnirestWrapper.get(baseUrl + "/seasons/{seasonKey}/partial-seasons/{partialSeasonKey}")
-                .routeParam("seasonKey", seasonKey)
-                .routeParam("partialSeasonKey", partialSeasonKey));
-        return gson().fromJson(response, Season.class);
-    }
-
     public void delete(String key) {
         unirest.stringResponse(UnirestWrapper.delete(baseUrl + "/seasons/{key}")
                 .routeParam("key", key));
-    }
-
-    public void deletePartialSeason(String seasonKey, String partialSeasonKey) {
-        unirest.stringResponse(UnirestWrapper.delete(baseUrl + "/seasons/{seasonKey}/partial-seasons/{partialSeasonKey}")
-                .routeParam("seasonKey", seasonKey)
-                .routeParam("partialSeasonKey", partialSeasonKey));
     }
 
     public Season createEvents(String key, List<String> eventKeys) {
@@ -124,18 +101,41 @@ public class Seasons {
         return gson().fromJson(response, Season.class);
     }
 
-    public Season removeEventFromPartialSeason(String seasonKey, String partialSeasonKey, String eventKey) {
-        String response = unirest.stringResponse(UnirestWrapper.delete(baseUrl + "/seasons/{seasonKey}/partial-seasons/{partialSeasonKey}/events/{eventKey}")
-                .routeParam("seasonKey", seasonKey)
+    public Season createPartialSeason(String topLevelSeasonKey, String key, List<String> eventKeys) {
+        JsonObjectBuilder request = aJsonObject()
+                .withPropertyIfNotNull("key", key)
+                .withPropertyIfNotNull("eventKeys", eventKeys);
+        String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/seasons/{topLevelSeasonKey}/partial-seasons")
+                .routeParam("topLevelSeasonKey", topLevelSeasonKey)
+                .body(request.build().toString()));
+        return gson().fromJson(response, Season.class);
+    }
+
+    public Season retrievePartialSeason(String topLevelSeasonKey, String partialSeasonKey) {
+        String response = unirest.stringResponse(UnirestWrapper.get(baseUrl + "/seasons/{topLevelSeasonKey}/partial-seasons/{partialSeasonKey}")
+                .routeParam("topLevelSeasonKey", topLevelSeasonKey)
+                .routeParam("partialSeasonKey", partialSeasonKey));
+        return gson().fromJson(response, Season.class);
+    }
+
+    public void deletePartialSeason(String topLevelSeasonKey, String partialSeasonKey) {
+        unirest.stringResponse(UnirestWrapper.delete(baseUrl + "/seasons/{topLevelSeasonKey}/partial-seasons/{partialSeasonKey}")
+                .routeParam("topLevelSeasonKey", topLevelSeasonKey)
+                .routeParam("partialSeasonKey", partialSeasonKey));
+    }
+
+    public Season removeEventFromPartialSeason(String topLevelSeasonKey, String partialSeasonKey, String eventKey) {
+        String response = unirest.stringResponse(UnirestWrapper.delete(baseUrl + "/seasons/{topLevelSeasonKey}/partial-seasons/{partialSeasonKey}/events/{eventKey}")
+                .routeParam("topLevelSeasonKey", topLevelSeasonKey)
                 .routeParam("partialSeasonKey", partialSeasonKey)
                 .routeParam("eventKey", eventKey));
         return gson().fromJson(response, Season.class);
     }
 
-    public Season addEventsToPartialSeason(String seasonKey, String partialSeasonKey, ArrayList<String> eventKeys) {
+    public Season addEventsToPartialSeason(String topLevelSeasonKey, String partialSeasonKey, List<String> eventKeys) {
         JsonObjectBuilder request = aJsonObject().withProperty("eventKeys", eventKeys);
-        String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/seasons/{seasonKey}/partial-seasons/{partialSeasonKey}/actions/add-events")
-                .routeParam("seasonKey", seasonKey)
+        String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/seasons/{topLevelSeasonKey}/partial-seasons/{partialSeasonKey}/actions/add-events")
+                .routeParam("topLevelSeasonKey", topLevelSeasonKey)
                 .routeParam("partialSeasonKey", partialSeasonKey)
                 .body(request.build().toString()));
         return gson().fromJson(response, Season.class);
