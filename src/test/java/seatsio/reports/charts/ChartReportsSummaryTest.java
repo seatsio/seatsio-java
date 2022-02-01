@@ -9,6 +9,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static seatsio.events.EventObjectInfo.NO_SECTION;
+import static seatsio.reports.charts.ChartReportBookWholeTablesMode.TRUE;
 import static seatsio.reports.charts.ChartReportSummaryItemBuilder.aChartReportSummaryItem;
 
 public class ChartReportsSummaryTest extends SeatsioClientTest {
@@ -17,7 +18,7 @@ public class ChartReportsSummaryTest extends SeatsioClientTest {
     public void summaryByObjectType() {
         String chartKey = createTestChart();
 
-        Map<String, ChartReportSummaryItem> report = client.chartReports.summaryByObjectType(chartKey);
+        Map<String, ChartReportSummaryItem> report = client.chartReports.summaryByObjectType(chartKey, null);
 
         ChartReportSummaryItem seatReport = aChartReportSummaryItem()
                 .withCount(32)
@@ -47,10 +48,37 @@ public class ChartReportsSummaryTest extends SeatsioClientTest {
     }
 
     @Test
+    public void summaryByObjectType_bookWholeTablesTrue() {
+        String chartKey = createTestChartWithTables();
+
+        Map<String, ChartReportSummaryItem> report = client.chartReports.summaryByObjectType(chartKey, TRUE);
+
+        ChartReportSummaryItem tablesReport = aChartReportSummaryItem()
+                .withCount(2)
+                .withBySection(ImmutableMap.of(NO_SECTION, 2))
+                .withByCategoryKey(ImmutableMap.of("9", 2))
+                .withByCategoryLabel(ImmutableMap.of("Cat1", 2))
+                .build();
+        ChartReportSummaryItem emptyReport = aChartReportSummaryItem()
+                .withCount(0)
+                .withBySection(new HashMap<>())
+                .withByCategoryKey(new HashMap<>())
+                .withByCategoryLabel(new HashMap<>())
+                .build();
+
+        assertThat(report).isEqualTo(ImmutableMap.of(
+                "seat", emptyReport,
+                "generalAdmission", emptyReport,
+                "booth", emptyReport,
+                "table", tablesReport
+        ));
+    }
+
+    @Test
     public void summaryByCategoryKey() {
         String chartKey = createTestChart();
 
-        Map<String, ChartReportSummaryItem> report = client.chartReports.summaryByCategoryKey(chartKey);
+        Map<String, ChartReportSummaryItem> report = client.chartReports.summaryByCategoryKey(chartKey, null);
 
         ChartReportSummaryItem cat9Report = aChartReportSummaryItem()
                 .withCount(116)
@@ -75,7 +103,7 @@ public class ChartReportsSummaryTest extends SeatsioClientTest {
     public void summaryByCategoryLabel() {
         String chartKey = createTestChart();
 
-        Map<String, ChartReportSummaryItem> report = client.chartReports.summaryByCategoryLabel(chartKey);
+        Map<String, ChartReportSummaryItem> report = client.chartReports.summaryByCategoryLabel(chartKey, null);
 
         ChartReportSummaryItem cat1Report = aChartReportSummaryItem()
                 .withCount(116)
@@ -100,7 +128,7 @@ public class ChartReportsSummaryTest extends SeatsioClientTest {
     public void summaryBySection() {
         String chartKey = createTestChart();
 
-        Map<String, ChartReportSummaryItem> report = client.chartReports.summaryBySection(chartKey);
+        Map<String, ChartReportSummaryItem> report = client.chartReports.summaryBySection(chartKey, null);
 
         ChartReportSummaryItem noSectionReport = aChartReportSummaryItem()
                 .withCount(232)
