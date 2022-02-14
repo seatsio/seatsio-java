@@ -2,6 +2,7 @@ package seatsio.json;
 
 import com.google.gson.*;
 import seatsio.charts.CategoryKey;
+import seatsio.events.Event;
 
 import java.lang.reflect.Type;
 import java.time.Instant;
@@ -9,11 +10,16 @@ import java.time.Instant;
 public class SeatsioGson {
 
     public static Gson gson() {
+        return gsonBuilder()
+                .registerTypeAdapter(Event.class, new Event.EventJsonDeserializer())
+                .create();
+    }
+
+    public static GsonBuilder gsonBuilder() {
         return new GsonBuilder()
                 .registerTypeAdapter(Instant.class, instantDeserializer())
                 .registerTypeAdapter(CategoryKey.class, new CategoryKey.CategoryKeyJsonDeserializer())
-                .registerTypeAdapter(CategoryKey.class, new CategoryKey.CategoryKeyJsonSerializer())
-                .create();
+                .registerTypeAdapter(CategoryKey.class, new CategoryKey.CategoryKeyJsonSerializer());
     }
 
     private static JsonDeserializer<Instant> instantDeserializer() {

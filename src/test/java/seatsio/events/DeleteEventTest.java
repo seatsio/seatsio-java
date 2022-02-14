@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.SeatsioException;
 import seatsio.charts.Chart;
+import seatsio.seasons.Season;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -19,4 +20,13 @@ public class DeleteEventTest extends SeatsioClientTest {
         assertThrows(SeatsioException.class, () -> client.events.retrieve(event.key));
     }
 
+    @Test
+    public void deleteSeason() {
+        String chartKey = createTestChart();
+        Season season = client.seasons.create(chartKey);
+
+        client.events.delete(season.key);
+
+        assertThrows(SeatsioException.class, () -> client.events.retrieve(season.key));
+    }
 }

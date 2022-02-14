@@ -1,8 +1,13 @@
 package seatsio.events;
 
+import com.google.gson.*;
+import seatsio.seasons.Season;
 import seatsio.util.ValueObject;
 
+import java.lang.reflect.Type;
 import java.time.Instant;
+
+import static seatsio.json.SeatsioGson.gsonBuilder;
 
 public class Event extends ValueObject {
 
@@ -16,4 +21,20 @@ public class Event extends ValueObject {
     public TableBookingConfig tableBookingConfig;
     public Channel[] channels;
     public String socialDistancingRulesetKey;
+
+    public boolean isSeason() {
+        return false;
+    }
+
+    public static class EventJsonDeserializer implements JsonDeserializer<Event> {
+
+        @Override
+        public Event deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
+            JsonObject event = jsonElement.getAsJsonObject();
+            if (event.getAsJsonPrimitive("isSeason").getAsBoolean()) {
+                return gsonBuilder().create().fromJson(event, Season.class);
+            }
+            return gsonBuilder().create().fromJson(event, Event.class);
+        }
+    }
 }

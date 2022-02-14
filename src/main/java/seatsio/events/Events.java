@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import seatsio.SeatsioException;
 import seatsio.SortDirection;
 import seatsio.json.JsonObjectBuilder;
+import seatsio.seasons.Season;
 import seatsio.util.*;
 
 import java.util.*;
@@ -101,6 +102,10 @@ public class Events {
         String response = unirest.stringResponse(UnirestWrapper.get(baseUrl + "/events/{key}")
                 .routeParam("key", key));
         return gson().fromJson(response, Event.class);
+    }
+
+    public Season retrieveSeason(String key) {
+        return (Season) retrieve(key);
     }
 
     public void updateChannels(String key, Map<String, Channel> channels) {

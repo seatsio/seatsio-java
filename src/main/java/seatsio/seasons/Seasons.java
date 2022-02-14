@@ -1,14 +1,9 @@
 package seatsio.seasons;
 
 import seatsio.json.JsonObjectBuilder;
-import seatsio.util.Lister;
-import seatsio.util.Page;
-import seatsio.util.PageFetcher;
 import seatsio.util.UnirestWrapper;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
 import static seatsio.json.SeatsioGson.gson;
@@ -40,49 +35,6 @@ public class Seasons {
         return gson().fromJson(response, Season.class);
     }
 
-    public Stream<Season> listAll() {
-        return list().all();
-    }
-
-    public Page<Season> listFirstPage() {
-        return listFirstPage(null);
-    }
-
-    public Page<Season> listFirstPage(Integer pageSize) {
-        return list().firstPage(pageSize);
-    }
-
-    public Page<Season> listPageAfter(long id) {
-        return listPageAfter(id, null);
-    }
-
-    public Page<Season> listPageAfter(long id, Integer pageSize) {
-        return list().pageAfter(id, pageSize);
-    }
-
-    public Page<Season> listPageBefore(long id) {
-        return listPageBefore(id, null);
-    }
-
-    public Page<Season> listPageBefore(long id, Integer pageSize) {
-        return list().pageBefore(id, pageSize);
-    }
-
-    private Lister<Season> list() {
-        return new Lister<>(new PageFetcher<>(baseUrl, "/seasons", unirest, Season.class));
-    }
-
-    public Season retrieve(String key) {
-        String response = unirest.stringResponse(UnirestWrapper.get(baseUrl + "/seasons/{key}")
-                .routeParam("key", key));
-        return gson().fromJson(response, Season.class);
-    }
-
-    public void delete(String key) {
-        unirest.stringResponse(UnirestWrapper.delete(baseUrl + "/seasons/{key}")
-                .routeParam("key", key));
-    }
-
     public Season createEvents(String key, List<String> eventKeys) {
         return doCreateEvents(key, eventKeys, null);
     }
@@ -109,19 +61,6 @@ public class Seasons {
                 .routeParam("topLevelSeasonKey", topLevelSeasonKey)
                 .body(request.build().toString()));
         return gson().fromJson(response, Season.class);
-    }
-
-    public Season retrievePartialSeason(String topLevelSeasonKey, String partialSeasonKey) {
-        String response = unirest.stringResponse(UnirestWrapper.get(baseUrl + "/seasons/{topLevelSeasonKey}/partial-seasons/{partialSeasonKey}")
-                .routeParam("topLevelSeasonKey", topLevelSeasonKey)
-                .routeParam("partialSeasonKey", partialSeasonKey));
-        return gson().fromJson(response, Season.class);
-    }
-
-    public void deletePartialSeason(String topLevelSeasonKey, String partialSeasonKey) {
-        unirest.stringResponse(UnirestWrapper.delete(baseUrl + "/seasons/{topLevelSeasonKey}/partial-seasons/{partialSeasonKey}")
-                .routeParam("topLevelSeasonKey", topLevelSeasonKey)
-                .routeParam("partialSeasonKey", partialSeasonKey));
     }
 
     public Season removeEventFromPartialSeason(String topLevelSeasonKey, String partialSeasonKey, String eventKey) {

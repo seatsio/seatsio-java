@@ -3,6 +3,7 @@ package seatsio.events;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.charts.Chart;
+import seatsio.seasons.Season;
 
 import java.util.stream.Stream;
 
@@ -22,6 +23,20 @@ public class ListEventsTest extends SeatsioClientTest {
         assertThat(events)
                 .extracting(event -> event.key)
                 .containsExactly(event3.key, event2.key, event1.key);
+    }
+
+    @Test
+    public void listSeasons() {
+        Chart chart = client.charts.create();
+        client.seasons.create(chart.key);
+        client.seasons.create(chart.key);
+        client.seasons.create(chart.key);
+
+        Stream<Event> seasons = client.events.listAll();
+
+        assertThat(seasons)
+                .extracting(Event::isSeason)
+                .containsExactly(true, true, true);
     }
 
 }

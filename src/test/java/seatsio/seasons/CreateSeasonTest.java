@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.charts.Chart;
 import seatsio.charts.SocialDistancingRuleset;
-import seatsio.events.Event;
 import seatsio.events.TableBookingConfig;
 
 import java.time.Instant;
@@ -28,17 +27,15 @@ public class CreateSeasonTest extends SeatsioClientTest {
         assertThat(season.id).isNotZero();
         assertThat(season.key).isNotNull();
         assertThat(season.partialSeasonKeys).isEmpty();
-
-        Event seasonEvent = season.seasonEvent;
-        assertThat(seasonEvent.id).isNotZero();
-        assertThat(seasonEvent.key).isEqualTo(season.key);
-        assertThat(seasonEvent.chartKey).isEqualTo(chartKey);
-        assertThat(seasonEvent.tableBookingConfig).isEqualTo(TableBookingConfig.inherit());
-        assertThat(seasonEvent.supportsBestAvailable).isTrue();
-        assertThat(seasonEvent.forSaleConfig).isNull();
+        assertThat(season.id).isNotZero();
+        assertThat(season.key).isEqualTo(season.key);
+        assertThat(season.chartKey).isEqualTo(chartKey);
+        assertThat(season.tableBookingConfig).isEqualTo(TableBookingConfig.inherit());
+        assertThat(season.supportsBestAvailable).isTrue();
+        assertThat(season.forSaleConfig).isNull();
         Instant now = Instant.now();
-        assertThat(seasonEvent.createdOn).isBetween(now.minus(1, MINUTES), now.plus(1, MINUTES));
-        assertThat(seasonEvent.updatedOn).isNull();
+        assertThat(season.createdOn).isBetween(now.minus(1, MINUTES), now.plus(1, MINUTES));
+        assertThat(season.updatedOn).isNull();
 
         assertThat(season.events).isEmpty();
     }
@@ -77,8 +74,7 @@ public class CreateSeasonTest extends SeatsioClientTest {
         Season season = client.seasons.create(chartKey, new SeasonParams().tableBookingConfig(TableBookingConfig.custom(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT))));
 
         assertThat(season.key).isNotNull();
-        Event seasonEvent = season.seasonEvent;
-        assertThat(seasonEvent.tableBookingConfig).isEqualTo(TableBookingConfig.custom(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT)));
+        assertThat(season.tableBookingConfig).isEqualTo(TableBookingConfig.custom(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT)));
     }
 
     @Test
@@ -88,8 +84,7 @@ public class CreateSeasonTest extends SeatsioClientTest {
         Season season = client.seasons.create(chartKey, new SeasonParams().tableBookingConfig(TableBookingConfig.inherit()));
 
         assertThat(season.key).isNotNull();
-        Event seasonEvent = season.seasonEvent;
-        assertThat(seasonEvent.tableBookingConfig).isEqualTo(TableBookingConfig.inherit());
+        assertThat(season.tableBookingConfig).isEqualTo(TableBookingConfig.inherit());
     }
 
     @Test
@@ -100,8 +95,7 @@ public class CreateSeasonTest extends SeatsioClientTest {
 
         Season season = client.seasons.create(chartKey, new SeasonParams().socialDistancingRulesetKey("ruleset1"));
 
-        Event seasonEvent = season.seasonEvent;
-        assertThat(seasonEvent.socialDistancingRulesetKey).isEqualTo("ruleset1");
+        assertThat(season.socialDistancingRulesetKey).isEqualTo("ruleset1");
     }
 
 }
