@@ -22,7 +22,7 @@ public class RemoveEventFromPartialSeasonTest extends SeatsioClientTest {
         assertThat(updatedPartialSeason.events)
                 .extracting(s -> s.key)
                 .containsExactly("event1");
-        assertThat(client.events.retrieveSeason("aSeason").events)
+        assertThat(client.seasons.retrieve("aSeason").events)
                 .extracting(s -> s.key)
                 .containsExactly("event1", "event2");
     }

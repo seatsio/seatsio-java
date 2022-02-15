@@ -1,5 +1,6 @@
 package seatsio.seasons;
 
+import seatsio.SeatsioClient;
 import seatsio.json.JsonObjectBuilder;
 import seatsio.util.UnirestWrapper;
 
@@ -12,10 +13,12 @@ public class Seasons {
 
     private final String baseUrl;
     private final UnirestWrapper unirest;
+    private SeatsioClient seatsioClient;
 
-    public Seasons(String baseUrl, UnirestWrapper unirest) {
+    public Seasons(String baseUrl, UnirestWrapper unirest, SeatsioClient seatsioClient) {
         this.baseUrl = baseUrl;
         this.unirest = unirest;
+        this.seatsioClient = seatsioClient;
     }
 
     public Season create(String chartKey) {
@@ -78,5 +81,9 @@ public class Seasons {
                 .routeParam("partialSeasonKey", partialSeasonKey)
                 .body(request.build().toString()));
         return gson().fromJson(response, Season.class);
+    }
+
+    public Season retrieve(String key) {
+        return (Season) seatsioClient.events.retrieve(key);
     }
 }

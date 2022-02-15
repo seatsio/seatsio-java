@@ -35,7 +35,7 @@ public class SeatsioClient {
         this.holdTokens = new HoldTokens(baseUrl, unirest);
         this.charts = new Charts(baseUrl, unirest);
         this.events = new Events(baseUrl, unirest);
-        this.seasons = new Seasons(baseUrl, unirest);
+        this.seasons = new Seasons(baseUrl, unirest, this);
         this.eventReports = new EventReports(baseUrl, unirest);
         this.chartReports = new ChartReports(baseUrl, unirest);
         this.usageReports = new UsageReports(baseUrl, unirest);
