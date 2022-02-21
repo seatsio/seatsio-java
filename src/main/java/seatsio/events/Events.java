@@ -76,24 +76,12 @@ public class Events {
     }
 
     public void update(String key, String chartKey, String newKey) {
-        update(key, chartKey, newKey, null, null);
+        update(key, chartKey, newKey, null, null, null);
     }
 
 
     public void update(String key, String chartKey, String newKey, TableBookingConfig tableBookingConfig) {
-        update(key, chartKey, newKey, tableBookingConfig, null);
-    }
-
-    // TODO remove
-    public void update(String key, String chartKey, String newKey, TableBookingConfig tableBookingConfig, String socialDistancingRulesetKey) {
-        JsonObjectBuilder request = aJsonObject()
-                .withPropertyIfNotNull("chartKey", chartKey)
-                .withPropertyIfNotNull("eventKey", newKey)
-                .withPropertyIfNotNull("tableBookingConfig", tableBookingConfig)
-                .withPropertyIfNotNull("socialDistancingRulesetKey", socialDistancingRulesetKey);
-        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events/{key}")
-                .routeParam("key", key)
-                .body(request.build().toString()));
+        update(key, chartKey, newKey, tableBookingConfig, null, null);
     }
 
     public void update(String key, String chartKey, String newKey, TableBookingConfig tableBookingConfig, String socialDistancingRulesetKey, Map<String, CategoryKey> objectCategories) {

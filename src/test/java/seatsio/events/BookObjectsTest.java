@@ -128,7 +128,7 @@ public class BookObjectsTest extends SeatsioClientTest {
                 "ruleset", ruleset
         );
         client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
-        client.events.update(event.key, null, null, null, "ruleset");
+        client.events.update(event.key, null, null, null, "ruleset", null);
 
         client.events.book(event.key, newArrayList("A-1"), null, null, null, null, null, true);
 

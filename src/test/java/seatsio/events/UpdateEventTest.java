@@ -66,7 +66,7 @@ public class UpdateEventTest extends SeatsioClientTest {
         client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
         Event event = client.events.create(chartKey, null, null, "ruleset1", null);
 
-        client.events.update(event.key, null, null, null, "ruleset2");
+        client.events.update(event.key, null, null, null, "ruleset2", null);
 
         Event retrievedEvent = client.events.retrieve(event.key);
         assertThat(retrievedEvent.socialDistancingRulesetKey).isEqualTo("ruleset2");
@@ -82,7 +82,7 @@ public class UpdateEventTest extends SeatsioClientTest {
         client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
         Event event = client.events.create(chartKey, null, null, "ruleset1", null);
 
-        client.events.update(event.key, null, null, null, "");
+        client.events.update(event.key, null, null, null, "", null);
 
         Event retrievedEvent = client.events.retrieve(event.key);
         assertThat(retrievedEvent.socialDistancingRulesetKey).isNull();
