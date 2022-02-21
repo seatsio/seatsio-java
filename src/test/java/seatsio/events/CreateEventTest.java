@@ -3,6 +3,7 @@ package seatsio.events;
 import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
+import seatsio.charts.CategoryKey;
 import seatsio.charts.Chart;
 import seatsio.charts.SocialDistancingRuleset;
 
@@ -71,5 +72,15 @@ public class CreateEventTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey, null, null, "ruleset1");
 
         assertThat(event.socialDistancingRulesetKey).isEqualTo("ruleset1");
+    }
+
+    @Test
+    public void objectCategoriesCanBePassedIn() {
+        String chartKey = createTestChart();
+        Map<String, CategoryKey> objectCategories = ImmutableMap.of("A-1", CategoryKey.of(1L));
+
+        Event event = client.events.create(chartKey, null, null, null, objectCategories);
+
+        // TODO assertThat(event.objectCategories).isEqualTo(objectCategories);
     }
 }

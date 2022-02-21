@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import seatsio.SeatsioException;
 import seatsio.SortDirection;
+import seatsio.charts.CategoryKey;
 import seatsio.json.JsonObjectBuilder;
 import seatsio.util.*;
 
@@ -44,6 +45,7 @@ public class Events {
         return create(chartKey, eventKey, tableBookingConfig, null);
     }
 
+    // TODO remove
     public Event create(String chartKey, String eventKey, TableBookingConfig tableBookingConfig, String socialDistancingRulesetKey) {
         JsonObjectBuilder request = aJsonObject()
                 .withProperty("chartKey", chartKey)
@@ -52,6 +54,19 @@ public class Events {
                 .withPropertyIfNotNull("socialDistancingRulesetKey", socialDistancingRulesetKey);
         String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events")
                 .body(request.build().toString()));
+        return gson().fromJson(response, Event.class);
+    }
+
+    public Event create(String chartKey, String eventKey, TableBookingConfig tableBookingConfig, String socialDistancingRulesetKey, Map<String, CategoryKey> objectCategories) {
+        String request = aJsonObject()
+                .withProperty("chartKey", chartKey)
+                .withPropertyIfNotNull("eventKey", eventKey)
+                .withPropertyIfNotNull("tableBookingConfig", tableBookingConfig)
+                .withPropertyIfNotNull("socialDistancingRulesetKey", socialDistancingRulesetKey)
+                .withPropertyIfNotNull("objectCategories", objectCategories, CategoryKey::toString)
+                .buildAsString();
+        String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events")
+                .body(request));
         return gson().fromJson(response, Event.class);
     }
 
