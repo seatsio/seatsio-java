@@ -51,7 +51,7 @@ public class Events {
                 .withPropertyIfNotNull("eventKey", eventKey)
                 .withPropertyIfNotNull("tableBookingConfig", tableBookingConfig)
                 .withPropertyIfNotNull("socialDistancingRulesetKey", socialDistancingRulesetKey)
-                .withPropertyIfNotNull("objectCategories", objectCategories, CategoryKey::toString)
+                .withPropertyIfNotNull("objectCategories", objectCategories, CategoryKey::toJson)
                 .buildAsString();
         String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events")
                 .body(request));
@@ -84,12 +84,25 @@ public class Events {
         update(key, chartKey, newKey, tableBookingConfig, null);
     }
 
+    // TODO remove
     public void update(String key, String chartKey, String newKey, TableBookingConfig tableBookingConfig, String socialDistancingRulesetKey) {
         JsonObjectBuilder request = aJsonObject()
                 .withPropertyIfNotNull("chartKey", chartKey)
                 .withPropertyIfNotNull("eventKey", newKey)
                 .withPropertyIfNotNull("tableBookingConfig", tableBookingConfig)
                 .withPropertyIfNotNull("socialDistancingRulesetKey", socialDistancingRulesetKey);
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events/{key}")
+                .routeParam("key", key)
+                .body(request.build().toString()));
+    }
+
+    public void update(String key, String chartKey, String newKey, TableBookingConfig tableBookingConfig, String socialDistancingRulesetKey, Map<String, CategoryKey> objectCategories) {
+        JsonObjectBuilder request = aJsonObject()
+                .withPropertyIfNotNull("chartKey", chartKey)
+                .withPropertyIfNotNull("eventKey", newKey)
+                .withPropertyIfNotNull("tableBookingConfig", tableBookingConfig)
+                .withPropertyIfNotNull("socialDistancingRulesetKey", socialDistancingRulesetKey)
+                .withPropertyIfNotNull("objectCategories", objectCategories, CategoryKey::toJson);
         unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events/{key}")
                 .routeParam("key", key)
                 .body(request.build().toString()));

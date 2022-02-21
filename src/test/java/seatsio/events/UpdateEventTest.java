@@ -1,8 +1,10 @@
 package seatsio.events;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
+import seatsio.charts.CategoryKey;
 import seatsio.charts.Chart;
 import seatsio.charts.SocialDistancingRuleset;
 
@@ -11,6 +13,7 @@ import java.util.Map;
 import static java.time.Instant.now;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 import static seatsio.events.TableBookingMode.BY_SEAT;
 import static seatsio.events.TableBookingMode.BY_TABLE;
 
@@ -84,4 +87,40 @@ public class UpdateEventTest extends SeatsioClientTest {
         Event retrievedEvent = client.events.retrieve(event.key);
         assertThat(retrievedEvent.socialDistancingRulesetKey).isNull();
     }
+
+    @Test
+    public void updateObjectCategories() {
+        String chartKey = createTestChart();
+        Map<String, CategoryKey> objectCategories = ImmutableMap.of(
+                "A-1", CategoryKey.of(9L)
+        );
+        Event event = client.events.create(chartKey, null, null, null, objectCategories);
+
+        Map<String, CategoryKey> newObjectCategories = ImmutableMap.of(
+                "A-2", CategoryKey.of(10L)
+        );
+
+        Map<?, ?> map = client.charts.retrievePublishedVersion(event.chartKey);
+        System.out.println(map);
+
+        client.events.update(event.key, null, null, null, null, newObjectCategories);
+
+        Event retrievedEvent = client.events.retrieve(event.key);
+        assertThat(retrievedEvent.objectCategories).containsOnly(entry("A-2", CategoryKey.of(10L)));
+    }
+
+    @Test
+    public void removeObjectCategories() {
+        String chartKey = createTestChart();
+        Map<String, CategoryKey> objectCategories = ImmutableMap.of(
+                "A-1", CategoryKey.of(9L)
+        );
+        Event event = client.events.create(chartKey, null, null, null, objectCategories);
+
+        client.events.update(event.key, null, null, null, null, Maps.newHashMap());
+
+        Event retrievedEvent = client.events.retrieve(event.key);
+        assertThat(retrievedEvent.socialDistancingRulesetKey).isNull();
+    }
+
 }

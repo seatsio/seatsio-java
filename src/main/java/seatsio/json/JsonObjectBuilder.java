@@ -109,11 +109,11 @@ public class JsonObjectBuilder {
         return withProperty(propertyName, new Gson().toJsonTree(value));
     }
 
-    public <T> JsonObjectBuilder withPropertyIfNotNull(String propertyName, Map<String, T> map, Function<T, String> f) {
+    public <T> JsonObjectBuilder withPropertyIfNotNull(String propertyName, Map<String, T> map, Function<T, JsonElement> f) {
         if (map == null) {
             return this;
         }
-        Map<String, String> appliedMap = map.entrySet().stream().collect(toMap(Map.Entry::getKey, t -> f.apply(t.getValue())));
+        Map<String, JsonElement> appliedMap = map.entrySet().stream().collect(toMap(Map.Entry::getKey, t -> f.apply(t.getValue())));
         return withProperty(propertyName, new Gson().toJsonTree(appliedMap));
     }
 

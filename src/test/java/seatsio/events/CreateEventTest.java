@@ -78,10 +78,10 @@ public class CreateEventTest extends SeatsioClientTest {
     @Test
     public void objectCategoriesCanBePassedIn() {
         String chartKey = createTestChart();
-        Map<String, CategoryKey> objectCategories = ImmutableMap.of("A-1", CategoryKey.of("1"));
+        Map<String, CategoryKey> objectCategories = ImmutableMap.of("A-1", CategoryKey.of(10L));
 
         Event event = client.events.create(chartKey, null, null, null, objectCategories);
 
-        assertThat(event.objectCategories).containsOnly(entry("A-1", CategoryKey.of("1")));
+        assertThat(event.objectCategories).containsOnly(entry("A-1", CategoryKey.of(10L)));
     }
 }
