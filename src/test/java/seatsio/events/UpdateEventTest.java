@@ -61,7 +61,7 @@ public class UpdateEventTest extends SeatsioClientTest {
                 "ruleset2", SocialDistancingRuleset.ruleBased("My second ruleset").build()
         );
         client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
-        Event event = client.events.create(chartKey, null, null, "ruleset1");
+        Event event = client.events.create(chartKey, null, null, "ruleset1", null);
 
         client.events.update(event.key, null, null, null, "ruleset2");
 
@@ -77,7 +77,7 @@ public class UpdateEventTest extends SeatsioClientTest {
                 "ruleset2", SocialDistancingRuleset.ruleBased("My second ruleset").build()
         );
         client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
-        Event event = client.events.create(chartKey, null, null, "ruleset1");
+        Event event = client.events.create(chartKey, null, null, "ruleset1", null);
 
         client.events.update(event.key, null, null, null, "");
 

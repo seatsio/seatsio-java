@@ -12,6 +12,7 @@ import java.util.Map;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 import static seatsio.events.TableBookingMode.BY_SEAT;
 import static seatsio.events.TableBookingMode.BY_TABLE;
 
@@ -69,7 +70,7 @@ public class CreateEventTest extends SeatsioClientTest {
         Map<String, SocialDistancingRuleset> rulesets = ImmutableMap.of("ruleset1", SocialDistancingRuleset.ruleBased("My ruleset").build());
         client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
 
-        Event event = client.events.create(chartKey, null, null, "ruleset1");
+        Event event = client.events.create(chartKey, null, null, "ruleset1", null);
 
         assertThat(event.socialDistancingRulesetKey).isEqualTo("ruleset1");
     }
@@ -77,10 +78,10 @@ public class CreateEventTest extends SeatsioClientTest {
     @Test
     public void objectCategoriesCanBePassedIn() {
         String chartKey = createTestChart();
-        Map<String, CategoryKey> objectCategories = ImmutableMap.of("A-1", CategoryKey.of(1L));
+        Map<String, CategoryKey> objectCategories = ImmutableMap.of("A-1", CategoryKey.of("1"));
 
         Event event = client.events.create(chartKey, null, null, null, objectCategories);
 
-        // TODO assertThat(event.objectCategories).isEqualTo(objectCategories);
+        assertThat(event.objectCategories).containsOnly(entry("A-1", CategoryKey.of("1")));
     }
 }

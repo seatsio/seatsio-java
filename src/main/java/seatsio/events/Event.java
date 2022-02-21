@@ -1,11 +1,14 @@
 package seatsio.events;
 
 import com.google.gson.*;
+import seatsio.charts.CategoryKey;
+import seatsio.charts.StringCategoryKey;
 import seatsio.seasons.Season;
 import seatsio.util.ValueObject;
 
 import java.lang.reflect.Type;
 import java.time.Instant;
+import java.util.Map;
 
 import static seatsio.json.SeatsioGson.gsonBuilder;
 
@@ -21,6 +24,7 @@ public class Event extends ValueObject {
     public TableBookingConfig tableBookingConfig;
     public Channel[] channels;
     public String socialDistancingRulesetKey;
+    public Map<String, CategoryKey> objectCategories;
 
     public boolean isSeason() {
         return false;
