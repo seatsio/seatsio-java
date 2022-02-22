@@ -120,7 +120,7 @@ public class UpdateEventTest extends SeatsioClientTest {
         client.events.update(event.key, null, null, null, null, Maps.newHashMap());
 
         Event retrievedEvent = client.events.retrieve(event.key);
-        assertThat(retrievedEvent.socialDistancingRulesetKey).isNull();
+        assertThat(retrievedEvent.objectCategories).isNull();
     }
 
 }
