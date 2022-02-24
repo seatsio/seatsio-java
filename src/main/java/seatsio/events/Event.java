@@ -21,6 +21,10 @@ public class Event extends ValueObject {
     public TableBookingConfig tableBookingConfig;
     public Channel[] channels;
     public String socialDistancingRulesetKey;
+    public String topLevelSeasonKey;
+    public boolean isTopLevelSeason;
+    public boolean isPartialSeason;
+    public boolean isEventInSeason;
 
     public boolean isSeason() {
         return false;

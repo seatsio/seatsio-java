@@ -20,6 +20,7 @@ public class RetrieveEventTest extends SeatsioClientTest {
         Event retrievedEvent = client.events.retrieve(event.key);
 
         assertThat(retrievedEvent.id).isNotZero();
+        assertThat(retrievedEvent.isEventInSeason).isFalse();
         assertThat(retrievedEvent.key).isNotNull();
         assertThat(retrievedEvent.chartKey).isEqualTo(chartKey);
         assertThat(retrievedEvent.tableBookingConfig).isEqualTo(TableBookingConfig.inherit());
@@ -41,6 +42,7 @@ public class RetrieveEventTest extends SeatsioClientTest {
         Season retrievedSeason = (Season) client.events.retrieve(season.key);
 
         assertThat(retrievedSeason.id).isNotZero();
+        assertThat(retrievedSeason.isTopLevelSeason).isTrue();
         assertThat(retrievedSeason.key).isEqualTo(season.key);
         assertThat(retrievedSeason.chartKey).isEqualTo(chartKey);
         assertThat(retrievedSeason.tableBookingConfig).isEqualTo(TableBookingConfig.inherit());

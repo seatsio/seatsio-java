@@ -17,6 +17,8 @@ public class CreatePartialSeasonTest extends SeatsioClientTest {
         Season partialSeason = client.seasons.createPartialSeason(topLevelSeason.key, "aPartialSeason", null);
 
         assertThat(partialSeason.key).isEqualTo("aPartialSeason");
+        assertThat(partialSeason.isPartialSeason).isTrue();
+        assertThat(partialSeason.topLevelSeasonKey).isEqualTo(topLevelSeason.key);
     }
 
     @Test
