@@ -7,6 +7,7 @@ import java.util.function.Function;
 
 import static com.google.common.collect.Maps.transformValues;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static seatsio.json.JsonArrayBuilder.aJsonArray;
 
 public class JsonObjectBuilder {
@@ -106,6 +107,14 @@ public class JsonObjectBuilder {
             return this;
         }
         return withProperty(propertyName, new Gson().toJsonTree(value));
+    }
+
+    public <T> JsonObjectBuilder withPropertyIfNotNull(String propertyName, Map<String, T> map, Function<T, JsonElement> f) {
+        if (map == null) {
+            return this;
+        }
+        Map<String, JsonElement> appliedMap = map.entrySet().stream().collect(toMap(Map.Entry::getKey, t -> f.apply(t.getValue())));
+        return withProperty(propertyName, new Gson().toJsonTree(appliedMap));
     }
 
     private <T> JsonObjectBuilder setValue(String propertyName, T value, Function<T, JsonPrimitive> f) {

@@ -111,7 +111,7 @@ public class HoldObjectsTest extends SeatsioClientTest {
                 "ruleset", ruleset
         );
         client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
-        client.events.update(event.key, null, null, null, "ruleset");
+        client.events.update(event.key, null, null, null, "ruleset", null);
 
         client.events.hold(event.key, newArrayList("A-1"), holdToken.holdToken, null, null, null, null, true);
 

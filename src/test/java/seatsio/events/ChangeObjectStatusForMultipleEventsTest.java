@@ -86,8 +86,8 @@ public class ChangeObjectStatusForMultipleEventsTest extends SeatsioClientTest {
                 "ruleset", ruleset
         );
         client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
-        client.events.update(event1.key, null, null, null, "ruleset");
-        client.events.update(event2.key, null, null, null, "ruleset");
+        client.events.update(event1.key, null, null, null, "ruleset", null);
+        client.events.update(event2.key, null, null, null, "ruleset", null);
 
         client.events.changeObjectStatus(asList(event1.key, event2.key), newArrayList("A-1"), EventObjectInfo.BOOKED, null, null, null, null, null, true);
 

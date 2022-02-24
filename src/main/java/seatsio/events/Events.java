@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import seatsio.SeatsioException;
 import seatsio.SortDirection;
+import seatsio.charts.CategoryKey;
 import seatsio.json.JsonObjectBuilder;
 import seatsio.util.*;
 
@@ -33,25 +34,27 @@ public class Events {
     }
 
     public Event create(String chartKey) {
-        return create(chartKey, null, null, null);
+        return create(chartKey, null, null, null, null);
     }
 
     public Event create(String chartKey, String eventKey) {
-        return create(chartKey, eventKey, null, null);
+        return create(chartKey, eventKey, null, null, null);
     }
 
     public Event create(String chartKey, String eventKey, TableBookingConfig tableBookingConfig) {
-        return create(chartKey, eventKey, tableBookingConfig, null);
+        return create(chartKey, eventKey, tableBookingConfig, null, null);
     }
 
-    public Event create(String chartKey, String eventKey, TableBookingConfig tableBookingConfig, String socialDistancingRulesetKey) {
-        JsonObjectBuilder request = aJsonObject()
+    public Event create(String chartKey, String eventKey, TableBookingConfig tableBookingConfig, String socialDistancingRulesetKey, Map<String, CategoryKey> objectCategories) {
+        String request = aJsonObject()
                 .withProperty("chartKey", chartKey)
                 .withPropertyIfNotNull("eventKey", eventKey)
                 .withPropertyIfNotNull("tableBookingConfig", tableBookingConfig)
-                .withPropertyIfNotNull("socialDistancingRulesetKey", socialDistancingRulesetKey);
+                .withPropertyIfNotNull("socialDistancingRulesetKey", socialDistancingRulesetKey)
+                .withPropertyIfNotNull("objectCategories", objectCategories, CategoryKey::toJson)
+                .buildAsString();
         String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events")
-                .body(request.build().toString()));
+                .body(request));
         return gson().fromJson(response, Event.class);
     }
 
@@ -73,20 +76,21 @@ public class Events {
     }
 
     public void update(String key, String chartKey, String newKey) {
-        update(key, chartKey, newKey, null, null);
+        update(key, chartKey, newKey, null, null, null);
     }
 
 
     public void update(String key, String chartKey, String newKey, TableBookingConfig tableBookingConfig) {
-        update(key, chartKey, newKey, tableBookingConfig, null);
+        update(key, chartKey, newKey, tableBookingConfig, null, null);
     }
 
-    public void update(String key, String chartKey, String newKey, TableBookingConfig tableBookingConfig, String socialDistancingRulesetKey) {
+    public void update(String key, String chartKey, String newKey, TableBookingConfig tableBookingConfig, String socialDistancingRulesetKey, Map<String, CategoryKey> objectCategories) {
         JsonObjectBuilder request = aJsonObject()
                 .withPropertyIfNotNull("chartKey", chartKey)
                 .withPropertyIfNotNull("eventKey", newKey)
                 .withPropertyIfNotNull("tableBookingConfig", tableBookingConfig)
-                .withPropertyIfNotNull("socialDistancingRulesetKey", socialDistancingRulesetKey);
+                .withPropertyIfNotNull("socialDistancingRulesetKey", socialDistancingRulesetKey)
+                .withPropertyIfNotNull("objectCategories", objectCategories, CategoryKey::toJson);
         unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events/{key}")
                 .routeParam("key", key)
                 .body(request.build().toString()));
