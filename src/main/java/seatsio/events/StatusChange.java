@@ -14,4 +14,6 @@ public class StatusChange {
     public String orderId;
     public Map<?, ?> extraData;
     public StatusChangeOrigin origin;
+    public boolean isPresentOnChart;
+    public ObjectNotPresentReason notPresentOnChartReason;
 }

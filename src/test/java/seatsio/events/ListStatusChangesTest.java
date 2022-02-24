@@ -1,6 +1,7 @@
 package seatsio.events;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.util.Lister;
@@ -10,12 +11,16 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static seatsio.SortDirection.DESC;
+import static seatsio.events.ObjectNotPresentReason.SWITCHED_TO_BOOK_BY_SEAT;
 import static seatsio.events.StatusChangeOriginType.API_CALL;
+import static seatsio.events.TableBookingConfig.allBySeat;
+import static seatsio.events.TableBookingConfig.allByTable;
 
 public class ListStatusChangesTest extends SeatsioClientTest {
 
@@ -54,6 +59,22 @@ public class ListStatusChangesTest extends SeatsioClientTest {
         assertThat(statusChange.extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
         assertThat(statusChange.origin.type).isEqualTo(API_CALL);
         assertThat(statusChange.origin.ip).isNotNull();
+        assertThat(statusChange.isPresentOnChart).isTrue();
+        assertThat(statusChange.notPresentOnChartReason).isNull();
+    }
+
+    @Test
+    public void objectNotPresentAnymore() {
+        String chartKey = createTestChartWithTables();
+        Event event = client.events.create(chartKey, "event1", allByTable());
+        client.events.book(event.key, newArrayList("T1"));
+        client.events.update("event1", null, null, allBySeat());
+
+        Stream<StatusChange> statusChanges = client.events.statusChanges(event.key).all();
+        StatusChange statusChange = statusChanges.findFirst().get();
+
+        assertThat(statusChange.isPresentOnChart).isFalse();
+        assertThat(statusChange.notPresentOnChartReason).isEqualTo(SWITCHED_TO_BOOK_BY_SEAT);
     }
 
     @Test
