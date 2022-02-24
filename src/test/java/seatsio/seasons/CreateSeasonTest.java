@@ -25,6 +25,8 @@ public class CreateSeasonTest extends SeatsioClientTest {
         Season season = client.seasons.create(chartKey);
 
         assertThat(season.id).isNotZero();
+        assertThat(season.isTopLevelSeason).isTrue();
+        assertThat(season.topLevelSeasonKey).isNull();
         assertThat(season.key).isNotNull();
         assertThat(season.partialSeasonKeys).isEmpty();
         assertThat(season.id).isNotZero();
