@@ -2,6 +2,9 @@ package seatsio.seasons;
 
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
+import seatsio.events.Event;
+
+import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,13 +16,11 @@ public class CreateEventsInSeasonTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Season season = client.seasons.create(chartKey);
 
-        Season updatedSeason = client.seasons.createEvents(season.key, newArrayList("event1", "event2"));
+        List<Event> events = client.seasons.createEvents(season.key, newArrayList("event1", "event2"));
 
-        assertThat(updatedSeason.events)
+        assertThat(events)
                 .extracting(s -> s.key)
-                .containsExactly("event1", "event2");
-        assertThat(updatedSeason.events.get(0).isEventInSeason).isTrue();
-        assertThat(updatedSeason.events.get(0).topLevelSeasonKey).isEqualTo(season.key);
+                .containsExactly("event2", "event1");
     }
 
     @Test
@@ -27,8 +28,8 @@ public class CreateEventsInSeasonTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Season season = client.seasons.create(chartKey);
 
-        Season updatedSeason = client.seasons.createEvents(season.key, 2);
+        List<Event> events = client.seasons.createEvents(season.key, 2);
 
-        assertThat(updatedSeason.events).hasSize(2);
+        assertThat(events).hasSize(2);
     }
 }
