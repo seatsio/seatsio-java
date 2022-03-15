@@ -17,7 +17,7 @@ public class CreateEventsInSeasonTest extends SeatsioClientTest {
 
         assertThat(updatedSeason.events)
                 .extracting(s -> s.key)
-                .containsExactly("event1", "event2");
+                .containsExactly("event2", "event1");
         assertThat(updatedSeason.events.get(0).isEventInSeason).isTrue();
         assertThat(updatedSeason.events.get(0).topLevelSeasonKey).isEqualTo(season.key);
     }

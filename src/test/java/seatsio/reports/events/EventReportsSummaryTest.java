@@ -115,6 +115,14 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withByAvailabilityReason(ImmutableMap.of(AVAILABLE, 116))
                 .withByChannel(ImmutableMap.of(NO_CHANNEL, 116))
                 .build();
+        EventReportSummaryItem cat11Report = anEventReportSummaryItem()
+                .withCount(0)
+                .withBySection(new HashMap<>())
+                .withByStatus(new HashMap<>())
+                .withByAvailability(new HashMap<>())
+                .withByAvailabilityReason(new HashMap<>())
+                .withByChannel(new HashMap<>())
+                .build();
         EventReportSummaryItem noCategoryReport = anEventReportSummaryItem()
                 .withCount(0)
                 .withBySection(new HashMap<>())
@@ -123,7 +131,11 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withByAvailabilityReason(new HashMap<>())
                 .withByChannel(new HashMap<>())
                 .build();
-        assertThat(report).isEqualTo(ImmutableMap.of("9", cat9Report, "10", cat10Report, "NO_CATEGORY", noCategoryReport));
+        assertThat(report).isEqualTo(ImmutableMap.of(
+                "9", cat9Report,
+                "10", cat10Report,
+                "string11", cat11Report,
+                "NO_CATEGORY", noCategoryReport));
     }
 
     @Test
@@ -158,7 +170,19 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withByAvailabilityReason(new HashMap<>())
                 .withByChannel(new HashMap<>())
                 .build();
-        assertThat(report).isEqualTo(ImmutableMap.of("Cat1", cat1Report, "Cat2", cat2Report, "NO_CATEGORY", noCategoryReport));
+        EventReportSummaryItem cat3Report = anEventReportSummaryItem()
+                .withCount(0)
+                .withBySection(new HashMap<>())
+                .withByStatus(new HashMap<>())
+                .withByAvailability(new HashMap<>())
+                .withByAvailabilityReason(new HashMap<>())
+                .withByChannel(new HashMap<>())
+                .build();
+        assertThat(report).isEqualTo(ImmutableMap.of(
+                "Cat1", cat1Report,
+                "Cat2", cat2Report,
+                "Cat3", cat3Report,
+                "NO_CATEGORY", noCategoryReport));
     }
 
     @Test
