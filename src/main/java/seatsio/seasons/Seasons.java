@@ -1,6 +1,8 @@
 package seatsio.seasons;
 
 import seatsio.SeatsioClient;
+import seatsio.events.Event;
+import seatsio.events.EventCreationResult;
 import seatsio.json.JsonObjectBuilder;
 import seatsio.util.UnirestWrapper;
 
@@ -38,22 +40,22 @@ public class Seasons {
         return gson().fromJson(response, Season.class);
     }
 
-    public Season createEvents(String key, List<String> eventKeys) {
+    public List<Event> createEvents(String key, List<String> eventKeys) {
         return doCreateEvents(key, eventKeys, null);
     }
 
-    public Season createEvents(String key, int numberOfEvents) {
+    public List<Event> createEvents(String key, int numberOfEvents) {
         return doCreateEvents(key, null, numberOfEvents);
     }
 
-    private Season doCreateEvents(String key, List<String> eventKeys, Integer numberOfEvents) {
+    private List<Event> doCreateEvents(String key, List<String> eventKeys, Integer numberOfEvents) {
         JsonObjectBuilder request = aJsonObject()
                 .withPropertyIfNotNull("eventKeys", eventKeys)
                 .withPropertyIfNotNull("numberOfEvents", numberOfEvents);
         String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/seasons/{key}/actions/create-events")
                 .routeParam("key", key)
                 .body(request.build().toString()));
-        return gson().fromJson(response, Season.class);
+        return gson().fromJson(response, EventCreationResult.class).events;
     }
 
     public Season createPartialSeason(String topLevelSeasonKey, String key, List<String> eventKeys) {

@@ -487,8 +487,4 @@ public class Events {
                 .body(request.build().toString()));
     }
 
-    private static class EventCreationResult {
-
-        private List<Event> events;
-    }
 }
