@@ -58,4 +58,8 @@ public class SeatsioClient {
         return baseUrl;
     }
 
+    public void reinitializeHttpConnectionPool() {
+        this.unirest.reinitializeHttpConnectionPool();
+    }
+
 }

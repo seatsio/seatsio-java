@@ -90,7 +90,7 @@ public class UnirestWrapper {
         return this;
     }
 
-    public static void shutdown() {
+    public static void reinitializeHttpConnectionPool() {
         unirest.shutDown(false);
     }
 
