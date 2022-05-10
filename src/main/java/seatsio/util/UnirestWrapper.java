@@ -89,4 +89,9 @@ public class UnirestWrapper {
         this.maxRetries = maxRetries;
         return this;
     }
+
+    public static void shutdown() {
+        unirest.shutDown(false);
+    }
+
 }
