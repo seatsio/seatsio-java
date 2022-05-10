@@ -30,14 +30,14 @@ Then you can refer to seatsio-java as a regular package:
 ```
 // build.gradle
 dependencies {
-  compile 'com.github.seatsio:seatsio-java:70.1.0'
+  compile 'com.github.seatsio:seatsio-java:70.2.0'
 }
 
 // pom.xml
 <dependency>
   <groupId>com.github.seatsio</groupId>
   <artifactId>seatsio-java</artifactId>
-  <version>70.1.0</version>
+  <version>70.2.0</version>
 </dependency>
 ```
 
@@ -260,3 +260,6 @@ It's perfectly fine to re-use an instance of `SeatsioClient` in different thread
 We manage a connection pool under the hood, to avoid having to reconnect to the seats.io server on every call. This pool supports 200 concurrent connections.
 
 The connection pool is shared between all instances of `SeatsioClient`.
+
+In some cases, e.g. when you're running automated test suite against a seats.io stub, it may be useful to reset the connection pool between tests. 
+To do so, call `seatsioClient.reinitializeHttpConnectionPool()`.  
