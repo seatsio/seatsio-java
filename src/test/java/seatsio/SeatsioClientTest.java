@@ -43,7 +43,7 @@ public class SeatsioClientTest {
         if (url != null) {
             return url;
         }
-        return "https://api-staging-eu.seatsio.net";
+        return "http://localhost:9001";
     }
 
     private TestCompany createTestCompany() throws UnirestException {
