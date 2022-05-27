@@ -95,8 +95,18 @@ public class ChartReportsSummaryTest extends SeatsioClientTest {
                 .withBySection(new HashMap<>())
                 .withByObjectType(new HashMap<>())
                 .build();
+        ChartReportSummaryItem cat11Report = aChartReportSummaryItem()
+                .withCount(0)
+                .withBySection(new HashMap<>())
+                .withByObjectType(new HashMap<>())
+                .build();
 
-        assertThat(report).isEqualTo(ImmutableMap.of("9", cat9Report, "10", cat10Report, "NO_CATEGORY", noCategoryReport));
+        assertThat(report).isEqualTo(ImmutableMap.of(
+                "9", cat9Report,
+                "10", cat10Report,
+                "string11", cat11Report,
+                "NO_CATEGORY", noCategoryReport)
+        );
     }
 
     @Test
@@ -115,13 +125,22 @@ public class ChartReportsSummaryTest extends SeatsioClientTest {
                 .withBySection(ImmutableMap.of(NO_SECTION, 116))
                 .withByObjectType(ImmutableMap.of("seat", 16, "generalAdmission", 100))
                 .build();
+        ChartReportSummaryItem cat3Report = aChartReportSummaryItem()
+                .withCount(0)
+                .withBySection(new HashMap<>())
+                .withByObjectType(new HashMap<>())
+                .build();
         ChartReportSummaryItem noCategoryReport = aChartReportSummaryItem()
                 .withCount(0)
                 .withBySection(new HashMap<>())
                 .withByObjectType(new HashMap<>())
                 .build();
 
-        assertThat(report).isEqualTo(ImmutableMap.of("Cat1", cat1Report, "Cat2", cat2Report, "NO_CATEGORY", noCategoryReport));
+        assertThat(report).isEqualTo(ImmutableMap.of(
+                "Cat1", cat1Report,
+                "Cat2", cat2Report,
+                "Cat3", cat3Report,
+                "NO_CATEGORY", noCategoryReport));
     }
 
     @Test

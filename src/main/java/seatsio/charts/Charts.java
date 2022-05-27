@@ -89,12 +89,26 @@ public class Charts {
     }
 
     public void update(String key, String name, List<Category> categories) {
-        JsonObjectBuilder request = aJsonObject()
-                .withPropertyIfNotNull("name", name)
-                .withPropertyIfNotNull("categories", categories, category -> gson().toJsonTree(category));
         unirest.stringResponse(UnirestWrapper.post(baseUrl + "/charts/{key}")
                 .routeParam("key", key)
-                .body(request.build().toString()));
+                .body(aJsonObject()
+                        .withPropertyIfNotNull("name", name)
+                        .withPropertyIfNotNull("categories", categories, category -> gson().toJsonTree(category))
+                        .buildAsString()
+                ));
+    }
+
+
+    public void addCategory(String chartKey, Category category) {
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/charts/{key}/categories")
+                .routeParam("key", chartKey)
+                .body(gson().toJsonTree(category).toString()));
+    }
+
+    public void removeCategory(String chartKey, CategoryKey categoryKey) {
+        unirest.stringResponse(UnirestWrapper.delete(baseUrl + "/charts/{chartKey}/categories/{categoryKey}")
+                .routeParam("chartKey", chartKey)
+                .routeParam("categoryKey", categoryKey.toString()));
     }
 
     public Chart copy(String key) {
@@ -224,5 +238,4 @@ public class Charts {
         }
         return chartListParams.asMap();
     }
-
 }

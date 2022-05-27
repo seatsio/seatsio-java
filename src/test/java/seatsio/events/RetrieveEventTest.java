@@ -2,6 +2,7 @@ package seatsio.events;
 
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
+import seatsio.charts.Category;
 import seatsio.seasons.Season;
 
 import java.time.Instant;
@@ -29,6 +30,11 @@ public class RetrieveEventTest extends SeatsioClientTest {
         Instant now = Instant.now();
         assertThat(retrievedEvent.createdOn).isBetween(now.minus(1, MINUTES), now.plus(1, MINUTES));
         assertThat(retrievedEvent.updatedOn).isNull();
+        assertThat(retrievedEvent.categories).containsExactly(
+                new Category(9L, "Cat1", "#87A9CD", false),
+                new Category(10L, "Cat2", "#5E42ED", false),
+                new Category("string11", "Cat3", "#5E42BB", false)
+        );
     }
 
     @Test
@@ -55,5 +61,10 @@ public class RetrieveEventTest extends SeatsioClientTest {
         assertThat(retrievedSeason.events)
                 .extracting("key")
                 .containsExactly("event1", "event2");
+        assertThat(retrievedSeason.categories).containsExactly(
+                new Category(9L, "Cat1", "#87A9CD", false),
+                new Category(10L, "Cat2", "#5E42ED", false),
+                new Category("string11", "Cat3", "#5E42BB", false)
+        );
     }
 }

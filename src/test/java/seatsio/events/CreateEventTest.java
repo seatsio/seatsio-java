@@ -3,6 +3,7 @@ package seatsio.events;
 import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
+import seatsio.charts.Category;
 import seatsio.charts.CategoryKey;
 import seatsio.charts.Chart;
 import seatsio.charts.SocialDistancingRuleset;
@@ -33,6 +34,11 @@ public class CreateEventTest extends SeatsioClientTest {
         Instant now = Instant.now();
         assertThat(event.createdOn).isBetween(now.minus(1, MINUTES), now.plus(1, MINUTES));
         assertThat(event.updatedOn).isNull();
+        assertThat(event.categories).containsExactly(
+                new Category(9L, "Cat1", "#87A9CD", false),
+                new Category(10L, "Cat2", "#5E42ED", false),
+                new Category("string11", "Cat3", "#5E42BB", false)
+        );
     }
 
     @Test
