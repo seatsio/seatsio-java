@@ -69,10 +69,10 @@ public class ReleaseObjectsTest extends SeatsioClientTest {
     public void channelKeys() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.updateChannels(event.key, ImmutableMap.of(
+        client.events.channels.set(event.key, ImmutableMap.of(
                 "channelKey1", new Channel("channel 1", "#FFFF99", 1)
         ));
-        client.events.assignObjectsToChannel(event.key, ImmutableMap.of(
+        client.events.channels.setObjects(event.key, ImmutableMap.of(
                 "channelKey1", newHashSet("A-1", "A-2")
         ));
         client.events.book(event.key, newArrayList("A-1"), null, null, true, null, newHashSet("channelKey1"), null);
@@ -86,10 +86,10 @@ public class ReleaseObjectsTest extends SeatsioClientTest {
     public void ignoreChannels() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.updateChannels(event.key, ImmutableMap.of(
+        client.events.channels.set(event.key, ImmutableMap.of(
                 "channelKey1", new Channel("channel 1", "#FFFF99", 1)
         ));
-        client.events.assignObjectsToChannel(event.key, ImmutableMap.of(
+        client.events.channels.setObjects(event.key, ImmutableMap.of(
                 "channelKey1", newHashSet("A-1", "A-2")
         ));
         client.events.book(event.key, newArrayList("A-1"), null, null, true, true, null, null);
