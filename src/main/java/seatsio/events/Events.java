@@ -107,9 +107,61 @@ public class Events {
         return gson().fromJson(response, Event.class);
     }
 
-    public void updateChannels(String key, Map<String, Channel> channels) {
+    public void addChannel(String eventKey, String channelKey, String name, String color, Integer index, Set<String> objects) {
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events/{key}/channels")
+                .routeParam("key", eventKey)
+                .body(aJsonObject()
+                        .withProperty("key", channelKey)
+                        .withProperty("name", name)
+                        .withProperty("color", color)
+                        .withPropertyIfNotNull("index", index)
+                        .withPropertyIfNotNull("objects", objects)
+                        .buildAsString())
+        );
+    }
+
+    public void removeChannel(String eventKey, String channelKey) {
+        unirest.stringResponse(UnirestWrapper.delete(baseUrl + "/events/{eventKey}/channels/{channelKey}")
+                .routeParam("eventKey", eventKey)
+                .routeParam("channelKey", channelKey)
+        );
+    }
+
+    public void updateChannel(String eventKey, String channelKey, String name, String color, Set<String> objects) {
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events/{eventKey}/channels/{channelKey}")
+                .routeParam("eventKey", eventKey)
+                .routeParam("channelKey", channelKey)
+                .body(aJsonObject()
+                        .withPropertyIfNotNull("name", name)
+                        .withPropertyIfNotNull("color", color)
+                        .withPropertyIfNotNull("objects", objects)
+                        .buildAsString())
+        );
+    }
+
+    public void addObjectsToChannel(String eventKey, String channelKey, Set<String> objects) {
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events/{eventKey}/channels/{channelKey}/objects")
+                .routeParam("eventKey", eventKey)
+                .routeParam("channelKey", channelKey)
+                .body(aJsonObject()
+                        .withProperty("objects", objects)
+                        .buildAsString())
+        );
+    }
+
+    public void removeObjectsFromChannel(String eventKey, String channelKey, Set<String> objects) {
+        unirest.stringResponse(UnirestWrapper.delete(baseUrl + "/events/{eventKey}/channels/{channelKey}/objects")
+                .routeParam("eventKey", eventKey)
+                .routeParam("channelKey", channelKey)
+                .body(aJsonObject()
+                        .withProperty("objects", objects)
+                        .buildAsString())
+        );
+    }
+
+    public void updateChannels(String eventKey, Map<String, Channel> channels) {
         unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events/{key}/channels/update")
-                .routeParam("key", key)
+                .routeParam("key", eventKey)
                 .body(updateChannelsRequest(channels))
         );
     }
