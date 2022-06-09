@@ -15,7 +15,7 @@ public class RemoveChannelTest extends SeatsioClientTest {
     public void removeChannel() {
         Chart chart = client.charts.create();
         Event event = client.events.create(chart.key);
-        client.events.channels.set(event.key, ImmutableMap.of(
+        client.events.channels.replace(event.key, ImmutableMap.of(
                 "channelKey1", new Channel("channel 1", "#FFFF99", 1),
                 "channelKey2", new Channel("channel 2", "#FFFF99", 2)
         ));

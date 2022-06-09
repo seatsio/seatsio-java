@@ -70,14 +70,14 @@ public class Channels {
         );
     }
 
-    public void set(String eventKey, Map<String, Channel> channels) {
+    public void replace(String eventKey, Map<String, Channel> channels) {
         unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events/{key}/channels/update")
                 .routeParam("key", eventKey)
-                .body(setChannelsRequest(channels))
+                .body(replaceChannelsRequest(channels))
         );
     }
 
-    private String setChannelsRequest(Map<String, Channel> channels) {
+    private String replaceChannelsRequest(Map<String, Channel> channels) {
         return aJsonObject()
                 .withProperty("channels", aJsonObject()
                         .withProperties(channels, channel -> aJsonObject()

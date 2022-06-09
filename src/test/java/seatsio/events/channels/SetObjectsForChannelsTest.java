@@ -18,7 +18,7 @@ public class SetObjectsForChannelsTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
         Channel channel1 = new Channel("channel 1", "#FFFF99", 1);
         Channel channel2 = new Channel("channel 2", "#FFFF99", 2);
-        client.events.channels.set(event.key, ImmutableMap.of(
+        client.events.channels.replace(event.key, ImmutableMap.of(
                 "channelKey1", channel1,
                 "channelKey2", channel2
         ));

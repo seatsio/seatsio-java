@@ -72,7 +72,7 @@ public class HoldObjectsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
         HoldToken holdToken = client.holdTokens.create();
-        client.events.channels.set(event.key, ImmutableMap.of(
+        client.events.channels.replace(event.key, ImmutableMap.of(
                 "channelKey1", new Channel("channel 1", "#FFFF99", 1)
         ));
         client.events.channels.setObjects(event.key, ImmutableMap.of(
@@ -89,7 +89,7 @@ public class HoldObjectsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
         HoldToken holdToken = client.holdTokens.create();
-        client.events.channels.set(event.key, ImmutableMap.of(
+        client.events.channels.replace(event.key, ImmutableMap.of(
                 "channelKey1", new Channel("channel 1", "#FFFF99", 1)
         ));
         client.events.channels.setObjects(event.key, ImmutableMap.of(

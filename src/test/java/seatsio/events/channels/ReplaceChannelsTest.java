@@ -9,14 +9,14 @@ import seatsio.events.Event;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SetChannelsTest extends SeatsioClientTest {
+public class ReplaceChannelsTest extends SeatsioClientTest {
 
     @Test
-    public void updateChannels() {
+    public void replaceChannels() {
         Chart chart = client.charts.create();
         Event event = client.events.create(chart.key);
 
-        client.events.channels.set(event.key, ImmutableMap.of(
+        client.events.channels.replace(event.key, ImmutableMap.of(
                 "channelKey1", new Channel("channel 1", "#FFFF99", 1),
                 "channelKey2", new Channel("channel 2", "#FFFF99", 2)
         ));
