@@ -3,7 +3,7 @@ package seatsio.events;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,8 +21,10 @@ public class ListStatusChangesForObjectTest extends SeatsioClientTest {
                 new StatusChangeRequest(event.key, newArrayList("A-1"), "s3"),
                 new StatusChangeRequest(event.key, newArrayList("A-1"), "s4")
         ));
+        waitForStatusChanges(client, event, 4);
 
-        List<StatusChange> statusChanges = waitForStatusChanges(() -> client.events.statusChangesForObject(event.key, "A-1").all());
+        Stream<StatusChange> statusChanges = client.events.statusChangesForObject(event.key, "A-1").all();
+
         assertThat(statusChanges)
                 .extracting(statusChange -> statusChange.status)
                 .containsExactly("s4", "s3", "s2", "s1");
