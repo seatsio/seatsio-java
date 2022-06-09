@@ -281,8 +281,8 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
     public void summaryByChannel() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.updateChannels(event.key, ImmutableMap.of("channel1", new Channel("Channel 1", "#FFFF99", 1)));
-        client.events.assignObjectsToChannel(event.key, ImmutableMap.of("channel1", newHashSet("A-1", "A-2")));
+        client.events.channels.set(event.key, ImmutableMap.of("channel1", new Channel("Channel 1", "#FFFF99", 1)));
+        client.events.channels.setObjects(event.key, ImmutableMap.of("channel1", newHashSet("A-1", "A-2")));
 
         Map<String, EventReportSummaryItem> report = client.eventReports.summaryByChannel(event.key);
 

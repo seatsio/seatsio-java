@@ -28,9 +28,12 @@ public class Events {
     private final String baseUrl;
     private final UnirestWrapper unirest;
 
+    public final Channels channels;
+
     public Events(String baseUrl, UnirestWrapper unirest) {
         this.baseUrl = baseUrl;
         this.unirest = unirest;
+        this.channels = new Channels(baseUrl, unirest);
     }
 
     public Event create(String chartKey) {
@@ -105,38 +108,6 @@ public class Events {
         String response = unirest.stringResponse(UnirestWrapper.get(baseUrl + "/events/{key}")
                 .routeParam("key", key));
         return gson().fromJson(response, Event.class);
-    }
-
-    public void updateChannels(String key, Map<String, Channel> channels) {
-        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events/{key}/channels/update")
-                .routeParam("key", key)
-                .body(updateChannelsRequest(channels))
-        );
-    }
-
-    private String updateChannelsRequest(Map<String, Channel> channels) {
-        return aJsonObject()
-                .withProperty("channels", aJsonObject()
-                        .withProperties(channels, channel -> aJsonObject()
-                                .withProperty("name", channel.name)
-                                .withProperty("color", channel.color)
-                                .withProperty("index", channel.index)
-                                .build())
-                        .build()
-                ).buildAsString();
-    }
-
-    public void assignObjectsToChannel(String key, Map<String, Set<String>> channelKeysAndObjectLabels) {
-        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events/{key}/channels/assign-objects")
-                .routeParam("key", key)
-                .body(assignChannelsRequest(channelKeysAndObjectLabels))
-        );
-    }
-
-    private String assignChannelsRequest(Map<String, Set<String>> channelKeysAndObjectLabels) {
-        JsonObjectBuilder config = aJsonObject();
-        channelKeysAndObjectLabels.forEach(config::withProperty);
-        return aJsonObject().withProperty("channelConfig", config.build()).buildAsString();
     }
 
     public void markAsForSale(String key, List<String> objects, List<String> categories) {

@@ -24,4 +24,12 @@ public class Channel extends ValueObject {
         this.color = color;
         this.index = index;
     }
+
+    public Channel(String key, String name, String color, int index, Set<String> objects) {
+        this.key = key;
+        this.name = name;
+        this.color = color;
+        this.index = index;
+        this.objects = objects;
+    }
 }
