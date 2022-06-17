@@ -48,6 +48,17 @@ public class ChartReportsTest extends SeatsioClientTest {
     }
 
     @Test
+    public void reportItemPropertiesForTable() {
+        String chartKey = createTestChartWithTables();
+
+        Map<String, List<ChartObjectInfo>> report = client.chartReports.byLabel(chartKey, TRUE);
+
+        ChartObjectInfo reportItem = report.get("T1").get(0);
+        assertThat(reportItem.bookAsAWhole).isEqualTo(false);
+        assertThat(reportItem.numSeats).isEqualTo(6);
+    }
+
+    @Test
     public void byLabel() {
         String chartKey = createTestChart();
 

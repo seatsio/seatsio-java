@@ -38,6 +38,7 @@ public class EventObjectInfo extends ValueObject {
     public Integer numBooked;
     public Integer numFree;
     public Integer numHeld;
+    public Integer numSeats;
     public Map<?, ?> extraData;
     public Boolean isAccessible;
     public Boolean isCompanionSeat;

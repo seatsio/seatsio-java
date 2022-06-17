@@ -14,6 +14,7 @@ import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static seatsio.events.EventObjectInfo.*;
+import static seatsio.events.TableBookingConfig.allByTable;
 
 public class EventReportsTest extends SeatsioClientTest {
 
@@ -91,6 +92,18 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.isAccessible).isNull();
         assertThat(reportItem.isCompanionSeat).isNull();
         assertThat(reportItem.displayedObjectType).isNull();
+    }
+
+    @Test
+    public void reportItemPropertiesForTable() {
+        String chartKey = createTestChartWithTables();
+        Event event = client.events.create(chartKey, null, allByTable());
+
+        Map<String, List<EventObjectInfo>> report = client.eventReports.byLabel(event.key);
+
+        EventObjectInfo reportItem = report.get("T1").get(0);
+        assertThat(reportItem.bookAsAWhole).isEqualTo(false);
+        assertThat(reportItem.numSeats).isEqualTo(6);
     }
 
     @Test

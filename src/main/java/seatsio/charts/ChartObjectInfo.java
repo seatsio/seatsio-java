@@ -18,5 +18,6 @@ public class ChartObjectInfo {
     public String leftNeighbour;
     public String rightNeighbour;
     public Double distanceToFocalPoint;
+    public Integer numSeats;
 
 }
