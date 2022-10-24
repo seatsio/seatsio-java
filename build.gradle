@@ -12,7 +12,7 @@ publishing {
         maven(MavenPublication) {
             groupId = 'io.seats'
             artifactId = 'seatsio-java'
-            version = '71.2.0'
+            version = '71.3.0'
             from components.java
         }
     }
@@ -40,6 +40,10 @@ dependencies {
     testImplementation 'commons-io:commons-io:2.11.0'
     testImplementation 'org.awaitility:awaitility:4.2.0'
     testRuntimeOnly "org.slf4j:slf4j-api:2.0.3"
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }
 
 test {
