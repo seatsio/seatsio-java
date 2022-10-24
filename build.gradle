@@ -1,5 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 sourceCompatibility = 1.8
 
@@ -7,9 +8,13 @@ repositories {
     mavenCentral()
 }
 
+java {
+    withSourcesJar()
+}
+
 publishing {
     publications {
-        maven(MavenPublication) {
+        mavenJava(MavenPublication) {
             groupId = 'io.seats'
             artifactId = 'seatsio-java'
             version = '71.3.0'
