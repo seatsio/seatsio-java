@@ -47,16 +47,7 @@ public class Events {
     }
 
     public Event create(String chartKey, String eventKey, TableBookingConfig tableBookingConfig, String socialDistancingRulesetKey, Map<String, CategoryKey> objectCategories) {
-        String request = aJsonObject()
-                .withProperty("chartKey", chartKey)
-                .withPropertyIfNotNull("eventKey", eventKey)
-                .withPropertyIfNotNull("tableBookingConfig", tableBookingConfig)
-                .withPropertyIfNotNull("socialDistancingRulesetKey", socialDistancingRulesetKey)
-                .withPropertyIfNotNull("objectCategories", objectCategories, CategoryKey::toJson)
-                .buildAsString();
-        String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events")
-                .body(request));
-        return gson().fromJson(response, Event.class);
+        return create(chartKey, new EventCreationParams(eventKey, tableBookingConfig, socialDistancingRulesetKey, objectCategories));
     }
 
     public Event create(String chartKey, EventCreationParams params) {
