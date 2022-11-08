@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.SeatsioException;
+import seatsio.charts.CategoryKey;
 import seatsio.charts.SocialDistancingRuleset;
 
 import java.time.Instant;
@@ -91,6 +92,19 @@ public class CreateEventsTest extends SeatsioClientTest {
         List<Event> events = client.events.create(chartKey, params);
 
         assertThat(events).extracting("socialDistancingRulesetKey").containsExactly("ruleset1", "ruleset1");
+    }
+
+    @Test
+    public void objectCategoriesCanBePassedIn() {
+        String chartKey = createTestChart();
+        Map<String, CategoryKey> objectCategories = ImmutableMap.of("A-1", CategoryKey.of(10L));
+        List<EventCreationParams> params = newArrayList(
+                new EventCreationParams(null, objectCategories)
+        );
+
+        List<Event> events = client.events.create(chartKey, params);
+
+        assertThat(events).extracting("objectCategories").containsExactly(objectCategories);
     }
 
     @Test
