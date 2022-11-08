@@ -42,6 +42,16 @@ public class CreateEventTest extends SeatsioClientTest {
     }
 
     @Test
+    public void createEventWithEventCreationParams() {
+        String chartKey = createTestChart();
+        EventCreationParams params = new EventCreationParams("anEvent");
+
+        Event event = client.events.create(chartKey, params);
+
+        assertThat(event.key).isEqualTo("anEvent");
+    }
+
+    @Test
     public void eventKeyCanBePassedIn() {
         Chart chart = client.charts.create();
 
@@ -90,4 +100,5 @@ public class CreateEventTest extends SeatsioClientTest {
 
         assertThat(event.objectCategories).containsOnly(entry("A-1", CategoryKey.of(10L)));
     }
+
 }
