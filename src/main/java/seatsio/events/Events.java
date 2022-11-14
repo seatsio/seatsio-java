@@ -11,7 +11,10 @@ import seatsio.charts.CategoryKey;
 import seatsio.json.JsonObjectBuilder;
 import seatsio.util.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -99,15 +102,27 @@ public class Events {
     }
 
     public void update(String key, String chartKey, String newKey, TableBookingConfig tableBookingConfig, String socialDistancingRulesetKey, Map<String, CategoryKey> objectCategories) {
+        this.update(key, chartKey, newKey, tableBookingConfig, socialDistancingRulesetKey, objectCategories, null);
+    }
+
+    public void update(String key, String chartKey, String newKey, TableBookingConfig tableBookingConfig, String socialDistancingRulesetKey, Map<String, CategoryKey> objectCategories, List<Category> categories) {
         JsonObjectBuilder request = aJsonObject()
                 .withPropertyIfNotNull("chartKey", chartKey)
                 .withPropertyIfNotNull("eventKey", newKey)
                 .withPropertyIfNotNull("tableBookingConfig", tableBookingConfig)
                 .withPropertyIfNotNull("socialDistancingRulesetKey", socialDistancingRulesetKey)
-                .withPropertyIfNotNull("objectCategories", objectCategories, CategoryKey::toJson);
+                .withPropertyIfNotNull("objectCategories", objectCategories, CategoryKey::toJson)
+                .withPropertyIfNotNull("categories", categoriesAsJson(categories));
         unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events/{key}")
                 .routeParam("key", key)
                 .body(request.build().toString()));
+    }
+
+    private List<JsonObject> categoriesAsJson(List<Category> categories) {
+        if (categories == null) {
+            return null;
+        }
+        return categories.stream().map(Category::toJson).collect(toList());
     }
 
     public void delete(String key) {

@@ -1,15 +1,19 @@
 package seatsio.events;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
+import seatsio.charts.Category;
 import seatsio.charts.CategoryKey;
 import seatsio.charts.Chart;
 import seatsio.charts.SocialDistancingRuleset;
 
+import java.util.List;
 import java.util.Map;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.time.Instant.now;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -100,9 +104,6 @@ public class UpdateEventTest extends SeatsioClientTest {
                 "A-2", CategoryKey.of(10L)
         );
 
-        Map<?, ?> map = client.charts.retrievePublishedVersion(event.chartKey);
-        System.out.println(map);
-
         client.events.update(event.key, null, null, null, null, newObjectCategories);
 
         Event retrievedEvent = client.events.retrieve(event.key);
@@ -121,6 +122,43 @@ public class UpdateEventTest extends SeatsioClientTest {
 
         Event retrievedEvent = client.events.retrieve(event.key);
         assertThat(retrievedEvent.objectCategories).isNull();
+    }
+
+    @Test
+    public void updateCategories() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        Category eventCategory = new Category("eventCategory", "event-level category", "#AAABBB");
+        List<Category> categories = newArrayList(
+                eventCategory
+        );
+
+        client.events.update(event.key, null, null, null, null, null, categories);
+
+        Event retrievedEvent = client.events.retrieve(event.key);
+        int numberOfCategoriesOnChart = 3; // see sampleChart.json
+        assertThat(retrievedEvent.categories)
+                .hasSize(numberOfCategoriesOnChart + categories.size())
+                .contains(eventCategory);
+    }
+
+    @Test
+    public void removeCategories() {
+        String chartKey = createTestChart();
+        Category eventCategory = new Category("eventCategory", "event-level category", "#AAABBB");
+        List<Category> categories = newArrayList(
+                eventCategory
+        );
+        Event event = client.events.create(chartKey, new EventCreationParams(null, categories));
+
+        client.events.update(event.key, null, null, null, null, null, Lists.newArrayList());
+
+        Event retrievedEvent = client.events.retrieve(event.key);
+        int numberOfCategoriesOnChart = 3; // see sampleChart.json
+        assertThat(retrievedEvent.categories)
+                .hasSize(numberOfCategoriesOnChart)
+                .doesNotContain(eventCategory);
     }
 
 }
