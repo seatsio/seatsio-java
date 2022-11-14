@@ -11,10 +11,7 @@ import seatsio.charts.CategoryKey;
 import seatsio.json.JsonObjectBuilder;
 import seatsio.util.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -58,7 +55,11 @@ public class Events {
         return create(chartKey, new EventCreationParams(eventKey, tableBookingConfig, socialDistancingRulesetKey, objectCategories, categories));
     }
 
-    public Event create(String chartKey, EventCreationParams params) {
+    public Event create(String chartKey, EventCreationParamsBuilder params) {
+        return this.create(chartKey, params.build());
+    }
+
+    private Event create(String chartKey, EventCreationParams params) {
         String request = aJsonObject()
                 .withProperty("chartKey", chartKey)
                 .withPropertyIfNotNull("eventKey", params.eventKey)
@@ -73,7 +74,11 @@ public class Events {
         return gson().fromJson(response, Event.class);
     }
 
-    public List<Event> create(String chartKey, List<EventCreationParams> params) {
+    public List<Event> create(String chartKey, Collection<EventCreationParamsBuilder> params) {
+        return this.create(chartKey, params.stream().map(EventCreationParamsBuilder::build).collect(toList()));
+    }
+
+    private List<Event> create(String chartKey, List<EventCreationParams> params) {
         JsonArray events = new JsonArray();
         params.forEach(p -> events.add(aJsonObject()
                 .withPropertyIfNotNull("eventKey", p.eventKey)

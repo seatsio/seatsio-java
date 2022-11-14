@@ -16,6 +16,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
+import static seatsio.events.EventCreationParamsBuilder.anEvent;
 import static seatsio.events.TableBookingMode.BY_SEAT;
 import static seatsio.events.TableBookingMode.BY_TABLE;
 
@@ -44,20 +45,10 @@ public class CreateEventTest extends SeatsioClientTest {
     }
 
     @Test
-    public void createEventWithEventCreationParams() {
-        String chartKey = createTestChart();
-        EventCreationParams params = new EventCreationParams("anEvent");
-
-        Event event = client.events.create(chartKey, params);
-
-        assertThat(event.key).isEqualTo("anEvent");
-    }
-
-    @Test
     public void eventKeyCanBePassedIn() {
-        Chart chart = client.charts.create();
+        String chartKey = createTestChart();
 
-        Event event = client.events.create(chart.key, "anEvent");
+        Event event = client.events.create(chartKey, anEvent().withKey("anEvent"));
 
         assertThat(event.key).isEqualTo("anEvent");
     }
@@ -66,20 +57,22 @@ public class CreateEventTest extends SeatsioClientTest {
     public void tableBookingConfigCustomCanBePassedIn() {
         String chartKey = createTestChartWithTables();
 
-        Event event = client.events.create(chartKey, null, TableBookingConfig.custom(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT)));
+        TableBookingConfig tableBookingConfig = TableBookingConfig.custom(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT));
+        Event event = client.events.create(chartKey, anEvent().withTableBookingConfig(tableBookingConfig));
 
         assertThat(event.key).isNotNull();
-        assertThat(event.tableBookingConfig).isEqualTo(TableBookingConfig.custom(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT)));
+        assertThat(event.tableBookingConfig).isEqualTo(tableBookingConfig);
     }
 
     @Test
     public void tableBookingConfigInheritCanBePassedIn() {
         String chartKey = createTestChartWithTables();
 
-        Event event = client.events.create(chartKey, null, TableBookingConfig.inherit());
+        TableBookingConfig inherit = TableBookingConfig.inherit();
+        Event event = client.events.create(chartKey, anEvent().withTableBookingConfig(inherit));
 
         assertThat(event.key).isNotNull();
-        assertThat(event.tableBookingConfig).isEqualTo(TableBookingConfig.inherit());
+        assertThat(event.tableBookingConfig).isEqualTo(inherit);
     }
 
     @Test
@@ -88,7 +81,7 @@ public class CreateEventTest extends SeatsioClientTest {
         Map<String, SocialDistancingRuleset> rulesets = ImmutableMap.of("ruleset1", SocialDistancingRuleset.ruleBased("My ruleset").build());
         client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
 
-        Event event = client.events.create(chartKey, null, null, "ruleset1", null, null);
+        Event event = client.events.create(chartKey, anEvent().withSocialDistancingRulesetKey("ruleset1"));
 
         assertThat(event.socialDistancingRulesetKey).isEqualTo("ruleset1");
     }
@@ -98,7 +91,7 @@ public class CreateEventTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Map<String, CategoryKey> objectCategories = ImmutableMap.of("A-1", CategoryKey.of(10L));
 
-        Event event = client.events.create(chartKey, null, null, null, objectCategories, null);
+        Event event = client.events.create(chartKey, anEvent().withObjectCategories(objectCategories));
 
         assertThat(event.objectCategories).containsOnly(entry("A-1", CategoryKey.of(10L)));
     }
@@ -110,9 +103,8 @@ public class CreateEventTest extends SeatsioClientTest {
         List<Category> categories = newArrayList(
                 eventCategory
         );
-        EventCreationParams params = new EventCreationParams(null, categories);
 
-        Event event = client.events.create(chartKey, params);
+        Event event = client.events.create(chartKey, anEvent().withCategories(categories));
 
         int numberOfCategoriesOnChart = 3; // see sampleChart.json
         assertThat(event.categories)

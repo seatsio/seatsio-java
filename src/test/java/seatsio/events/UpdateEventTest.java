@@ -18,6 +18,7 @@ import static java.time.Instant.now;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
+import static seatsio.events.EventCreationParamsBuilder.anEvent;
 import static seatsio.events.TableBookingMode.BY_SEAT;
 import static seatsio.events.TableBookingMode.BY_TABLE;
 
@@ -147,10 +148,9 @@ public class UpdateEventTest extends SeatsioClientTest {
     public void removeCategories() {
         String chartKey = createTestChart();
         Category eventCategory = new Category("eventCategory", "event-level category", "#AAABBB");
-        List<Category> categories = newArrayList(
-                eventCategory
-        );
-        Event event = client.events.create(chartKey, new EventCreationParams(null, categories));
+        List<Category> categories = newArrayList(eventCategory);
+
+        Event event = client.events.create(chartKey, anEvent().withCategories(categories));
 
         client.events.update(event.key, null, null, null, null, null, Lists.newArrayList());
 
