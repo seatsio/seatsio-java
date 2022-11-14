@@ -9,8 +9,10 @@ import seatsio.charts.Chart;
 import seatsio.charts.SocialDistancingRuleset;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
@@ -86,7 +88,7 @@ public class CreateEventTest extends SeatsioClientTest {
         Map<String, SocialDistancingRuleset> rulesets = ImmutableMap.of("ruleset1", SocialDistancingRuleset.ruleBased("My ruleset").build());
         client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
 
-        Event event = client.events.create(chartKey, null, null, "ruleset1", null);
+        Event event = client.events.create(chartKey, null, null, "ruleset1", null, null);
 
         assertThat(event.socialDistancingRulesetKey).isEqualTo("ruleset1");
     }
@@ -96,9 +98,26 @@ public class CreateEventTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Map<String, CategoryKey> objectCategories = ImmutableMap.of("A-1", CategoryKey.of(10L));
 
-        Event event = client.events.create(chartKey, null, null, null, objectCategories);
+        Event event = client.events.create(chartKey, null, null, null, objectCategories, null);
 
         assertThat(event.objectCategories).containsOnly(entry("A-1", CategoryKey.of(10L)));
+    }
+
+    @Test
+    public void categoriesCanBePassedIn() {
+        String chartKey = createTestChart();
+        Category eventCategory = new Category("eventCategory", "event-level category", "#AAABBB");
+        List<Category> categories = newArrayList(
+                eventCategory
+        );
+        EventCreationParams params = new EventCreationParams(null, categories);
+
+        Event event = client.events.create(chartKey, params);
+
+        int numberOfCategoriesOnChart = 3; // see sampleChart.json
+        assertThat(event.categories)
+                .hasSize(numberOfCategoriesOnChart + categories.size())
+                .contains(eventCategory);
     }
 
 }

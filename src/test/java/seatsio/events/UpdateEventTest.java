@@ -64,7 +64,7 @@ public class UpdateEventTest extends SeatsioClientTest {
                 "ruleset2", SocialDistancingRuleset.ruleBased("My second ruleset").build()
         );
         client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
-        Event event = client.events.create(chartKey, null, null, "ruleset1", null);
+        Event event = client.events.create(chartKey, null, null, "ruleset1", null, null);
 
         client.events.update(event.key, null, null, null, "ruleset2", null);
 
@@ -80,7 +80,7 @@ public class UpdateEventTest extends SeatsioClientTest {
                 "ruleset2", SocialDistancingRuleset.ruleBased("My second ruleset").build()
         );
         client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
-        Event event = client.events.create(chartKey, null, null, "ruleset1", null);
+        Event event = client.events.create(chartKey, null, null, "ruleset1", null, null);
 
         client.events.update(event.key, null, null, null, "", null);
 
@@ -94,7 +94,7 @@ public class UpdateEventTest extends SeatsioClientTest {
         Map<String, CategoryKey> objectCategories = ImmutableMap.of(
                 "A-1", CategoryKey.of(9L)
         );
-        Event event = client.events.create(chartKey, null, null, null, objectCategories);
+        Event event = client.events.create(chartKey, null, null, null, objectCategories, null);
 
         Map<String, CategoryKey> newObjectCategories = ImmutableMap.of(
                 "A-2", CategoryKey.of(10L)
@@ -115,7 +115,7 @@ public class UpdateEventTest extends SeatsioClientTest {
         Map<String, CategoryKey> objectCategories = ImmutableMap.of(
                 "A-1", CategoryKey.of(9L)
         );
-        Event event = client.events.create(chartKey, null, null, null, objectCategories);
+        Event event = client.events.create(chartKey, null, null, null, objectCategories, null);
 
         client.events.update(event.key, null, null, null, null, Maps.newHashMap());
 
