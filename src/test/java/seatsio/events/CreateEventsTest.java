@@ -45,7 +45,9 @@ public class CreateEventsTest extends SeatsioClientTest {
         assertThat(event.key).isNotNull();
         assertThat(event.chartKey).isEqualTo(chartKey);
         assertThat(event.tableBookingConfig).isEqualTo(TableBookingConfig.inherit());
-        assertThat(event.supportsBestAvailable).isNull();
+        assertThat(event.supportsBestAvailable).isTrue();
+        assertThat(event.categories).hasSize(3);
+        assertThat(event.tableBookingConfig).isEqualTo(TableBookingConfig.inherit());
         assertThat(event.forSaleConfig).isNull();
         Instant now = Instant.now();
         assertThat(event.createdOn).isBetween(now.minus(1, MINUTES), now.plus(1, MINUTES));
