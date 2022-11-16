@@ -69,7 +69,7 @@ public class UpdateEventTest extends SeatsioClientTest {
                 "ruleset2", SocialDistancingRuleset.ruleBased("My second ruleset").build()
         );
         client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
-        Event event = client.events.create(chartKey, null, null, "ruleset1", null, null);
+        Event event = client.events.create(chartKey, anEvent().withSocialDistancingRulesetKey("ruleset1"));
 
         client.events.update(event.key, null, null, null, "ruleset2", null);
 
@@ -85,7 +85,7 @@ public class UpdateEventTest extends SeatsioClientTest {
                 "ruleset2", SocialDistancingRuleset.ruleBased("My second ruleset").build()
         );
         client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
-        Event event = client.events.create(chartKey, null, null, "ruleset1", null, null);
+        Event event = client.events.create(chartKey, anEvent().withSocialDistancingRulesetKey("ruleset1"));
 
         client.events.update(event.key, null, null, null, "", null);
 
@@ -99,7 +99,7 @@ public class UpdateEventTest extends SeatsioClientTest {
         Map<String, CategoryKey> objectCategories = ImmutableMap.of(
                 "A-1", CategoryKey.of(9L)
         );
-        Event event = client.events.create(chartKey, null, null, null, objectCategories, null);
+        Event event = client.events.create(chartKey, anEvent().withObjectCategories(objectCategories));
 
         Map<String, CategoryKey> newObjectCategories = ImmutableMap.of(
                 "A-2", CategoryKey.of(10L)
@@ -117,7 +117,7 @@ public class UpdateEventTest extends SeatsioClientTest {
         Map<String, CategoryKey> objectCategories = ImmutableMap.of(
                 "A-1", CategoryKey.of(9L)
         );
-        Event event = client.events.create(chartKey, null, null, null, objectCategories, null);
+        Event event = client.events.create(chartKey, anEvent().withObjectCategories(objectCategories));
 
         client.events.update(event.key, null, null, null, null, Maps.newHashMap());
 

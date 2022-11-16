@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
+import static seatsio.events.EventCreationParamsBuilder.anEvent;
 import static seatsio.events.EventObjectInfo.*;
 import static seatsio.json.JsonArrayBuilder.aJsonArray;
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
@@ -36,23 +37,7 @@ public class Events {
     }
 
     public Event create(String chartKey) {
-        return create(chartKey, null, null, null, null, null);
-    }
-
-    public Event create(String chartKey, String eventKey) {
-        return create(chartKey, eventKey, null, null, null, null);
-    }
-
-    public Event create(String chartKey, String eventKey, TableBookingConfig tableBookingConfig) {
-        return create(chartKey, eventKey, tableBookingConfig, null, null, null);
-    }
-
-    public Event create(String chartKey, String eventKey, TableBookingConfig tableBookingConfig, String socialDistancingRulesetKey, Map<String, CategoryKey> objectCategories) {
-        return create(chartKey, eventKey, tableBookingConfig, socialDistancingRulesetKey, objectCategories, null);
-    }
-
-    public Event create(String chartKey, String eventKey, TableBookingConfig tableBookingConfig, String socialDistancingRulesetKey, Map<String, CategoryKey> objectCategories, List<Category> categories) {
-        return create(chartKey, new EventCreationParams(eventKey, tableBookingConfig, socialDistancingRulesetKey, objectCategories, categories));
+        return create(chartKey, anEvent());
     }
 
     public Event create(String chartKey, EventCreationParamsBuilder params) {
