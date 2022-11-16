@@ -55,6 +55,7 @@ public class ExponentialBackoffTest {
     }
 
     @Test
+    @Disabled
     public void returnsSuccessfullyWhenTheServerSendsA429FirstAndThenASuccessfulResponse() {
         for (int i = 0; i < 10; ++i) {
             new UnirestWrapper("secretKey", null).stringResponse(get("https://httpbin.org/status/429:0.25,204:0.75"));
