@@ -1,5 +1,6 @@
 package seatsio;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import seatsio.util.UnirestWrapper;
 
@@ -11,6 +12,7 @@ import static seatsio.util.UnirestWrapper.get;
 public class ExponentialBackoffTest {
 
     @Test
+    @Disabled
     public void abortsEventuallyIfServerKeepsReturning429() {
         Instant start = Instant.now();
         try {
@@ -25,6 +27,7 @@ public class ExponentialBackoffTest {
     }
 
     @Test
+    @Disabled
     public void abortsDirectlyIfServerReturnsOtherErrorThan429() {
         Instant start = Instant.now();
         try {
@@ -38,6 +41,7 @@ public class ExponentialBackoffTest {
     }
 
     @Test
+    @Disabled
     public void abortsDirectlyIfMaxRetries0AndServerReturns429() {
         Instant start = Instant.now();
         try {
