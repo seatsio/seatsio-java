@@ -242,7 +242,7 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
                 "ruleset", ruleset
         );
         client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
-        client.events.update(event.key, null, null, null, "ruleset", null);
+        client.events.updateSocialDistancingRulesetKey(event.key, "ruleset");
 
         client.events.changeObjectStatus(event.key, newArrayList("A-1"), "someStatus", null, null, null, null, null, true);
 

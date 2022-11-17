@@ -74,7 +74,7 @@ public class ListStatusChangesTest extends SeatsioClientTest {
         String chartKey = createTestChartWithTables();
         Event event = client.events.create(chartKey, anEvent().withKey("event1").withTableBookingConfig(allByTable()));
         client.events.book(event.key, newArrayList("T1"));
-        client.events.update("event1", null, null, allBySeat());
+        client.events.updateTableBookingConfig("event1", allBySeat());
         waitForStatusChanges(client, event, 1);
 
         Stream<StatusChange> statusChanges = client.events.statusChanges(event.key).all();

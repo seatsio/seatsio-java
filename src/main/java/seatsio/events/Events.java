@@ -1,6 +1,7 @@
 package seatsio.events;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -77,22 +78,46 @@ public class Events {
         return gson().fromJson(response, EventCreationResult.class).events;
     }
 
-    public void update(String key, String chartKey, String newKey) {
-        update(key, chartKey, newKey, null, null, null);
+    public void updateChartKey(String eventKey, String newChartKey) {
+        update(eventKey, newChartKey, null, null, null, null, null);
     }
 
-    public void update(String key, String chartKey, String newKey, TableBookingConfig tableBookingConfig) {
-        update(key, chartKey, newKey, tableBookingConfig, null, null);
+    public void updateEventKey(String eventKey, String newEventKey) {
+        update(eventKey, null, newEventKey, null, null, null, null);
     }
 
-    public void update(String key, String chartKey, String newKey, TableBookingConfig tableBookingConfig, String socialDistancingRulesetKey, Map<String, CategoryKey> objectCategories) {
-        this.update(key, chartKey, newKey, tableBookingConfig, socialDistancingRulesetKey, objectCategories, null);
+    public void updateTableBookingConfig(String key, TableBookingConfig tableBookingConfig) {
+        update(key, null, null, tableBookingConfig, null, null, null);
     }
 
-    public void update(String key, String chartKey, String newKey, TableBookingConfig tableBookingConfig, String socialDistancingRulesetKey, Map<String, CategoryKey> objectCategories, List<Category> categories) {
+    public void updateSocialDistancingRulesetKey(String key, String socialDistancingRulesetKey) {
+        update(key, null, null, null, socialDistancingRulesetKey, null, null);
+    }
+
+    public void removeSocialDistancingRulesetKey(String eventKey) {
+        update(eventKey, null, null, null, "", null, null);
+    }
+
+    public void updateObjectCategories(String eventKey, Map<String, CategoryKey> newObjectCategories) {
+        update(eventKey, null, null, null, null, newObjectCategories, null);
+    }
+
+    public void removeObjectCategories(String eventKey) {
+        update(eventKey, null, null, null, null, Maps.newHashMap(), null);
+    }
+
+    public void updateCategories(String eventKey, List<Category> categories) {
+        update(eventKey, null, null, null, null, null, categories);
+    }
+
+    public void removeCategories(String eventKey) {
+        update(eventKey, null, null, null, null, null, newArrayList());
+    }
+
+    public void update(String key, String newChartKey, String newEventKey, TableBookingConfig tableBookingConfig, String socialDistancingRulesetKey, Map<String, CategoryKey> objectCategories, List<Category> categories) {
         JsonObjectBuilder request = aJsonObject()
-                .withPropertyIfNotNull("chartKey", chartKey)
-                .withPropertyIfNotNull("eventKey", newKey)
+                .withPropertyIfNotNull("chartKey", newChartKey)
+                .withPropertyIfNotNull("eventKey", newEventKey)
                 .withPropertyIfNotNull("tableBookingConfig", tableBookingConfig)
                 .withPropertyIfNotNull("socialDistancingRulesetKey", socialDistancingRulesetKey)
                 .withPropertyIfNotNull("objectCategories", objectCategories, CategoryKey::toJson)
