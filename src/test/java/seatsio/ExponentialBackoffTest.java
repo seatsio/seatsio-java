@@ -12,7 +12,6 @@ import static seatsio.util.UnirestWrapper.get;
 public class ExponentialBackoffTest {
 
     @Test
-    @Disabled
     public void abortsEventuallyIfServerKeepsReturning429() {
         Instant start = Instant.now();
         try {
@@ -27,7 +26,6 @@ public class ExponentialBackoffTest {
     }
 
     @Test
-    @Disabled
     public void abortsDirectlyIfServerReturnsOtherErrorThan429() {
         Instant start = Instant.now();
         try {
@@ -41,7 +39,6 @@ public class ExponentialBackoffTest {
     }
 
     @Test
-    @Disabled
     public void abortsDirectlyIfMaxRetries0AndServerReturns429() {
         Instant start = Instant.now();
         try {
@@ -55,7 +52,6 @@ public class ExponentialBackoffTest {
     }
 
     @Test
-    @Disabled
     public void returnsSuccessfullyWhenTheServerSendsA429FirstAndThenASuccessfulResponse() {
         for (int i = 0; i < 10; ++i) {
             new UnirestWrapper("secretKey", null).stringResponse(get("https://httpbin.org/status/429:0.25,204:0.75"));
