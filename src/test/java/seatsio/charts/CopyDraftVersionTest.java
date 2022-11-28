@@ -3,8 +3,6 @@ package seatsio.charts;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CopyDraftVersionTest extends SeatsioClientTest {
