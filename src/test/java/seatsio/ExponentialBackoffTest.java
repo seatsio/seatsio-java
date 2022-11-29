@@ -1,6 +1,5 @@
 package seatsio;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import seatsio.util.UnirestWrapper;
 
@@ -54,7 +53,9 @@ public class ExponentialBackoffTest {
     @Test
     public void returnsSuccessfullyWhenTheServerSendsA429FirstAndThenASuccessfulResponse() {
         for (int i = 0; i < 10; ++i) {
-            new UnirestWrapper("secretKey", null).stringResponse(get("https://httpbin.org/status/429:0.25,204:0.75"));
+            new UnirestWrapper("secretKey", null)
+                    .maxRetries(20)
+                    .stringResponse(get("https://httpbin.org/status/429:0.25,204:0.75"));
         }
     }
 }
