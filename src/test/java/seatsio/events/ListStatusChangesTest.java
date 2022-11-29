@@ -19,6 +19,7 @@ import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static seatsio.SortDirection.DESC;
+import static seatsio.events.EventCreationParamsBuilder.anEvent;
 import static seatsio.events.ObjectNotPresentReason.SWITCHED_TO_BOOK_BY_SEAT;
 import static seatsio.events.StatusChangeOriginType.API_CALL;
 import static seatsio.events.TableBookingConfig.allBySeat;
@@ -71,9 +72,9 @@ public class ListStatusChangesTest extends SeatsioClientTest {
     @Test
     public void objectNotPresentAnymore() {
         String chartKey = createTestChartWithTables();
-        Event event = client.events.create(chartKey, "event1", allByTable());
+        Event event = client.events.create(chartKey, anEvent().withKey("event1").withTableBookingConfig(allByTable()));
         client.events.book(event.key, newArrayList("T1"));
-        client.events.update("event1", null, null, allBySeat());
+        client.events.updateTableBookingConfig("event1", allBySeat());
         waitForStatusChanges(client, event, 1);
 
         Stream<StatusChange> statusChanges = client.events.statusChanges(event.key).all();

@@ -1,32 +1,34 @@
 package seatsio.events;
 
+import com.google.gson.JsonObject;
+import seatsio.charts.Category;
+import seatsio.charts.CategoryKey;
+
+import java.util.List;
+import java.util.Map;
+
+import static java.util.stream.Collectors.toList;
+
 public class EventCreationParams {
 
     public final String eventKey;
     public final TableBookingConfig tableBookingConfig;
     public final String socialDistancingRulesetKey;
+    public final Map<String, CategoryKey> objectCategories;
+    public final List<Category> categories;
 
-    public EventCreationParams() {
-        this.eventKey = null;
-        this.tableBookingConfig = null;
-        this.socialDistancingRulesetKey = null;
-    }
-
-    public EventCreationParams(String eventKey) {
-        this.eventKey = eventKey;
-        this.tableBookingConfig = null;
-        this.socialDistancingRulesetKey = null;
-    }
-
-    public EventCreationParams(String eventKey, TableBookingConfig tableBookingConfig) {
+    EventCreationParams(String eventKey, TableBookingConfig tableBookingConfig, String socialDistancingRulesetKey, Map<String, CategoryKey> objectCategories, List<Category> categories) {
         this.eventKey = eventKey;
         this.tableBookingConfig = tableBookingConfig;
-        socialDistancingRulesetKey = null;
+        this.socialDistancingRulesetKey = socialDistancingRulesetKey;
+        this.objectCategories = objectCategories;
+        this.categories = categories;
     }
 
-    public EventCreationParams(String eventKey, String socialDistancingRulesetKey) {
-        this.eventKey = eventKey;
-        this.tableBookingConfig = null;
-        this.socialDistancingRulesetKey = socialDistancingRulesetKey;
+    public List<JsonObject> getCategoriesAsJson() {
+        if (categories == null) {
+            return null;
+        }
+        return categories.stream().map(Category::toJson).collect(toList());
     }
 }

@@ -1,6 +1,9 @@
 package seatsio.charts;
 
+import com.google.gson.JsonObject;
 import seatsio.util.ValueObject;
+
+import static seatsio.json.JsonObjectBuilder.aJsonObject;
 
 public class Category extends ValueObject {
 
@@ -34,5 +37,14 @@ public class Category extends ValueObject {
         this.label = label;
         this.color = color;
         this.accessible = accessible;
+    }
+
+    public JsonObject toJson() {
+        return aJsonObject()
+                .withPropertyIfNotNull("key", this.key.toJson())
+                .withPropertyIfNotNull("label", this.label)
+                .withPropertyIfNotNull("color", this.color)
+                .withPropertyIfNotNull("accessible", this.accessible)
+                .build();
     }
 }
