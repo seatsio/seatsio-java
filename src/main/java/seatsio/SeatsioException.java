@@ -35,7 +35,7 @@ public class SeatsioException extends RuntimeException {
 
     public static SeatsioException from(HttpRequest request, RawResponse response, byte[] responseBody) {
         if (response.getHeaders().getFirst("Content-Type").contains("application/json")) {
-            SeatsioException parsedException = fromJson(responseBody);
+            SeatsioExceptionTO parsedException = fromJson(responseBody);
             if (response.getStatus() == 429) {
                 return new RateLimitExceededException(parsedException.errors, parsedException.requestId, request, response);
             }
@@ -55,7 +55,14 @@ public class SeatsioException extends RuntimeException {
         return request.getHttpMethod() + " " + request.getUrl() + " resulted in a " + response.getStatus() + " " + response.getStatusText() + " response.";
     }
 
-    private static SeatsioException fromJson(byte[] responseBody) {
-        return gson().fromJson(new String(responseBody, UTF_8), SeatsioException.class);
+    private static SeatsioExceptionTO fromJson(byte[] responseBody) {
+        return gson().fromJson(new String(responseBody, UTF_8), SeatsioExceptionTO.class);
+    }
+
+    private static class SeatsioExceptionTO {
+
+        public List<ApiError> errors;
+        public String requestId;
+
     }
 }
