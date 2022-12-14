@@ -5,8 +5,6 @@ import seatsio.SeatsioClient;
 import seatsio.SeatsioClientTest;
 import seatsio.workspaces.Workspace;
 
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CopyChartToWorkspaceTest extends SeatsioClientTest {
@@ -22,8 +20,6 @@ public class CopyChartToWorkspaceTest extends SeatsioClientTest {
         assertThat(copiedChart.name).isEqualTo("my chart");
         Chart retrievedChart = workspaceClient.charts.retrieve(copiedChart.key);
         assertThat(retrievedChart.name).isEqualTo("my chart");
-        Map<?, ?> drawing = workspaceClient.charts.retrievePublishedVersion(copiedChart.key);
-        assertThat(drawing.get("venueType")).isEqualTo("BOOTHS");
     }
 
 }

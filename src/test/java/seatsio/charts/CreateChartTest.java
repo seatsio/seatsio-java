@@ -1,12 +1,10 @@
 package seatsio.charts;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,20 +23,12 @@ public class CreateChartTest extends SeatsioClientTest {
         assertThat(chart.events).isNull();
         assertThat(chart.tags).isEmpty();
         assertThat(chart.archived).isFalse();
-
-        Map<?, ?> drawing = client.charts.retrievePublishedVersion(chart.key);
-        assertThat(drawing.get("venueType")).isEqualTo("MIXED");
-        assertThat(categories(drawing)).isEmpty();
     }
 
     @Test
     public void name() {
         Chart chart = client.charts.create("aChart");
-
         assertThat(chart.name).isEqualTo("aChart");
-        Map<?, ?> drawing = client.charts.retrievePublishedVersion(chart.key);
-        assertThat(drawing.get("venueType")).isEqualTo("MIXED");
-        assertThat(categories(drawing)).isEmpty();
     }
 
     @Test
@@ -46,9 +36,6 @@ public class CreateChartTest extends SeatsioClientTest {
         Chart chart = client.charts.create(null, "BOOTHS");
 
         assertThat(chart.name).isEqualTo("Untitled chart");
-        Map<?, ?> drawing = client.charts.retrievePublishedVersion(chart.key);
-        assertThat(drawing.get("venueType")).isEqualTo("BOOTHS");
-        assertThat(categories(drawing)).isEmpty();
     }
 
     @Test
@@ -60,16 +47,6 @@ public class CreateChartTest extends SeatsioClientTest {
         Chart chart = client.charts.create(null, null, categories);
 
         assertThat(chart.name).isEqualTo("Untitled chart");
-        Map<?, ?> drawing = client.charts.retrievePublishedVersion(chart.key);
-        assertThat(drawing.get("venueType")).isEqualTo("MIXED");
-        assertThat(categories(drawing)).containsExactly(
-                ImmutableMap.of("key", 1.0, "label", "Category 1", "color", "#aaaaaa", "accessible", false),
-                ImmutableMap.of("key", "anotherCat", "label", "Category 2", "color", "#bbbbbb", "accessible", true)
-        );
     }
 
-    private List<Map<?, ?>> categories(Map<?, ?> drawing) {
-        Map<?, ?> categoriesMap = (Map<?, ?>) drawing.get("categories");
-        return (List<Map<?, ?>>) categoriesMap.get("list");
-    }
 }

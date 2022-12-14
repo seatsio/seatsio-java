@@ -62,21 +62,9 @@ public class Charts {
         return gson().fromJson(response, Chart.class);
     }
 
-    public Map<?, ?> retrievePublishedVersion(String key) {
-        String response = unirest.stringResponse(get(baseUrl + "/charts/{key}/version/published")
-                .routeParam("key", key));
-        return gson().fromJson(response, Map.class);
-    }
-
     public byte[] retrievePublishedVersionThumbnail(String key) {
         return unirest.binaryResponse(get(baseUrl + "/charts/{key}/version/published/thumbnail")
                 .routeParam("key", key));
-    }
-
-    public Map<?, ?> retrieveDraftVersion(String key) {
-        String response = unirest.stringResponse(get(baseUrl + "/charts/{key}/version/draft")
-                .routeParam("key", key));
-        return gson().fromJson(response, Map.class);
     }
 
     public byte[] retrieveDraftVersionThumbnail(String key) {

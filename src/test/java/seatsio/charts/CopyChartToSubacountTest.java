@@ -5,8 +5,6 @@ import seatsio.SeatsioClient;
 import seatsio.SeatsioClientTest;
 import seatsio.subaccounts.Subaccount;
 
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CopyChartToSubacountTest extends SeatsioClientTest {
@@ -22,8 +20,6 @@ public class CopyChartToSubacountTest extends SeatsioClientTest {
         assertThat(copiedChart.name).isEqualTo("my chart");
         Chart retrievedChart = subaccountClient.charts.retrieve(copiedChart.key);
         assertThat(retrievedChart.name).isEqualTo("my chart");
-        Map<?, ?> drawing = subaccountClient.charts.retrievePublishedVersion(copiedChart.key);
-        assertThat(drawing.get("venueType")).isEqualTo("BOOTHS");
     }
 
 }
