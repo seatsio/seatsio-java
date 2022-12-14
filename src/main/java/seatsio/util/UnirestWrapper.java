@@ -33,6 +33,7 @@ public class UnirestWrapper {
         try {
             AtomicReference<RawResponse> response = new AtomicReference<>();
             AtomicReference<byte[]> responseBody = new AtomicReference<>();
+            request.header("X-Client-Lib", "Java");
             authenticate(request, secretKey, workspaceKey).thenConsume(r -> {
                 response.set((RawResponse) r);
                 responseBody.set(response.get().getContentAsBytes());
