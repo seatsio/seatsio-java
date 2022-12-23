@@ -1,7 +1,7 @@
 # seatsio-java, the official seats.io Java client library
 
-[![Build](https://github.com/seatsio/seatsio-java/workflows/Build/badge.svg)](https://github.com/seatsio/seatsio-java/actions/workflows/build.yml)
-[![](https://jitpack.io/v/seatsio/seatsio-java.svg)](https://jitpack.io/#seatsio/seatsio-java)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/seatsio/seatsio-java/build.yml)
+![Maven Central](https://img.shields.io/maven-central/v/io.seats/seatsio-java)
 
 ## Installing seatsio-java
 
@@ -20,6 +20,8 @@ dependencies {
   <version>74.1.0</version>
 </dependency>
 ```
+
+Note that v74.0.0 is the first version that's hosted on Maven Central instead of on JitPack.
 
 ## Java version
 
