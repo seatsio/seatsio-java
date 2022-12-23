@@ -5,39 +5,19 @@
 
 ## Installing seatsio-java
 
-seatsio-java is available as a maven-style package. To use it, you must first add jitpack as a repository in build.gradle or pom.xml:
-
-```
-// build.gradle
-allprojects {
-  repositories {
-    ...
-    maven { url 'https://jitpack.io' }
-  }
-}
-
-// pom.xml
-<repositories>
-  <repository>
-      <id>jitpack.io</id>
-      <url>https://jitpack.io</url>
-  </repository>
-</repositories>
-```
-
-Then you can refer to seatsio-java as a regular package:
+seatsio-java is available in the Maven Central repository:
 
 ```
 // build.gradle
 dependencies {
-  compile 'com.github.seatsio:seatsio-java:73.1.0'
+  compile 'io.seats:seatsio-java:74.0.0'
 }
 
 // pom.xml
 <dependency>
-  <groupId>com.github.seatsio</groupId>
+  <groupId>io.seats</groupId>
   <artifactId>seatsio-java</artifactId>
-  <version>73.1.0</version>
+  <version>74.0.0</version>
 </dependency>
 ```
 
