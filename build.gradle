@@ -1,35 +1,49 @@
-apply plugin: 'java'
-apply plugin: 'maven-publish'
-apply plugin: 'signing'
+plugins {
+    id "com.vanniktech.maven.publish" version "0.22.0"
+}
 
+group = 'io.seats'
+version = '74.0.0'
+
+apply plugin: 'java'
 sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
 }
 
-java {
-    withSourcesJar()
-}
+import com.vanniktech.maven.publish.SonatypeHost
+mavenPublishing {
+    publishToMavenCentral(SonatypeHost.S01, true)
+    signAllPublications()
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            groupId = 'io.seats'
-            artifactId = 'seatsio-java'
-            version = '74.0.0'
-            from components.java
-        }
-    }
-
-    repositories {
-        maven {
-            name = "OSSRH"
-            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-            credentials {
-                username = System.getenv("MAVEN_USERNAME")
-                password = System.getenv("MAVEN_PASSWORD")
+    pom {
+        name = "seatsio-java"
+        description = "The official seats.io Java client library"
+        url = "https://github.com/seatsio/seatsio-java"
+        licenses {
+            license {
+                name = "MIT"
+                url = "https://github.com/seatsio/seatsio-java/blob/master/LICENSE"
+                distribution = "repo"
             }
+        }
+        developers {
+            developer {
+                id = "mroloux"
+                name = "Matti Roloux"
+                url = "https://github.com/mroloux/"
+            }
+            developer {
+                id = "bverbeken"
+                name = "Ben Verbeken"
+                url = "https://github.com/bverbeken"
+            }
+        }
+        scm {
+            url = "https://github.com/seatsio/seatsio-java/"
+            connection = "scm:git:git://github.com/seatsio/seatsio-java.git"
+            developerConnection = "scm:git:ssh://git@github.com/seatsio/seatsio-java.git"
         }
     }
 }
@@ -45,14 +59,6 @@ dependencies {
     testImplementation 'commons-io:commons-io:2.11.0'
     testImplementation 'org.awaitility:awaitility:4.2.0'
     testRuntimeOnly "org.slf4j:slf4j-api:2.0.5"
-}
-
-signing {
-    useInMemoryPgpKeys(
-            System.getenv("MAVEN_SIGNING_KEY"),
-            System.getenv("MAVEN_SIGNING_PASSWORD")
-    )
-    sign publishing.publications.mavenJava
 }
 
 test {
