@@ -1,6 +1,5 @@
 package seatsio;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import seatsio.util.UnirestWrapper;
 
@@ -9,7 +8,6 @@ import java.time.Instant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static seatsio.util.UnirestWrapper.get;
 
-@Disabled
 public class ExponentialBackoffTest {
 
     @Test
