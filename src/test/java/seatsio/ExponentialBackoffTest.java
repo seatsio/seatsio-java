@@ -14,7 +14,7 @@ public class ExponentialBackoffTest {
     public void abortsEventuallyIfServerKeepsReturning429() {
         Instant start = Instant.now();
         try {
-            new UnirestWrapper("secretKey", null).stringResponse(get("https://httpbin.org/status/429"));
+            new UnirestWrapper("secretKey", null).stringResponse(get("https://httpbin.seatsio.net/status/429"));
             throw new RuntimeException("Should have failed");
         } catch (SeatsioException e) {
             // TODO: check for RateLimitExceededException when httpbin supports status 429 with a JSON response body
@@ -28,10 +28,10 @@ public class ExponentialBackoffTest {
     public void abortsDirectlyIfServerReturnsOtherErrorThan429() {
         Instant start = Instant.now();
         try {
-            new UnirestWrapper("secretKey", null).stringResponse(get("https://httpbin.org/status/400"));
+            new UnirestWrapper("secretKey", null).stringResponse(get("https://httpbin.seatsio.net/status/400"));
             throw new RuntimeException("Should have failed");
         } catch (SeatsioException e) {
-            assertThat(e.getMessage()).isEqualTo("GET https://httpbin.org/status/400 resulted in a 400 BAD REQUEST response.");
+            assertThat(e.getMessage()).isEqualTo("GET https://httpbin.seatsio.net/status/400 resulted in a 400 Bad Request response.");
             long waitTime = Instant.now().toEpochMilli() - start.toEpochMilli();
             assertThat(waitTime).isLessThan(2000);
         }
@@ -41,10 +41,10 @@ public class ExponentialBackoffTest {
     public void abortsDirectlyIfMaxRetries0AndServerReturns429() {
         Instant start = Instant.now();
         try {
-            new UnirestWrapper("secretKey", null).maxRetries(0).stringResponse(get("https://httpbin.org/status/429"));
+            new UnirestWrapper("secretKey", null).maxRetries(0).stringResponse(get("https://httpbin.seatsio.net/status/429"));
             throw new RuntimeException("Should have failed");
         } catch (SeatsioException e) {
-            assertThat(e.getMessage()).isEqualTo("GET https://httpbin.org/status/429 resulted in a 429 TOO MANY REQUESTS response.");
+            assertThat(e.getMessage()).isEqualTo("GET https://httpbin.seatsio.net/status/429 resulted in a 429 Too Many Requests response.");
             long waitTime = Instant.now().toEpochMilli() - start.toEpochMilli();
             assertThat(waitTime).isLessThan(2000);
         }
@@ -55,7 +55,7 @@ public class ExponentialBackoffTest {
         for (int i = 0; i < 10; ++i) {
             new UnirestWrapper("secretKey", null)
                     .maxRetries(20)
-                    .stringResponse(get("https://httpbin.org/status/429:0.25,204:0.75"));
+                    .stringResponse(get("https://httpbin.seatsio.net/status/429:0.25,204:0.75"));
         }
     }
 }
