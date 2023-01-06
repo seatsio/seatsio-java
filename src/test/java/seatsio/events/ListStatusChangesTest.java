@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClient;
 import seatsio.SeatsioClientTest;
+import seatsio.holdTokens.HoldToken;
 import seatsio.util.Lister;
 import seatsio.util.Page;
 
@@ -67,6 +68,20 @@ public class ListStatusChangesTest extends SeatsioClientTest {
         assertThat(statusChange.origin.ip).isNotNull();
         assertThat(statusChange.isPresentOnChart).isTrue();
         assertThat(statusChange.notPresentOnChartReason).isNull();
+    }
+
+    @Test
+    public void propertiesOfStatusChange_holdToken() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        HoldToken holdToken = client.holdTokens.create();
+        client.events.hold(event.key, newArrayList("A-1"), holdToken.holdToken);
+        waitForStatusChanges(client, event, 1);
+
+        Stream<StatusChange> statusChanges = client.events.statusChanges(event.key).all();
+
+        StatusChange statusChange = statusChanges.collect(toList()).get(0);
+        assertThat(statusChange.holdToken).isEqualTo(holdToken.holdToken);
     }
 
     @Test

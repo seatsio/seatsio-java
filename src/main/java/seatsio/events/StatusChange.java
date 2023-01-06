@@ -16,4 +16,5 @@ public class StatusChange {
     public StatusChangeOrigin origin;
     public boolean isPresentOnChart;
     public ObjectNotPresentReason notPresentOnChartReason;
+    public String holdToken;
 }
