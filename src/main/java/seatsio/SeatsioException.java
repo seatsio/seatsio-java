@@ -49,7 +49,7 @@ public class SeatsioException extends RuntimeException {
     }
 
     private static String exceptionMessage(HttpRequest request, RawResponse response) {
-        return request.getHttpMethod() + " " + request.getUrl() + " resulted in a " + response.getStatus() + " " + response.getStatusText() + " response.";
+        return request.getHttpMethod() + " " + request.getUrl() + " resulted in a " + response.getStatus() + " " + response.getStatusText() + " response. Body: " + response.getContentAsString();
     }
 
     private static SeatsioExceptionTO fromJson(byte[] responseBody) {

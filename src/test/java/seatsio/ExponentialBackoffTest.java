@@ -31,7 +31,7 @@ public class ExponentialBackoffTest {
             new UnirestWrapper("secretKey", null).stringResponse(get("https://httpbin.seatsio.net/status/400"));
             throw new RuntimeException("Should have failed");
         } catch (SeatsioException e) {
-            assertThat(e.getMessage()).isEqualTo("GET https://httpbin.seatsio.net/status/400 resulted in a 400 Bad Request response.");
+            assertThat(e.getMessage()).isEqualTo("GET https://httpbin.seatsio.net/status/400 resulted in a 400 Bad Request response. Body: ");
             long waitTime = Instant.now().toEpochMilli() - start.toEpochMilli();
             assertThat(waitTime).isLessThan(2000);
         }
@@ -44,7 +44,7 @@ public class ExponentialBackoffTest {
             new UnirestWrapper("secretKey", null).maxRetries(0).stringResponse(get("https://httpbin.seatsio.net/status/429"));
             throw new RuntimeException("Should have failed");
         } catch (SeatsioException e) {
-            assertThat(e.getMessage()).isEqualTo("GET https://httpbin.seatsio.net/status/429 resulted in a 429 Too Many Requests response.");
+            assertThat(e.getMessage()).isEqualTo("GET https://httpbin.seatsio.net/status/429 resulted in a 429 Too Many Requests response. Body: ");
             long waitTime = Instant.now().toEpochMilli() - start.toEpochMilli();
             assertThat(waitTime).isLessThan(2000);
         }
