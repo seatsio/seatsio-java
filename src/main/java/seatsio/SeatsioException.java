@@ -23,8 +23,8 @@ public class SeatsioException extends RuntimeException {
         super("Error while executing " + request.getHttpMethod() + " " + request.getUrl(), t);
     }
 
-    protected SeatsioException(List<ApiError> errors, String requestId, HttpRequest request, RawResponse response) {
-        super(exceptionMessage(errors, requestId, request, response));
+    protected SeatsioException(List<ApiError> errors, String requestId) {
+        super(exceptionMessage(errors));
         this.errors = errors;
         this.requestId = requestId;
     }
@@ -37,18 +37,15 @@ public class SeatsioException extends RuntimeException {
         if (response.getHeaders().getFirst("Content-Type").contains("application/json")) {
             SeatsioExceptionTO parsedException = fromJson(responseBody);
             if (response.getStatus() == 429) {
-                return new RateLimitExceededException(parsedException.errors, parsedException.requestId, request, response);
+                return new RateLimitExceededException(parsedException.errors, parsedException.requestId);
             }
-            return new SeatsioException(parsedException.errors, parsedException.requestId, request, response);
+            return new SeatsioException(parsedException.errors, parsedException.requestId);
         }
         return new SeatsioException(request, response);
     }
 
-    private static String exceptionMessage(List<ApiError> errors, String requestId, HttpRequest request, RawResponse response) {
-        String exceptionMessage = request.getHttpMethod() + " " + request.getUrl() + " resulted in a " + response.getStatus() + " " + response.getStatusText() + " response.";
-        exceptionMessage += " Reason: " + errors.stream().map(ApiError::getMessage).collect(joining(", ")) + ".";
-        exceptionMessage += " Request ID: " + requestId;
-        return exceptionMessage;
+    private static String exceptionMessage(List<ApiError> errors) {
+        return errors.stream().map(ApiError::getMessage).collect(joining(", "));
     }
 
     private static String exceptionMessage(HttpRequest request, RawResponse response) {
