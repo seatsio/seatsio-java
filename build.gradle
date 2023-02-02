@@ -7,7 +7,6 @@ version = '74.3.0'
 
 apply plugin: 'java'
 sourceCompatibility = 1.8
-targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
