@@ -1,12 +1,12 @@
 plugins {
-    id "com.vanniktech.maven.publish" version "0.22.0"
+    id "com.vanniktech.maven.publish" version "0.24.0"
 }
 
 group = 'io.seats'
-version = '74.3.0'
+version = '75.0.0'
 
 apply plugin: 'java'
-sourceCompatibility = 1.8
+sourceCompatibility = 11
 
 repositories {
     mavenCentral()
@@ -50,12 +50,12 @@ mavenPublishing {
 
 dependencies {
     implementation 'org.apache.commons:commons-lang3:3.12.0'
-    implementation 'com.google.code.gson:gson:2.10'
+    implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.konghq:unirest-java:3.14.1'
     implementation 'com.google.guava:guava:31.1-jre'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
-    testImplementation 'org.assertj:assertj-core:3.23.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
     testImplementation 'commons-io:commons-io:2.11.0'
     testImplementation 'org.awaitility:awaitility:4.2.0'
     testRuntimeOnly "org.slf4j:slf4j-api:2.0.6"

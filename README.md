@@ -10,14 +10,14 @@ seatsio-java is available in the Maven Central repository:
 ```
 // build.gradle
 dependencies {
-  compile 'io.seats:seatsio-java:74.3.0'
+  compile 'io.seats:seatsio-java:75.0.0'
 }
 
 // pom.xml
 <dependency>
   <groupId>io.seats</groupId>
   <artifactId>seatsio-java</artifactId>
-  <version>74.3.0</version>
+  <version>75.0.0</version>
 </dependency>
 ```
 
@@ -25,7 +25,7 @@ Note that v74.0.0 is the first version that's hosted on Maven Central instead of
 
 ## Java version
 
-You need at least Java 8 (with update 101) to use seatsio-java.
+You need at least Java 11 to use seatsio-java.
 
 ## Versioning
 
