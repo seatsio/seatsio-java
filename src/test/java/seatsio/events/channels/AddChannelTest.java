@@ -1,13 +1,9 @@
 package seatsio.events.channels;
 
-import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
-import seatsio.charts.Chart;
 import seatsio.events.Channel;
 import seatsio.events.Event;
-
-import java.util.HashSet;
 
 import static com.google.common.collect.Sets.newHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
