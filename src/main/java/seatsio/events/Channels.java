@@ -3,9 +3,11 @@ package seatsio.events;
 import seatsio.json.JsonObjectBuilder;
 import seatsio.util.UnirestWrapper;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
+import static seatsio.json.JsonArrayBuilder.aJsonArray;
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
 
 public class Channels {
@@ -28,6 +30,21 @@ public class Channels {
                         .withPropertyIfNotNull("index", index)
                         .withPropertyIfNotNull("objects", objects)
                         .buildAsString())
+        );
+    }
+
+    public void add(String eventKey, ChannelCreationParamsBuilder... channels) {
+        this.add(eventKey, stream(channels).map(ChannelCreationParamsBuilder::build).collect(toList()));
+    }
+
+    public void add(String eventKey, ChannelCreationParams... channelCreationParams) {
+        this.add(eventKey, List.of(channelCreationParams));
+    }
+
+    public void add(String eventKey, Collection<ChannelCreationParams> paramsList) {
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events/{key}/channels")
+                .routeParam("key", eventKey)
+                .body(aJsonArray().withItems(paramsList.stream().map(ChannelCreationParams::toJson).collect(toList())).buildAsString())
         );
     }
 

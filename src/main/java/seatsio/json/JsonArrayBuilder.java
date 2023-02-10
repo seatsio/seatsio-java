@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
 public class JsonArrayBuilder {
@@ -24,8 +25,8 @@ public class JsonArrayBuilder {
     }
 
     public JsonArrayBuilder withItems(String... items) {
-        List<JsonElement> itemsAsJsonElement = Arrays.asList(items)
-                .stream().map(JsonPrimitive::new)
+        List<JsonElement> itemsAsJsonElement = stream(items)
+                .map(JsonPrimitive::new)
                 .collect(toList());
         return withItems(itemsAsJsonElement);
     }
@@ -41,5 +42,9 @@ public class JsonArrayBuilder {
             jsonArray.add(item);
         }
         return jsonArray;
+    }
+
+    public String buildAsString() {
+        return build().toString();
     }
 }
