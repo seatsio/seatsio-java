@@ -7,7 +7,7 @@ public class ChannelCreationParamsBuilder {
     private String key;
     private String name;
     private String color;
-    private int index;
+    private Integer index;
     private Set<String> objects;
 
     /**

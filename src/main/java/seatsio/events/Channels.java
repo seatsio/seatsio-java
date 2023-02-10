@@ -21,16 +21,7 @@ public class Channels {
     }
 
     public void add(String eventKey, String channelKey, String name, String color, Integer index, Set<String> objects) {
-        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events/{key}/channels")
-                .routeParam("key", eventKey)
-                .body(aJsonObject()
-                        .withProperty("key", channelKey)
-                        .withProperty("name", name)
-                        .withProperty("color", color)
-                        .withPropertyIfNotNull("index", index)
-                        .withPropertyIfNotNull("objects", objects)
-                        .buildAsString())
-        );
+        this.add(eventKey, new ChannelCreationParams(channelKey, name, color, index, objects));
     }
 
     public void add(String eventKey, ChannelCreationParamsBuilder... channels) {
