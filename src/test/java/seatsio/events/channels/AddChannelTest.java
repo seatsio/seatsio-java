@@ -1,16 +1,15 @@
 package seatsio.events.channels;
 
-import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
-import seatsio.charts.Chart;
 import seatsio.events.Channel;
 import seatsio.events.Event;
 
-import java.util.HashSet;
+import java.util.List;
 
 import static com.google.common.collect.Sets.newHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
+import static seatsio.events.ChannelCreationParamsBuilder.aChannel;
 
 public class AddChannelTest extends SeatsioClientTest {
 
@@ -21,6 +20,26 @@ public class AddChannelTest extends SeatsioClientTest {
 
         client.events.channels.add(event.key, "channelKey1", "channel 1", "#FFFF98", 1, newHashSet("A-1", "A-2"));
         client.events.channels.add(event.key, "channelKey2", "channel 2", "#FFFF99", 2, newHashSet("A-3"));
+
+        Event retrievedEvent = client.events.retrieve(event.key);
+        assertThat(retrievedEvent.channels).containsExactly(
+                new Channel("channelKey1", "channel 1", "#FFFF98", 1, newHashSet("A-1", "A-2")),
+                new Channel("channelKey2", "channel 2", "#FFFF99", 2, newHashSet("A-3"))
+        );
+    }
+
+    @Test
+    public void addChannels() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        client.events.channels.add(
+                event.key,
+                List.of(
+                        aChannel().withKey("channelKey1").withName("channel 1").withColor("#FFFF98").withIndex(1).withObjects(newHashSet("A-1", "A-2")).build(),
+                        aChannel().withKey("channelKey2").withName("channel 2").withColor("#FFFF99").withIndex(2).withObjects(newHashSet("A-3")).build()
+                )
+        );
 
         Event retrievedEvent = client.events.retrieve(event.key);
         assertThat(retrievedEvent.channels).containsExactly(
