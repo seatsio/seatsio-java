@@ -1,5 +1,6 @@
 package seatsio.charts;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -109,6 +110,13 @@ public class Charts {
         unirest.stringResponse(UnirestWrapper.delete(baseUrl + "/charts/{chartKey}/categories/{categoryKey}")
                 .routeParam("chartKey", chartKey)
                 .routeParam("categoryKey", categoryKey.toString()));
+    }
+
+    public List<Category> listCategories(String chartKey) {
+        final String response = unirest.stringResponse(get(baseUrl + "/charts/{key}/categories")
+                .routeParam("key", chartKey));
+        final Gson gson = gson();
+        return gson.fromJson(response, ListCategoriesResponse.class).categories;
     }
 
     public Chart copy(String key) {
@@ -237,5 +245,10 @@ public class Charts {
             return new HashMap<>();
         }
         return chartListParams.asMap();
+    }
+
+    private static final class ListCategoriesResponse {
+        public String chartKey;
+        public List<Category> categories;
     }
 }

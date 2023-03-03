@@ -3,12 +3,14 @@ package seatsio.charts;
 import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
+import seatsio.SeatsioException;
 
 import java.util.List;
 import java.util.Map;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SuppressWarnings("unchecked")
 public class ManageCategoriesTest extends SeatsioClientTest {
@@ -51,6 +53,23 @@ public class ManageCategoriesTest extends SeatsioClientTest {
                         "accessible", true
                 )
         );
+    }
+
+    @Test
+    public void listCategories() {
+        List<Category> categories = newArrayList(
+                new Category(CategoryKey.of(1L), "Category 1", "#aaaaaa"),
+                new Category(CategoryKey.of("cat2"), "Category 2", "#bbbbbb", true)
+        );
+        Chart chart = client.charts.create("aChart", "BOOTHS", categories);
+
+        final List<Category> categoryList = client.charts.listCategories(chart.key);
+        assertThat(categoryList).isEqualTo(categories);
+    }
+
+    @Test
+    public void listCategories_unknownChart() {
+        assertThrows(SeatsioException.class, () -> client.charts.listCategories("unknownChart"));
     }
 
     private List<Map<?, ?>> categories(Map<?, ?> drawing) {

@@ -207,6 +207,20 @@ Event event = client.events.create(chart.key);
 System.out.println("Created event with key " + event.key);
 ```
 
+### Listing categories
+
+```java
+import seatsio.SeatsioClient;
+import seatsio.Category;
+
+SeatsioClient client = new SeatsioClient(Region.EU, "<WORKSPACE SECRET KEY>");
+
+List<Category> categories = client.charts.listCategories("the chart key");
+categories.forEach(category -> {
+  System.out.println("Category " + category.label);
+});
+```
+
 ## Error handling
 
 When an API call results in a 4xx or 5xx error (e.g. when a chart could not be found), a SeatsioException is thrown.
