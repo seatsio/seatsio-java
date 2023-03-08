@@ -248,7 +248,6 @@ public class Charts {
     }
 
     private static final class ListCategoriesResponse {
-        public String chartKey;
         public List<Category> categories;
     }
 }
