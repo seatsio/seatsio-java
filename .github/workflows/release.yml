@@ -16,10 +16,6 @@ on:
         options:
           - minor
           - major
-      releaseNotes:
-        description: 'Release notes'
-        required: true
-        type: string
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -32,8 +28,7 @@ jobs:
         run: |
           wget -O /usr/local/bin/semver https://raw.githubusercontent.com/fsaintjacques/semver-tool/master/src/semver
           chmod +x /usr/local/bin/semver
-      - run: zx ./release.mjs -v $VERSION_TO_BUMP -n "$RELEASE_NOTES"
+      - run: zx ./release.mjs -v $VERSION_TO_BUMP
         env:
           VERSION_TO_BUMP: ${{ inputs.versionToBump }}
-          RELEASE_NOTES: ${{ inputs.releaseNotes }}
           GH_TOKEN: ${{ github.token }}

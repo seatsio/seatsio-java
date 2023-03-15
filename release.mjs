@@ -20,7 +20,6 @@
 $.verbose = false
 
 const versionToBump = getVersionToBump()
-const releaseNotes = getReleaseNotes()
 const latestVersion = await fetchLatestReleasedVersionNumber()
 const nextVersion = await determineNextVersionNumber(latestVersion)
 
@@ -34,12 +33,6 @@ function getVersionToBump() {
         throw new Error ("Please specify -v major/minor")
     }
     return argv.v
-}
-function getReleaseNotes() {
-    if (!argv.n) {
-        throw new Error("Please provide release notes using -n notes")
-    }
-    return argv.n;
 }
 
 function removeLeadingV(tagName) {
@@ -94,7 +87,7 @@ async function commitAndPush() {
 
 async function release() {
     const newTag = 'v' + nextVersion
-    return await $`gh release create ${newTag} -n ${releaseNotes}`.catch(error => {
+    return await $`gh release create ${newTag} --generate-notes`.catch(error => {
         console.error('something went wrong while creating the release. Please revert the version change!')
         throw error
     })
