@@ -2,7 +2,7 @@ package seatsio.reports.usage.detailsForEventInMonth;
 
 import java.time.Instant;
 
-public class UsageForObject {
+public class UsageForObjectV1 {
 
     public String object;
     public int numFirstBookings;

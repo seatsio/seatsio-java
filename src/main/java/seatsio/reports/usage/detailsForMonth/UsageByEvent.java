@@ -4,6 +4,5 @@ public class UsageByEvent {
 
     public UsageEvent event;
     public int numUsedObjects;
-    public int numFirstBookings;
-    public int numObjectSelections;
+
 }
