@@ -11,6 +11,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static seatsio.events.BestAvailableBuilder.someBestAvailable;
 
 public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
 
@@ -72,7 +73,7 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
                 ImmutableMap.of("foo", "baz")
         );
 
-        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(2, null, extraData, null, null), "foo");
+        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, someBestAvailable().withNumber(2).withExtraData(extraData).build(), "foo");
 
         assertThat(bestAvailableResult.objects).containsOnly("A-4", "A-5");
         assertThat(client.events.retrieveObjectInfo(event.key, "A-4").extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
@@ -84,7 +85,7 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(2, null, null, newArrayList("adult", "child"), null), "foo");
+        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, someBestAvailable().withNumber(2).withTicketTypes(newArrayList("adult", "child")).build(), "foo");
 
         assertThat(bestAvailableResult.objects).containsOnly("A-4", "A-5");
         assertThat(client.events.retrieveObjectInfo(event.key, "A-4").ticketType).isEqualTo("adult");
@@ -97,7 +98,7 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
         client.events.book(event.key, List.of("A-4", "A-5"));
 
-        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(2, null, null, null, null), "foo");
+        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(2), "foo");
 
         assertThat(bestAvailableResult.objects).containsOnly("B-4", "B-5");
     }
@@ -108,7 +109,7 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
         client.events.book(event.key, List.of("A-4", "A-5"));
 
-        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(2, null, null, null, false), "foo");
+        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, someBestAvailable().withNumber(2).withTryToPreventOrphanSeats(false).build(), "foo");
 
         assertThat(bestAvailableResult.objects).containsOnly("A-2", "A-3");
     }
