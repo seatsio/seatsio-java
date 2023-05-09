@@ -11,6 +11,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static seatsio.events.BestAvailableBuilder.someBestAvailable;
 
 public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
 
@@ -22,7 +23,7 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
         BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(3), "foo");
 
         assertThat(bestAvailableResult.nextToEachOther).isTrue();
-        assertThat(bestAvailableResult.objects).containsOnly("B-4", "B-5", "B-6");
+        assertThat(bestAvailableResult.objects).containsOnly("A-4", "A-5", "A-6");
     }
 
     @Test
@@ -33,11 +34,11 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
         BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(1), "foo");
 
         assertThat(bestAvailableResult.objectDetails).hasSize(1);
-        EventObjectInfo reportItem = bestAvailableResult.objectDetails.get("B-5");
+        EventObjectInfo reportItem = bestAvailableResult.objectDetails.get("A-5");
         assertThat(reportItem.status).isEqualTo("foo");
-        assertThat(reportItem.label).isEqualTo("B-5");
-        assertThat(reportItem.labels).isEqualTo(new Labels("5", "seat", "B", "row"));
-        assertThat(reportItem.ids).isEqualTo(new IDs("5", "B", null));
+        assertThat(reportItem.label).isEqualTo("A-5");
+        assertThat(reportItem.labels).isEqualTo(new Labels("5", "seat", "A", "row"));
+        assertThat(reportItem.ids).isEqualTo(new IDs("5", "A", null));
         assertThat(reportItem.categoryLabel).isEqualTo("Cat1");
         assertThat(reportItem.categoryKey).isEqualTo("9");
         assertThat(reportItem.ticketType).isNull();
@@ -49,8 +50,8 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
         assertThat(reportItem.capacity).isNull();
         assertThat(reportItem.objectType).isEqualTo("seat");
         assertThat(reportItem.extraData).isEqualTo(null);
-        assertThat(reportItem.leftNeighbour).isEqualTo("B-4");
-        assertThat(reportItem.rightNeighbour).isEqualTo("B-6");
+        assertThat(reportItem.leftNeighbour).isEqualTo("A-4");
+        assertThat(reportItem.rightNeighbour).isEqualTo("A-6");
     }
 
     @Test
@@ -72,11 +73,11 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
                 ImmutableMap.of("foo", "baz")
         );
 
-        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(2, null, extraData, null), "foo");
+        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, someBestAvailable().withNumber(2).withExtraData(extraData).build(), "foo");
 
-        assertThat(bestAvailableResult.objects).containsOnly("B-4", "B-5");
-        assertThat(client.events.retrieveObjectInfo(event.key, "B-4").extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
-        assertThat(client.events.retrieveObjectInfo(event.key, "B-5").extraData).isEqualTo(ImmutableMap.of("foo", "baz"));
+        assertThat(bestAvailableResult.objects).containsOnly("A-4", "A-5");
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-4").extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-5").extraData).isEqualTo(ImmutableMap.of("foo", "baz"));
     }
 
     @Test
@@ -84,47 +85,69 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(2, null, null, newArrayList("adult", "child")), "foo");
+        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, someBestAvailable().withNumber(2).withTicketTypes(newArrayList("adult", "child")).build(), "foo");
+
+        assertThat(bestAvailableResult.objects).containsOnly("A-4", "A-5");
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-4").ticketType).isEqualTo("adult");
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-5").ticketType).isEqualTo("child");
+    }
+
+    @Test
+    public void preventsOrphanSeatsByDefault() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        client.events.book(event.key, List.of("A-4", "A-5"));
+
+        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(2), "foo");
 
         assertThat(bestAvailableResult.objects).containsOnly("B-4", "B-5");
-        assertThat(client.events.retrieveObjectInfo(event.key, "B-4").ticketType).isEqualTo("adult");
-        assertThat(client.events.retrieveObjectInfo(event.key, "B-5").ticketType).isEqualTo("child");
+    }
+
+    @Test
+    public void dontTryToPreventOrphanSeats() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        client.events.book(event.key, List.of("A-4", "A-5"));
+
+        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, someBestAvailable().withNumber(2).withTryToPreventOrphanSeats(false).build(), "foo");
+
+        assertThat(bestAvailableResult.objects).containsOnly("A-2", "A-3");
     }
 
     @Test
     public void keepExtraDataTrue() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.updateExtraData(event.key, "B-5", ImmutableMap.of("foo", "bar"));
+        client.events.updateExtraData(event.key, "A-5", ImmutableMap.of("foo", "bar"));
 
         BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(1), "foo", null, null, true, null, null);
 
-        assertThat(bestAvailableResult.objects).containsOnly("B-5");
-        assertThat(client.events.retrieveObjectInfo(event.key, "B-5").extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
+        assertThat(bestAvailableResult.objects).containsOnly("A-5");
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-5").extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
     }
 
     @Test
     public void keepExtraDataFalse() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.updateExtraData(event.key, "B-5", ImmutableMap.of("foo", "bar"));
+        client.events.updateExtraData(event.key, "A-5", ImmutableMap.of("foo", "bar"));
 
         BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(1), "foo", null, null, false, null, null);
 
-        assertThat(bestAvailableResult.objects).containsOnly("B-5");
-        assertThat(client.events.retrieveObjectInfo(event.key, "B-5").extraData).isNull();
+        assertThat(bestAvailableResult.objects).containsOnly("A-5");
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-5").extraData).isNull();
     }
 
     @Test
     public void keepExtraDataNotPassIn() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.updateExtraData(event.key, "B-5", ImmutableMap.of("foo", "bar"));
+        client.events.updateExtraData(event.key, "A-5", ImmutableMap.of("foo", "bar"));
 
         BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(1), "foo", null, null, null, null, null);
 
-        assertThat(bestAvailableResult.objects).containsOnly("B-5");
-        assertThat(client.events.retrieveObjectInfo(event.key, "B-5").extraData).isNull();
+        assertThat(bestAvailableResult.objects).containsOnly("A-5");
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-5").extraData).isNull();
     }
 
     @Test
@@ -151,12 +174,12 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
                 "channelKey1", new Channel("channel 1", "#FFFF99", 1)
         ));
         client.events.channels.setObjects(event.key, ImmutableMap.of(
-                "channelKey1", newHashSet("B-5")
+                "channelKey1", newHashSet("A-5")
         ));
 
         BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(1), "foo", null, null, null, true, null);
 
-        assertThat(bestAvailableResult.objects).containsOnly("B-5");
+        assertThat(bestAvailableResult.objects).containsOnly("A-5");
     }
 
 }
