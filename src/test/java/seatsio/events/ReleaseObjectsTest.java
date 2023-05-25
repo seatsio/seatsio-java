@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.holdTokens.HoldToken;
 
+import java.util.List;
+
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -69,12 +71,8 @@ public class ReleaseObjectsTest extends SeatsioClientTest {
     public void channelKeys() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.channels.replace(event.key, ImmutableMap.of(
-                "channelKey1", new Channel("channel 1", "#FFFF99", 1)
-        ));
-        client.events.channels.setObjects(event.key, ImmutableMap.of(
-                "channelKey1", newHashSet("A-1", "A-2")
-        ));
+        client.events.channels.replace(event.key, List.of(new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))));
+
         client.events.book(event.key, newArrayList("A-1"), null, null, true, null, newHashSet("channelKey1"), null);
 
         client.events.release(event.key, newArrayList("A-1"), null, null, true, null, newHashSet("channelKey1"));
@@ -86,12 +84,7 @@ public class ReleaseObjectsTest extends SeatsioClientTest {
     public void ignoreChannels() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.channels.replace(event.key, ImmutableMap.of(
-                "channelKey1", new Channel("channel 1", "#FFFF99", 1)
-        ));
-        client.events.channels.setObjects(event.key, ImmutableMap.of(
-                "channelKey1", newHashSet("A-1", "A-2")
-        ));
+        client.events.channels.replace(event.key, List.of(new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))));
         client.events.book(event.key, newArrayList("A-1"), null, null, true, true, null, null);
 
         client.events.release(event.key, newArrayList("A-1"), null, null, true, true, null);

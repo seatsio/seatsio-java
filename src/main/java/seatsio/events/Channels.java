@@ -1,5 +1,6 @@
 package seatsio.events;
 
+import com.google.gson.JsonArray;
 import seatsio.json.JsonObjectBuilder;
 import seatsio.util.UnirestWrapper;
 
@@ -72,35 +73,23 @@ public class Channels {
         );
     }
 
-    public void replace(String eventKey, Map<String, Channel> channels) {
-        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events/{key}/channels/update")
+    public void replace(String eventKey, List<Channel> channels) {
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events/{key}/channels/replace")
                 .routeParam("key", eventKey)
                 .body(replaceChannelsRequest(channels))
         );
     }
 
-    private String replaceChannelsRequest(Map<String, Channel> channels) {
+    private String replaceChannelsRequest(List<Channel> channels) {
+        JsonArray channelsJson = new JsonArray();
+        channels.forEach(channel -> channelsJson.add(aJsonObject()
+                .withProperty("key", channel.key)
+                .withProperty("name", channel.name)
+                .withProperty("color", channel.color)
+                .withPropertyIfNotNull("index", channel.index)
+                .withPropertyIfNotNull("objects", channel.objects)
+                .build()));
         return aJsonObject()
-                .withProperty("channels", aJsonObject()
-                        .withProperties(channels, channel -> aJsonObject()
-                                .withProperty("name", channel.name)
-                                .withProperty("color", channel.color)
-                                .withProperty("index", channel.index)
-                                .build())
-                        .build()
-                ).buildAsString();
-    }
-
-    public void setObjects(String key, Map<String, Set<String>> channelKeysAndObjectLabels) {
-        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events/{key}/channels/assign-objects")
-                .routeParam("key", key)
-                .body(assignChannelsRequest(channelKeysAndObjectLabels))
-        );
-    }
-
-    private String assignChannelsRequest(Map<String, Set<String>> channelKeysAndObjectLabels) {
-        JsonObjectBuilder config = aJsonObject();
-        channelKeysAndObjectLabels.forEach(config::withProperty);
-        return aJsonObject().withProperty("channelConfig", config.build()).buildAsString();
+                .withProperty("channels", channelsJson).buildAsString();
     }
 }

@@ -57,7 +57,7 @@ public class AddChannelTest extends SeatsioClientTest {
 
         Event retrievedEvent = client.events.retrieve(event.key);
         assertThat(retrievedEvent.channels).containsExactly(
-                new Channel("channelKey1", "channel 1", "#FFFF98", 0, newHashSet("A-1", "A-2"))
+                new Channel("channelKey1", "channel 1", "#FFFF98", null, newHashSet("A-1", "A-2"))
         );
     }
 

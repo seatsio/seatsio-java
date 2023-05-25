@@ -6,6 +6,7 @@ import seatsio.SeatsioClientTest;
 import seatsio.charts.SocialDistancingRuleset;
 import seatsio.holdTokens.HoldToken;
 
+import java.util.List;
 import java.util.Map;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -72,12 +73,7 @@ public class HoldObjectsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
         HoldToken holdToken = client.holdTokens.create();
-        client.events.channels.replace(event.key, ImmutableMap.of(
-                "channelKey1", new Channel("channel 1", "#FFFF99", 1)
-        ));
-        client.events.channels.setObjects(event.key, ImmutableMap.of(
-                "channelKey1", newHashSet("A-1", "A-2")
-        ));
+        client.events.channels.replace(event.key, List.of(new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))));
 
         client.events.hold(event.key, newArrayList("A-1"), holdToken.holdToken, null, true, null, newHashSet("channelKey1"), null);
 
@@ -89,12 +85,7 @@ public class HoldObjectsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
         HoldToken holdToken = client.holdTokens.create();
-        client.events.channels.replace(event.key, ImmutableMap.of(
-                "channelKey1", new Channel("channel 1", "#FFFF99", 1)
-        ));
-        client.events.channels.setObjects(event.key, ImmutableMap.of(
-                "channelKey1", newHashSet("A-1", "A-2")
-        ));
+        client.events.channels.replace(event.key, List.of(new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))));
 
         client.events.hold(event.key, newArrayList("A-1"), holdToken.holdToken, null, true, true, null, null);
 

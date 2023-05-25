@@ -11,21 +11,10 @@ public class Channel extends ValueObject {
     public String key;
     public final String name;
     public final String color;
-    public final int index;
-    public Set<String> objects = newHashSet();
+    public final Integer index;
+    public Set<String> objects;
 
-    public Channel(String name, String color, int index) {
-        this(null, name, color, index);
-    }
-
-    public Channel(String key, String name, String color, int index) {
-        this.key = key;
-        this.name = name;
-        this.color = color;
-        this.index = index;
-    }
-
-    public Channel(String key, String name, String color, int index, Set<String> objects) {
+    public Channel(String key, String name, String color, Integer index, Set<String> objects) {
         this.key = key;
         this.name = name;
         this.color = color;
