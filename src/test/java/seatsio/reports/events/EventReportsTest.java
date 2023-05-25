@@ -25,8 +25,7 @@ public class EventReportsTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
         Map<String, String> extraData = ImmutableMap.of("foo", "bar");
         client.events.book(event.key, asList(new ObjectProperties("A-1", "ticketType1", extraData)), null, "order1", null, null, null, null);
-        client.events.channels.replace(event.key, ImmutableMap.of("channel1", new Channel("Channel 1", "#FFFF99", 1)));
-        client.events.channels.setObjects(event.key, ImmutableMap.of("channel1", newHashSet("A-1")));
+        client.events.channels.replace(event.key, List.of(new Channel("channel1", "channel 1", "#FFFF99", 1, newHashSet("A-1"))));
 
         Map<String, List<EventObjectInfo>> report = client.eventReports.byLabel(event.key);
 
@@ -334,8 +333,8 @@ public class EventReportsTest extends SeatsioClientTest {
     public void byChannel() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.channels.replace(event.key, ImmutableMap.of("channel1", new Channel("Channel 1", "#FFFF99", 1)));
-        client.events.channels.setObjects(event.key, ImmutableMap.of("channel1", newHashSet("A-1", "A-2")));
+        client.events.channels.replace(event.key, List.of(new Channel("channel1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))));
+
 
         Map<String, List<EventObjectInfo>> report = client.eventReports.byChannel(event.key);
 
@@ -347,8 +346,7 @@ public class EventReportsTest extends SeatsioClientTest {
     public void bySpecificChannel() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.channels.replace(event.key, ImmutableMap.of("channel1", new Channel("Channel 1", "#FFFF99", 1)));
-        client.events.channels.setObjects(event.key, ImmutableMap.of("channel1", newHashSet("A-1", "A-2")));
+        client.events.channels.replace(event.key, List.of(new Channel("channel1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))));
 
         List<EventObjectInfo> report = client.eventReports.byChannel(event.key, "channel1");
 
