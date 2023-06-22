@@ -19,5 +19,8 @@ public class ChartObjectInfo {
     public String rightNeighbour;
     public Double distanceToFocalPoint;
     public Integer numSeats;
+    public Boolean isAccessible;
+    public Boolean isCompanionSeat;
+    public Boolean hasRestrictedView;
 
 }
