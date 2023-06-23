@@ -1,7 +1,6 @@
 package seatsio.events;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -16,9 +15,9 @@ import java.util.*;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
-import static seatsio.events.EventCreationParamsBuilder.anEvent;
 import static seatsio.events.EventObjectInfo.*;
 import static seatsio.json.JsonArrayBuilder.aJsonArray;
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
@@ -39,17 +38,15 @@ public class Events {
     }
 
     public Event create(String chartKey) {
-        return create(chartKey, anEvent());
+        return create(chartKey, new CreateEventParams());
     }
 
-    public Event create(String chartKey, EventCreationParamsBuilder params) {
-        return this.create(chartKey, params.build());
-    }
-
-    private Event create(String chartKey, EventCreationParams params) {
+    public Event create(String chartKey, CreateEventParams params) {
         String request = aJsonObject()
                 .withProperty("chartKey", chartKey)
                 .withPropertyIfNotNull("eventKey", params.eventKey)
+                .withPropertyIfNotNull("name", params.name)
+                .withPropertyIfNotNull("date", params.date == null ? null : gson().toJsonTree(params.date))
                 .withPropertyIfNotNull("tableBookingConfig", params.tableBookingConfig)
                 .withPropertyIfNotNull("socialDistancingRulesetKey", params.socialDistancingRulesetKey)
                 .withPropertyIfNotNull("objectCategories", params.objectCategories, CategoryKey::toJson)
@@ -60,10 +57,12 @@ public class Events {
         return gson().fromJson(response, Event.class);
     }
 
-    public List<Event> create(String chartKey, Collection<EventCreationParamsBuilder> params) {
+    public List<Event> create(String chartKey, Collection<CreateEventParams> params) {
         JsonArray events = new JsonArray();
-        params.stream().map(EventCreationParamsBuilder::build).collect(toList()).forEach(p -> events.add(aJsonObject()
+        new ArrayList<>(params).forEach(p -> events.add(aJsonObject()
                 .withPropertyIfNotNull("eventKey", p.eventKey)
+                .withPropertyIfNotNull("name", p.name)
+                .withPropertyIfNotNull("date", p.date == null ? null : gson().toJsonTree(p.date))
                 .withPropertyIfNotNull("tableBookingConfig", p.tableBookingConfig)
                 .withPropertyIfNotNull("socialDistancingRulesetKey", p.socialDistancingRulesetKey)
                 .withPropertyIfNotNull("objectCategories", p.objectCategories, CategoryKey::toJson)
@@ -78,50 +77,28 @@ public class Events {
         return gson().fromJson(response, EventCreationResult.class).events;
     }
 
-    public void updateChartKey(String eventKey, String newChartKey) {
-        update(eventKey, newChartKey, null, null, null, null, null);
-    }
-
-    public void updateEventKey(String eventKey, String newEventKey) {
-        update(eventKey, null, newEventKey, null, null, null, null);
-    }
-
-    public void updateTableBookingConfig(String key, TableBookingConfig tableBookingConfig) {
-        update(key, null, null, tableBookingConfig, null, null, null);
-    }
-
-    public void updateSocialDistancingRulesetKey(String key, String socialDistancingRulesetKey) {
-        update(key, null, null, null, socialDistancingRulesetKey, null, null);
-    }
-
     public void removeSocialDistancingRulesetKey(String eventKey) {
-        update(eventKey, null, null, null, "", null, null);
-    }
-
-    public void updateObjectCategories(String eventKey, Map<String, CategoryKey> newObjectCategories) {
-        update(eventKey, null, null, null, null, newObjectCategories, null);
+        update(eventKey, new UpdateEventParams().withSocialDistancingRulesetKey(""));
     }
 
     public void removeObjectCategories(String eventKey) {
-        update(eventKey, null, null, null, null, Maps.newHashMap(), null);
-    }
-
-    public void updateCategories(String eventKey, List<Category> categories) {
-        update(eventKey, null, null, null, null, null, categories);
+        update(eventKey, new UpdateEventParams().withObjectCategories(newHashMap()));
     }
 
     public void removeCategories(String eventKey) {
-        update(eventKey, null, null, null, null, null, newArrayList());
+        update(eventKey, new UpdateEventParams().withCategories(new ArrayList<>()));
     }
 
-    public void update(String key, String newChartKey, String newEventKey, TableBookingConfig tableBookingConfig, String socialDistancingRulesetKey, Map<String, CategoryKey> objectCategories, List<Category> categories) {
+    public void update(String key, UpdateEventParams params) {
         JsonObjectBuilder request = aJsonObject()
-                .withPropertyIfNotNull("chartKey", newChartKey)
-                .withPropertyIfNotNull("eventKey", newEventKey)
-                .withPropertyIfNotNull("tableBookingConfig", tableBookingConfig)
-                .withPropertyIfNotNull("socialDistancingRulesetKey", socialDistancingRulesetKey)
-                .withPropertyIfNotNull("objectCategories", objectCategories, CategoryKey::toJson)
-                .withPropertyIfNotNull("categories", categoriesAsJson(categories));
+                .withPropertyIfNotNull("chartKey", params.chartKey)
+                .withPropertyIfNotNull("eventKey", params.eventKey)
+                .withPropertyIfNotNull("name", params.name)
+                .withPropertyIfNotNull("date", params.date == null ? null : gson().toJsonTree(params.date))
+                .withPropertyIfNotNull("tableBookingConfig", params.tableBookingConfig)
+                .withPropertyIfNotNull("socialDistancingRulesetKey", params.socialDistancingRulesetKey)
+                .withPropertyIfNotNull("objectCategories", params.objectCategories, CategoryKey::toJson)
+                .withPropertyIfNotNull("categories", categoriesAsJson(params.categories));
         unirest.stringResponse(post(baseUrl + "/events/{key}")
                 .routeParam("key", key)
                 .body(request.build().toString()));

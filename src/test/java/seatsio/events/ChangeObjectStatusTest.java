@@ -15,7 +15,6 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static seatsio.events.EventCreationParamsBuilder.anEvent;
 import static seatsio.events.EventObjectInfo.FREE;
 
 public class ChangeObjectStatusTest extends SeatsioClientTest {
@@ -83,7 +82,7 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
     @Test
     public void table() {
         String chartKey = createTestChartWithTables();
-        Event event = client.events.create(chartKey, anEvent().withTableBookingConfig(TableBookingConfig.allByTable()));
+        Event event = client.events.create(chartKey, new CreateEventParams().withTableBookingConfig(TableBookingConfig.allByTable()));
 
         ChangeObjectStatusResult result = client.events.changeObjectStatus(event.key, newArrayList("T1"), "foo");
 
@@ -227,13 +226,12 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
     @Test
     public void ignoreSocialDistancing() {
         String chartKey = createTestChart();
-        Event event = client.events.create(chartKey);
         SocialDistancingRuleset ruleset = SocialDistancingRuleset.fixed("ruleset").withDisabledSeats(newHashSet("A-1")).build();
         Map<String, SocialDistancingRuleset> rulesets = ImmutableMap.of(
                 "ruleset", ruleset
         );
         client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
-        client.events.updateSocialDistancingRulesetKey(event.key, "ruleset");
+        Event event = client.events.create(chartKey, new CreateEventParams().withSocialDistancingRulesetKey("ruleset"));
 
         client.events.changeObjectStatus(event.key, newArrayList("A-1"), "someStatus", null, null, null, null, null, true);
 
