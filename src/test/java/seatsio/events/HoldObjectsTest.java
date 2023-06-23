@@ -95,14 +95,13 @@ public class HoldObjectsTest extends SeatsioClientTest {
     @Test
     public void ignoreSocialDistancing() {
         String chartKey = createTestChart();
-        Event event = client.events.create(chartKey);
         HoldToken holdToken = client.holdTokens.create();
         SocialDistancingRuleset ruleset = SocialDistancingRuleset.fixed("ruleset").withDisabledSeats(newHashSet("A-1")).build();
         Map<String, SocialDistancingRuleset> rulesets = ImmutableMap.of(
                 "ruleset", ruleset
         );
         client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
-        client.events.updateSocialDistancingRulesetKey(event.key, "ruleset");
+        Event event = client.events.create(chartKey, new CreateEventParams().withSocialDistancingRulesetKey("ruleset"));
 
         client.events.hold(event.key, newArrayList("A-1"), holdToken.holdToken, null, null, null, null, true);
 

@@ -113,13 +113,12 @@ public class BookObjectsTest extends SeatsioClientTest {
     @Test
     public void ignoreSocialDistancing() {
         String chartKey = createTestChart();
-        Event event = client.events.create(chartKey);
         SocialDistancingRuleset ruleset = SocialDistancingRuleset.fixed("ruleset").withDisabledSeats(newHashSet("A-1")).build();
         Map<String, SocialDistancingRuleset> rulesets = ImmutableMap.of(
                 "ruleset", ruleset
         );
         client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
-        client.events.updateSocialDistancingRulesetKey(event.key, "ruleset");
+        Event event = client.events.create(chartKey, new CreateEventParams().withSocialDistancingRulesetKey("ruleset"));
 
         client.events.book(event.key, newArrayList("A-1"), null, null, null, null, null, true);
 

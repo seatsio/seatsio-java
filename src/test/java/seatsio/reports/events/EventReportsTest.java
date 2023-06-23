@@ -13,7 +13,6 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static seatsio.events.EventCreationParamsBuilder.anEvent;
 import static seatsio.events.EventObjectInfo.*;
 import static seatsio.events.TableBookingConfig.allByTable;
 
@@ -97,7 +96,7 @@ public class EventReportsTest extends SeatsioClientTest {
     @Test
     public void reportItemPropertiesForTable() {
         String chartKey = createTestChartWithTables();
-        Event event = client.events.create(chartKey, anEvent().withTableBookingConfig(allByTable()));
+        Event event = client.events.create(chartKey, new CreateEventParams().withTableBookingConfig(allByTable()));
 
         Map<String, List<EventObjectInfo>> report = client.eventReports.byLabel(event.key);
 

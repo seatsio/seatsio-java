@@ -8,6 +8,7 @@ import seatsio.charts.CategoryKey;
 import seatsio.charts.SocialDistancingRuleset;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -16,7 +17,6 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static seatsio.events.EventCreationParamsBuilder.anEvent;
 import static seatsio.events.TableBookingMode.BY_SEAT;
 import static seatsio.events.TableBookingMode.BY_TABLE;
 
@@ -26,7 +26,7 @@ public class CreateEventsTest extends SeatsioClientTest {
     public void multipleEvents() {
         String chartKey = createTestChart();
 
-        List<EventCreationParamsBuilder> params = newArrayList(anEvent(), anEvent());
+        List<CreateEventParams> params = newArrayList(new CreateEventParams(), new CreateEventParams());
         List<Event> events = client.events.create(chartKey, params);
 
         assertThat(events)
@@ -39,7 +39,7 @@ public class CreateEventsTest extends SeatsioClientTest {
     public void singleEvent() {
         String chartKey = createTestChart();
 
-        List<Event> events = client.events.create(chartKey, newArrayList(anEvent()));
+        List<Event> events = client.events.create(chartKey, newArrayList(new CreateEventParams()));
 
         Event event = events.get(0);
         assertThat(event.id).isNotZero();
@@ -60,8 +60,8 @@ public class CreateEventsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
 
         List<Event> events = client.events.create(chartKey, newArrayList(
-                anEvent().withKey("event1"),
-                anEvent().withKey("event2")
+                new CreateEventParams().withKey("event1"),
+                new CreateEventParams().withKey("event2")
         ));
 
         assertThat(events).extracting("key").containsExactly("event1", "event2");
@@ -72,8 +72,8 @@ public class CreateEventsTest extends SeatsioClientTest {
         String chartKey = createTestChartWithTables();
 
         List<Event> events = client.events.create(chartKey, newArrayList(
-                anEvent().withTableBookingConfig(TableBookingConfig.custom(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT))),
-                anEvent().withTableBookingConfig(TableBookingConfig.custom(ImmutableMap.of("T1", BY_SEAT, "T2", BY_TABLE)))
+                new CreateEventParams().withTableBookingConfig(TableBookingConfig.custom(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT))),
+                new CreateEventParams().withTableBookingConfig(TableBookingConfig.custom(ImmutableMap.of("T1", BY_SEAT, "T2", BY_TABLE)))
         ));
 
         assertThat(events).extracting("tableBookingConfig").containsExactly(
@@ -89,8 +89,8 @@ public class CreateEventsTest extends SeatsioClientTest {
         client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
 
         List<Event> events = client.events.create(chartKey, newArrayList(
-                anEvent().withSocialDistancingRulesetKey("ruleset1"),
-                anEvent().withSocialDistancingRulesetKey("ruleset1")
+                new CreateEventParams().withSocialDistancingRulesetKey("ruleset1"),
+                new CreateEventParams().withSocialDistancingRulesetKey("ruleset1")
         ));
 
         assertThat(events).extracting("socialDistancingRulesetKey").containsExactly("ruleset1", "ruleset1");
@@ -102,10 +102,32 @@ public class CreateEventsTest extends SeatsioClientTest {
         Map<String, CategoryKey> objectCategories = ImmutableMap.of("A-1", CategoryKey.of(10L));
 
         List<Event> events = client.events.create(chartKey, newArrayList(
-                anEvent().withObjectCategories(objectCategories)
+                new CreateEventParams().withObjectCategories(objectCategories)
         ));
 
         assertThat(events).extracting("objectCategories").containsExactly(objectCategories);
+    }
+
+    @Test
+    public void nameCanBePassedIn() {
+        String chartKey = createTestChart();
+
+        List<Event> events = client.events.create(chartKey, newArrayList(
+                new CreateEventParams().withName("My event")
+        ));
+
+        assertThat(events).extracting("name").containsExactly("My event");
+    }
+
+    @Test
+    public void dateCanBePassedIn() {
+        String chartKey = createTestChart();
+
+        List<Event> events = client.events.create(chartKey, newArrayList(
+                new CreateEventParams().withDate(LocalDate.of(2022, 10, 1))
+        ));
+
+        assertThat(events).extracting("date").containsExactly(LocalDate.of(2022, 10, 1));
     }
 
     @Test
@@ -113,8 +135,8 @@ public class CreateEventsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
 
         assertThrows(SeatsioException.class, () -> client.events.create(chartKey, newArrayList(
-                anEvent().withKey("event1"),
-                anEvent().withKey("event1")
+                new CreateEventParams().withKey("event1"),
+                new CreateEventParams().withKey("event1")
         )));
     }
 

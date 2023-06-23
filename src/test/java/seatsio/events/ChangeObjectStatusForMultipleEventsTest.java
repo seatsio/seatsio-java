@@ -79,15 +79,13 @@ public class ChangeObjectStatusForMultipleEventsTest extends SeatsioClientTest {
     @Test
     public void ignoreSocialDistancing() {
         String chartKey = createTestChart();
-        Event event1 = client.events.create(chartKey);
-        Event event2 = client.events.create(chartKey);
         SocialDistancingRuleset ruleset = SocialDistancingRuleset.fixed("ruleset").withDisabledSeats(newHashSet("A-1")).build();
         Map<String, SocialDistancingRuleset> rulesets = ImmutableMap.of(
                 "ruleset", ruleset
         );
         client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
-        client.events.updateSocialDistancingRulesetKey(event1.key, "ruleset");
-        client.events.updateSocialDistancingRulesetKey(event2.key, "ruleset");
+        Event event1 = client.events.create(chartKey, new CreateEventParams().withSocialDistancingRulesetKey("ruleset"));
+        Event event2 = client.events.create(chartKey, new CreateEventParams().withSocialDistancingRulesetKey("ruleset"));
 
         client.events.changeObjectStatus(asList(event1.key, event2.key), newArrayList("A-1"), EventObjectInfo.BOOKED, null, null, null, null, null, true);
 

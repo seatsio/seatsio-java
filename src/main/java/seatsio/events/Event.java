@@ -9,6 +9,7 @@ import seatsio.util.ValueObject;
 
 import java.lang.reflect.Type;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,8 @@ public class Event extends ValueObject {
     public long id;
     public String key;
     public String chartKey;
+    public String name;
+    public LocalDate date;
     public ForSaleConfig forSaleConfig;
     public Boolean supportsBestAvailable;
     public Instant createdOn;
