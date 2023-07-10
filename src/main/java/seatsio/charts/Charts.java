@@ -177,15 +177,6 @@ public class Charts {
                 .routeParam("tag", tag));
     }
 
-    public void saveSocialDistancingRulesets(String key, Map<String, SocialDistancingRuleset> rulesets) {
-        JsonObject request = aJsonObject()
-                .withProperty("socialDistancingRulesets", gson().toJsonTree(rulesets))
-                .build();
-        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/charts/{key}/social-distancing-rulesets")
-                .routeParam("key", key)
-                .body(request.toString()));
-    }
-
     public ChartValidationResult validatePublishedVersion(String key) {
         String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/charts/{key}/version/published/actions/validate")
                 .routeParam("key", key));

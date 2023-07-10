@@ -27,7 +27,6 @@ public class RetrieveChartTest extends SeatsioClientTest {
         assertThat(retrievedChart.events).isNull();
         assertThat(retrievedChart.tags).containsOnly("tag1", "tag2");
         assertThat(retrievedChart.archived).isFalse();
-        assertThat(retrievedChart.socialDistancingRulesets).isEqualTo(new HashMap<>());
     }
 
     @Test

@@ -5,11 +5,9 @@ import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.SeatsioException;
-import seatsio.charts.SocialDistancingRuleset;
 import seatsio.holdTokens.HoldToken;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
@@ -36,7 +34,7 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        ChangeObjectStatusResult result = client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo", null, "order1", null, null, null, null);
+        ChangeObjectStatusResult result = client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo", null, "order1", null, null, null);
 
         assertThat(result.objects).hasSize(1);
         EventObjectInfo reportItem = result.objects.get("A-1");
@@ -112,7 +110,7 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        client.events.changeObjectStatus(event.key, newArrayList("A-1", "A-2"), "foo", null, "order1", null, null, null, null);
+        client.events.changeObjectStatus(event.key, newArrayList("A-1", "A-2"), "foo", null, "order1", null, null, null);
 
         assertThat(client.events.retrieveObjectInfo(event.key, "A-1").orderId).isEqualTo("order1");
         assertThat(client.events.retrieveObjectInfo(event.key, "A-2").orderId).isEqualTo("order1");
@@ -124,7 +122,7 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
         client.events.updateExtraData(event.key, "A-1", ImmutableMap.of("foo", "bar"));
 
-        client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo", null, "order1", true, null, null, null);
+        client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo", null, "order1", true, null, null);
 
         assertThat(client.events.retrieveObjectInfo(event.key, "A-1").extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
     }
@@ -135,7 +133,7 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
         client.events.updateExtraData(event.key, "A-1", ImmutableMap.of("foo", "bar"));
 
-        client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo", null, "order1", false, null, null, null);
+        client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo", null, "order1", false, null, null);
 
         assertThat(client.events.retrieveObjectInfo(event.key, "A-1").extraData).isNull();
     }
@@ -146,7 +144,7 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
         client.events.updateExtraData(event.key, "A-1", ImmutableMap.of("foo", "bar"));
 
-        client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo", null, "order1", null, null, null, null);
+        client.events.changeObjectStatus(event.key, newArrayList("A-1"), "foo", null, "order1", null, null, null);
 
         assertThat(client.events.retrieveObjectInfo(event.key, "A-1").extraData).isNull();
     }
@@ -207,7 +205,7 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
         client.events.channels.replace(event.key, List.of(new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))));
 
-        client.events.changeObjectStatus(event.key, newArrayList("A-1"), "someStatus", null, null, true, null, newHashSet("channelKey1"), null);
+        client.events.changeObjectStatus(event.key, newArrayList("A-1"), "someStatus", null, null, true, null, newHashSet("channelKey1"));
 
         assertThat(client.events.retrieveObjectInfo(event.key, "A-1").status).isEqualTo("someStatus");
     }
@@ -218,22 +216,7 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
         client.events.channels.replace(event.key, List.of(new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))));
 
-        client.events.changeObjectStatus(event.key, newArrayList("A-1"), "someStatus", null, null, true, true, null, null);
-
-        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").status).isEqualTo("someStatus");
-    }
-
-    @Test
-    public void ignoreSocialDistancing() {
-        String chartKey = createTestChart();
-        SocialDistancingRuleset ruleset = SocialDistancingRuleset.fixed("ruleset").withDisabledSeats(newHashSet("A-1")).build();
-        Map<String, SocialDistancingRuleset> rulesets = ImmutableMap.of(
-                "ruleset", ruleset
-        );
-        client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
-        Event event = client.events.create(chartKey, new CreateEventParams().withSocialDistancingRulesetKey("ruleset"));
-
-        client.events.changeObjectStatus(event.key, newArrayList("A-1"), "someStatus", null, null, null, null, null, true);
+        client.events.changeObjectStatus(event.key, newArrayList("A-1"), "someStatus", null, null, null, true, null);
 
         assertThat(client.events.retrieveObjectInfo(event.key, "A-1").status).isEqualTo("someStatus");
     }
@@ -244,7 +227,7 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
 
         try {
-            client.events.changeObjectStatus(event.key, newArrayList("A-1"), "someStatus", null, null, null, null, null, true, Sets.newHashSet("onlyAllowedPreviousStatus"), null);
+            client.events.changeObjectStatus(event.key, newArrayList("A-1"), "someStatus", null, null, null, null, null, Sets.newHashSet("onlyAllowedPreviousStatus"), null);
             fail("expected exception");
         } catch (SeatsioException e) {
             assertThat(e.errors).hasSize(1);
@@ -258,7 +241,7 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
 
         try {
-            client.events.changeObjectStatus(event.key, newArrayList("A-1"), "someStatus", null, null, null, null, null, true, null, Sets.newHashSet("free"));
+            client.events.changeObjectStatus(event.key, newArrayList("A-1"), "someStatus", null, null, null, null, null, null, Sets.newHashSet("free"));
             fail("expected exception");
         } catch (SeatsioException e) {
             assertThat(e.errors).hasSize(1);

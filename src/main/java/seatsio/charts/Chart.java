@@ -19,5 +19,4 @@ public class Chart extends ValueObject {
     public List<Event> events;
     public boolean archived;
     public ChartValidationResult validation;
-    public Map<String, SocialDistancingRuleset> socialDistancingRulesets;
 }

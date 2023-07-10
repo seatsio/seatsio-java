@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.charts.Chart;
-import seatsio.charts.SocialDistancingRuleset;
 import seatsio.events.TableBookingConfig;
 
 import java.time.Instant;
@@ -88,16 +87,4 @@ public class CreateSeasonTest extends SeatsioClientTest {
         assertThat(season.key).isNotNull();
         assertThat(season.tableBookingConfig).isEqualTo(TableBookingConfig.inherit());
     }
-
-    @Test
-    public void socialDistancingRulesetKeyCanBePassedIn() {
-        String chartKey = createTestChartWithTables();
-        Map<String, SocialDistancingRuleset> rulesets = ImmutableMap.of("ruleset1", SocialDistancingRuleset.ruleBased("My ruleset").build());
-        client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
-
-        Season season = client.seasons.create(chartKey, new SeasonParams().socialDistancingRulesetKey("ruleset1"));
-
-        assertThat(season.socialDistancingRulesetKey).isEqualTo("ruleset1");
-    }
-
 }

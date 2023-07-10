@@ -3,11 +3,9 @@ package seatsio.events;
 import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
-import seatsio.charts.SocialDistancingRuleset;
 import seatsio.holdTokens.HoldToken;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
@@ -71,7 +69,7 @@ public class BookObjectsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        client.events.book(event.key, newArrayList("A-1", "A-2"), null, "order1", null, null, null, null);
+        client.events.book(event.key, newArrayList("A-1", "A-2"), null, "order1", null, null, null);
 
         assertThat(client.events.retrieveObjectInfo(event.key, "A-1").orderId).isEqualTo("order1");
         assertThat(client.events.retrieveObjectInfo(event.key, "A-2").orderId).isEqualTo("order1");
@@ -83,7 +81,7 @@ public class BookObjectsTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
         client.events.updateExtraData(event.key, "A-1", ImmutableMap.of("foo", "bar"));
 
-        client.events.book(event.key, newArrayList("A-1"), null, null, true, null, null, null);
+        client.events.book(event.key, newArrayList("A-1"), null, null, true, null, null);
 
         assertThat(client.events.retrieveObjectInfo(event.key, "A-1").extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
     }
@@ -94,7 +92,7 @@ public class BookObjectsTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
         client.events.channels.replace(event.key, List.of(new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))));
 
-        client.events.book(event.key, newArrayList("A-1"), null, null, true, null, newHashSet("channelKey1"), null);
+        client.events.book(event.key, newArrayList("A-1"), null, null, true, null, newHashSet("channelKey1"));
 
         assertThat(client.events.retrieveObjectInfo(event.key, "A-1").status).isEqualTo(BOOKED);
     }
@@ -105,24 +103,8 @@ public class BookObjectsTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
         client.events.channels.replace(event.key, List.of(new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))));
 
-        client.events.book(event.key, newArrayList("A-1"), null, null, true, true, null, null);
+        client.events.book(event.key, newArrayList("A-1"), null, null, null, true, null);
 
         assertThat(client.events.retrieveObjectInfo(event.key, "A-1").status).isEqualTo(BOOKED);
     }
-
-    @Test
-    public void ignoreSocialDistancing() {
-        String chartKey = createTestChart();
-        SocialDistancingRuleset ruleset = SocialDistancingRuleset.fixed("ruleset").withDisabledSeats(newHashSet("A-1")).build();
-        Map<String, SocialDistancingRuleset> rulesets = ImmutableMap.of(
-                "ruleset", ruleset
-        );
-        client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
-        Event event = client.events.create(chartKey, new CreateEventParams().withSocialDistancingRulesetKey("ruleset"));
-
-        client.events.book(event.key, newArrayList("A-1"), null, null, null, null, null, true);
-
-        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").status).isEqualTo(BOOKED);
-    }
-
 }

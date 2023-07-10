@@ -10,7 +10,6 @@ public class SeasonParams {
     private List<String> eventKeys;
     private Integer numberOfEvents;
     private TableBookingConfig tableBookingConfig;
-    private String socialDistancingRulesetKey;
 
     public SeasonParams() {
     }
@@ -49,14 +48,5 @@ public class SeasonParams {
 
     public TableBookingConfig tableBookingConfig() {
         return tableBookingConfig;
-    }
-
-    public String socialDistancingRulesetKey() {
-        return socialDistancingRulesetKey;
-    }
-
-    public SeasonParams socialDistancingRulesetKey(String socialDistancingRulesetKey) {
-        this.socialDistancingRulesetKey = socialDistancingRulesetKey;
-        return this;
     }
 }
