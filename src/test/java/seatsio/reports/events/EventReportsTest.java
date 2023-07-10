@@ -23,7 +23,7 @@ public class EventReportsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
         Map<String, String> extraData = ImmutableMap.of("foo", "bar");
-        client.events.book(event.key, asList(new ObjectProperties("A-1", "ticketType1", extraData)), null, "order1", null, null, null, null);
+        client.events.book(event.key, asList(new ObjectProperties("A-1", "ticketType1", extraData)), null, "order1", null, null, null);
         client.events.channels.replace(event.key, List.of(new Channel("channel1", "channel 1", "#FFFF99", 1, newHashSet("A-1"))));
 
         Map<String, List<EventObjectInfo>> report = client.eventReports.byLabel(event.key);
@@ -52,7 +52,6 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.rightNeighbour).isEqualTo("A-2");
         assertThat(reportItem.isAvailable).isFalse();
         assertThat(reportItem.availabilityReason).isEqualTo("booked");
-        assertThat(reportItem.isDisabledBySocialDistancing).isFalse();
         assertThat(reportItem.channel).isEqualTo("channel1");
         assertThat(reportItem.distanceToFocalPoint).isNotNull();
     }
@@ -240,8 +239,8 @@ public class EventReportsTest extends SeatsioClientTest {
     public void byOrderId() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.book(event.key, asList("A-1", "A-2"), null, "order1", null, null, null, null);
-        client.events.book(event.key, asList("A-3"), null, "order2", null, null, null, null);
+        client.events.book(event.key, asList("A-1", "A-2"), null, "order1", null, null, null);
+        client.events.book(event.key, asList("A-3"), null, "order2", null, null, null);
 
         Map<String, List<EventObjectInfo>> report = client.eventReports.byOrderId(event.key);
 
@@ -254,8 +253,8 @@ public class EventReportsTest extends SeatsioClientTest {
     public void bySpecificOrderId() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.book(event.key, asList("A-1", "A-2"), null, "order1", null, null, null, null);
-        client.events.book(event.key, asList("A-3"), null, "order2", null, null, null, null);
+        client.events.book(event.key, asList("A-1", "A-2"), null, "order1", null, null, null);
+        client.events.book(event.key, asList("A-3"), null, "order2", null, null, null);
 
         List<EventObjectInfo> report = client.eventReports.byOrderId(event.key, "order1");
 

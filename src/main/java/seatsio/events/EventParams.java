@@ -16,7 +16,6 @@ public abstract class EventParams<T extends EventParams> {
     public String name;
     public LocalDate date;
     public TableBookingConfig tableBookingConfig;
-    public String socialDistancingRulesetKey;
     public Map<String, CategoryKey> objectCategories;
     public List<Category> categories;
 
@@ -34,11 +33,6 @@ public abstract class EventParams<T extends EventParams> {
 
     public T withTableBookingConfig(TableBookingConfig tableBookingConfig) {
         this.tableBookingConfig = tableBookingConfig;
-        return (T) this;
-    }
-
-    public T withSocialDistancingRulesetKey(String socialDistancingRulesetKey) {
-        this.socialDistancingRulesetKey = socialDistancingRulesetKey;
         return (T) this;
     }
 

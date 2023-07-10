@@ -73,7 +73,7 @@ public class ReleaseObjectsTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
         client.events.channels.replace(event.key, List.of(new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))));
 
-        client.events.book(event.key, newArrayList("A-1"), null, null, true, null, newHashSet("channelKey1"), null);
+        client.events.book(event.key, newArrayList("A-1"), null, null, true, null, newHashSet("channelKey1"));
 
         client.events.release(event.key, newArrayList("A-1"), null, null, true, null, newHashSet("channelKey1"));
 
@@ -85,9 +85,9 @@ public class ReleaseObjectsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
         client.events.channels.replace(event.key, List.of(new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))));
-        client.events.book(event.key, newArrayList("A-1"), null, null, true, true, null, null);
+        client.events.book(event.key, newArrayList("A-1"), null, null, true, true, null);
 
-        client.events.release(event.key, newArrayList("A-1"), null, null, true, true, null);
+        client.events.release(event.key, newArrayList("A-1"), null, null, null, true, null);
 
         assertThat(client.events.retrieveObjectInfo(event.key, "A-1").status).isEqualTo(FREE);
     }

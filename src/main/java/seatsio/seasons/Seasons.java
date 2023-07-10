@@ -33,8 +33,7 @@ public class Seasons {
                 .withPropertyIfNotNull("key", seasonParams.key())
                 .withPropertyIfNotNull("eventKeys", seasonParams.eventKeys())
                 .withPropertyIfNotNull("numberOfEvents", seasonParams.numberOfEvents())
-                .withPropertyIfNotNull("tableBookingConfig", seasonParams.tableBookingConfig())
-                .withPropertyIfNotNull("socialDistancingRulesetKey", seasonParams.socialDistancingRulesetKey());
+                .withPropertyIfNotNull("tableBookingConfig", seasonParams.tableBookingConfig());
         String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/seasons")
                 .body(request.build().toString()));
         return gson().fromJson(response, Season.class);

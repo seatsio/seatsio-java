@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.SeatsioException;
 import seatsio.charts.CategoryKey;
-import seatsio.charts.SocialDistancingRuleset;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -80,20 +79,6 @@ public class CreateEventsTest extends SeatsioClientTest {
                 TableBookingConfig.custom(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT)),
                 TableBookingConfig.custom(ImmutableMap.of("T2", BY_TABLE, "T1", BY_SEAT))
         );
-    }
-
-    @Test
-    public void socialDistancingRulesetKeyCanBePassedIn() {
-        String chartKey = createTestChartWithTables();
-        Map<String, SocialDistancingRuleset> rulesets = ImmutableMap.of("ruleset1", SocialDistancingRuleset.ruleBased("My ruleset").build());
-        client.charts.saveSocialDistancingRulesets(chartKey, rulesets);
-
-        List<Event> events = client.events.create(chartKey, newArrayList(
-                new CreateEventParams().withSocialDistancingRulesetKey("ruleset1"),
-                new CreateEventParams().withSocialDistancingRulesetKey("ruleset1")
-        ));
-
-        assertThat(events).extracting("socialDistancingRulesetKey").containsExactly("ruleset1", "ruleset1");
     }
 
     @Test

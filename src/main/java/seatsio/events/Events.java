@@ -48,7 +48,6 @@ public class Events {
                 .withPropertyIfNotNull("name", params.name)
                 .withPropertyIfNotNull("date", params.date == null ? null : gson().toJsonTree(params.date))
                 .withPropertyIfNotNull("tableBookingConfig", params.tableBookingConfig)
-                .withPropertyIfNotNull("socialDistancingRulesetKey", params.socialDistancingRulesetKey)
                 .withPropertyIfNotNull("objectCategories", params.objectCategories, CategoryKey::toJson)
                 .withPropertyIfNotNull("categories", params.getCategoriesAsJson())
                 .buildAsString();
@@ -64,7 +63,6 @@ public class Events {
                 .withPropertyIfNotNull("name", p.name)
                 .withPropertyIfNotNull("date", p.date == null ? null : gson().toJsonTree(p.date))
                 .withPropertyIfNotNull("tableBookingConfig", p.tableBookingConfig)
-                .withPropertyIfNotNull("socialDistancingRulesetKey", p.socialDistancingRulesetKey)
                 .withPropertyIfNotNull("objectCategories", p.objectCategories, CategoryKey::toJson)
                 .withPropertyIfNotNull("categories", p.getCategoriesAsJson())
                 .build()));
@@ -75,10 +73,6 @@ public class Events {
         String response = unirest.stringResponse(post(baseUrl + "/events/actions/create-multiple").body(request.build().toString()));
 
         return gson().fromJson(response, EventCreationResult.class).events;
-    }
-
-    public void removeSocialDistancingRulesetKey(String eventKey) {
-        update(eventKey, new UpdateEventParams().withSocialDistancingRulesetKey(""));
     }
 
     public void removeObjectCategories(String eventKey) {
@@ -96,7 +90,6 @@ public class Events {
                 .withPropertyIfNotNull("name", params.name)
                 .withPropertyIfNotNull("date", params.date == null ? null : gson().toJsonTree(params.date))
                 .withPropertyIfNotNull("tableBookingConfig", params.tableBookingConfig)
-                .withPropertyIfNotNull("socialDistancingRulesetKey", params.socialDistancingRulesetKey)
                 .withPropertyIfNotNull("objectCategories", params.objectCategories, CategoryKey::toJson)
                 .withPropertyIfNotNull("categories", categoriesAsJson(params.categories));
         unirest.stringResponse(post(baseUrl + "/events/{key}")
@@ -217,15 +210,15 @@ public class Events {
     }
 
     public ChangeObjectStatusResult book(String eventKey, List<?> objects) {
-        return book(eventKey, objects, null, null, null, null, null, null);
+        return book(eventKey, objects, null, null, null, null, null);
     }
 
     public ChangeObjectStatusResult book(String eventKey, List<?> objects, String holdToken) {
-        return book(eventKey, objects, holdToken, null, null, null, null, null);
+        return book(eventKey, objects, holdToken, null, null, null, null);
     }
 
-    public ChangeObjectStatusResult book(String eventKey, List<?> objects, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Boolean ignoreSocialDistancing) {
-        return changeObjectStatus(eventKey, objects, BOOKED, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, ignoreSocialDistancing);
+    public ChangeObjectStatusResult book(String eventKey, List<?> objects, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
+        return changeObjectStatus(eventKey, objects, BOOKED, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
     }
 
     public BestAvailableResult book(String eventKey, BestAvailable bestAvailable) {
@@ -240,16 +233,16 @@ public class Events {
         return changeObjectStatus(eventKey, bestAvailable, BOOKED, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
     }
 
-    public ChangeObjectStatusResult book(List<String> eventKeys, List<?> objects, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Boolean ignoreSocialDistancing) {
-        return changeObjectStatus(eventKeys, objects, BOOKED, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, ignoreSocialDistancing);
+    public ChangeObjectStatusResult book(List<String> eventKeys, List<?> objects, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
+        return changeObjectStatus(eventKeys, objects, BOOKED, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
     }
 
     public ChangeObjectStatusResult hold(String eventKey, List<?> objects, String holdToken) {
-        return hold(eventKey, objects, holdToken, null, null, null, null, null);
+        return hold(eventKey, objects, holdToken, null, null, null, null);
     }
 
-    public ChangeObjectStatusResult hold(String eventKey, List<?> objects, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Boolean ignoreSocialDistancing) {
-        return changeObjectStatus(eventKey, objects, HELD, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, ignoreSocialDistancing);
+    public ChangeObjectStatusResult hold(String eventKey, List<?> objects, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
+        return changeObjectStatus(eventKey, objects, HELD, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
     }
 
     public BestAvailableResult hold(String eventKey, BestAvailable bestAvailable, String holdToken) {
@@ -260,8 +253,8 @@ public class Events {
         return changeObjectStatus(eventKey, bestAvailable, HELD, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
     }
 
-    public ChangeObjectStatusResult hold(List<String> eventKeys, List<?> objects, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Boolean ignoreSocialDistancing) {
-        return changeObjectStatus(eventKeys, objects, HELD, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, null);
+    public ChangeObjectStatusResult hold(List<String> eventKeys, List<?> objects, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
+        return changeObjectStatus(eventKeys, objects, HELD, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
     }
 
     public ChangeObjectStatusResult release(String eventKey, List<?> objects) {
@@ -273,11 +266,11 @@ public class Events {
     }
 
     public ChangeObjectStatusResult release(String eventKey, List<?> objects, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
-        return changeObjectStatus(eventKey, objects, FREE, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, null);
+        return changeObjectStatus(eventKey, objects, FREE, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
     }
 
     public ChangeObjectStatusResult release(List<String> eventKeys, List<?> objects, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
-        return changeObjectStatus(eventKeys, objects, FREE, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, null);
+        return changeObjectStatus(eventKeys, objects, FREE, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
     }
 
     public BestAvailableResult changeObjectStatus(String eventKey, BestAvailable bestAvailable, String status) {
@@ -296,39 +289,39 @@ public class Events {
     }
 
     public ChangeObjectStatusResult changeObjectStatus(String eventKey, List<?> objects, String status) {
-        return changeObjectStatus(eventKey, objects, status, null, null, null, null, null, null);
+        return changeObjectStatus(eventKey, objects, status, null, null, null, null, null);
     }
 
     public ChangeObjectStatusResult changeObjectStatus(String eventKey, List<?> objects, String status, String holdToken) {
-        return changeObjectStatus(eventKey, objects, status, holdToken, null, null, null, null, null);
+        return changeObjectStatus(eventKey, objects, status, holdToken, null, null, null, null);
     }
 
-    public ChangeObjectStatusResult changeObjectStatus(String eventKey, List<?> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Boolean ignoreSocialDistancing) {
-        return changeObjectStatus(singletonList(eventKey), objects, status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, ignoreSocialDistancing);
+    public ChangeObjectStatusResult changeObjectStatus(String eventKey, List<?> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
+        return changeObjectStatus(singletonList(eventKey), objects, status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
     }
 
-    public ChangeObjectStatusResult changeObjectStatus(String eventKey, List<?> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Boolean ignoreSocialDistancing, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses) {
-        return changeObjectStatus(singletonList(eventKey), objects, status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, ignoreSocialDistancing, allowedPreviousStatuses, rejectedPreviousStatuses);
+    public ChangeObjectStatusResult changeObjectStatus(String eventKey, List<?> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses) {
+        return changeObjectStatus(singletonList(eventKey), objects, status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, allowedPreviousStatuses, rejectedPreviousStatuses);
     }
 
-    public ChangeObjectStatusResult changeObjectStatus(List<String> eventKeys, List<?> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Boolean ignoreSocialDistancing) {
+    public ChangeObjectStatusResult changeObjectStatus(List<String> eventKeys, List<?> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
         String response = unirest.stringResponse(post(baseUrl + "/events/groups/actions/change-object-status")
                 .queryString("expand", "objects")
-                .body(changeObjectStatusRequest(eventKeys, toObjects(objects), status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, ignoreSocialDistancing, null, null).toString()));
+                .body(changeObjectStatusRequest(eventKeys, toObjects(objects), status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, null, null).toString()));
         return gson().fromJson(response, ChangeObjectStatusResult.class);
     }
 
-    public ChangeObjectStatusResult changeObjectStatus(List<String> eventKeys, List<?> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Boolean ignoreSocialDistancing, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses) {
+    public ChangeObjectStatusResult changeObjectStatus(List<String> eventKeys, List<?> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses) {
         String response = unirest.stringResponse(post(baseUrl + "/events/groups/actions/change-object-status")
                 .queryString("expand", "objects")
-                .body(changeObjectStatusRequest(eventKeys, toObjects(objects), status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, ignoreSocialDistancing, allowedPreviousStatuses, rejectedPreviousStatuses).toString()));
+                .body(changeObjectStatusRequest(eventKeys, toObjects(objects), status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, allowedPreviousStatuses, rejectedPreviousStatuses).toString()));
         return gson().fromJson(response, ChangeObjectStatusResult.class);
     }
 
     public List<ChangeObjectStatusResult> changeObjectStatus(List<StatusChangeRequest> statusChangeRequests) {
         List<JsonElement> statusChangeRequestsAsJson = statusChangeRequests
                 .stream()
-                .map(s -> changeObjectStatusRequest(s.eventKey, toObjects(s.objects), s.status, s.holdToken, s.orderId, s.keepExtraData, s.ignoreChannels, s.channelKeys, null, s.allowedPreviousStatuses, s.rejectedPreviousStatuses))
+                .map(s -> changeObjectStatusRequest(s.eventKey, toObjects(s.objects), s.status, s.holdToken, s.orderId, s.keepExtraData, s.ignoreChannels, s.channelKeys, s.allowedPreviousStatuses, s.rejectedPreviousStatuses))
                 .collect(toList());
         JsonObject request = aJsonObject()
                 .withProperty("statusChanges", aJsonArray().withItems(statusChangeRequestsAsJson).build())
@@ -351,27 +344,27 @@ public class Events {
                 .collect(toList());
     }
 
-    private JsonObject changeObjectStatusRequest(String eventKey, List<ObjectProperties> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Boolean ignoreSocialDistancing, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses) {
-        JsonObjectBuilder request = changeObjectStatusRequestBuilder(status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, ignoreSocialDistancing, allowedPreviousStatuses, rejectedPreviousStatuses);
+    private JsonObject changeObjectStatusRequest(String eventKey, List<ObjectProperties> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses) {
+        JsonObjectBuilder request = changeObjectStatusRequestBuilder(status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, allowedPreviousStatuses, rejectedPreviousStatuses);
         request.withProperty("event", eventKey);
         request.withProperty("objects", objects, object -> gson().toJsonTree(object));
         return request.build();
     }
 
-    private JsonObject changeObjectStatusRequest(List<String> eventKeys, List<ObjectProperties> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Boolean ignoreSocialDistancing, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses) {
-        JsonObjectBuilder request = changeObjectStatusRequestBuilder(status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, ignoreSocialDistancing, allowedPreviousStatuses, rejectedPreviousStatuses);
+    private JsonObject changeObjectStatusRequest(List<String> eventKeys, List<ObjectProperties> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses) {
+        JsonObjectBuilder request = changeObjectStatusRequestBuilder(status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, allowedPreviousStatuses, rejectedPreviousStatuses);
         request.withProperty("events", eventKeys);
         request.withProperty("objects", objects, object -> gson().toJsonTree(object));
         return request.build();
     }
 
     private JsonObject changeObjectStatusRequest(BestAvailable bestAvailable, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
-        JsonObjectBuilder request = changeObjectStatusRequestBuilder(status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, null, null, null);
+        JsonObjectBuilder request = changeObjectStatusRequestBuilder(status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, null, null);
         request.withProperty("bestAvailable", gson().toJsonTree(bestAvailable));
         return request.build();
     }
 
-    private JsonObjectBuilder changeObjectStatusRequestBuilder(String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Boolean ignoreSocialDistancing, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses) {
+    private JsonObjectBuilder changeObjectStatusRequestBuilder(String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses) {
         return aJsonObject()
                 .withProperty("status", status)
                 .withPropertyIfNotNull("holdToken", holdToken)
@@ -379,7 +372,6 @@ public class Events {
                 .withPropertyIfNotNull("keepExtraData", keepExtraData)
                 .withPropertyIfNotNull("ignoreChannels", ignoreChannels)
                 .withPropertyIfNotNull("channelKeys", channelKeys)
-                .withPropertyIfNotNull("ignoreSocialDistancing", ignoreSocialDistancing)
                 .withPropertyIfNotNull("allowedPreviousStatuses", allowedPreviousStatuses)
                 .withPropertyIfNotNull("rejectedPreviousStatuses", rejectedPreviousStatuses);
     }

@@ -48,7 +48,6 @@ public class EventObjectInfo extends ValueObject {
     public String rightNeighbour;
     public boolean isAvailable;
     public String availabilityReason;
-    public Boolean isDisabledBySocialDistancing;
     public String channel;
     public Double distanceToFocalPoint;
     public Map<String, Map<String, Integer>> holds;
