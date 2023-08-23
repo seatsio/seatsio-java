@@ -305,10 +305,7 @@ public class Events {
     }
 
     public ChangeObjectStatusResult changeObjectStatus(List<String> eventKeys, List<?> objects, String status) {
-        String response = unirest.stringResponse(post(baseUrl + "/events/groups/actions/change-object-status")
-                .queryString("expand", "objects")
-                .body(changeObjectStatusRequest(eventKeys, toObjects(objects), status, null, null, null, null, null, null, null).toString()));
-        return gson().fromJson(response, ChangeObjectStatusResult.class);
+        return changeObjectStatus(eventKeys, objects, status, null, null, null, null, null);
     }
 
     public ChangeObjectStatusResult changeObjectStatus(List<String> eventKeys, List<?> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
