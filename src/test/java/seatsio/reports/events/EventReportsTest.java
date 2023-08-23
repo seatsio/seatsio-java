@@ -54,6 +54,11 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.availabilityReason).isEqualTo("booked");
         assertThat(reportItem.channel).isEqualTo("channel1");
         assertThat(reportItem.distanceToFocalPoint).isNotNull();
+
+        EventObjectInfo gaItem = report.get("GA1").get(0);
+        assertThat(gaItem.variableOccupancy).isFalse();
+        assertThat(gaItem.minOccupancy).isEqualTo(1);
+        assertThat(gaItem.maxOccupancy).isNull();
     }
 
     @Test

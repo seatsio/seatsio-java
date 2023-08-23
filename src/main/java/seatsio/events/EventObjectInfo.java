@@ -51,5 +51,7 @@ public class EventObjectInfo extends ValueObject {
     public String channel;
     public Double distanceToFocalPoint;
     public Map<String, Map<String, Integer>> holds;
-
+    public Boolean variableOccupancy;
+    public Integer minOccupancy;
+    public Integer maxOccupancy;
 }
