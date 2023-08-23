@@ -183,7 +183,7 @@ public class Events {
     public Lister<StatusChange> statusChanges(String eventKey, String filter, String sortField, SortDirection sortDirection) {
         PageFetcher<StatusChange> pageFetcher = new PageFetcher<>(
                 baseUrl,
-                "/events/{key}/status-changes", ImmutableMap.of("key", eventKey), new HashMap<String, String>() {{
+                "/events/{key}/status-changes", ImmutableMap.of("key", eventKey), new HashMap<>() {{
             put("filter", filter);
             put("sort", toSort(sortField, sortDirection));
         }}, unirest, StatusChange.class);
@@ -304,6 +304,10 @@ public class Events {
         return changeObjectStatus(singletonList(eventKey), objects, status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, allowedPreviousStatuses, rejectedPreviousStatuses);
     }
 
+    public ChangeObjectStatusResult changeObjectStatus(List<String> eventKeys, List<?> objects, String status) {
+        return changeObjectStatus(eventKeys, objects, status, null, null, null, null, null);
+    }
+
     public ChangeObjectStatusResult changeObjectStatus(List<String> eventKeys, List<?> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
         String response = unirest.stringResponse(post(baseUrl + "/events/groups/actions/change-object-status")
                 .queryString("expand", "objects")
@@ -384,7 +388,7 @@ public class Events {
         String response = unirest.stringResponse(UnirestWrapper.get(baseUrl + "/events/{key}/objects")
                 .queryString("label", labels)
                 .routeParam("key", key));
-        TypeToken<Map<String, EventObjectInfo>> typeToken = new TypeToken<Map<String, EventObjectInfo>>() {
+        TypeToken<Map<String, EventObjectInfo>> typeToken = new TypeToken<>() {
         };
         return gson().fromJson(response, typeToken.getType());
     }

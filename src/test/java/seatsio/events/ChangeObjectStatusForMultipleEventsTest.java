@@ -28,6 +28,20 @@ public class ChangeObjectStatusForMultipleEventsTest extends SeatsioClientTest {
     }
 
     @Test
+    public void testConvenienceVersion() {
+        String chartKey = createTestChart();
+        Event event1 = client.events.create(chartKey);
+        Event event2 = client.events.create(chartKey);
+
+        client.events.changeObjectStatus(asList(event1.key, event2.key), newArrayList("A-1", "A-2"), "foo");
+
+        assertThat(client.events.retrieveObjectInfo(event1.key, "A-1").status).isEqualTo("foo");
+        assertThat(client.events.retrieveObjectInfo(event1.key, "A-2").status).isEqualTo("foo");
+        assertThat(client.events.retrieveObjectInfo(event2.key, "A-1").status).isEqualTo("foo");
+        assertThat(client.events.retrieveObjectInfo(event2.key, "A-2").status).isEqualTo("foo");
+    }
+
+    @Test
     public void book() {
         String chartKey = createTestChart();
         Event event1 = client.events.create(chartKey);
