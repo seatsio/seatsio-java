@@ -36,8 +36,9 @@ public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
     @Test
     public void channelKeys() {
         String chartKey = createTestChart();
-        Event event = client.events.create(chartKey);
-        client.events.channels.replace(event.key, List.of(new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-1"))));
+        Event event = client.events.create(chartKey, new CreateEventParams().withChannels(List.of(
+                new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-1"))
+        )));
 
         List<ChangeObjectStatusResult> result = client.events.changeObjectStatus(newArrayList(
                 new StatusChangeRequest(event.key, newArrayList("A-1"), "lolzor", null, null, null, null, newHashSet("channelKey1"))
@@ -49,8 +50,9 @@ public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
     @Test
     public void ignoreChannels() {
         String chartKey = createTestChart();
-        Event event = client.events.create(chartKey);
-        client.events.channels.replace(event.key, List.of(new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-1"))));
+        Event event = client.events.create(chartKey, new CreateEventParams().withChannels(List.of(
+                new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-1"))
+        )));
 
         List<ChangeObjectStatusResult> result = client.events.changeObjectStatus(newArrayList(
                 new StatusChangeRequest(event.key, newArrayList("A-1"), "lolzor", null, null, null, true, null)

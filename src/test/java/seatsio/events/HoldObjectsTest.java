@@ -69,9 +69,10 @@ public class HoldObjectsTest extends SeatsioClientTest {
     @Test
     public void channelKeys() {
         String chartKey = createTestChart();
-        Event event = client.events.create(chartKey);
+        Event event = client.events.create(chartKey, new CreateEventParams().withChannels(List.of(
+                new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))
+        )));
         HoldToken holdToken = client.holdTokens.create();
-        client.events.channels.replace(event.key, List.of(new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))));
 
         client.events.hold(event.key, newArrayList("A-1"), holdToken.holdToken, null, true, null, newHashSet("channelKey1"));
 
@@ -81,9 +82,10 @@ public class HoldObjectsTest extends SeatsioClientTest {
     @Test
     public void ignoreChannels() {
         String chartKey = createTestChart();
-        Event event = client.events.create(chartKey);
+        Event event = client.events.create(chartKey, new CreateEventParams().withChannels(List.of(
+                new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))
+        )));
         HoldToken holdToken = client.holdTokens.create();
-        client.events.channels.replace(event.key, List.of(new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))));
 
         client.events.hold(event.key, newArrayList("A-1"), holdToken.holdToken, null, null, true, null);
 

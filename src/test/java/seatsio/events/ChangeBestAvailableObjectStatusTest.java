@@ -153,8 +153,9 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
     @Test
     public void channelKeys() {
         String chartKey = createTestChart();
-        Event event = client.events.create(chartKey);
-        client.events.channels.replace(event.key, List.of(new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("B-6"))));
+        Event event = client.events.create(chartKey, new CreateEventParams().withChannels(List.of(
+                new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("B-6"))
+        )));
 
         BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(1), "foo", null, null, null, null, newHashSet("channelKey1"));
 
@@ -164,8 +165,9 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
     @Test
     public void ignoreChannels() {
         String chartKey = createTestChart();
-        Event event = client.events.create(chartKey);
-        client.events.channels.replace(event.key, List.of(new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-5"))));
+        Event event = client.events.create(chartKey, new CreateEventParams().withChannels(List.of(
+                new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-5"))
+        )));
 
         BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailable(1), "foo", null, null, null, true, null);
 
