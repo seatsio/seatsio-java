@@ -27,7 +27,7 @@ public class Event extends ValueObject {
     public Instant createdOn;
     public Instant updatedOn;
     public TableBookingConfig tableBookingConfig;
-    public Channel[] channels;
+    public List<Channel> channels;
     public String topLevelSeasonKey;
     public boolean isTopLevelSeason;
     public boolean isPartialSeason;

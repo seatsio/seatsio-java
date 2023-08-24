@@ -1,10 +1,11 @@
 package seatsio.events;
 
+import com.google.gson.JsonObject;
 import seatsio.util.ValueObject;
 
 import java.util.Set;
 
-import static com.google.common.collect.Sets.newHashSet;
+import static seatsio.json.JsonObjectBuilder.aJsonObject;
 
 public class Channel extends ValueObject {
 
@@ -20,5 +21,15 @@ public class Channel extends ValueObject {
         this.color = color;
         this.index = index;
         this.objects = objects;
+    }
+
+    public JsonObject toJson() {
+        return aJsonObject()
+                .withProperty("key", key)
+                .withProperty("name", name)
+                .withProperty("color", color)
+                .withPropertyIfNotNull("index", index)
+                .withPropertyIfNotNull("objects", objects)
+                .build();
     }
 }

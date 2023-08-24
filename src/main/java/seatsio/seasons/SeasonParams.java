@@ -1,8 +1,12 @@
 package seatsio.seasons;
 
+import com.google.gson.JsonObject;
+import seatsio.events.Channel;
 import seatsio.events.TableBookingConfig;
 
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 public class SeasonParams {
 
@@ -10,6 +14,7 @@ public class SeasonParams {
     private List<String> eventKeys;
     private Integer numberOfEvents;
     private TableBookingConfig tableBookingConfig;
+    private List<Channel> channels;
 
     public SeasonParams() {
     }
@@ -48,5 +53,17 @@ public class SeasonParams {
 
     public TableBookingConfig tableBookingConfig() {
         return tableBookingConfig;
+    }
+
+    public SeasonParams channels(List<Channel> channels) {
+        this.channels = channels;
+        return this;
+    }
+
+    public List<JsonObject> getChannelsAsJson() {
+        if (channels == null) {
+            return null;
+        }
+        return channels.stream().map(Channel::toJson).collect(toList());
     }
 }

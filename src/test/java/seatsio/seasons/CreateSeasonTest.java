@@ -4,10 +4,13 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.charts.Chart;
+import seatsio.events.Channel;
 import seatsio.events.TableBookingConfig;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.time.temporal.ChronoUnit.MINUTES;
@@ -86,5 +89,19 @@ public class CreateSeasonTest extends SeatsioClientTest {
 
         assertThat(season.key).isNotNull();
         assertThat(season.tableBookingConfig).isEqualTo(TableBookingConfig.inherit());
+    }
+
+    @Test
+    public void channelsCanBePassedIn() {
+        String chartKey = createTestChart();
+        List<Channel> channels = List.of(
+                new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1")),
+                new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-2"))
+        );
+
+        Season season = client.seasons.create(chartKey, new SeasonParams().channels(channels));
+
+        assertThat(season.key).isNotNull();
+        assertThat(season.channels).isEqualTo(channels);
     }
 }
