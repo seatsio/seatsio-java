@@ -147,4 +147,15 @@ public class UpdateEventTest extends SeatsioClientTest {
         assertThat(retrievedEvent.date).isEqualTo(LocalDate.of(2022, 1, 6));
     }
 
+    @Test
+    public void updateIsInThePast() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey, new CreateEventParams().withDate(LocalDate.of(2022, 1, 5)));
+        assertThat(event.isInThePast).isFalse();
+
+        client.events.update(event.key, new UpdateEventParams().withIsInThePast(true));
+
+        Event retrievedEvent = client.events.retrieve(event.key);
+        assertThat(retrievedEvent.isInThePast).isTrue();
+    }
 }

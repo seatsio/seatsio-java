@@ -93,7 +93,8 @@ public class Events {
                 .withPropertyIfNotNull("date", params.date == null ? null : gson().toJsonTree(params.date))
                 .withPropertyIfNotNull("tableBookingConfig", params.tableBookingConfig)
                 .withPropertyIfNotNull("objectCategories", params.objectCategories, CategoryKey::toJson)
-                .withPropertyIfNotNull("categories", categoriesAsJson(params.categories));
+                .withPropertyIfNotNull("categories", categoriesAsJson(params.categories))
+                .withPropertyIfNotNull("isInThePast", params.isInThePast);
         unirest.stringResponse(post(baseUrl + "/events/{key}")
                 .routeParam("key", key)
                 .body(request.build().toString()));

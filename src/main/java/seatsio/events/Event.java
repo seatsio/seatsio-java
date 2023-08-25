@@ -34,6 +34,7 @@ public class Event extends ValueObject {
     public boolean isEventInSeason;
     public Map<String, CategoryKey> objectCategories;
     public List<Category> categories;
+    public boolean isInThePast;
 
     public boolean isSeason() {
         return false;
