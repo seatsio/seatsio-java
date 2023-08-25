@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.events.Channel;
+import seatsio.events.CreateEventParams;
 import seatsio.events.Event;
 
 import java.util.HashMap;
@@ -281,8 +282,9 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
     @Test
     public void summaryByChannel() {
         String chartKey = createTestChart();
-        Event event = client.events.create(chartKey);
-        client.events.channels.replace(event.key, List.of(new Channel("channel1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))));
+        Event event = client.events.create(chartKey, new CreateEventParams().withChannels(List.of(
+                new Channel("channel1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))
+        )));
 
         Map<String, EventReportSummaryItem> report = client.eventReports.summaryByChannel(event.key);
 

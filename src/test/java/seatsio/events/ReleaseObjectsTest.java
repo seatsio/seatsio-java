@@ -70,8 +70,9 @@ public class ReleaseObjectsTest extends SeatsioClientTest {
     @Test
     public void channelKeys() {
         String chartKey = createTestChart();
-        Event event = client.events.create(chartKey);
-        client.events.channels.replace(event.key, List.of(new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))));
+        Event event = client.events.create(chartKey, new CreateEventParams().withChannels(List.of(
+                new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))
+        )));
 
         client.events.book(event.key, newArrayList("A-1"), null, null, true, null, newHashSet("channelKey1"));
 
@@ -83,8 +84,9 @@ public class ReleaseObjectsTest extends SeatsioClientTest {
     @Test
     public void ignoreChannels() {
         String chartKey = createTestChart();
-        Event event = client.events.create(chartKey);
-        client.events.channels.replace(event.key, List.of(new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))));
+        Event event = client.events.create(chartKey, new CreateEventParams().withChannels(List.of(
+                new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))
+        )));
         client.events.book(event.key, newArrayList("A-1"), null, null, true, true, null);
 
         client.events.release(event.key, newArrayList("A-1"), null, null, null, true, null);

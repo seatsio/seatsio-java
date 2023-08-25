@@ -10,6 +10,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.time.temporal.ChronoUnit.MINUTES;
@@ -97,6 +98,22 @@ public class CreateEventTest extends SeatsioClientTest {
         assertThat(event.categories)
                 .hasSize(numberOfCategoriesOnChart + categories.size())
                 .contains(eventCategory);
+    }
+
+    @Test
+    public void channelsCanBePassedIn() {
+        String chartKey = createTestChart();
+        List<Channel> channels = List.of(
+                new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1")),
+                new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-2"))
+        );
+
+        Event event = client.events.create(chartKey, new CreateEventParams().withChannels(channels));
+
+        assertThat(event.channels).containsExactly(
+                new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1")),
+                new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-2"))
+        );
     }
 
     @Test

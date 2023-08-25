@@ -1,12 +1,10 @@
 package seatsio.events;
 
 import com.google.gson.JsonArray;
-import seatsio.json.JsonObjectBuilder;
 import seatsio.util.UnirestWrapper;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
@@ -76,20 +74,13 @@ public class Channels {
     public void replace(String eventKey, List<Channel> channels) {
         unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events/{key}/channels/replace")
                 .routeParam("key", eventKey)
-                .body(replaceChannelsRequest(channels))
+                .body(channelsToJson(channels))
         );
     }
 
-    private String replaceChannelsRequest(List<Channel> channels) {
+    private static String channelsToJson(List<Channel> channels) {
         JsonArray channelsJson = new JsonArray();
-        channels.forEach(channel -> channelsJson.add(aJsonObject()
-                .withProperty("key", channel.key)
-                .withProperty("name", channel.name)
-                .withProperty("color", channel.color)
-                .withPropertyIfNotNull("index", channel.index)
-                .withPropertyIfNotNull("objects", channel.objects)
-                .build()));
-        return aJsonObject()
-                .withProperty("channels", channelsJson).buildAsString();
+        channels.forEach(channel -> channelsJson.add(channel.toJson()));
+        return aJsonObject().withProperty("channels", channelsJson).buildAsString();
     }
 }

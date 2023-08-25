@@ -50,6 +50,7 @@ public class Events {
                 .withPropertyIfNotNull("tableBookingConfig", params.tableBookingConfig)
                 .withPropertyIfNotNull("objectCategories", params.objectCategories, CategoryKey::toJson)
                 .withPropertyIfNotNull("categories", params.getCategoriesAsJson())
+                .withPropertyIfNotNull("channels", params.getChannelsAsJson())
                 .buildAsString();
 
         String response = unirest.stringResponse(post(baseUrl + "/events").body(request));
@@ -65,6 +66,7 @@ public class Events {
                 .withPropertyIfNotNull("tableBookingConfig", p.tableBookingConfig)
                 .withPropertyIfNotNull("objectCategories", p.objectCategories, CategoryKey::toJson)
                 .withPropertyIfNotNull("categories", p.getCategoriesAsJson())
+                .withPropertyIfNotNull("channels", p.getChannelsAsJson())
                 .build()));
         JsonObjectBuilder request = aJsonObject()
                 .withProperty("chartKey", chartKey)
