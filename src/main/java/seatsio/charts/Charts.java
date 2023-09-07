@@ -151,13 +151,6 @@ public class Charts {
         return gson().fromJson(response, Chart.class);
     }
 
-    public Chart copyToSubacccount(String chartKey, long subaccountId) {
-        String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/charts/{chartKey}/version/published/actions/copy-to/{subaccountId}")
-                .routeParam("chartKey", chartKey)
-                .routeParam("subaccountId", Long.toString(subaccountId)));
-        return gson().fromJson(response, Chart.class);
-    }
-
     public Chart copyToWorkspace(String chartKey, String toWorkspaceKey) {
         String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/charts/{chartKey}/version/published/actions/copy-to-workspace/{workspaceKey}")
                 .routeParam("chartKey", chartKey)

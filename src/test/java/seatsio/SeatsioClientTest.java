@@ -7,7 +7,6 @@ import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import seatsio.subaccounts.Subaccount;
 import seatsio.util.UnirestWrapper;
 import seatsio.workspaces.Workspace;
 
@@ -21,7 +20,6 @@ import static kong.unirest.Unirest.post;
 public class SeatsioClientTest {
 
     protected User user;
-    protected Subaccount subaccount;
     protected Workspace workspace;
     protected SeatsioClient client;
 
@@ -30,7 +28,6 @@ public class SeatsioClientTest {
         TestCompany testCompany = createTestCompany();
         user = testCompany.admin;
         workspace = testCompany.workspace;
-        subaccount = testCompany.subaccount;
         client = seatsioClient(user.secretKey);
     }
 
