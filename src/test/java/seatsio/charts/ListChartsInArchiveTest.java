@@ -2,7 +2,6 @@ package seatsio.charts;
 
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
-import seatsio.events.Event;
 
 import java.util.stream.Stream;
 

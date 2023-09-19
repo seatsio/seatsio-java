@@ -2,7 +2,6 @@ package seatsio.seasons;
 
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
-import seatsio.events.Event;
 import seatsio.events.TableBookingConfig;
 
 import java.time.Instant;

@@ -1,7 +1,6 @@
 package seatsio.charts;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 

@@ -1,7 +1,5 @@
 package seatsio.reports.events;
 
-import com.google.common.collect.ImmutableMap;
-
 import java.util.Map;
 
 public class EventReportSummaryItemBuilder {

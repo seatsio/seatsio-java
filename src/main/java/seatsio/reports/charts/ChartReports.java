@@ -51,16 +51,16 @@ public class ChartReports extends Reports {
      * @deprecated Prefer {@link ChartReports#summaryByObjectType(String, ChartReportOptions)} instead
      */
     @Deprecated(since = "81.1.0", forRemoval = true)
-    public Map<String, ChartReportSummaryItem> summaryByObjectType(String eventKey, ChartReportBookWholeTablesMode bookWholeTablesMode) {
-        return fetchSummaryReport("byObjectType", eventKey, toQueryParams(bookWholeTablesMode, null));
+    public Map<String, ChartReportSummaryItem> summaryByObjectType(String chartKey, ChartReportBookWholeTablesMode bookWholeTablesMode) {
+        return fetchSummaryReport("byObjectType", chartKey, toQueryParams(bookWholeTablesMode, null));
     }
 
-    public Map<String, ChartReportSummaryItem> summaryByObjectType(String eventKey) {
-        return summaryByObjectType(eventKey, ChartReportOptions.NONE);
+    public Map<String, ChartReportSummaryItem> summaryByObjectType(String chartKey) {
+        return summaryByObjectType(chartKey, ChartReportOptions.NONE);
     }
 
-    public Map<String, ChartReportSummaryItem> summaryByObjectType(String eventKey, ChartReportOptions options) {
-        return fetchSummaryReport("byObjectType", eventKey, toQueryParams(options.bookWholeTablesMode(), options.version()));
+    public Map<String, ChartReportSummaryItem> summaryByObjectType(String chartKey, ChartReportOptions options) {
+        return fetchSummaryReport("byObjectType", chartKey, toQueryParams(options.bookWholeTablesMode(), options.version()));
     }
 
     /**
@@ -83,16 +83,16 @@ public class ChartReports extends Reports {
      * @deprecated Prefer {@link ChartReports#summaryByCategoryKey(String, ChartReportOptions)} instead
      */
     @Deprecated(since = "81.1.0", forRemoval = true)
-    public Map<String, ChartReportSummaryItem> summaryByCategoryKey(String eventKey, ChartReportBookWholeTablesMode bookWholeTablesMode) {
-        return fetchSummaryReport("byCategoryKey", eventKey, toQueryParams(bookWholeTablesMode, null));
+    public Map<String, ChartReportSummaryItem> summaryByCategoryKey(String chartKey, ChartReportBookWholeTablesMode bookWholeTablesMode) {
+        return fetchSummaryReport("byCategoryKey", chartKey, toQueryParams(bookWholeTablesMode, null));
     }
 
-    public Map<String, ChartReportSummaryItem> summaryByCategoryKey(String eventKey) {
-        return summaryByCategoryKey(eventKey, ChartReportOptions.NONE);
+    public Map<String, ChartReportSummaryItem> summaryByCategoryKey(String chartKey) {
+        return summaryByCategoryKey(chartKey, ChartReportOptions.NONE);
     }
 
-    public Map<String, ChartReportSummaryItem> summaryByCategoryKey(String eventKey, ChartReportOptions options) {
-        return fetchSummaryReport("byCategoryKey", eventKey, toQueryParams(options.bookWholeTablesMode(), options.version()));
+    public Map<String, ChartReportSummaryItem> summaryByCategoryKey(String chartKey, ChartReportOptions options) {
+        return fetchSummaryReport("byCategoryKey", chartKey, toQueryParams(options.bookWholeTablesMode(), options.version()));
     }
 
     /**
@@ -115,16 +115,16 @@ public class ChartReports extends Reports {
      * @deprecated Prefer {@link ChartReports#summaryByCategoryLabel(String, ChartReportOptions)} instead
      */
     @Deprecated(since = "81.1.0", forRemoval = true)
-    public Map<String, ChartReportSummaryItem> summaryByCategoryLabel(String eventKey, ChartReportBookWholeTablesMode bookWholeTablesMode) {
-        return fetchSummaryReport("byCategoryLabel", eventKey, toQueryParams(bookWholeTablesMode, null));
+    public Map<String, ChartReportSummaryItem> summaryByCategoryLabel(String chartKey, ChartReportBookWholeTablesMode bookWholeTablesMode) {
+        return fetchSummaryReport("byCategoryLabel", chartKey, toQueryParams(bookWholeTablesMode, null));
     }
 
-    public Map<String, ChartReportSummaryItem> summaryByCategoryLabel(String eventKey) {
-        return summaryByCategoryLabel(eventKey, ChartReportOptions.NONE);
+    public Map<String, ChartReportSummaryItem> summaryByCategoryLabel(String chartKey) {
+        return summaryByCategoryLabel(chartKey, ChartReportOptions.NONE);
     }
 
-    public Map<String, ChartReportSummaryItem> summaryByCategoryLabel(String eventKey, ChartReportOptions options) {
-        return fetchSummaryReport("byCategoryLabel", eventKey, toQueryParams(options.bookWholeTablesMode(), options.version()));
+    public Map<String, ChartReportSummaryItem> summaryByCategoryLabel(String chartKey, ChartReportOptions options) {
+        return fetchSummaryReport("byCategoryLabel", chartKey, toQueryParams(options.bookWholeTablesMode(), options.version()));
     }
 
     /**
@@ -147,16 +147,16 @@ public class ChartReports extends Reports {
      * @deprecated Prefer {@link ChartReports#summaryBySection(String, ChartReportOptions)} instead
      */
     @Deprecated(since = "81.1.0", forRemoval = true)
-    public Map<String, ChartReportSummaryItem> summaryBySection(String eventKey, ChartReportBookWholeTablesMode bookWholeTablesMode) {
-        return fetchSummaryReport("bySection", eventKey, toQueryParams(bookWholeTablesMode, null));
+    public Map<String, ChartReportSummaryItem> summaryBySection(String chartKey, ChartReportBookWholeTablesMode bookWholeTablesMode) {
+        return fetchSummaryReport("bySection", chartKey, toQueryParams(bookWholeTablesMode, null));
     }
 
-    public Map<String, ChartReportSummaryItem> summaryBySection(String eventKey) {
-        return summaryBySection(eventKey, ChartReportOptions.NONE);
+    public Map<String, ChartReportSummaryItem> summaryBySection(String chartKey) {
+        return summaryBySection(chartKey, ChartReportOptions.NONE);
     }
 
-    public Map<String, ChartReportSummaryItem> summaryBySection(String eventKey, ChartReportOptions options) {
-        return fetchSummaryReport("bySection", eventKey, toQueryParams(options.bookWholeTablesMode(), options.version()));
+    public Map<String, ChartReportSummaryItem> summaryBySection(String chartKey, ChartReportOptions options) {
+        return fetchSummaryReport("bySection", chartKey, toQueryParams(options.bookWholeTablesMode(), options.version()));
     }
 
     private Map<String, List<ChartObjectInfo>> fetchChartReport(String reportType, String chartKey, ChartReportOptions options) {

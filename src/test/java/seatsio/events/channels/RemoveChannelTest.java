@@ -3,14 +3,11 @@ package seatsio.events.channels;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.charts.Chart;
-import seatsio.events.Channel;
-import seatsio.events.CreateEventParams;
-import seatsio.events.Event;
+import seatsio.events.*;
 
 import java.util.HashSet;
 import java.util.List;
 
-import static com.google.common.collect.Sets.newHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RemoveChannelTest extends SeatsioClientTest {

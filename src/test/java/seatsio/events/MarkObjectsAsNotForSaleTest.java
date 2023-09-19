@@ -3,7 +3,6 @@ package seatsio.events;
 import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
-import seatsio.charts.Chart;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;

@@ -4,8 +4,6 @@ import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.events.Event;
 
-import java.util.HashMap;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RetrieveChartTest extends SeatsioClientTest {

@@ -3,7 +3,6 @@ package seatsio.events;
 import com.google.gson.*;
 import seatsio.charts.Category;
 import seatsio.charts.CategoryKey;
-import seatsio.charts.StringCategoryKey;
 import seatsio.seasons.Season;
 import seatsio.util.ValueObject;
 
