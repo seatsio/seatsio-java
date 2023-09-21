@@ -3,7 +3,6 @@ package seatsio.events;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.charts.Chart;
-import seatsio.seasons.Season;
 
 import java.util.stream.Stream;
 

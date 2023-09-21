@@ -3,9 +3,6 @@ package seatsio.holdTokens;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 
-import java.time.Instant;
-
-import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RetrieveHoldTokenTest extends SeatsioClientTest {

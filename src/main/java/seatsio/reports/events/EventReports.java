@@ -72,8 +72,8 @@ public class EventReports extends Reports {
         return fetchDeepSummaryReport("byCategoryLabel", eventKey);
     }
 
-    public List<EventObjectInfo> byCategoryLabel(String eventKey, String categorylabel) {
-        return fetchReportFiltered("byCategoryLabel", eventKey, categorylabel);
+    public List<EventObjectInfo> byCategoryLabel(String eventKey, String categoryLabel) {
+        return fetchReportFiltered("byCategoryLabel", eventKey, categoryLabel);
     }
 
     public Map<String, List<EventObjectInfo>> byCategoryKey(String eventKey) {
@@ -88,8 +88,8 @@ public class EventReports extends Reports {
         return fetchDeepSummaryReport("byCategoryKey", eventKey);
     }
 
-    public List<EventObjectInfo> byCategoryKey(String eventKey, String categorykey) {
-        return fetchReportFiltered("byCategoryKey", eventKey, categorykey);
+    public List<EventObjectInfo> byCategoryKey(String eventKey, String categoryKey) {
+        return fetchReportFiltered("byCategoryKey", eventKey, categoryKey);
     }
 
     public Map<String, List<EventObjectInfo>> byOrderId(String eventKey) {
