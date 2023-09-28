@@ -3,9 +3,10 @@ package seatsio.events;
 import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
-import seatsio.charts.Category;
-import seatsio.charts.CategoryKey;
-import seatsio.charts.Chart;
+import seatsio.SeatsioException;
+import seatsio.charts.*;
+import seatsio.seasons.Season;
+import seatsio.seasons.SeasonParams;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -150,12 +151,19 @@ public class UpdateEventTest extends SeatsioClientTest {
     @Test
     public void updateIsInThePast() {
         String chartKey = createTestChart();
-        Event event = client.events.create(chartKey, new CreateEventParams().withDate(LocalDate.of(2022, 1, 5)));
+        Season season = client.seasons.create(chartKey, new SeasonParams().eventKeys(List.of("event1")));
+        Event event = client.events.retrieve("event1");
         assertThat(event.isInThePast).isFalse();
 
-        client.events.update(event.key, new UpdateEventParams().withIsInThePast(true));
+        client.events.update("event1", new UpdateEventParams().withIsInThePast(true));
 
         Event retrievedEvent = client.events.retrieve(event.key);
         assertThat(retrievedEvent.isInThePast).isTrue();
+
+        try {
+            client.events.update("event1", new UpdateEventParams().withIsInThePast(true));
+        } catch (SeatsioException e) {
+            assertThat(e.getMessage()).isEqualTo("Events in the past cannot be updated");
+        }
     }
 }
