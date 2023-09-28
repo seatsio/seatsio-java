@@ -16,6 +16,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.time.Instant.now;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static seatsio.events.TableBookingMode.BY_SEAT;
 import static seatsio.events.TableBookingMode.BY_TABLE;
 
@@ -162,6 +163,7 @@ public class UpdateEventTest extends SeatsioClientTest {
 
         try {
             client.events.update("event1", new UpdateEventParams().withIsInThePast(true));
+            fail("Expected an exception");
         } catch (SeatsioException e) {
             assertThat(e.getMessage()).isEqualTo("Events in the past cannot be updated");
         }
