@@ -6,6 +6,8 @@ import seatsio.SeatsioClientTest;
 import seatsio.charts.Category;
 import seatsio.charts.CategoryKey;
 import seatsio.charts.Chart;
+import seatsio.seasons.Season;
+import seatsio.seasons.SeasonParams;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -147,4 +149,16 @@ public class UpdateEventTest extends SeatsioClientTest {
         assertThat(retrievedEvent.date).isEqualTo(LocalDate.of(2022, 1, 6));
     }
 
+    @Test
+    public void updateIsInThePast() {
+        String chartKey = createTestChart();
+        Season season = client.seasons.create(chartKey, new SeasonParams().eventKeys(List.of("event1")));
+        Event event = client.events.retrieve("event1");
+        assertThat(event.isInThePast).isFalse();
+
+        client.events.update("event1", new UpdateEventParams().withIsInThePast(true));
+
+        Event retrievedEvent = client.events.retrieve(event.key);
+        assertThat(retrievedEvent.isInThePast).isTrue();
+    }
 }
