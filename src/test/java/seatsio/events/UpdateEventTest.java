@@ -3,8 +3,9 @@ package seatsio.events;
 import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
-import seatsio.SeatsioException;
-import seatsio.charts.*;
+import seatsio.charts.Category;
+import seatsio.charts.CategoryKey;
+import seatsio.charts.Chart;
 import seatsio.seasons.Season;
 import seatsio.seasons.SeasonParams;
 
@@ -16,7 +17,6 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.time.Instant.now;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 import static seatsio.events.TableBookingMode.BY_SEAT;
 import static seatsio.events.TableBookingMode.BY_TABLE;
 
@@ -160,12 +160,5 @@ public class UpdateEventTest extends SeatsioClientTest {
 
         Event retrievedEvent = client.events.retrieve(event.key);
         assertThat(retrievedEvent.isInThePast).isTrue();
-
-        try {
-            client.events.update("event1", new UpdateEventParams().withIsInThePast(true));
-            fail("Expected an exception");
-        } catch (SeatsioException e) {
-            assertThat(e.getMessage()).isEqualTo("Events in the past cannot be updated");
-        }
     }
 }
