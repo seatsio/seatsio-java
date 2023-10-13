@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import seatsio.reports.usage.detailsForEventInMonth.UsageForObjectV1;
 import seatsio.reports.usage.detailsForEventInMonth.UsageForObjectV2;
 import seatsio.reports.usage.detailsForMonth.UsageDetails;
+import seatsio.reports.usage.summaryForMonths.UsageSummaryForAllMonths;
 import seatsio.reports.usage.summaryForMonths.UsageSummaryForMonth;
 import seatsio.util.UnirestWrapper;
 
@@ -24,11 +25,9 @@ public class UsageReports {
         this.unirest = unirest;
     }
 
-    public List<UsageSummaryForMonth> summaryForAllMonths() {
-        String response = unirest.stringResponse(get(baseUrl + "/reports/usage"));
-        TypeToken<List<UsageSummaryForMonth>> typeToken = new TypeToken<>() {
-        };
-        return gson().fromJson(response, typeToken.getType());
+    public UsageSummaryForAllMonths summaryForAllMonths() {
+        String response = unirest.stringResponse(get(baseUrl + "/reports/usage?version=2"));
+        return gson().fromJson(response, UsageSummaryForAllMonths.class);
     }
 
     public List<UsageDetails> detailsForMonth(Month month) {
