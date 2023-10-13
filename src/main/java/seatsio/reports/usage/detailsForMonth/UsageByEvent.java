@@ -1,8 +1,14 @@
 package seatsio.reports.usage.detailsForMonth;
 
-public class UsageByEvent {
+import seatsio.util.ValueObject;
 
-    public UsageEvent event;
-    public int numUsedObjects;
+public class UsageByEvent extends ValueObject {
 
+    public final UsageEvent event;
+    public final int numUsedObjects;
+
+    public UsageByEvent(UsageEvent event, int numUsedObjects) {
+        this.event = event;
+        this.numUsedObjects = numUsedObjects;
+    }
 }

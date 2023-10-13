@@ -73,6 +73,14 @@ public class SeatsioClientTest {
         return chartKey;
     }
 
+    protected String demoCompanySecretKey() {
+        return System.getenv("DEMO_COMPANY_SECRET_KEY");
+    }
+
+    protected boolean isDemoCompanySecretKeySet() {
+        return System.getenv().containsKey("DEMO_COMPANY_SECRET_KEY");
+    }
+
     private String testChartJson(String fileName) {
         try {
             InputStream testChartJson = SeatsioClientTest.class.getResourceAsStream(fileName);

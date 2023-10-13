@@ -1,10 +1,15 @@
 package seatsio.reports.usage.summaryForMonths;
 
 import seatsio.reports.usage.Month;
+import seatsio.util.ValueObject;
 
-public class UsageSummaryForMonth {
+public class UsageSummaryForMonth extends ValueObject {
 
-    public Month month;
-    public int numUsedObjects;
+    public final Month month;
+    public final int numUsedObjects;
 
+    public UsageSummaryForMonth(Month month, int numUsedObjects) {
+        this.month = month;
+        this.numUsedObjects = numUsedObjects;
+    }
 }

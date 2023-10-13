@@ -1,8 +1,10 @@
 package seatsio.reports.usage;
 
+import seatsio.util.ValueObject;
+
 import static org.apache.commons.lang3.StringUtils.leftPad;
 
-public class Month {
+public class Month extends ValueObject {
 
     public int month;
     public int year;
