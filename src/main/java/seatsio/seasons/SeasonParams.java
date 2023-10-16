@@ -2,7 +2,7 @@ package seatsio.seasons;
 
 import com.google.gson.JsonObject;
 import seatsio.events.Channel;
-import seatsio.events.ForSaleConfig;
+import seatsio.events.ForSaleConfigParams;
 import seatsio.events.TableBookingConfig;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class SeasonParams {
     private Integer numberOfEvents;
     private TableBookingConfig tableBookingConfig;
     private List<Channel> channels;
-    private ForSaleConfig forSaleConfig;
+    private ForSaleConfigParams forSaleConfigParams;
 
     public SeasonParams() {
     }
@@ -62,8 +62,8 @@ public class SeasonParams {
         return this;
     }
 
-    public SeasonParams forSaleConfig(ForSaleConfig forSaleConfig) {
-        this.forSaleConfig = forSaleConfig;
+    public SeasonParams forSaleConfigParams(ForSaleConfigParams forSaleConfigParams) {
+        this.forSaleConfigParams = forSaleConfigParams;
         return this;
     }
 
@@ -75,9 +75,9 @@ public class SeasonParams {
     }
 
     public JsonObject getForSaleConfigAsJson() {
-        if (forSaleConfig == null) {
+        if (forSaleConfigParams == null) {
             return null;
         }
-        return forSaleConfig.toJson();
+        return forSaleConfigParams.toJson();
     }
 }

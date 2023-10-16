@@ -139,18 +139,18 @@ public class CreateEventsTest extends SeatsioClientTest {
     @Test
     public void forSaleConfigCanBePassedIn() {
         String chartKey = createTestChart();
-        ForSaleConfig forSaleConfig1 = new ForSaleConfig(false, List.of("A-1"), Map.of("GA1", 5), List.of("Cat1"));
-        ForSaleConfig forSaleConfig2 = new ForSaleConfig(false, List.of("A-2"), Map.of("GA1", 7), List.of("Cat1"));
+        ForSaleConfigParams forSaleConfigParams1 = new ForSaleConfigParams(false, List.of("A-1"), Map.of("GA1", 5), List.of("Cat1"));
+        ForSaleConfigParams forSaleConfigParams2 = new ForSaleConfigParams(false, List.of("A-2"), Map.of("GA1", 7), List.of("Cat1"));
 
         List<Event> events = client.events.create(chartKey, newArrayList(
-                new CreateEventParams().withForSaleConfig(forSaleConfig1),
-                new CreateEventParams().withForSaleConfig(forSaleConfig2)
+                new CreateEventParams().withForSaleConfigParams(forSaleConfigParams1),
+                new CreateEventParams().withForSaleConfigParams(forSaleConfigParams2)
         ));
 
         assertThat(events.get(0))
-                .hasFieldOrPropertyWithValue("forSaleConfig", forSaleConfig1);
+                .hasFieldOrPropertyWithValue("forSaleConfig", toForSaleConfig(forSaleConfigParams1));
         assertThat(events.get(1))
-                .hasFieldOrPropertyWithValue("forSaleConfig", forSaleConfig2);
+                .hasFieldOrPropertyWithValue("forSaleConfig", toForSaleConfig(forSaleConfigParams2));
     }
 
     @Test
@@ -163,4 +163,12 @@ public class CreateEventsTest extends SeatsioClientTest {
         )));
     }
 
+    private static ForSaleConfig toForSaleConfig(ForSaleConfigParams params) {
+        ForSaleConfig forSaleConfig = new ForSaleConfig();
+        forSaleConfig.forSale = params.forSale;
+        forSaleConfig.objects = params.objects;
+        forSaleConfig.areaPlaces = params.areaPlaces;
+        forSaleConfig.categories = params.categories;
+        return forSaleConfig;
+    }
 }

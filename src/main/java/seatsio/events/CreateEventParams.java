@@ -9,15 +9,15 @@ import static java.util.stream.Collectors.toList;
 public class CreateEventParams extends EventParams<CreateEventParams> {
 
     public List<Channel> channels;
-    public ForSaleConfig forSaleConfig;
+    public ForSaleConfigParams forSaleConfigParams;
 
     public CreateEventParams withChannels(List<Channel> channels) {
         this.channels = channels;
         return this;
     }
 
-    public CreateEventParams withForSaleConfig(ForSaleConfig forSaleConfig) {
-        this.forSaleConfig = forSaleConfig;
+    public CreateEventParams withForSaleConfigParams(ForSaleConfigParams forSaleConfigParams) {
+        this.forSaleConfigParams = forSaleConfigParams;
         return this;
     }
 
@@ -29,9 +29,9 @@ public class CreateEventParams extends EventParams<CreateEventParams> {
     }
 
     public JsonObject getForSaleConfigAsJson() {
-        if (forSaleConfig == null) {
+        if (forSaleConfigParams == null) {
             return null;
         }
-        return forSaleConfig.toJson();
+        return forSaleConfigParams.toJson();
     }
 }

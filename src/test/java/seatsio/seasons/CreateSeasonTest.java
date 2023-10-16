@@ -6,6 +6,7 @@ import seatsio.SeatsioClientTest;
 import seatsio.charts.Chart;
 import seatsio.events.Channel;
 import seatsio.events.ForSaleConfig;
+import seatsio.events.ForSaleConfigParams;
 import seatsio.events.TableBookingConfig;
 
 import java.time.Instant;
@@ -109,10 +110,15 @@ public class CreateSeasonTest extends SeatsioClientTest {
     @Test
     public void forSaleConfigCanBePassedIn() {
         String chartKey = createTestChart();
-        ForSaleConfig forSaleConfig = new ForSaleConfig(false, List.of("A-1"), Map.of("GA1", 5), List.of("Cat1"));
+        ForSaleConfigParams params = new ForSaleConfigParams(false, List.of("A-1"), Map.of("GA1", 5), List.of("Cat1"));
 
-        Season season = client.seasons.create(chartKey, new SeasonParams().forSaleConfig(forSaleConfig));
+        Season season = client.seasons.create(chartKey, new SeasonParams().forSaleConfigParams(params));
 
+        ForSaleConfig forSaleConfig = new ForSaleConfig();
+        forSaleConfig.forSale = params.forSale;
+        forSaleConfig.objects = params.objects;
+        forSaleConfig.areaPlaces = params.areaPlaces;
+        forSaleConfig.categories = params.categories;
         assertThat(season.forSaleConfig).isEqualTo(forSaleConfig);
     }
 }
