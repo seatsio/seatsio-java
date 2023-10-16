@@ -137,6 +137,23 @@ public class CreateEventsTest extends SeatsioClientTest {
     }
 
     @Test
+    public void forSaleConfigCanBePassedIn() {
+        String chartKey = createTestChart();
+        ForSaleConfig forSaleConfig1 = new ForSaleConfig(false, List.of("A-1"), Map.of("GA1", 5), List.of("Cat1"));
+        ForSaleConfig forSaleConfig2 = new ForSaleConfig(false, List.of("A-2"), Map.of("GA1", 7), List.of("Cat1"));
+
+        List<Event> events = client.events.create(chartKey, newArrayList(
+                new CreateEventParams().withForSaleConfig(forSaleConfig1),
+                new CreateEventParams().withForSaleConfig(forSaleConfig2)
+        ));
+
+        assertThat(events.get(0))
+                .hasFieldOrPropertyWithValue("forSaleConfig", forSaleConfig1);
+        assertThat(events.get(1))
+                .hasFieldOrPropertyWithValue("forSaleConfig", forSaleConfig2);
+    }
+
+    @Test
     public void errorOnDuplicateKeys() {
         String chartKey = createTestChart();
 

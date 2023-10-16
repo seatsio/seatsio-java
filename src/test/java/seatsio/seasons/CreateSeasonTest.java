@@ -5,10 +5,12 @@ import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.charts.Chart;
 import seatsio.events.Channel;
+import seatsio.events.ForSaleConfig;
 import seatsio.events.TableBookingConfig;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -31,7 +33,7 @@ public class CreateSeasonTest extends SeatsioClientTest {
         assertThat(season.key).isNotNull();
         assertThat(season.partialSeasonKeys).isEmpty();
         assertThat(season.id).isNotZero();
-        assertThat(season.key).isEqualTo(season.key);
+        assertThat(season.key).isNotNull();
         assertThat(season.chartKey).isEqualTo(chartKey);
         assertThat(season.tableBookingConfig).isEqualTo(TableBookingConfig.inherit());
         assertThat(season.supportsBestAvailable).isTrue();
@@ -102,5 +104,15 @@ public class CreateSeasonTest extends SeatsioClientTest {
 
         assertThat(season.key).isNotNull();
         assertThat(season.channels).isEqualTo(channels);
+    }
+
+    @Test
+    public void forSaleConfigCanBePassedIn() {
+        String chartKey = createTestChart();
+        ForSaleConfig forSaleConfig = new ForSaleConfig(false, List.of("A-1"), Map.of("GA1", 5), List.of("Cat1"));
+
+        Season season = client.seasons.create(chartKey, new SeasonParams().forSaleConfig(forSaleConfig));
+
+        assertThat(season.forSaleConfig).isEqualTo(forSaleConfig);
     }
 }

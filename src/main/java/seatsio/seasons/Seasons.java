@@ -15,7 +15,7 @@ public class Seasons {
 
     private final String baseUrl;
     private final UnirestWrapper unirest;
-    private SeatsioClient seatsioClient;
+    private final SeatsioClient seatsioClient;
 
     public Seasons(String baseUrl, UnirestWrapper unirest, SeatsioClient seatsioClient) {
         this.baseUrl = baseUrl;
@@ -34,7 +34,8 @@ public class Seasons {
                 .withPropertyIfNotNull("eventKeys", seasonParams.eventKeys())
                 .withPropertyIfNotNull("numberOfEvents", seasonParams.numberOfEvents())
                 .withPropertyIfNotNull("tableBookingConfig", seasonParams.tableBookingConfig())
-                .withPropertyIfNotNull("channels", seasonParams.getChannelsAsJson());
+                .withPropertyIfNotNull("channels", seasonParams.getChannelsAsJson())
+                .withPropertyIfNotNull("forSaleConfig", seasonParams.getForSaleConfigAsJson());
         String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/seasons")
                 .body(request.build().toString()));
         return gson().fromJson(response, Season.class);
