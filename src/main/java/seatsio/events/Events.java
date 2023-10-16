@@ -51,6 +51,7 @@ public class Events {
                 .withPropertyIfNotNull("objectCategories", params.objectCategories, CategoryKey::toJson)
                 .withPropertyIfNotNull("categories", params.getCategoriesAsJson())
                 .withPropertyIfNotNull("channels", params.getChannelsAsJson())
+                .withPropertyIfNotNull("forSaleConfig", params.getForSaleConfigAsJson())
                 .buildAsString();
 
         String response = unirest.stringResponse(post(baseUrl + "/events").body(request));
@@ -67,6 +68,7 @@ public class Events {
                 .withPropertyIfNotNull("objectCategories", p.objectCategories, CategoryKey::toJson)
                 .withPropertyIfNotNull("categories", p.getCategoriesAsJson())
                 .withPropertyIfNotNull("channels", p.getChannelsAsJson())
+                .withPropertyIfNotNull("forSaleConfig", p.getForSaleConfigAsJson())
                 .build()));
         JsonObjectBuilder request = aJsonObject()
                 .withProperty("chartKey", chartKey)

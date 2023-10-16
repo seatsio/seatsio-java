@@ -133,4 +133,19 @@ public class CreateEventTest extends SeatsioClientTest {
 
         assertThat(event.date).isEqualTo(LocalDate.of(2022, 10, 1));
     }
+
+    @Test
+    public void forSaleConfigCanBePassedIn() {
+        String chartKey = createTestChart();
+        ForSaleConfigParams params = new ForSaleConfigParams(false, List.of("A-1"), Map.of("GA1", 5), List.of("Cat1"));
+
+        Event event = client.events.create(chartKey, new CreateEventParams().withForSaleConfigParams(params));
+
+        ForSaleConfig forSaleConfig = new ForSaleConfig();
+        forSaleConfig.forSale = params.forSale;
+        forSaleConfig.objects = params.objects;
+        forSaleConfig.areaPlaces = params.areaPlaces;
+        forSaleConfig.categories = params.categories;
+        assertThat(event.forSaleConfig).isEqualTo(forSaleConfig);
+    }
 }

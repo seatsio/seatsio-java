@@ -11,5 +11,4 @@ public class ForSaleConfig extends ValueObject {
     public List<String> objects;
     public Map<String, Integer> areaPlaces;
     public List<String> categories;
-
 }
