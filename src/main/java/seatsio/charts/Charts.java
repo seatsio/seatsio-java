@@ -153,6 +153,14 @@ public class Charts {
         return gson().fromJson(response, Chart.class);
     }
 
+    public Chart copyToWorkspace(String chartKey, String fromWorkspaceKey, String toWorkspaceKey) {
+        String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/charts/{chartKey}/version/published/actions/copy/from/{fromWorkspaceKey}/to/{toWorkspaceKey}")
+                .routeParam("chartKey", chartKey)
+                .routeParam("fromWorkspaceKey", fromWorkspaceKey)
+                .routeParam("toWorkspaceKey", toWorkspaceKey));
+        return gson().fromJson(response, Chart.class);
+    }
+
     public void addTag(String key, String tag) {
         unirest.stringResponse(UnirestWrapper.post(baseUrl + "/charts/{key}/tags/{tag}")
                 .routeParam("key", key)
