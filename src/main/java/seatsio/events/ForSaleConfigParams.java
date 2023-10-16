@@ -1,14 +1,13 @@
 package seatsio.events;
 
 import com.google.gson.JsonObject;
-import seatsio.util.ValueObject;
 
 import java.util.List;
 import java.util.Map;
 
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
 
-public class ForSaleConfigParams extends ValueObject {
+public class ForSaleConfigParams {
 
     public boolean forSale;
     public List<String> objects;
