@@ -327,6 +327,24 @@ public class Events {
         return gson().fromJson(response, ChangeObjectStatusResult.class);
     }
 
+    public void overrideSeasonObjectStatus(String eventKey, List<String> objects) {
+        unirest.stringResponse(post(baseUrl + "/events/{eventKey}/actions/override-season-status")
+                .routeParam("eventKey", eventKey)
+                .body(useOrOverrideSeasonObjectStatusRequest(objects).toString()));
+    }
+
+    public void useSeasonObjectStatus(String eventKey, List<String> objects) {
+        unirest.stringResponse(post(baseUrl + "/events/{eventKey}/actions/use-season-status")
+                .routeParam("eventKey", eventKey)
+                .body(useOrOverrideSeasonObjectStatusRequest(objects).toString()));
+    }
+
+    private static JsonObject useOrOverrideSeasonObjectStatusRequest(List<String> objects) {
+        return aJsonObject()
+                .withProperty("objects", aJsonArray().withItems(objects.toArray(new String[]{})).build())
+                .build();
+    }
+
     public List<ChangeObjectStatusResult> changeObjectStatus(List<StatusChangeRequest> statusChangeRequests) {
         List<JsonElement> statusChangeRequestsAsJson = statusChangeRequests
                 .stream()
