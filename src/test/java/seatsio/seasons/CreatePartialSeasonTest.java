@@ -32,5 +32,6 @@ public class CreatePartialSeasonTest extends SeatsioClientTest {
         Season season = client.seasons.createPartialSeason(topLevelSeason.key, null, newArrayList("event1", "event3"));
 
         assertThat(season.events).extracting(event -> event.key).containsExactly("event1", "event3");
+        assertThat(season.events.get(0).partialSeasonKeysForEvent).containsExactly(season.key);
     }
 }

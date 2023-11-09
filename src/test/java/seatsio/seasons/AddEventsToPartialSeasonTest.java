@@ -19,5 +19,6 @@ public class AddEventsToPartialSeasonTest extends SeatsioClientTest {
         assertThat(updatedPartialSeason.events)
                 .extracting(s -> s.key)
                 .containsExactly("event1", "event2");
+        assertThat(updatedPartialSeason.events.get(0).partialSeasonKeysForEvent).containsExactly("aPartialSeason");
     }
 }
