@@ -37,6 +37,7 @@ public class RetrieveEventTest extends SeatsioClientTest {
                 new Category(10L, "Cat2", "#5E42ED", false),
                 new Category("string11", "Cat3", "#5E42BB", false)
         );
+        assertThat(retrievedEvent.partialSeasonKeysForEvent).isNull();
     }
 
     @Test
@@ -70,5 +71,6 @@ public class RetrieveEventTest extends SeatsioClientTest {
                 new Category(10L, "Cat2", "#5E42ED", false),
                 new Category("string11", "Cat3", "#5E42BB", false)
         );
+        assertThat(retrievedSeason.partialSeasonKeysForEvent).isNull();
     }
 }

@@ -34,6 +34,7 @@ public class Event extends ValueObject {
     public Map<String, CategoryKey> objectCategories;
     public List<Category> categories;
     public boolean isInThePast;
+    public List<String> partialSeasonKeysForEvent;
 
     public boolean isSeason() {
         return false;
