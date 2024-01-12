@@ -1,4 +1,4 @@
-# seatsio-java, the official seats.io Java client library
+# seatsio-java, the official seats.io Java SDK
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.seats/seatsio-java)](https://central.sonatype.dev/namespace/io.seats)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/seatsio/seatsio-java/build.yml)](https://github.com/seatsio/seatsio-java/actions/workflows/build.yml)
