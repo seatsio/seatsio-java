@@ -1,6 +1,7 @@
 package seatsio;
 
 import seatsio.charts.Charts;
+import seatsio.eventLog.EventLog;
 import seatsio.events.Events;
 import seatsio.holdTokens.HoldTokens;
 import seatsio.reports.charts.ChartReports;
@@ -23,7 +24,7 @@ public class SeatsioClient {
     public final EventReports eventReports;
     public final ChartReports chartReports;
     public final UsageReports usageReports;
-
+    public final EventLog eventLog;
 
     public SeatsioClient(String secretKey, String workspaceKey, String baseUrl) {
         this.baseUrl = baseUrl;
@@ -36,6 +37,7 @@ public class SeatsioClient {
         this.eventReports = new EventReports(baseUrl, unirest);
         this.chartReports = new ChartReports(baseUrl, unirest);
         this.usageReports = new UsageReports(baseUrl, unirest);
+        this.eventLog = new EventLog(baseUrl, unirest);
     }
 
     public SeatsioClient(Region region, String secretKey, String workspaceKey) {
