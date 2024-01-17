@@ -7,6 +7,7 @@ import seatsio.events.CreateEventParams;
 import seatsio.events.ForSaleConfigParams;
 import seatsio.util.Page;
 
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,6 +26,23 @@ public class ListEventLogItemsTest extends SeatsioClientTest {
         assertThat(eventLogItems)
                 .extracting(eventLogItem -> eventLogItem.type)
                 .containsExactly("chart.created", "chart.published");
+    }
+
+    @Test
+    public void properties() throws InterruptedException {
+        Chart chart = client.charts.create();
+        client.charts.update(chart.key, "a chart");
+
+        waitUntilEventLogItemsAvailable();
+
+        Stream<EventLogItem> eventLogItems = client.eventLog.listAll();
+
+        EventLogItem eventLogItem = eventLogItems.findFirst().get();
+        assertThat(eventLogItem.type).isEqualTo("chart.created");
+        assertThat(eventLogItem.date).isNotNull();
+        assertThat(eventLogItem.workspaceKey).isEqualTo(workspace.key);
+        assertThat(eventLogItem.data).isEqualTo(Map.of("key", chart.key));
+        assertThat(eventLogItem.id).isGreaterThan(0);
     }
 
     @Test
