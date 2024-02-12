@@ -39,9 +39,8 @@ public class ListEventLogItemsTest extends SeatsioClientTest {
 
         EventLogItem eventLogItem = eventLogItems.findFirst().get();
         assertThat(eventLogItem.type).isEqualTo("chart.created");
-        assertThat(eventLogItem.date).isNotNull();
-        assertThat(eventLogItem.workspaceKey).isEqualTo(workspace.key);
-        assertThat(eventLogItem.data).isEqualTo(Map.of("key", chart.key));
+        assertThat(eventLogItem.timestamp).isNotNull();
+        assertThat(eventLogItem.data).isEqualTo(Map.of("key", chart.key, "workspaceKey", workspace.key));
         assertThat(eventLogItem.id).isGreaterThan(0);
     }
 
