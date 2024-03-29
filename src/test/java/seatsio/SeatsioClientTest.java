@@ -45,6 +45,9 @@ public class SeatsioClientTest {
 
     private TestCompany createTestCompany() throws UnirestException {
         HttpResponse<String> response = post(apiUrl() + "/system/public/users/actions/create-test-company").asString();
+        if(response.getStatus() >= 400) {
+            throw new SeatsioException("Creating test company failed wide code " + response.getStatus());
+        }
         return new Gson().fromJson(response.getBody(), TestCompany.class);
     }
 
