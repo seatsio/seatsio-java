@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.events.*;
 import seatsio.holdTokens.HoldToken;
+import seatsio.seasons.Season;
+import seatsio.seasons.SeasonParams;
 
 import java.util.List;
 import java.util.Map;
@@ -55,6 +57,7 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.availabilityReason).isEqualTo("booked");
         assertThat(reportItem.channel).isEqualTo("channel1");
         assertThat(reportItem.distanceToFocalPoint).isNotNull();
+        assertThat(reportItem.seasonStatusOverriddenQuantity).isEqualTo(0);
 
         EventObjectInfo gaItem = report.get("GA1").get(0);
         assertThat(gaItem.variableOccupancy).isFalse();
@@ -73,6 +76,19 @@ public class EventReportsTest extends SeatsioClientTest {
 
         EventObjectInfo reportItem = report.get("A-1").get(0);
         assertThat(reportItem.holdToken).isEqualTo(holdToken.holdToken);
+    }
+
+    @Test
+    public void seasonStatusOverriddenQuantity() {
+        String chartKey = createTestChart();
+        Season season = client.seasons.create(chartKey, new SeasonParams().numberOfEvents(1));
+        Event event = season.events.get(0);
+        client.events.overrideSeasonObjectStatus(event.key, List.of("A-1"));
+
+        Map<String, List<EventObjectInfo>> report = client.eventReports.byLabel(event.key);
+
+        EventObjectInfo reportItem = report.get("A-1").get(0);
+        assertThat(reportItem.seasonStatusOverriddenQuantity).isEqualTo(1);
     }
 
     @Test
