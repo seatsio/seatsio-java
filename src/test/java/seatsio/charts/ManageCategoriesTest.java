@@ -72,9 +72,86 @@ public class ManageCategoriesTest extends SeatsioClientTest {
         assertThrows(SeatsioException.class, () -> client.charts.listCategories("unknownChart"));
     }
 
+    @Test
+    public void updateCategory() {
+        List<Category> categories = newArrayList(
+                new Category(CategoryKey.of(1L), "Category 1", "#aaaaaa"),
+                new Category(CategoryKey.of("cat2"), "Category 2", "#bbbbbb", true)
+        );
+        Chart chart = client.charts.create("aChart", "BOOTHS", categories);
+
+        client.charts.updateCategory(chart.key, CategoryKey.of("cat2"),
+                new CategoryUpdateParams("New label", "#cccccc", false));
+
+        Chart retrievedChart = client.charts.retrieve(chart.key);
+        Map<?, ?> drawing = client.charts.retrievePublishedVersion(retrievedChart.key);
+        assertThat(categories(drawing)).containsExactly(
+                ImmutableMap.of(
+                        "key", 1.0,
+                        "label", "Category 1",
+                        "color", "#aaaaaa",
+                        "accessible", false
+                ),
+                ImmutableMap.of(
+                        "key", "cat2",
+                        "label", "New label",
+                        "color", "#cccccc",
+                        "accessible", false
+                )
+        );
+    }
+
+    @Test
+    public void updateCategory_doNotChangeAnything() {
+        List<Category> categories = newArrayList(
+                new Category(CategoryKey.of(1L), "Category 1", "#aaaaaa"),
+                new Category(CategoryKey.of("cat2"), "Category 2", "#bbbbbb", true)
+        );
+        Chart chart = client.charts.create("aChart", "BOOTHS", categories);
+
+        client.charts.updateCategory(chart.key, CategoryKey.of("cat2"),
+                new CategoryUpdateParams(null, null, null));
+
+        Chart retrievedChart = client.charts.retrieve(chart.key);
+        Map<?, ?> drawing = client.charts.retrievePublishedVersion(retrievedChart.key);
+        assertThat(categories(drawing)).containsExactly(
+                ImmutableMap.of(
+                        "key", 1.0,
+                        "label", "Category 1",
+                        "color", "#aaaaaa",
+                        "accessible", false
+                ),
+                ImmutableMap.of(
+                        "key", "cat2",
+                        "label", "Category 2",
+                        "color", "#bbbbbb",
+                        "accessible", true
+                )
+        );
+    }
+
+    @Test
+    public void updateCategory_unknownChart() {
+        SeatsioException e = assertThrows(SeatsioException.class, () -> client.charts.updateCategory("unknownChart", CategoryKey.of("cat2"),
+                new CategoryUpdateParams("New label", "#cccccc", false)));
+        assertThat(e.getMessage()).isEqualTo("Chart not found: unknownChart");
+    }
+
+    @Test
+    public void updateCategory_unknownCategory() {
+        List<Category> categories = newArrayList(
+                new Category(CategoryKey.of(1L), "Category 1", "#aaaaaa"),
+                new Category(CategoryKey.of("cat2"), "Category 2", "#bbbbbb", true)
+        );
+        Chart chart = client.charts.create("aChart", "BOOTHS", categories);
+
+        SeatsioException e = assertThrows(SeatsioException.class, () -> client.charts.updateCategory(chart.key, CategoryKey.of(3L),
+                new CategoryUpdateParams("New label", "#cccccc", false)));
+        assertThat(e.getMessage()).isEqualTo("category not found");
+    }
+
     private List<Map<?, ?>> categories(Map<?, ?> drawing) {
         Map<?, ?> categoriesMap = (Map<?, ?>) drawing.get("categories");
         return (List<Map<?, ?>>) categoriesMap.get("list");
     }
-
 }
