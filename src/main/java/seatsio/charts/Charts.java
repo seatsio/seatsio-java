@@ -94,7 +94,6 @@ public class Charts {
                 ));
     }
 
-
     public void addCategory(String chartKey, Category category) {
         unirest.stringResponse(UnirestWrapper.post(baseUrl + "/charts/{key}/categories")
                 .routeParam("key", chartKey)
@@ -105,6 +104,13 @@ public class Charts {
         unirest.stringResponse(UnirestWrapper.delete(baseUrl + "/charts/{chartKey}/categories/{categoryKey}")
                 .routeParam("chartKey", chartKey)
                 .routeParam("categoryKey", categoryKey.toString()));
+    }
+
+    public void updateCategory(String chartKey, CategoryKey categorykey, CategoryUpdateParams updateParams) {
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/charts/{chartKey}/categories/{categoryKey}")
+                .routeParam("chartKey", chartKey)
+                .routeParam("categoryKey", categorykey.toString())
+                .body(updateParams.toJson()));
     }
 
     public List<Category> listCategories(String chartKey) {

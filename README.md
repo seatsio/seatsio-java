@@ -221,6 +221,18 @@ categories.forEach(category -> {
 });
 ```
 
+### Updating a category
+```java
+import seatsio.charts.CategoryKey;
+import seatsio.charts.CategoryUpdateParams;
+import seatsio.SeatsioClient;
+
+SeatsioClient client = new SeatsioClient(Region.EU, "<WORKSPACE SECRET KEY>");
+
+client.charts.updateCategory("the chart key", CategoryKey.of("the category key"),
+  new CategoryUpdateParams("New label", "#cccccc", false));
+```
+
 ## Error handling
 
 When an API call results in a 4xx or 5xx error (e.g. when a chart could not be found), a SeatsioException is thrown.
