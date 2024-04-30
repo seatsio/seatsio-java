@@ -6,9 +6,12 @@ import static seatsio.json.JsonObjectBuilder.aJsonObject;
 
 public class CategoryUpdateParams {
 
-    private final String label;
-    private final String color;
-    private final Boolean accessible;
+    private String label;
+    private String color;
+    private Boolean accessible;
+
+    public CategoryUpdateParams() {
+    }
 
     public CategoryUpdateParams(String label,
                                 String color,
@@ -16,6 +19,21 @@ public class CategoryUpdateParams {
         this.label = label;
         this.color = color;
         this.accessible = accessible;
+    }
+
+    public CategoryUpdateParams withLabel(String label) {
+        this.label = label;
+        return this;
+    }
+
+    public CategoryUpdateParams withColor(String color) {
+        this.color = color;
+        return this;
+    }
+
+    public CategoryUpdateParams withAccessible(boolean accessible) {
+        this.accessible = accessible;
+        return this;
     }
 
     public JsonObject toJson() {
