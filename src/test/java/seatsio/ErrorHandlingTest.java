@@ -12,8 +12,10 @@ public class ErrorHandlingTest extends SeatsioClientTest {
     @Test
     public void test400() {
         SeatsioException e = assertThrows(SeatsioException.class, () -> client.charts.retrieve("unexistingChart"));
-        assertThat(e.getMessage()).contains("Chart not found: unexistingChart");
-        assertThat(e.errors).containsExactly(new ApiError("CHART_NOT_FOUND", "Chart not found: unexistingChart"));
+        assertThat(e.getMessage()).contains("Chart not found: unexistingChart was not found in workspace");
+        assertThat(e.errors).hasSize(1);
+        assertThat(e.errors.get(0).getCode()).isEqualTo("CHART_NOT_FOUND");
+        assertThat(e.errors.get(0).getMessage()).startsWith("Chart not found: unexistingChart was not found in workspace");
     }
 
     @Test

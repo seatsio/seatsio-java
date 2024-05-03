@@ -134,7 +134,7 @@ public class ManageCategoriesTest extends SeatsioClientTest {
     public void updateCategory_unknownChart() {
         SeatsioException e = assertThrows(SeatsioException.class, () -> client.charts.updateCategory("unknownChart", CategoryKey.of("cat2"),
                 new CategoryUpdateParams("New label", "#cccccc", false)));
-        assertThat(e.getMessage()).isEqualTo("Chart not found: unknownChart");
+        assertThat(e.getMessage()).startsWith("Chart not found: unknownChart was not found in workspace");
     }
 
     @Test
