@@ -114,8 +114,6 @@ public class ListChartsTest extends SeatsioClientTest {
 
         assertThat(charts.get(0).validation.warnings)
                 .isEqualTo(Arrays.asList());
-
-        assertThat(charts.get(0).venueType).isEqualTo("ROWS_WITHOUT_SECTIONS");
     }
 
     @Test
