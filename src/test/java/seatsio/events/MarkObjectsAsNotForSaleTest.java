@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 
+import java.util.Map;
+
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -63,5 +65,16 @@ public class MarkObjectsAsNotForSaleTest extends SeatsioClientTest{
         assertThat(retrievedEvent.forSaleConfig.objects).isEmpty();
         assertThat(retrievedEvent.forSaleConfig.areaPlaces).isEmpty();
         assertThat(retrievedEvent.forSaleConfig.categories).containsExactly("cat1", "cat2");
+    }
+
+    @Test
+    public void numNotForSale() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        client.events.markAsNotForSale(event.key, null, Map.of("GA1", 5), null);
+
+        EventObjectInfo status = client.events.retrieveObjectInfo(event.key, "GA1");
+        assertThat(status.numNotForSale).isEqualTo(5);
     }
 }

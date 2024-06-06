@@ -105,6 +105,7 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.numBooked).isEqualTo(5);
         assertThat(reportItem.numFree).isEqualTo(92);
         assertThat(reportItem.numHeld).isEqualTo(3);
+        assertThat(reportItem.numNotForSale).isEqualTo(0);
         assertThat(reportItem.capacity).isEqualTo(100);
         assertThat(reportItem.objectType).isEqualTo("generalAdmission");
         assertThat(reportItem.bookAsAWhole).isEqualTo(false);
