@@ -6,8 +6,6 @@ import seatsio.seasons.SeasonParams;
 
 import java.util.List;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Sets.newHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static seatsio.events.EventObjectInfo.FREE;
 

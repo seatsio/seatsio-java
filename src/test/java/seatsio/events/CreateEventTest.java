@@ -1,6 +1,5 @@
 package seatsio.events;
 
-import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.charts.Category;
@@ -12,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
@@ -56,7 +54,7 @@ public class CreateEventTest extends SeatsioClientTest {
     public void tableBookingConfigCustomCanBePassedIn() {
         String chartKey = createTestChartWithTables();
 
-        TableBookingConfig tableBookingConfig = TableBookingConfig.custom(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT));
+        TableBookingConfig tableBookingConfig = TableBookingConfig.custom(Map.of("T1", BY_TABLE, "T2", BY_SEAT));
         Event event = client.events.create(chartKey, new CreateEventParams().withTableBookingConfig(tableBookingConfig));
 
         assertThat(event.key).isNotNull();
@@ -77,7 +75,7 @@ public class CreateEventTest extends SeatsioClientTest {
     @Test
     public void objectCategoriesCanBePassedIn() {
         String chartKey = createTestChart();
-        Map<String, CategoryKey> objectCategories = ImmutableMap.of("A-1", CategoryKey.of(10L));
+        Map<String, CategoryKey> objectCategories = Map.of("A-1", CategoryKey.of(10L));
 
         Event event = client.events.create(chartKey, new CreateEventParams().withObjectCategories(objectCategories));
 
@@ -88,7 +86,7 @@ public class CreateEventTest extends SeatsioClientTest {
     public void categoriesCanBePassedIn() {
         String chartKey = createTestChart();
         Category eventCategory = new Category("eventCategory", "event-level category", "#AAABBB");
-        List<Category> categories = newArrayList(
+        List<Category> categories = List.of(
                 eventCategory
         );
 

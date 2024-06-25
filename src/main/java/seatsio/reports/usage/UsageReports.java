@@ -7,7 +7,6 @@ import seatsio.reports.usage.detailsForEventInMonth.UsageForObjectV1;
 import seatsio.reports.usage.detailsForEventInMonth.UsageForObjectV2;
 import seatsio.reports.usage.detailsForMonth.UsageDetails;
 import seatsio.reports.usage.summaryForMonths.UsageSummaryForAllMonths;
-import seatsio.reports.usage.summaryForMonths.UsageSummaryForMonth;
 import seatsio.util.UnirestWrapper;
 
 import java.util.List;

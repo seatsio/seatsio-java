@@ -1,6 +1,5 @@
 package seatsio.events;
 
-import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.SeatsioException;
@@ -13,7 +12,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -26,7 +24,7 @@ public class CreateEventsTest extends SeatsioClientTest {
     public void multipleEvents() {
         String chartKey = createTestChart();
 
-        List<CreateEventParams> params = newArrayList(new CreateEventParams(), new CreateEventParams());
+        List<CreateEventParams> params = List.of(new CreateEventParams(), new CreateEventParams());
         List<Event> events = client.events.create(chartKey, params);
 
         assertThat(events)
@@ -39,7 +37,7 @@ public class CreateEventsTest extends SeatsioClientTest {
     public void singleEvent() {
         String chartKey = createTestChart();
 
-        List<Event> events = client.events.create(chartKey, newArrayList(new CreateEventParams()));
+        List<Event> events = client.events.create(chartKey, List.of(new CreateEventParams()));
 
         Event event = events.get(0);
         assertThat(event.id).isNotZero();
@@ -59,7 +57,7 @@ public class CreateEventsTest extends SeatsioClientTest {
     public void eventKeyCanBePassedIn() {
         String chartKey = createTestChart();
 
-        List<Event> events = client.events.create(chartKey, newArrayList(
+        List<Event> events = client.events.create(chartKey, List.of(
                 new CreateEventParams().withKey("event1"),
                 new CreateEventParams().withKey("event2")
         ));
@@ -71,23 +69,23 @@ public class CreateEventsTest extends SeatsioClientTest {
     public void tableBookingConfigCanBePassedIn() {
         String chartKey = createTestChartWithTables();
 
-        List<Event> events = client.events.create(chartKey, newArrayList(
-                new CreateEventParams().withTableBookingConfig(TableBookingConfig.custom(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT))),
-                new CreateEventParams().withTableBookingConfig(TableBookingConfig.custom(ImmutableMap.of("T1", BY_SEAT, "T2", BY_TABLE)))
+        List<Event> events = client.events.create(chartKey, List.of(
+                new CreateEventParams().withTableBookingConfig(TableBookingConfig.custom(Map.of("T1", BY_TABLE, "T2", BY_SEAT))),
+                new CreateEventParams().withTableBookingConfig(TableBookingConfig.custom(Map.of("T1", BY_SEAT, "T2", BY_TABLE)))
         ));
 
         assertThat(events).extracting("tableBookingConfig").containsExactly(
-                TableBookingConfig.custom(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT)),
-                TableBookingConfig.custom(ImmutableMap.of("T2", BY_TABLE, "T1", BY_SEAT))
+                TableBookingConfig.custom(Map.of("T1", BY_TABLE, "T2", BY_SEAT)),
+                TableBookingConfig.custom(Map.of("T2", BY_TABLE, "T1", BY_SEAT))
         );
     }
 
     @Test
     public void objectCategoriesCanBePassedIn() {
         String chartKey = createTestChart();
-        Map<String, CategoryKey> objectCategories = ImmutableMap.of("A-1", CategoryKey.of(10L));
+        Map<String, CategoryKey> objectCategories = Map.of("A-1", CategoryKey.of(10L));
 
-        List<Event> events = client.events.create(chartKey, newArrayList(
+        List<Event> events = client.events.create(chartKey, List.of(
                 new CreateEventParams().withObjectCategories(objectCategories)
         ));
 
@@ -98,7 +96,7 @@ public class CreateEventsTest extends SeatsioClientTest {
     public void nameCanBePassedIn() {
         String chartKey = createTestChart();
 
-        List<Event> events = client.events.create(chartKey, newArrayList(
+        List<Event> events = client.events.create(chartKey, List.of(
                 new CreateEventParams().withName("My event")
         ));
 
@@ -109,7 +107,7 @@ public class CreateEventsTest extends SeatsioClientTest {
     public void dateCanBePassedIn() {
         String chartKey = createTestChart();
 
-        List<Event> events = client.events.create(chartKey, newArrayList(
+        List<Event> events = client.events.create(chartKey, List.of(
                 new CreateEventParams().withDate(LocalDate.of(2022, 10, 1))
         ));
 
@@ -124,7 +122,7 @@ public class CreateEventsTest extends SeatsioClientTest {
                 new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-2"))
         );
 
-        List<Event> events = client.events.create(chartKey, newArrayList(
+        List<Event> events = client.events.create(chartKey, List.of(
                 new CreateEventParams().withChannels(channels)
         ));
 
@@ -142,7 +140,7 @@ public class CreateEventsTest extends SeatsioClientTest {
         ForSaleConfigParams forSaleConfigParams1 = new ForSaleConfigParams(false, List.of("A-1"), Map.of("GA1", 5), List.of("Cat1"));
         ForSaleConfigParams forSaleConfigParams2 = new ForSaleConfigParams(false, List.of("A-2"), Map.of("GA1", 7), List.of("Cat1"));
 
-        List<Event> events = client.events.create(chartKey, newArrayList(
+        List<Event> events = client.events.create(chartKey, List.of(
                 new CreateEventParams().withForSaleConfigParams(forSaleConfigParams1),
                 new CreateEventParams().withForSaleConfigParams(forSaleConfigParams2)
         ));
@@ -157,7 +155,7 @@ public class CreateEventsTest extends SeatsioClientTest {
     public void errorOnDuplicateKeys() {
         String chartKey = createTestChart();
 
-        assertThrows(SeatsioException.class, () -> client.events.create(chartKey, newArrayList(
+        assertThrows(SeatsioException.class, () -> client.events.create(chartKey, List.of(
                 new CreateEventParams().withKey("event1"),
                 new CreateEventParams().withKey("event1")
         )));

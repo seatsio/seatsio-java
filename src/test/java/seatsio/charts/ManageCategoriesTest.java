@@ -1,6 +1,5 @@
 package seatsio.charts;
 
-import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.SeatsioException;
@@ -8,7 +7,6 @@ import seatsio.SeatsioException;
 import java.util.List;
 import java.util.Map;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -24,7 +22,7 @@ public class ManageCategoriesTest extends SeatsioClientTest {
         Chart retrievedChart = client.charts.retrieve(chart.key);
         Map<?, ?> drawing = client.charts.retrievePublishedVersion(retrievedChart.key);
         assertThat(categories(drawing)).containsExactly(
-                ImmutableMap.of(
+                Map.of(
                         "key", 1.0,
                         "label", "Category 1",
                         "color", "#aaaaaa",
@@ -35,7 +33,7 @@ public class ManageCategoriesTest extends SeatsioClientTest {
 
     @Test
     public void removeCategory() {
-        List<Category> categories = newArrayList(
+        List<Category> categories = List.of(
                 new Category(CategoryKey.of(1L), "Category 1", "#aaaaaa"),
                 new Category(CategoryKey.of("cat2"), "Category 2", "#bbbbbb", true)
         );
@@ -46,7 +44,7 @@ public class ManageCategoriesTest extends SeatsioClientTest {
         Chart retrievedChart = client.charts.retrieve(chart.key);
         Map<?, ?> drawing = client.charts.retrievePublishedVersion(retrievedChart.key);
         assertThat(categories(drawing)).containsExactly(
-                ImmutableMap.of(
+                Map.of(
                         "key", "cat2",
                         "label", "Category 2",
                         "color", "#bbbbbb",
@@ -57,7 +55,7 @@ public class ManageCategoriesTest extends SeatsioClientTest {
 
     @Test
     public void listCategories() {
-        List<Category> categories = newArrayList(
+        List<Category> categories = List.of(
                 new Category(CategoryKey.of(1L), "Category 1", "#aaaaaa"),
                 new Category(CategoryKey.of("cat2"), "Category 2", "#bbbbbb", true)
         );
@@ -74,7 +72,7 @@ public class ManageCategoriesTest extends SeatsioClientTest {
 
     @Test
     public void updateCategory() {
-        List<Category> categories = newArrayList(
+        List<Category> categories = List.of(
                 new Category(CategoryKey.of(1L), "Category 1", "#aaaaaa"),
                 new Category(CategoryKey.of("cat2"), "Category 2", "#bbbbbb", true)
         );
@@ -86,13 +84,13 @@ public class ManageCategoriesTest extends SeatsioClientTest {
         Chart retrievedChart = client.charts.retrieve(chart.key);
         Map<?, ?> drawing = client.charts.retrievePublishedVersion(retrievedChart.key);
         assertThat(categories(drawing)).containsExactly(
-                ImmutableMap.of(
+                Map.of(
                         "key", 1.0,
                         "label", "Category 1",
                         "color", "#aaaaaa",
                         "accessible", false
                 ),
-                ImmutableMap.of(
+                Map.of(
                         "key", "cat2",
                         "label", "New label",
                         "color", "#cccccc",
@@ -103,7 +101,7 @@ public class ManageCategoriesTest extends SeatsioClientTest {
 
     @Test
     public void updateCategory_doNotChangeAnything() {
-        List<Category> categories = newArrayList(
+        List<Category> categories = List.of(
                 new Category(CategoryKey.of(1L), "Category 1", "#aaaaaa"),
                 new Category(CategoryKey.of("cat2"), "Category 2", "#bbbbbb", true)
         );
@@ -115,13 +113,13 @@ public class ManageCategoriesTest extends SeatsioClientTest {
         Chart retrievedChart = client.charts.retrieve(chart.key);
         Map<?, ?> drawing = client.charts.retrievePublishedVersion(retrievedChart.key);
         assertThat(categories(drawing)).containsExactly(
-                ImmutableMap.of(
+                Map.of(
                         "key", 1.0,
                         "label", "Category 1",
                         "color", "#aaaaaa",
                         "accessible", false
                 ),
-                ImmutableMap.of(
+                Map.of(
                         "key", "cat2",
                         "label", "Category 2",
                         "color", "#bbbbbb",
@@ -139,7 +137,7 @@ public class ManageCategoriesTest extends SeatsioClientTest {
 
     @Test
     public void updateCategory_unknownCategory() {
-        List<Category> categories = newArrayList(
+        List<Category> categories = List.of(
                 new Category(CategoryKey.of(1L), "Category 1", "#aaaaaa"),
                 new Category(CategoryKey.of("cat2"), "Category 2", "#bbbbbb", true)
         );

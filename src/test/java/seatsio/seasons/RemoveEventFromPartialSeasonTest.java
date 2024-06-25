@@ -3,7 +3,8 @@ package seatsio.seasons;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 
-import static com.google.common.collect.Lists.newArrayList;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RemoveEventFromPartialSeasonTest extends SeatsioClientTest {
@@ -13,9 +14,9 @@ public class RemoveEventFromPartialSeasonTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         SeasonParams seasonParams = new SeasonParams()
                 .key("aSeason")
-                .eventKeys(newArrayList("event1", "event2"));
+                .eventKeys(List.of("event1", "event2"));
         client.seasons.create(chartKey, seasonParams);
-        client.seasons.createPartialSeason("aSeason", "aPartialSeason", newArrayList("event1", "event2"));
+        client.seasons.createPartialSeason("aSeason", "aPartialSeason", List.of("event1", "event2"));
 
         Season updatedPartialSeason = client.seasons.removeEventFromPartialSeason("aSeason", "aPartialSeason", "event2");
 

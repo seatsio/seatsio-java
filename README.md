@@ -137,7 +137,7 @@ import seatsio.events.EventObjectInfo;
 
 SeatsioClient client = new SeatsioClient(Region.EU, "<WORKSPACE SECRET KEY>");
 
-Map<String, EventObjectInfo> eventObjectInfos = client.events.retrieveObjectInfos(event.key, newArrayList("A-1", "A-2"));
+Map<String, EventObjectInfo> eventObjectInfos = client.events.retrieveObjectInfos(event.key, List.of("A-1", "A-2"));
 
 System.out.println(eventObjectInfos.get("A-1").categoryLabel);
 System.out.println(eventObjectInfos.get("A-1").categoryKey);

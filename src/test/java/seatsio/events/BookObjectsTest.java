@@ -1,14 +1,13 @@
 package seatsio.events;
 
-import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.holdTokens.HoldToken;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Sets.newHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static seatsio.events.EventObjectInfo.BOOKED;
 import static seatsio.events.EventObjectInfo.FREE;
@@ -20,7 +19,7 @@ public class BookObjectsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        ChangeObjectStatusResult result = client.events.book(event.key, newArrayList("A-1", "A-2"));
+        ChangeObjectStatusResult result = client.events.book(event.key, List.of("A-1", "A-2"));
 
         assertThat(client.events.retrieveObjectInfo(event.key, "A-1").status).isEqualTo(BOOKED);
         assertThat(client.events.retrieveObjectInfo(event.key, "A-2").status).isEqualTo(BOOKED);
@@ -33,7 +32,7 @@ public class BookObjectsTest extends SeatsioClientTest {
         String chartKey = createTestChartWithSections();
         Event event = client.events.create(chartKey);
 
-        ChangeObjectStatusResult result = client.events.book(event.key, newArrayList("Section A-A-1", "Section A-A-2"));
+        ChangeObjectStatusResult result = client.events.book(event.key, List.of("Section A-A-1", "Section A-A-2"));
 
         assertThat(client.events.retrieveObjectInfo(event.key, "Section A-A-1").status).isEqualTo(BOOKED);
         assertThat(client.events.retrieveObjectInfo(event.key, "Section A-A-2").status).isEqualTo(BOOKED);
@@ -51,9 +50,9 @@ public class BookObjectsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
         HoldToken holdToken = client.holdTokens.create();
-        client.events.hold(event.key, newArrayList("A-1", "A-2"), holdToken.holdToken);
+        client.events.hold(event.key, List.of("A-1", "A-2"), holdToken.holdToken);
 
-        client.events.book(event.key, newArrayList("A-1", "A-2"), holdToken.holdToken);
+        client.events.book(event.key, List.of("A-1", "A-2"), holdToken.holdToken);
 
         EventObjectInfo status1 = client.events.retrieveObjectInfo(event.key, "A-1");
         assertThat(status1.status).isEqualTo(BOOKED);
@@ -69,7 +68,7 @@ public class BookObjectsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        client.events.book(event.key, newArrayList("A-1", "A-2"), null, "order1", null, null, null);
+        client.events.book(event.key, List.of("A-1", "A-2"), null, "order1", null, null, null);
 
         assertThat(client.events.retrieveObjectInfo(event.key, "A-1").orderId).isEqualTo("order1");
         assertThat(client.events.retrieveObjectInfo(event.key, "A-2").orderId).isEqualTo("order1");
@@ -79,21 +78,21 @@ public class BookObjectsTest extends SeatsioClientTest {
     public void keepExtraData() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.updateExtraData(event.key, "A-1", ImmutableMap.of("foo", "bar"));
+        client.events.updateExtraData(event.key, "A-1", Map.of("foo", "bar"));
 
-        client.events.book(event.key, newArrayList("A-1"), null, null, true, null, null);
+        client.events.book(event.key, List.of("A-1"), null, null, true, null, null);
 
-        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").extraData).isEqualTo(Map.of("foo", "bar"));
     }
 
     @Test
     public void channelKeys() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey, new CreateEventParams().withChannels(List.of(
-                new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))
+                new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1", "A-2"))
         )));
 
-        client.events.book(event.key, newArrayList("A-1"), null, null, true, null, newHashSet("channelKey1"));
+        client.events.book(event.key, List.of("A-1"), null, null, true, null, Set.of("channelKey1"));
 
         assertThat(client.events.retrieveObjectInfo(event.key, "A-1").status).isEqualTo(BOOKED);
     }
@@ -102,10 +101,10 @@ public class BookObjectsTest extends SeatsioClientTest {
     public void ignoreChannels() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey, new CreateEventParams().withChannels(List.of(
-                new Channel("channelKey1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))
+                new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1", "A-2"))
         )));
 
-        client.events.book(event.key, newArrayList("A-1"), null, null, null, true, null);
+        client.events.book(event.key, List.of("A-1"), null, null, null, true, null);
 
         assertThat(client.events.retrieveObjectInfo(event.key, "A-1").status).isEqualTo(BOOKED);
     }

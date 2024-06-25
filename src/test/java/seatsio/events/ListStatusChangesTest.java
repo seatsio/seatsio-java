@@ -1,6 +1,5 @@
 package seatsio.events;
 
-import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClient;
 import seatsio.SeatsioClientTest;
@@ -10,9 +9,9 @@ import seatsio.util.Page;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.util.Arrays.asList;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -31,10 +30,10 @@ public class ListStatusChangesTest extends SeatsioClientTest {
     public void test() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.changeObjectStatus(newArrayList(
-                new StatusChangeRequest(event.key, newArrayList("A-1"), "s1"),
-                new StatusChangeRequest(event.key, newArrayList("A-2"), "s2"),
-                new StatusChangeRequest(event.key, newArrayList("A-3"), "s3")
+        client.events.changeObjectStatus(List.of(
+                new StatusChangeRequest(event.key, List.of("A-1"), "s1"),
+                new StatusChangeRequest(event.key, List.of("A-2"), "s2"),
+                new StatusChangeRequest(event.key, List.of("A-3"), "s3")
         ));
         waitForStatusChanges(client, event, 3);
 
@@ -48,7 +47,7 @@ public class ListStatusChangesTest extends SeatsioClientTest {
     public void propertiesOfStatusChange() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        ObjectProperties object = new ObjectProperties("A-1", ImmutableMap.of("foo", "bar"));
+        ObjectProperties object = new ObjectProperties("A-1", Map.of("foo", "bar"));
         client.events.changeObjectStatus(event.key, asList(object), "s1", null, "order1", null, null, null);
         waitForStatusChanges(client, event, 1);
 
@@ -62,7 +61,7 @@ public class ListStatusChangesTest extends SeatsioClientTest {
         assertThat(statusChange.status).isEqualTo("s1");
         assertThat(statusChange.objectLabel).isEqualTo("A-1");
         assertThat(statusChange.eventId).isEqualTo(event.id);
-        assertThat(statusChange.extraData).isEqualTo(ImmutableMap.of("foo", "bar"));
+        assertThat(statusChange.extraData).isEqualTo(Map.of("foo", "bar"));
         assertThat(statusChange.origin.type).isEqualTo(API_CALL);
         assertThat(statusChange.origin.ip).isNotNull();
         assertThat(statusChange.isPresentOnChart).isTrue();
@@ -74,7 +73,7 @@ public class ListStatusChangesTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
         HoldToken holdToken = client.holdTokens.create();
-        client.events.hold(event.key, newArrayList("A-1"), holdToken.holdToken);
+        client.events.hold(event.key, List.of("A-1"), holdToken.holdToken);
         waitForStatusChanges(client, event, 1);
 
         Stream<StatusChange> statusChanges = client.events.statusChanges(event.key).all();
@@ -87,7 +86,7 @@ public class ListStatusChangesTest extends SeatsioClientTest {
     public void objectNotPresentAnymore() {
         String chartKey = createTestChartWithTables();
         Event event = client.events.create(chartKey, new CreateEventParams().withKey("event1").withTableBookingConfig(allByTable()));
-        client.events.book(event.key, newArrayList("T1"));
+        client.events.book(event.key, List.of("T1"));
         client.events.update("event1", new UpdateEventParams().withTableBookingConfig(allBySeat()));
         waitForStatusChanges(client, event, 1);
 
@@ -102,11 +101,11 @@ public class ListStatusChangesTest extends SeatsioClientTest {
     public void filter() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.changeObjectStatus(newArrayList(
-                new StatusChangeRequest(event.key, newArrayList("A-1"), "s1"),
-                new StatusChangeRequest(event.key, newArrayList("A-2"), "s2"),
-                new StatusChangeRequest(event.key, newArrayList("B-1"), "s3"),
-                new StatusChangeRequest(event.key, newArrayList("A-3"), "s4")
+        client.events.changeObjectStatus(List.of(
+                new StatusChangeRequest(event.key, List.of("A-1"), "s1"),
+                new StatusChangeRequest(event.key, List.of("A-2"), "s2"),
+                new StatusChangeRequest(event.key, List.of("B-1"), "s3"),
+                new StatusChangeRequest(event.key, List.of("A-3"), "s4")
         ));
         waitForStatusChanges(client, event, 4);
 
@@ -120,10 +119,10 @@ public class ListStatusChangesTest extends SeatsioClientTest {
     public void sortAsc() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.changeObjectStatus(newArrayList(
-                new StatusChangeRequest(event.key, newArrayList("A-1"), "s1"),
-                new StatusChangeRequest(event.key, newArrayList("A-2"), "s2"),
-                new StatusChangeRequest(event.key, newArrayList("A-3"), "s3")
+        client.events.changeObjectStatus(List.of(
+                new StatusChangeRequest(event.key, List.of("A-1"), "s1"),
+                new StatusChangeRequest(event.key, List.of("A-2"), "s2"),
+                new StatusChangeRequest(event.key, List.of("A-3"), "s3")
         ));
         waitForStatusChanges(client, event, 3);
 
@@ -138,10 +137,10 @@ public class ListStatusChangesTest extends SeatsioClientTest {
     public void sortAscPageBefore() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.changeObjectStatus(newArrayList(
-                new StatusChangeRequest(event.key, newArrayList("A-1"), "s1"),
-                new StatusChangeRequest(event.key, newArrayList("A-2"), "s2"),
-                new StatusChangeRequest(event.key, newArrayList("A-3"), "s3")
+        client.events.changeObjectStatus(List.of(
+                new StatusChangeRequest(event.key, List.of("A-1"), "s1"),
+                new StatusChangeRequest(event.key, List.of("A-2"), "s2"),
+                new StatusChangeRequest(event.key, List.of("A-3"), "s3")
         ));
         waitForStatusChanges(client, event, 3);
 
@@ -158,10 +157,10 @@ public class ListStatusChangesTest extends SeatsioClientTest {
     public void sortAscPageAfter() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.changeObjectStatus(newArrayList(
-                new StatusChangeRequest(event.key, newArrayList("A-1"), "s1"),
-                new StatusChangeRequest(event.key, newArrayList("A-2"), "s2"),
-                new StatusChangeRequest(event.key, newArrayList("A-3"), "s3")
+        client.events.changeObjectStatus(List.of(
+                new StatusChangeRequest(event.key, List.of("A-1"), "s1"),
+                new StatusChangeRequest(event.key, List.of("A-2"), "s2"),
+                new StatusChangeRequest(event.key, List.of("A-3"), "s3")
         ));
         waitForStatusChanges(client, event, 3);
 
@@ -178,10 +177,10 @@ public class ListStatusChangesTest extends SeatsioClientTest {
     public void sortDesc() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.changeObjectStatus(newArrayList(
-                new StatusChangeRequest(event.key, newArrayList("A-1"), "s1"),
-                new StatusChangeRequest(event.key, newArrayList("A-2"), "s2"),
-                new StatusChangeRequest(event.key, newArrayList("A-3"), "s3")
+        client.events.changeObjectStatus(List.of(
+                new StatusChangeRequest(event.key, List.of("A-1"), "s1"),
+                new StatusChangeRequest(event.key, List.of("A-2"), "s2"),
+                new StatusChangeRequest(event.key, List.of("A-3"), "s3")
         ));
         waitForStatusChanges(client, event, 3);
 

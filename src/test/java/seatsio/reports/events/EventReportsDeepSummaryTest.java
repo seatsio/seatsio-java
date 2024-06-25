@@ -4,11 +4,10 @@ import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.events.Event;
 
+import java.util.List;
 import java.util.Map;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static seatsio.events.EventObjectInfo.BOOKED;
 import static seatsio.events.EventObjectInfo.*;
 
 public class EventReportsDeepSummaryTest extends SeatsioClientTest {
@@ -17,7 +16,7 @@ public class EventReportsDeepSummaryTest extends SeatsioClientTest {
     public void deepSummaryByStatus() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.book(event.key, newArrayList("A-1"));
+        client.events.book(event.key, List.of("A-1"));
 
         Map<String, EventReportDeepSummaryItem> report = client.eventReports.deepSummaryByStatus(event.key);
 
@@ -42,7 +41,7 @@ public class EventReportsDeepSummaryTest extends SeatsioClientTest {
     public void deepSummaryByCategoryKey() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.book(event.key, newArrayList("A-1"));
+        client.events.book(event.key, List.of("A-1"));
 
         Map<String, EventReportDeepSummaryItem> report = client.eventReports.deepSummaryByCategoryKey(event.key);
 
@@ -55,7 +54,7 @@ public class EventReportsDeepSummaryTest extends SeatsioClientTest {
     public void deepSummaryByCategoryLabel() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.book(event.key, newArrayList("A-1"));
+        client.events.book(event.key, List.of("A-1"));
 
         Map<String, EventReportDeepSummaryItem> report = client.eventReports.deepSummaryByCategoryLabel(event.key);
 
@@ -68,7 +67,7 @@ public class EventReportsDeepSummaryTest extends SeatsioClientTest {
     public void deepSummaryBySection() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.book(event.key, newArrayList("A-1"));
+        client.events.book(event.key, List.of("A-1"));
 
         Map<String, EventReportDeepSummaryItem> report = client.eventReports.deepSummaryBySection(event.key);
 
@@ -81,7 +80,7 @@ public class EventReportsDeepSummaryTest extends SeatsioClientTest {
     public void deepSummaryByAvailability() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.book(event.key, newArrayList("A-1"));
+        client.events.book(event.key, List.of("A-1"));
 
         Map<String, EventReportDeepSummaryItem> report = client.eventReports.deepSummaryByAvailability(event.key);
 
@@ -94,7 +93,7 @@ public class EventReportsDeepSummaryTest extends SeatsioClientTest {
     public void deepSummaryByAvailabilityReason() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.book(event.key, newArrayList("A-1"));
+        client.events.book(event.key, List.of("A-1"));
 
         Map<String, EventReportDeepSummaryItem> report = client.eventReports.deepSummaryByAvailabilityReason(event.key);
 
@@ -107,7 +106,7 @@ public class EventReportsDeepSummaryTest extends SeatsioClientTest {
     public void deepSummaryByChannel() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.book(event.key, newArrayList("A-1"));
+        client.events.book(event.key, List.of("A-1"));
 
         Map<String, EventReportDeepSummaryItem> report = client.eventReports.deepSummaryByChannel(event.key);
 

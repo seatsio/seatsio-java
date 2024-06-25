@@ -1,6 +1,5 @@
 package seatsio.reports.events;
 
-import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.events.*;
@@ -10,9 +9,8 @@ import seatsio.seasons.SeasonParams;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static seatsio.events.EventObjectInfo.*;
@@ -24,9 +22,9 @@ public class EventReportsTest extends SeatsioClientTest {
     public void reportItemProperties() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey, new CreateEventParams().withChannels(List.of(
-                new Channel("channel1", "channel 1", "#FFFF99", 1, newHashSet("A-1"))
+                new Channel("channel1", "channel 1", "#FFFF99", 1, Set.of("A-1"))
         )));
-        Map<String, String> extraData = ImmutableMap.of("foo", "bar");
+        Map<String, String> extraData = Map.of("foo", "bar");
         client.events.book(event.key, asList(new ObjectProperties("A-1", "ticketType1", extraData)), null, "order1", null, true, null);
 
         Map<String, List<EventObjectInfo>> report = client.eventReports.byLabel(event.key);
@@ -70,7 +68,7 @@ public class EventReportsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
         HoldToken holdToken = client.holdTokens.create();
-        client.events.hold(event.key, newArrayList("A-1"), holdToken.holdToken);
+        client.events.hold(event.key, List.of("A-1"), holdToken.holdToken);
 
         Map<String, List<EventObjectInfo>> report = client.eventReports.byLabel(event.key);
 
@@ -354,7 +352,7 @@ public class EventReportsTest extends SeatsioClientTest {
     public void byChannel() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey, new CreateEventParams().withChannels(List.of(
-                new Channel("channel1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))
+                new Channel("channel1", "channel 1", "#FFFF99", 1, Set.of("A-1", "A-2"))
         )));
 
         Map<String, List<EventObjectInfo>> report = client.eventReports.byChannel(event.key);
@@ -367,7 +365,7 @@ public class EventReportsTest extends SeatsioClientTest {
     public void bySpecificChannel() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey, new CreateEventParams().withChannels(List.of(
-                new Channel("channel1", "channel 1", "#FFFF99", 1, newHashSet("A-1", "A-2"))
+                new Channel("channel1", "channel 1", "#FFFF99", 1, Set.of("A-1", "A-2"))
         )));
 
         List<EventObjectInfo> report = client.eventReports.byChannel(event.key, "channel1");

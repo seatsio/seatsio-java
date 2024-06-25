@@ -3,7 +3,9 @@ package seatsio.events.channels;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.charts.Chart;
-import seatsio.events.*;
+import seatsio.events.Channel;
+import seatsio.events.CreateEventParams;
+import seatsio.events.Event;
 
 import java.util.HashSet;
 import java.util.List;

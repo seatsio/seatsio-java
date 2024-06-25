@@ -1,6 +1,5 @@
 package seatsio.events;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -14,8 +13,6 @@ import seatsio.util.*;
 import java.util.*;
 import java.util.stream.Stream;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Maps.newHashMap;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static seatsio.events.EventObjectInfo.*;
@@ -80,7 +77,7 @@ public class Events {
     }
 
     public void removeObjectCategories(String eventKey) {
-        update(eventKey, new UpdateEventParams().withObjectCategories(newHashMap()));
+        update(eventKey, new UpdateEventParams().withObjectCategories(Map.of()));
     }
 
     public void removeCategories(String eventKey) {
@@ -188,7 +185,7 @@ public class Events {
     public Lister<StatusChange> statusChanges(String eventKey, String filter, String sortField, SortDirection sortDirection) {
         PageFetcher<StatusChange> pageFetcher = new PageFetcher<>(
                 baseUrl,
-                "/events/{key}/status-changes", ImmutableMap.of("key", eventKey), new HashMap<>() {{
+                "/events/{key}/status-changes", Map.of("key", eventKey), new HashMap<>() {{
             put("filter", filter);
             put("sort", toSort(sortField, sortDirection));
         }}, unirest, StatusChange.class);
@@ -208,7 +205,7 @@ public class Events {
     public Lister<StatusChange> statusChangesForObject(String key, String objectId) {
         PageFetcher<StatusChange> pageFetcher = new PageFetcher<>(
                 baseUrl,
-                "/events/{key}/objects/{objectId}/status-changes", ImmutableMap.of("key", key, "objectId", objectId),
+                "/events/{key}/objects/{objectId}/status-changes", Map.of("key", key, "objectId", objectId),
                 unirest,
                 StatusChange.class);
         return new Lister<>(pageFetcher);
@@ -404,7 +401,7 @@ public class Events {
     }
 
     public EventObjectInfo retrieveObjectInfo(String key, String label) {
-        return retrieveObjectInfos(key, newArrayList(label)).get(label);
+        return retrieveObjectInfos(key, List.of(label)).get(label);
     }
 
     public Map<String, EventObjectInfo> retrieveObjectInfos(String key, List<String> labels) {
