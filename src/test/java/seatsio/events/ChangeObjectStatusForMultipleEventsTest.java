@@ -1,12 +1,13 @@
 package seatsio.events;
 
-import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.SeatsioException;
 import seatsio.holdTokens.HoldToken;
 
-import static com.google.common.collect.Lists.newArrayList;
+import java.util.List;
+import java.util.Set;
+
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -19,7 +20,7 @@ public class ChangeObjectStatusForMultipleEventsTest extends SeatsioClientTest {
         Event event1 = client.events.create(chartKey);
         Event event2 = client.events.create(chartKey);
 
-        client.events.changeObjectStatus(asList(event1.key, event2.key), newArrayList("A-1", "A-2"), "foo", null, null, null, null, null);
+        client.events.changeObjectStatus(asList(event1.key, event2.key), List.of("A-1", "A-2"), "foo", null, null, null, null, null);
 
         assertThat(client.events.retrieveObjectInfo(event1.key, "A-1").status).isEqualTo("foo");
         assertThat(client.events.retrieveObjectInfo(event1.key, "A-2").status).isEqualTo("foo");
@@ -33,7 +34,7 @@ public class ChangeObjectStatusForMultipleEventsTest extends SeatsioClientTest {
         Event event1 = client.events.create(chartKey);
         Event event2 = client.events.create(chartKey);
 
-        client.events.changeObjectStatus(asList(event1.key, event2.key), newArrayList("A-1", "A-2"), "foo");
+        client.events.changeObjectStatus(asList(event1.key, event2.key), List.of("A-1", "A-2"), "foo");
 
         assertThat(client.events.retrieveObjectInfo(event1.key, "A-1").status).isEqualTo("foo");
         assertThat(client.events.retrieveObjectInfo(event1.key, "A-2").status).isEqualTo("foo");
@@ -47,7 +48,7 @@ public class ChangeObjectStatusForMultipleEventsTest extends SeatsioClientTest {
         Event event1 = client.events.create(chartKey);
         Event event2 = client.events.create(chartKey);
 
-        client.events.book(asList(event1.key, event2.key), newArrayList("A-1", "A-2"), null, null, null, null, null);
+        client.events.book(asList(event1.key, event2.key), List.of("A-1", "A-2"), null, null, null, null, null);
 
         assertThat(client.events.retrieveObjectInfo(event1.key, "A-1").status).isEqualTo(EventObjectInfo.BOOKED);
         assertThat(client.events.retrieveObjectInfo(event1.key, "A-2").status).isEqualTo(EventObjectInfo.BOOKED);
@@ -62,7 +63,7 @@ public class ChangeObjectStatusForMultipleEventsTest extends SeatsioClientTest {
         Event event2 = client.events.create(chartKey);
         HoldToken token = client.holdTokens.create();
 
-        client.events.hold(asList(event1.key, event2.key), newArrayList("A-1", "A-2"), token.holdToken, null, null, null, null);
+        client.events.hold(asList(event1.key, event2.key), List.of("A-1", "A-2"), token.holdToken, null, null, null, null);
 
         assertThat(client.events.retrieveObjectInfo(event1.key, "A-1").status).isEqualTo(EventObjectInfo.HELD);
         assertThat(client.events.retrieveObjectInfo(event1.key, "A-2").status).isEqualTo(EventObjectInfo.HELD);
@@ -75,9 +76,9 @@ public class ChangeObjectStatusForMultipleEventsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event1 = client.events.create(chartKey);
         Event event2 = client.events.create(chartKey);
-        client.events.book(asList(event1.key, event2.key), newArrayList("A-1", "A-2"), null, null, null, null, null);
+        client.events.book(asList(event1.key, event2.key), List.of("A-1", "A-2"), null, null, null, null, null);
 
-        client.events.release(asList(event1.key, event2.key), newArrayList("A-1", "A-2"), null, null, null, null, null);
+        client.events.release(asList(event1.key, event2.key), List.of("A-1", "A-2"), null, null, null, null, null);
 
         assertThat(client.events.retrieveObjectInfo(event1.key, "A-1").status).isEqualTo(EventObjectInfo.FREE);
         assertThat(client.events.retrieveObjectInfo(event1.key, "A-2").status).isEqualTo(EventObjectInfo.FREE);
@@ -92,7 +93,7 @@ public class ChangeObjectStatusForMultipleEventsTest extends SeatsioClientTest {
         Event event2 = client.events.create(chartKey);
 
         try {
-            client.events.changeObjectStatus(asList(event1.key, event2.key), newArrayList("A-1"), EventObjectInfo.BOOKED, null, null, null, null, null, Sets.newHashSet("MustBeThisStatus"), null);
+            client.events.changeObjectStatus(asList(event1.key, event2.key), List.of("A-1"), EventObjectInfo.BOOKED, null, null, null, null, null, Set.of("MustBeThisStatus"), null);
             fail("expected exception");
         } catch (SeatsioException e) {
             assertThat(e.errors).hasSize(1);
@@ -107,7 +108,7 @@ public class ChangeObjectStatusForMultipleEventsTest extends SeatsioClientTest {
         Event event2 = client.events.create(chartKey);
 
         try {
-            client.events.changeObjectStatus(asList(event1.key, event2.key), newArrayList("A-1"), EventObjectInfo.BOOKED, null, null, null, null, null, null, Sets.newHashSet("free"));
+            client.events.changeObjectStatus(asList(event1.key, event2.key), List.of("A-1"), EventObjectInfo.BOOKED, null, null, null, null, null, null, Set.of("free"));
             fail("expected exception");
         } catch (SeatsioException e) {
             assertThat(e.errors).hasSize(1);

@@ -4,7 +4,8 @@ import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.charts.Chart;
 
-import static com.google.common.collect.Lists.newArrayList;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CreatePartialSeasonTest extends SeatsioClientTest {
@@ -26,10 +27,10 @@ public class CreatePartialSeasonTest extends SeatsioClientTest {
         Chart chart = client.charts.create();
         SeasonParams seasonParams = new SeasonParams()
                 .key("aTopLevelSeason")
-                .eventKeys(newArrayList("event1", "event2", "event3"));
+                .eventKeys(List.of("event1", "event2", "event3"));
         Season topLevelSeason = client.seasons.create(chart.key, seasonParams);
 
-        Season season = client.seasons.createPartialSeason(topLevelSeason.key, null, newArrayList("event1", "event3"));
+        Season season = client.seasons.createPartialSeason(topLevelSeason.key, null, List.of("event1", "event3"));
 
         assertThat(season.events).extracting(event -> event.key).containsExactly("event1", "event3");
         assertThat(season.events.get(0).partialSeasonKeysForEvent).containsExactly(season.key);

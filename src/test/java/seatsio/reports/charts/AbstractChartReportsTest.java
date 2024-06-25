@@ -10,9 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static seatsio.reports.charts.ChartReportBookWholeTablesMode.CHART;
-import static seatsio.reports.charts.ChartReportBookWholeTablesMode.FALSE;
-import static seatsio.reports.charts.ChartReportBookWholeTablesMode.TRUE;
+import static seatsio.reports.charts.ChartReportBookWholeTablesMode.*;
 import static seatsio.reports.charts.ChartReportOptions.options;
 
 public abstract class AbstractChartReportsTest extends SeatsioClientTest {

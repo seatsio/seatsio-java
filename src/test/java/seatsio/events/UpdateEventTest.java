@@ -1,6 +1,5 @@
 package seatsio.events;
 
-import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.charts.Category;
@@ -13,7 +12,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.time.Instant.now;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,7 +51,7 @@ public class UpdateEventTest extends SeatsioClientTest {
         String chartKey = createTestChartWithTables();
         Event event = client.events.create(chartKey);
 
-        TableBookingConfig newTableBookingConfig = TableBookingConfig.custom(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT));
+        TableBookingConfig newTableBookingConfig = TableBookingConfig.custom(Map.of("T1", BY_TABLE, "T2", BY_SEAT));
         client.events.update(event.key, new UpdateEventParams().withTableBookingConfig(newTableBookingConfig));
 
         Event retrievedEvent = client.events.retrieve(event.key);
@@ -63,12 +61,12 @@ public class UpdateEventTest extends SeatsioClientTest {
     @Test
     public void updateObjectCategories() {
         String chartKey = createTestChart();
-        Map<String, CategoryKey> objectCategories = ImmutableMap.of(
+        Map<String, CategoryKey> objectCategories = Map.of(
                 "A-1", CategoryKey.of(9L)
         );
         Event event = client.events.create(chartKey, new CreateEventParams().withObjectCategories(objectCategories));
 
-        Map<String, CategoryKey> newObjectCategories = ImmutableMap.of(
+        Map<String, CategoryKey> newObjectCategories = Map.of(
                 "A-2", CategoryKey.of(10L)
         );
         client.events.update(event.key, new UpdateEventParams().withObjectCategories(newObjectCategories));
@@ -80,7 +78,7 @@ public class UpdateEventTest extends SeatsioClientTest {
     @Test
     public void removeObjectCategories() {
         String chartKey = createTestChart();
-        Map<String, CategoryKey> objectCategories = ImmutableMap.of(
+        Map<String, CategoryKey> objectCategories = Map.of(
                 "A-1", CategoryKey.of(9L)
         );
         Event event = client.events.create(chartKey, new CreateEventParams().withObjectCategories(objectCategories));
@@ -97,7 +95,7 @@ public class UpdateEventTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
 
         Category eventCategory = new Category("eventCategory", "event-level category", "#AAABBB");
-        List<Category> categories = newArrayList(
+        List<Category> categories = List.of(
                 eventCategory
         );
 
@@ -114,7 +112,7 @@ public class UpdateEventTest extends SeatsioClientTest {
     public void removeCategories() {
         String chartKey = createTestChart();
         Category eventCategory = new Category("eventCategory", "event-level category", "#AAABBB");
-        List<Category> categories = newArrayList(eventCategory);
+        List<Category> categories = List.of(eventCategory);
 
         Event event = client.events.create(chartKey, new CreateEventParams().withCategories(categories));
 

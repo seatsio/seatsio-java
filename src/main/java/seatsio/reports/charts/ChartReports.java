@@ -5,7 +5,9 @@ import seatsio.charts.ChartObjectInfo;
 import seatsio.reports.Reports;
 import seatsio.util.UnirestWrapper;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static seatsio.reports.charts.ChartReportOptions.options;
 

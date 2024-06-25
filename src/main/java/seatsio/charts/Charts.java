@@ -1,10 +1,14 @@
 package seatsio.charts;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import seatsio.json.JsonObjectBuilder;
 import seatsio.util.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static seatsio.json.JsonObjectBuilder.aJsonObject;

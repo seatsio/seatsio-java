@@ -4,7 +4,8 @@ import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.charts.Chart;
 
-import static com.google.common.collect.Lists.newArrayList;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MarkEverythingAsForSaleTest extends SeatsioClientTest{
@@ -13,7 +14,7 @@ public class MarkEverythingAsForSaleTest extends SeatsioClientTest{
     public void test() {
         Chart chart = client.charts.create();
         Event event = client.events.create(chart.key);
-        client.events.markAsNotForSale(event.key, newArrayList("o1", "o2"), null, newArrayList("cat1", "cat2"));
+        client.events.markAsNotForSale(event.key, List.of("o1", "o2"), null, List.of("cat1", "cat2"));
 
         client.events.markEverythingAsForSale(event.key);
 

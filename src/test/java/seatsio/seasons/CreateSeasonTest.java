@@ -1,6 +1,5 @@
 package seatsio.seasons;
 
-import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.charts.Chart;
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static seatsio.events.TableBookingMode.BY_SEAT;
@@ -68,7 +66,7 @@ public class CreateSeasonTest extends SeatsioClientTest {
     public void eventKeysCanBePassedIn() {
         Chart chart = client.charts.create();
 
-        Season season = client.seasons.create(chart.key, new SeasonParams().key("aSeason").eventKeys(newArrayList("event1", "event2")));
+        Season season = client.seasons.create(chart.key, new SeasonParams().key("aSeason").eventKeys(List.of("event1", "event2")));
 
         assertThat(season.events).extracting(event -> event.key).containsExactly("event1", "event2");
     }
@@ -77,10 +75,10 @@ public class CreateSeasonTest extends SeatsioClientTest {
     public void tableBookingConfigCustomCanBePassedIn() {
         String chartKey = createTestChartWithTables();
 
-        Season season = client.seasons.create(chartKey, new SeasonParams().tableBookingConfig(TableBookingConfig.custom(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT))));
+        Season season = client.seasons.create(chartKey, new SeasonParams().tableBookingConfig(TableBookingConfig.custom(Map.of("T1", BY_TABLE, "T2", BY_SEAT))));
 
         assertThat(season.key).isNotNull();
-        assertThat(season.tableBookingConfig).isEqualTo(TableBookingConfig.custom(ImmutableMap.of("T1", BY_TABLE, "T2", BY_SEAT)));
+        assertThat(season.tableBookingConfig).isEqualTo(TableBookingConfig.custom(Map.of("T1", BY_TABLE, "T2", BY_SEAT)));
     }
 
     @Test

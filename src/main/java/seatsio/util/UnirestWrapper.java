@@ -5,7 +5,7 @@ import seatsio.SeatsioException;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.google.common.base.Charsets.UTF_8;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class UnirestWrapper {
 

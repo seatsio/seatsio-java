@@ -5,8 +5,8 @@ import seatsio.SeatsioClientTest;
 import seatsio.events.TableBookingConfig;
 
 import java.time.Instant;
+import java.util.List;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,7 +16,7 @@ public class RetrieveSeasonTest extends SeatsioClientTest {
     public void retrieveSeason() {
         String chartKey = createTestChart();
         Season season = client.seasons.create(chartKey);
-        client.seasons.createEvents(season.key, newArrayList("event1", "event2"));
+        client.seasons.createEvents(season.key, List.of("event1", "event2"));
         Season partialSeason1 = client.seasons.createPartialSeason(season.key, null, null);
         Season partialSeason2 = client.seasons.createPartialSeason(season.key, null, null);
 

@@ -5,7 +5,6 @@ import com.google.gson.*;
 import java.util.*;
 import java.util.function.Function;
 
-import static com.google.common.collect.Maps.transformValues;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static seatsio.json.JsonArrayBuilder.aJsonArray;
@@ -62,11 +61,6 @@ public class JsonObjectBuilder {
         properties.forEach(this::withProperty);
         return this;
     }
-
-    public <T> JsonObjectBuilder withProperties(Map<String, T> properties, com.google.common.base.Function<T, JsonElement> f) {
-        return this.withProperties(transformValues(properties, f));
-    }
-
 
     public <T> JsonObjectBuilder withProperty(String propertyName, Collection<T> values, Function<T, JsonElement> f) {
         Collection<JsonElement> collect = values.stream().map(f).collect(toList());

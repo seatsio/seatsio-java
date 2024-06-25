@@ -1,6 +1,5 @@
 package seatsio.events;
 
-import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 
@@ -14,7 +13,7 @@ public class UpdateExtraDataTest extends SeatsioClientTest {
     public void test() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        Map<String, Object> extraData = ImmutableMap.of("foo", "bar");
+        Map<String, Object> extraData = Map.of("foo", "bar");
 
         client.events.updateExtraData(event.key, "A-1", extraData);
 
