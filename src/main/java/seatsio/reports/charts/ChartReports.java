@@ -161,6 +161,22 @@ public class ChartReports extends Reports {
         return fetchSummaryReport("bySection", chartKey, toQueryParams(options.bookWholeTablesMode(), options.version()));
     }
 
+    public Map<String, List<ChartObjectInfo>> byZone(String zoneKey) {
+        return byZone(zoneKey, ChartReportOptions.NONE);
+    }
+
+    public Map<String, List<ChartObjectInfo>> byZone(String zoneKey, ChartReportOptions chartReportOptions) {
+        return fetchChartReport("byZone", zoneKey, options());
+    }
+
+    public Map<String, ChartReportSummaryItem> summaryByZone(String chartKey) {
+        return summaryByZone(chartKey, ChartReportOptions.NONE);
+    }
+
+    public Map<String, ChartReportSummaryItem> summaryByZone(String chartKey, ChartReportOptions options) {
+        return fetchSummaryReport("byZone", chartKey, toQueryParams(options.bookWholeTablesMode(), options.version()));
+    }
+
     private Map<String, List<ChartObjectInfo>> fetchChartReport(String reportType, String chartKey, ChartReportOptions options) {
         Map<String, Object> queryParams = toQueryParams(options.bookWholeTablesMode(), options.version());
         return fetchReport(reportType, chartKey, queryParams);

@@ -14,6 +14,7 @@ public class EventObjectInfo extends ValueObject {
 
     public static final String NO_CHANNEL = "NO_CHANNEL";
     public static final String NO_SECTION = "NO_SECTION";
+    public static final String NO_ZONE = "NO_ZONE";
     public static final String NO_ORDER_ID = "NO_ORDER_ID";
 
     public static final String FREE = "free";

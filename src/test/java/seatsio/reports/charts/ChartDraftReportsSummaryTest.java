@@ -18,6 +18,13 @@ public class ChartDraftReportsSummaryTest extends AbstractChartReportsSummaryTes
         return chartKey;
     }
 
+    @Override
+    public String createTestChartWithZonesForReport() {
+        final String chartKey = createTestChartWithZones();
+        createDraft(chartKey);
+        return chartKey;
+    }
+
     private void createDraft(String chartKey) {
         client.events.create(chartKey);
         client.charts.update(chartKey, "foo");
