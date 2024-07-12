@@ -303,6 +303,27 @@ public class EventReportsTest extends SeatsioClientTest {
     }
 
     @Test
+    public void byZone() {
+        String chartKey = createTestChartWithZones();
+        Event event = client.events.create(chartKey);
+
+        Map<String, List<EventObjectInfo>> report = client.eventReports.byZone(event.key);
+
+        assertThat(report.get("midtrack")).hasSize(6032);
+        assertThat(report.get("midtrack").get(0).zone).isEqualTo("midtrack");
+    }
+
+    @Test
+    public void bySpecificZone() {
+        String chartKey = createTestChartWithZones();
+        Event event = client.events.create(chartKey);
+
+        List<EventObjectInfo> report = client.eventReports.byZone(event.key, "midtrack");
+
+        assertThat(report).hasSize(6032);
+    }
+
+    @Test
     public void byAvailability() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);

@@ -116,6 +116,22 @@ public class EventReports extends Reports {
         return fetchReportFiltered("bySection", eventKey, section);
     }
 
+    public Map<String, List<EventObjectInfo>> byZone(String eventKey) {
+        return fetchReport("byZone", eventKey);
+    }
+
+    public Map<String, EventReportSummaryItem> summaryByZone(String eventKey) {
+        return fetchSummaryReport("byZone", eventKey);
+    }
+
+    public Map<String, EventReportDeepSummaryItem> deepSummaryByZone(String eventKey) {
+        return fetchDeepSummaryReport("byZone", eventKey);
+    }
+
+    public List<EventObjectInfo> byZone(String eventKey, String zone) {
+        return fetchReportFiltered("byZone", eventKey, zone);
+    }
+
     public Map<String, List<EventObjectInfo>> byChannel(String eventKey) {
         return fetchReport("byChannel", eventKey);
     }

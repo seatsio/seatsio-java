@@ -77,6 +77,17 @@ public class EventReportsDeepSummaryTest extends SeatsioClientTest {
     }
 
     @Test
+    public void deepSummaryByZone() {
+        String chartKey = createTestChartWithZones();
+        Event event = client.events.create(chartKey);
+
+        Map<String, EventReportDeepSummaryItem> report = client.eventReports.deepSummaryByZone(event.key);
+
+        assertThat(report.get("midtrack").count).isEqualTo(6032);
+        assertThat(report.get("midtrack").byCategoryLabel.get("Mid Track Stand").count).isEqualTo(6032);
+    }
+
+    @Test
     public void deepSummaryByAvailability() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);

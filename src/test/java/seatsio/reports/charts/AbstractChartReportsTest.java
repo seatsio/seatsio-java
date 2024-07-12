@@ -155,6 +155,7 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
         Map<String, List<ChartObjectInfo>> report = client.chartReports.byZone(chartKey, updateOptions());
 
         assertThat(report.get("midtrack")).hasSize(6032);
+        assertThat(report.get("midtrack").get(0).zone).isEqualTo("midtrack");
         assertThat(report.get("finishline")).hasSize(2865);
     }
 
