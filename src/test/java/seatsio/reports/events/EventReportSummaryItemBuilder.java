@@ -12,6 +12,8 @@ public class EventReportSummaryItemBuilder {
     private Map<String, Integer> byAvailability;
     private Map<String, Integer> byAvailabilityReason;
     private Map<String, Integer> byChannel;
+    private Map<String, Integer> byObjectType;
+    private Map<String, Integer> byZone;
 
     public static EventReportSummaryItemBuilder anEventReportSummaryItem() {
         return new EventReportSummaryItemBuilder();
@@ -57,6 +59,16 @@ public class EventReportSummaryItemBuilder {
         return this;
     }
 
+    public EventReportSummaryItemBuilder withByObjectType(Map<String, Integer> byObjectType) {
+        this.byObjectType = byObjectType;
+        return this;
+    }
+
+    public EventReportSummaryItemBuilder withByZone(Map<String, Integer> byZone) {
+        this.byZone = byZone;
+        return this;
+    }
+
     public EventReportSummaryItem build() {
         EventReportSummaryItem eventSummaryReportItem = new EventReportSummaryItem();
         eventSummaryReportItem.count = count;
@@ -67,6 +79,8 @@ public class EventReportSummaryItemBuilder {
         eventSummaryReportItem.byAvailability = byAvailability;
         eventSummaryReportItem.byAvailabilityReason = byAvailabilityReason;
         eventSummaryReportItem.byChannel = byChannel;
+        eventSummaryReportItem.byObjectType = byObjectType;
+        eventSummaryReportItem.byZone = byZone;
         return eventSummaryReportItem;
     }
 }

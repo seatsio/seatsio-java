@@ -13,4 +13,5 @@ public class EventReportDeepSummaryItem extends ValueObject {
     public Map<String, EventReportSummaryItem> bySection;
     public Map<String, EventReportSummaryItem> byAvailability;
     public Map<String, EventReportSummaryItem> byChannel;
+    public Map<String, EventReportSummaryItem> byZone;
 }

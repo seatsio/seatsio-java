@@ -5,6 +5,7 @@ import seatsio.SeatsioClientTest;
 import seatsio.events.Channel;
 import seatsio.events.CreateEventParams;
 import seatsio.events.Event;
+import seatsio.reports.charts.ChartReportSummaryItem;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static seatsio.events.EventObjectInfo.*;
+import static seatsio.reports.charts.ChartReportSummaryItemBuilder.aChartReportSummaryItem;
 import static seatsio.reports.events.EventReportSummaryItemBuilder.anEventReportSummaryItem;
 
 public class EventReportsSummaryTest extends SeatsioClientTest {
@@ -33,6 +35,8 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withByAvailability(Map.of(NOT_AVAILABLE, 1))
                 .withByAvailabilityReason(Map.of(BOOKED, 1))
                 .withByChannel(Map.of(NO_CHANNEL, 1))
+                .withByObjectType(Map.of("seat", 1))
+                .withByZone(Map.of(NO_ZONE, 1))
                 .build();
         EventReportSummaryItem freeReport = anEventReportSummaryItem()
                 .withCount(231)
@@ -42,6 +46,8 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withByAvailability(Map.of(AVAILABLE, 231))
                 .withByAvailabilityReason(Map.of(AVAILABLE, 231))
                 .withByChannel(Map.of(NO_CHANNEL, 231))
+                .withByObjectType(Map.of("seat", 31, "generalAdmission", 200))
+                .withByZone(Map.of(NO_ZONE, 231))
                 .build();
         assertThat(report).isEqualTo(Map.of(BOOKED, bookedReport, FREE, freeReport));
     }
@@ -62,6 +68,7 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withByAvailabilityReason(Map.of(AVAILABLE, 32))
                 .withByChannel(Map.of(NO_CHANNEL, 32))
                 .withByStatus(Map.of(FREE, 32))
+                .withByZone(Map.of(NO_ZONE, 32))
                 .build();
         EventReportSummaryItem generalAdmissionReport = anEventReportSummaryItem()
                 .withCount(200)
@@ -72,16 +79,18 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withByAvailabilityReason(Map.of(AVAILABLE, 200))
                 .withByChannel(Map.of(NO_CHANNEL, 200))
                 .withByStatus(Map.of(FREE, 200))
+                .withByZone(Map.of(NO_ZONE, 200))
                 .build();
         EventReportSummaryItem emptyReport = anEventReportSummaryItem()
                 .withCount(0)
-                .withBySection(new HashMap<>())
-                .withByCategoryKey(new HashMap<>())
-                .withByCategoryLabel(new HashMap<>())
-                .withByAvailability(new HashMap<>())
-                .withByAvailabilityReason(new HashMap<>())
-                .withByChannel(new HashMap<>())
-                .withByStatus(new HashMap<>())
+                .withBySection(Map.of())
+                .withByCategoryKey(Map.of())
+                .withByCategoryLabel(Map.of())
+                .withByAvailability(Map.of())
+                .withByAvailabilityReason(Map.of())
+                .withByChannel(Map.of())
+                .withByStatus(Map.of())
+                .withByZone(Map.of())
                 .build();
         assertThat(report).isEqualTo(Map.of(
                 "seat", seatReport,
@@ -106,6 +115,8 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withByAvailability(Map.of(AVAILABLE, 115, NOT_AVAILABLE, 1))
                 .withByAvailabilityReason(Map.of(AVAILABLE, 115, BOOKED, 1))
                 .withByChannel(Map.of(NO_CHANNEL, 116))
+                .withByObjectType(Map.of("seat", 16, "generalAdmission", 100))
+                .withByZone(Map.of(NO_ZONE, 116))
                 .build();
         EventReportSummaryItem cat10Report = anEventReportSummaryItem()
                 .withCount(116)
@@ -114,22 +125,28 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withByAvailability(Map.of(AVAILABLE, 116))
                 .withByAvailabilityReason(Map.of(AVAILABLE, 116))
                 .withByChannel(Map.of(NO_CHANNEL, 116))
+                .withByObjectType(Map.of("seat", 16, "generalAdmission", 100))
+                .withByZone(Map.of(NO_ZONE, 116))
                 .build();
         EventReportSummaryItem cat11Report = anEventReportSummaryItem()
                 .withCount(0)
-                .withBySection(new HashMap<>())
-                .withByStatus(new HashMap<>())
-                .withByAvailability(new HashMap<>())
-                .withByAvailabilityReason(new HashMap<>())
-                .withByChannel(new HashMap<>())
+                .withBySection(Map.of())
+                .withByStatus(Map.of())
+                .withByAvailability(Map.of())
+                .withByAvailabilityReason(Map.of())
+                .withByChannel(Map.of())
+                .withByObjectType(Map.of())
+                .withByZone(Map.of())
                 .build();
         EventReportSummaryItem noCategoryReport = anEventReportSummaryItem()
                 .withCount(0)
-                .withBySection(new HashMap<>())
-                .withByStatus(new HashMap<>())
-                .withByAvailability(new HashMap<>())
-                .withByAvailabilityReason(new HashMap<>())
-                .withByChannel(new HashMap<>())
+                .withBySection(Map.of())
+                .withByStatus(Map.of())
+                .withByAvailability(Map.of())
+                .withByAvailabilityReason(Map.of())
+                .withByChannel(Map.of())
+                .withByObjectType(Map.of())
+                .withByZone(Map.of())
                 .build();
         assertThat(report).isEqualTo(Map.of(
                 "9", cat9Report,
@@ -153,6 +170,8 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withByAvailability(Map.of(AVAILABLE, 115, NOT_AVAILABLE, 1))
                 .withByAvailabilityReason(Map.of(AVAILABLE, 115, BOOKED, 1))
                 .withByChannel(Map.of(NO_CHANNEL, 116))
+                .withByObjectType(Map.of("seat", 16, "generalAdmission", 100))
+                .withByZone(Map.of(NO_ZONE, 116))
                 .build();
         EventReportSummaryItem cat2Report = anEventReportSummaryItem()
                 .withCount(116)
@@ -161,22 +180,28 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withByAvailability(Map.of(AVAILABLE, 116))
                 .withByAvailabilityReason(Map.of(AVAILABLE, 116))
                 .withByChannel(Map.of(NO_CHANNEL, 116))
+                .withByObjectType(Map.of("seat", 16, "generalAdmission", 100))
+                .withByZone(Map.of(NO_ZONE, 116))
                 .build();
         EventReportSummaryItem noCategoryReport = anEventReportSummaryItem()
                 .withCount(0)
-                .withBySection(new HashMap<>())
-                .withByStatus(new HashMap<>())
-                .withByAvailability(new HashMap<>())
-                .withByAvailabilityReason(new HashMap<>())
-                .withByChannel(new HashMap<>())
+                .withBySection(Map.of())
+                .withByStatus(Map.of())
+                .withByAvailability(Map.of())
+                .withByAvailabilityReason(Map.of())
+                .withByChannel(Map.of())
+                .withByObjectType(Map.of())
+                .withByZone(Map.of())
                 .build();
         EventReportSummaryItem cat3Report = anEventReportSummaryItem()
                 .withCount(0)
-                .withBySection(new HashMap<>())
-                .withByStatus(new HashMap<>())
-                .withByAvailability(new HashMap<>())
-                .withByAvailabilityReason(new HashMap<>())
-                .withByChannel(new HashMap<>())
+                .withBySection(Map.of())
+                .withByStatus(Map.of())
+                .withByAvailability(Map.of())
+                .withByAvailabilityReason(Map.of())
+                .withByChannel(Map.of())
+                .withByObjectType(Map.of())
+                .withByZone(Map.of())
                 .build();
         assertThat(report).isEqualTo(Map.of(
                 "Cat1", cat1Report,
@@ -201,8 +226,56 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withByAvailability(Map.of(AVAILABLE, 231, NOT_AVAILABLE, 1))
                 .withByAvailabilityReason(Map.of(AVAILABLE, 231, BOOKED, 1))
                 .withByChannel(Map.of(NO_CHANNEL, 232))
+                .withByObjectType(Map.of("seat", 32, "generalAdmission", 200))
+                .withByZone(Map.of(NO_ZONE, 232))
                 .build();
         assertThat(report).isEqualTo(Map.of(NO_SECTION, noSectionReport));
+    }
+
+    @Test
+    public void summaryByZone() {
+        String chartKey = createTestChartWithZones();
+        Event event = client.events.create(chartKey);
+
+        Map<String, EventReportSummaryItem> report = client.eventReports.summaryByZone(event.key);
+
+        EventReportSummaryItem reportForZoneFinishline = anEventReportSummaryItem()
+                .withCount(2865)
+                .withByCategoryKey(Map.of("1", 2865))
+                .withByCategoryLabel(Map.of("Goal Stands", 2865))
+                .withByObjectType(Map.of("seat", 2865))
+                .withBySection(Map.of("Goal Stand 3", 2215, "Goal Stand 4", 650))
+                .withByStatus(Map.of(FREE, 2865))
+                .withByAvailability(Map.of(AVAILABLE, 2865))
+                .withByAvailabilityReason(Map.of(AVAILABLE, 2865))
+                .withByChannel(Map.of(NO_CHANNEL, 2865))
+                .build();
+        EventReportSummaryItem reportForZoneMidtrack = anEventReportSummaryItem()
+                .withCount(6032)
+                .withByCategoryKey(Map.of("2", 6032))
+                .withByCategoryLabel(Map.of("Mid Track Stand", 6032))
+                .withByObjectType(Map.of("seat", 6032))
+                .withBySection(Map.of("MT1", 2418, "MT3", 3614))
+                .withByStatus(Map.of(FREE, 6032))
+                .withByAvailability(Map.of(AVAILABLE, 6032))
+                .withByAvailabilityReason(Map.of(AVAILABLE, 6032))
+                .withByChannel(Map.of(NO_CHANNEL, 6032))
+                .build();
+        EventReportSummaryItem reportForNoZone = anEventReportSummaryItem()
+                .withCount(0)
+                .withByCategoryKey(Map.of())
+                .withByCategoryLabel(Map.of())
+                .withByObjectType(Map.of())
+                .withBySection(Map.of())
+                .withByStatus(Map.of())
+                .withByAvailability(Map.of())
+                .withByAvailabilityReason(Map.of())
+                .withByChannel(Map.of())
+                .build();
+        assertThat(report).isEqualTo(Map.of(
+                "finishline", reportForZoneFinishline,
+                "midtrack", reportForZoneMidtrack,
+                NO_ZONE, reportForNoZone));
     }
 
     @Test
@@ -221,6 +294,8 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withByCategoryLabel(Map.of("Cat1", 115, "Cat2", 116))
                 .withByChannel(Map.of(NO_CHANNEL, 231))
                 .withByAvailabilityReason(Map.of(AVAILABLE, 231))
+                .withByObjectType(Map.of("seat", 31, "generalAdmission", 200))
+                .withByZone(Map.of(NO_ZONE, 231))
                 .build();
         EventReportSummaryItem notAvailableReport = anEventReportSummaryItem()
                 .withCount(1)
@@ -230,6 +305,8 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withByCategoryLabel(Map.of("Cat1", 1))
                 .withByChannel(Map.of(NO_CHANNEL, 1))
                 .withByAvailabilityReason(Map.of(BOOKED, 1))
+                .withByObjectType(Map.of("seat", 1))
+                .withByZone(Map.of(NO_ZONE, 1))
                 .build();
         assertThat(report).isEqualTo(Map.of(AVAILABLE, availableReport, NOT_AVAILABLE, notAvailableReport));
     }
@@ -250,6 +327,8 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withByCategoryLabel(Map.of("Cat1", 115, "Cat2", 116))
                 .withByChannel(Map.of(NO_CHANNEL, 231))
                 .withByAvailability(Map.of(AVAILABLE, 231))
+                .withByObjectType(Map.of("seat", 31, "generalAdmission", 200))
+                .withByZone(Map.of(NO_ZONE, 231))
                 .build();
         EventReportSummaryItem bookedReport = anEventReportSummaryItem()
                 .withCount(1)
@@ -259,14 +338,18 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withByCategoryLabel(Map.of("Cat1", 1))
                 .withByChannel(Map.of(NO_CHANNEL, 1))
                 .withByAvailability(Map.of(NOT_AVAILABLE, 1))
+                .withByObjectType(Map.of("seat", 1))
+                .withByZone(Map.of(NO_ZONE, 1))
                 .build();
         EventReportSummaryItem emptyReport = anEventReportSummaryItem()
-                .withBySection(new HashMap<>())
-                .withByStatus(new HashMap<>())
-                .withByCategoryKey(new HashMap<>())
-                .withByCategoryLabel(new HashMap<>())
-                .withByChannel(new HashMap<>())
-                .withByAvailability(new HashMap<>())
+                .withBySection(Map.of())
+                .withByStatus(Map.of())
+                .withByCategoryKey(Map.of())
+                .withByCategoryLabel(Map.of())
+                .withByChannel(Map.of())
+                .withByAvailability(Map.of())
+                .withByObjectType(Map.of())
+                .withByZone(Map.of())
                 .build();
         assertThat(report).isEqualTo(Map.of(
                 AVAILABLE, availableReport,
@@ -294,6 +377,8 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withByAvailability(Map.of(AVAILABLE, 2))
                 .withByAvailabilityReason(Map.of(AVAILABLE, 2))
                 .withByStatus(Map.of(FREE, 2))
+                .withByObjectType(Map.of("seat", 2))
+                .withByZone(Map.of(NO_ZONE, 2))
                 .build();
         EventReportSummaryItem noChannelReport = anEventReportSummaryItem()
                 .withCount(230)
@@ -303,6 +388,8 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withByAvailability(Map.of(AVAILABLE, 230))
                 .withByAvailabilityReason(Map.of(AVAILABLE, 230))
                 .withByStatus(Map.of(FREE, 230))
+                .withByObjectType(Map.of("seat", 30, "generalAdmission", 200))
+                .withByZone(Map.of(NO_ZONE, 230))
                 .build();
         assertThat(report).isEqualTo(Map.of("channel1", channel1Report, NO_CHANNEL, noChannelReport));
     }

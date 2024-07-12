@@ -14,4 +14,6 @@ public class EventReportSummaryItem extends ValueObject {
     public Map<String, Integer> byAvailability;
     public Map<String, Integer> byAvailabilityReason;
     public Map<String, Integer> byChannel;
+    public Map<String, Integer> byObjectType;
+    public Map<String, Integer> byZone;
 }
