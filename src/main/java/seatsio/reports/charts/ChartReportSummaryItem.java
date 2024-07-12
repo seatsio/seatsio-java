@@ -11,4 +11,5 @@ public class ChartReportSummaryItem extends ValueObject {
     public Map<String, Integer> byCategoryLabel;
     public Map<String, Integer> bySection;
     public Map<String, Integer> byObjectType;
+    public Map<String, Integer> byZone;
 }

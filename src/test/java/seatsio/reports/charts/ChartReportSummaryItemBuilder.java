@@ -9,6 +9,7 @@ public class ChartReportSummaryItemBuilder {
     private Map<String, Integer> byCategoryKey;
     private Map<String, Integer> byCategoryLabel;
     private Map<String, Integer> byObjectType;
+    private Map<String, Integer> byZone;
 
     public static ChartReportSummaryItemBuilder aChartReportSummaryItem() {
         return new ChartReportSummaryItemBuilder();
@@ -39,6 +40,11 @@ public class ChartReportSummaryItemBuilder {
         return this;
     }
 
+    public ChartReportSummaryItemBuilder withByZone(Map<String, Integer> byZone) {
+        this.byZone = byZone;
+        return this;
+    }
+
     public ChartReportSummaryItem build() {
         ChartReportSummaryItem chartSummaryReportItem = new ChartReportSummaryItem();
         chartSummaryReportItem.count = count;
@@ -46,6 +52,7 @@ public class ChartReportSummaryItemBuilder {
         chartSummaryReportItem.byCategoryLabel = byCategoryLabel;
         chartSummaryReportItem.bySection = bySection;
         chartSummaryReportItem.byObjectType = byObjectType;
+        chartSummaryReportItem.byZone = byZone;
         return chartSummaryReportItem;
     }
 }

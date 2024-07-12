@@ -13,6 +13,11 @@ public class ChartReportsSummaryTest extends AbstractChartReportsSummaryTest {
     }
 
     @Override
+    public String createTestChartWithZonesForReport() {
+        return createTestChartWithZones();
+    }
+
+    @Override
     public ChartReportOptions updateOptions() {
         return ChartReportOptions.NONE;
     }

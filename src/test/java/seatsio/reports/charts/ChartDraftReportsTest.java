@@ -6,21 +6,28 @@ public class ChartDraftReportsTest extends AbstractChartReportsTest {
 
     @Override
     public String createTestChartForReport() {
-        final String chartKey = createTestChart();
+        String chartKey = createTestChart();
         createDraft(chartKey);
         return chartKey;
     }
 
     @Override
     public String createTestChartWithSectionsForReport() {
-        final String chartKey = createTestChartWithSections();
+        String chartKey = createTestChartWithSections();
+        createDraft(chartKey);
+        return chartKey;
+    }
+
+    @Override
+    public String createTestChartWithZonesForReport() {
+        String chartKey = createTestChartWithZones();
         createDraft(chartKey);
         return chartKey;
     }
 
     @Override
     public String createTestChartWithTablesForReport() {
-        final String chartKey = createTestChartWithTables();
+        String chartKey = createTestChartWithTables();
         createDraft(chartKey);
         return chartKey;
     }
@@ -36,7 +43,7 @@ public class ChartDraftReportsTest extends AbstractChartReportsTest {
     }
 
     @Override
-    public ChartReportOptions updateOptions(final ChartReportOptions options) {
+    public ChartReportOptions updateOptions(ChartReportOptions options) {
         return options.version(ChartReportVersion.DRAFT);
     }
 }

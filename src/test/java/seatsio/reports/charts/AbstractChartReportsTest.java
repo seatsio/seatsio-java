@@ -148,9 +148,21 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
         assertThat(report.get("Section B")).hasSize(35);
     }
 
+    @Test
+    public void byZone() {
+        String chartKey = createTestChartWithZonesForReport();
+
+        Map<String, List<ChartObjectInfo>> report = client.chartReports.byZone(chartKey, updateOptions());
+
+        assertThat(report.get("midtrack")).hasSize(6032);
+        assertThat(report.get("finishline")).hasSize(2865);
+    }
+
     public abstract String createTestChartForReport();
 
     public abstract String createTestChartWithSectionsForReport();
+
+    public abstract String createTestChartWithZonesForReport();
 
     public abstract String createTestChartWithTablesForReport();
 
