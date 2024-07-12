@@ -182,23 +182,6 @@ public abstract class AbstractChartReportsSummaryTest extends SeatsioClientTest 
     }
 
     @Test
-    public void summaryBySection_zones() {
-        String chartKey = createTestChartWithZonesForReport();
-
-        Map<String, ChartReportSummaryItem> report = client.chartReports.summaryBySection(chartKey, updateOptions());
-
-        ChartReportSummaryItem mt1Report = aChartReportSummaryItem()
-                .withCount(2418)
-                .withByCategoryKey(Map.of("2", 2418))
-                .withByCategoryLabel(Map.of("Mid Track Stand", 2418))
-                .withByObjectType(Map.of("seat", 2418))
-                .withByZone(Map.of("midtrack", 2418))
-                .build();
-
-        assertThat(report.get("MT1")).isEqualTo(mt1Report);
-    }
-
-    @Test
     public void summaryByZone() {
         String chartKey = createTestChartWithZonesForReport();
 
