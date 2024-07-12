@@ -310,6 +310,7 @@ public class EventReportsTest extends SeatsioClientTest {
         Map<String, List<EventObjectInfo>> report = client.eventReports.byZone(event.key);
 
         assertThat(report.get("midtrack")).hasSize(6032);
+        assertThat(report.get("midtrack").get(0).zone).isEqualTo("midtrack");
     }
 
     @Test

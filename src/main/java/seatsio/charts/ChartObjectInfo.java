@@ -22,5 +22,6 @@ public class ChartObjectInfo {
     public Boolean isAccessible;
     public Boolean isCompanionSeat;
     public Boolean hasRestrictedView;
+    public String zone;
 
 }
