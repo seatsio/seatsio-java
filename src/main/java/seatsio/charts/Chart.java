@@ -19,4 +19,5 @@ public class Chart extends ValueObject {
     public boolean archived;
     public ChartValidationResult validation;
     public String venueType;
+    public List<Zone> zones;
 }

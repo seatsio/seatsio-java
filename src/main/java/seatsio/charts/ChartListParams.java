@@ -12,6 +12,7 @@ public class ChartListParams {
     private boolean expandEvents;
     private boolean expandValidation;
     private boolean expandVenueType;
+    private boolean expandZones;
 
     public ChartListParams withFilter(String filter) {
         this.filter = filter;
@@ -46,6 +47,11 @@ public class ChartListParams {
         return this;
     }
 
+    public ChartListParams withExpandZones(boolean expandZones) {
+        this.expandZones = expandZones;
+        return this;
+    }
+
     public Map<String, Object> asMap() {
         Map<String, Object> chartListParams = new HashMap<>();
 
@@ -67,14 +73,17 @@ public class ChartListParams {
 
     private List<String> expandParams() {
         List<String> expandParams = new ArrayList<>();
-        if(expandEvents) {
+        if (expandEvents) {
             expandParams.add("events");
         }
-        if(expandValidation) {
+        if (expandValidation) {
             expandParams.add("validation");
         }
-        if(expandVenueType) {
+        if (expandVenueType) {
             expandParams.add("venueType");
+        }
+        if (expandZones) {
+            expandParams.add("zones");
         }
         return expandParams;
     }
