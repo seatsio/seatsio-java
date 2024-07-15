@@ -76,16 +76,34 @@ public class ListChartsTest extends SeatsioClientTest {
     }
 
     @Test
-    public void expand() {
+    public void expandAllFields() {
         Chart chart = client.charts.create();
         Event event1 = client.events.create(chart.key);
         Event event2 = client.events.create(chart.key);
 
-        Chart retrievedChart = client.charts.listAll(new ChartListParams().withExpandEvents(true)).findFirst().get();
+        ChartListParams params = new ChartListParams()
+                .withExpandEvents(true)
+                .withExpandValidation(true)
+                .withExpandVenueType(true);
+        Chart retrievedChart = client.charts.listAll(params).findFirst().get();
 
         assertThat(retrievedChart.events)
                 .extracting(event -> event.id)
                 .containsExactly(event2.id, event1.id);
+        assertThat(retrievedChart.venueType).isEqualTo("MIXED");
+        assertThat(retrievedChart.validation).isNotNull();
+    }
+
+    @Test
+    public void expandNoFields() {
+        Chart chart = client.charts.create();
+
+        ChartListParams params = new ChartListParams();
+        Chart retrievedChart = client.charts.listAll(params).findFirst().get();
+
+        assertThat(retrievedChart.events).isNull();
+        assertThat(retrievedChart.venueType).isNull();
+        assertThat(retrievedChart.validation).isNull();
     }
 
     @Test
@@ -105,7 +123,7 @@ public class ListChartsTest extends SeatsioClientTest {
     public void listChartsWithValidationTest() {
         createTestChartWithErrors();
 
-        ChartListParams params = new ChartListParams().withValidation(true);
+        ChartListParams params = new ChartListParams().withExpandValidation(true);
 
         List<Chart> charts = client.charts.listFirstPage(params, 10).items;
 
@@ -115,16 +133,4 @@ public class ListChartsTest extends SeatsioClientTest {
         assertThat(charts.get(0).validation.warnings)
                 .isEqualTo(Arrays.asList());
     }
-
-    @Test
-    public void listChartsWithoutValidationTest() {
-        createTestChartWithErrors();
-
-        ChartListParams params = new ChartListParams();
-
-        List<Chart> charts = client.charts.listFirstPage(params, 10).items;
-
-        assertThat(charts.get(0).validation).isNull();
-    }
-
 }
