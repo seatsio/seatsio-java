@@ -1,15 +1,18 @@
 package seatsio.charts;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ChartListParams {
 
     private String filter;
     private String tag;
-    private Boolean expandEvents;
-    private Boolean validation;
-    
+    private boolean expandEvents;
+    private boolean expandValidation;
+    private boolean expandVenueType;
+
     public ChartListParams withFilter(String filter) {
         this.filter = filter;
         return this;
@@ -20,13 +23,26 @@ public class ChartListParams {
         return this;
     }
 
-    public ChartListParams withExpandEvents(Boolean expandEvents) {
+    public ChartListParams withExpandEvents(boolean expandEvents) {
         this.expandEvents = expandEvents;
         return this;
     }
 
-    public ChartListParams withValidation(Boolean validation) {
-        this.validation = validation;
+    public ChartListParams withExpandValidation(boolean expandValidation) {
+        this.expandValidation = expandValidation;
+        return this;
+    }
+
+    /**
+     * @deprecated Use {@link #withExpandEvents(boolean)} instead
+     */
+    @Deprecated
+    public ChartListParams withValidation(boolean validation) {
+        return withExpandValidation(validation);
+    }
+
+    public ChartListParams withExpandVenueType(boolean expandVenueType) {
+        this.expandVenueType = expandVenueType;
         return this;
     }
 
@@ -41,15 +57,25 @@ public class ChartListParams {
             chartListParams.put("tag", tag);
         }
 
-        if (expandEvents != null && expandEvents) {
-            chartListParams.put("expand", "events");
-        }
-
-        if (validation != null) {
-            chartListParams.put("validation", validation);
+        List<String> expand = expandParams();
+        if (!expand.isEmpty()) {
+            chartListParams.put("expand", expand);
         }
 
         return chartListParams;
     }
 
+    private List<String> expandParams() {
+        List<String> expandParams = new ArrayList<>();
+        if(expandEvents) {
+            expandParams.add("events");
+        }
+        if(expandValidation) {
+            expandParams.add("validation");
+        }
+        if(expandVenueType) {
+            expandParams.add("venueType");
+        }
+        return expandParams;
+    }
 }
