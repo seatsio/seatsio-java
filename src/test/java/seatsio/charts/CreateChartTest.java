@@ -25,7 +25,7 @@ public class CreateChartTest extends SeatsioClientTest {
         assertThat(chart.archived).isFalse();
 
         Map<?, ?> drawing = client.charts.retrievePublishedVersion(chart.key);
-        assertThat(drawing.get("venueType")).isEqualTo("MIXED");
+        assertThat(drawing.get("venueType")).isEqualTo("SIMPLE");
         assertThat(categories(drawing)).isEmpty();
     }
 
@@ -35,17 +35,17 @@ public class CreateChartTest extends SeatsioClientTest {
 
         assertThat(chart.name).isEqualTo("aChart");
         Map<?, ?> drawing = client.charts.retrievePublishedVersion(chart.key);
-        assertThat(drawing.get("venueType")).isEqualTo("MIXED");
+        assertThat(drawing.get("venueType")).isEqualTo("SIMPLE");
         assertThat(categories(drawing)).isEmpty();
     }
 
     @Test
     public void venueType() {
-        Chart chart = client.charts.create(null, "BOOTHS");
+        Chart chart = client.charts.create(null, "SIMPLE");
 
         assertThat(chart.name).isEqualTo("Untitled chart");
         Map<?, ?> drawing = client.charts.retrievePublishedVersion(chart.key);
-        assertThat(drawing.get("venueType")).isEqualTo("BOOTHS");
+        assertThat(drawing.get("venueType")).isEqualTo("SIMPLE");
         assertThat(categories(drawing)).isEmpty();
     }
 
@@ -59,7 +59,7 @@ public class CreateChartTest extends SeatsioClientTest {
 
         assertThat(chart.name).isEqualTo("Untitled chart");
         Map<?, ?> drawing = client.charts.retrievePublishedVersion(chart.key);
-        assertThat(drawing.get("venueType")).isEqualTo("MIXED");
+        assertThat(drawing.get("venueType")).isEqualTo("SIMPLE");
         assertThat(categories(drawing)).containsExactly(
                 Map.of("key", 1.0, "label", "Category 1", "color", "#aaaaaa", "accessible", false),
                 Map.of("key", "anotherCat", "label", "Category 2", "color", "#bbbbbb", "accessible", true)

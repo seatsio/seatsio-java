@@ -91,7 +91,7 @@ public class ListChartsTest extends SeatsioClientTest {
         assertThat(retrievedChart.events)
                 .extracting(event -> event.id)
                 .containsExactly(event2.id, event1.id);
-        assertThat(retrievedChart.venueType).isEqualTo("ZONES");
+        assertThat(retrievedChart.venueType).isEqualTo("WITH_ZONES");
         assertThat(retrievedChart.validation).isNotNull();
     }
 
