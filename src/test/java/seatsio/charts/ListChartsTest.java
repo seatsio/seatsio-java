@@ -77,26 +77,27 @@ public class ListChartsTest extends SeatsioClientTest {
 
     @Test
     public void expandAllFields() {
-        Chart chart = client.charts.create();
-        Event event1 = client.events.create(chart.key);
-        Event event2 = client.events.create(chart.key);
+        String chart = createTestChartWithZones();
+        Event event1 = client.events.create(chart);
+        Event event2 = client.events.create(chart);
 
         ChartListParams params = new ChartListParams()
                 .withExpandEvents(true)
                 .withExpandValidation(true)
-                .withExpandVenueType(true);
+                .withExpandVenueType(true)
+                .withExpandZones(true);
         Chart retrievedChart = client.charts.listAll(params).findFirst().get();
 
         assertThat(retrievedChart.events)
                 .extracting(event -> event.id)
                 .containsExactly(event2.id, event1.id);
-        assertThat(retrievedChart.venueType).isEqualTo("MIXED");
+        assertThat(retrievedChart.venueType).isEqualTo("WITH_ZONES");
         assertThat(retrievedChart.validation).isNotNull();
     }
 
     @Test
     public void expandNoFields() {
-        Chart chart = client.charts.create();
+        createTestChartWithZones();
 
         ChartListParams params = new ChartListParams();
         Chart retrievedChart = client.charts.listAll(params).findFirst().get();
@@ -104,6 +105,7 @@ public class ListChartsTest extends SeatsioClientTest {
         assertThat(retrievedChart.events).isNull();
         assertThat(retrievedChart.venueType).isNull();
         assertThat(retrievedChart.validation).isNull();
+        assertThat(retrievedChart.zones).isNull();
     }
 
     @Test

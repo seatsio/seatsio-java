@@ -13,7 +13,7 @@ public class CopyChartFromWorkspaceToTest extends SeatsioClientTest {
 
     @Test
     public void test() {
-        Chart chart = client.charts.create("my chart", "BOOTHS");
+        Chart chart = client.charts.create("my chart", "SIMPLE");
         Workspace toWorkspace = client.workspaces.create("my ws");
 
         Chart copiedChart = client.charts.copyToWorkspace(chart.key, workspace.key, toWorkspace.key);
@@ -23,7 +23,7 @@ public class CopyChartFromWorkspaceToTest extends SeatsioClientTest {
         Chart retrievedChart = workspaceClient.charts.retrieve(copiedChart.key);
         assertThat(retrievedChart.name).isEqualTo("my chart");
         Map<?, ?> drawing = workspaceClient.charts.retrievePublishedVersion(copiedChart.key);
-        assertThat(drawing.get("venueType")).isEqualTo("BOOTHS");
+        assertThat(drawing.get("venueType")).isEqualTo("SIMPLE");
     }
 
 }

@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.events.Event;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RetrieveChartTest extends SeatsioClientTest {
@@ -25,6 +27,21 @@ public class RetrieveChartTest extends SeatsioClientTest {
         assertThat(retrievedChart.events).isNull();
         assertThat(retrievedChart.tags).containsOnly("tag1", "tag2");
         assertThat(retrievedChart.archived).isFalse();
+        assertThat(retrievedChart.venueType).isEqualTo("SIMPLE");
+        assertThat(retrievedChart.validation).isNotNull();
+        assertThat(retrievedChart.zones).isNull();
+    }
+
+    @Test
+    public void zones() {
+        String chart = createTestChartWithZones();
+
+        Chart retrievedChart = client.charts.retrieve(chart);
+
+        assertThat(retrievedChart.zones).isEqualTo(List.of(
+                new Zone("finishline", "Finish Line"),
+                new Zone("midtrack", "Mid Track")
+        ));
     }
 
     @Test
