@@ -30,4 +30,58 @@ public class BestAvailable extends ValueObject {
         this.ticketTypes = ticketTypes;
         this.tryToPreventOrphanSeats = tryToPreventOrphanSeats;
     }
+
+    public static class Builder {
+
+        private int number;
+        private List<String> categories;
+        private String zone;
+        private List<Map<String, Object>> extraData;
+        private List<String> ticketTypes;
+        private Boolean tryToPreventOrphanSeats;
+
+        public Builder() {
+        }
+
+        public Builder withNumber(int number) {
+            this.number = number;
+            return this;
+        }
+
+        public Builder withCategories(List<String> categories) {
+            this.categories = categories;
+            return this;
+        }
+
+        public Builder withZone(String zone) {
+            this.zone = zone;
+            return this;
+        }
+
+        public Builder withExtraData(List<Map<String, Object>> extraData) {
+            this.extraData = extraData;
+            return this;
+        }
+
+        public Builder withTicketTypes(List<String> ticketTypes) {
+            this.ticketTypes = ticketTypes;
+            return this;
+        }
+
+        public Builder withTryToPreventOrphanSeats(Boolean tryToPreventOrphanSeats) {
+            this.tryToPreventOrphanSeats = tryToPreventOrphanSeats;
+            return this;
+        }
+
+        public BestAvailable build() {
+            return new BestAvailable(
+                    this.number,
+                    this.categories,
+                    this.zone,
+                    this.extraData,
+                    this.ticketTypes,
+                    this.tryToPreventOrphanSeats
+            );
+        }
+    }
 }
