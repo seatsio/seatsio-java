@@ -5,7 +5,7 @@ import seatsio.util.ValueObject;
 import java.util.List;
 import java.util.Map;
 
-public class BestAvailable extends ValueObject {
+public class BestAvailableParams extends ValueObject {
 
     private final int number;
     private final List<String> categories;
@@ -14,15 +14,15 @@ public class BestAvailable extends ValueObject {
     private final List<String> ticketTypes;
     private final Boolean tryToPreventOrphanSeats;
 
-    public BestAvailable(int number) {
+    public BestAvailableParams(int number) {
         this(number, null, null, null, null, null);
     }
 
-    public BestAvailable(int number, List<String> categories) {
+    public BestAvailableParams(int number, List<String> categories) {
         this(number, categories, null, null, null, null);
     }
 
-    BestAvailable(int number, List<String> categories, String zone, List<Map<String, Object>> extraData, List<String> ticketTypes, Boolean tryToPreventOrphanSeats) {
+    BestAvailableParams(int number, List<String> categories, String zone, List<Map<String, Object>> extraData, List<String> ticketTypes, Boolean tryToPreventOrphanSeats) {
         this.number = number;
         this.categories = categories;
         this.zone = zone;
@@ -39,9 +39,6 @@ public class BestAvailable extends ValueObject {
         private List<Map<String, Object>> extraData;
         private List<String> ticketTypes;
         private Boolean tryToPreventOrphanSeats;
-
-        public Builder() {
-        }
 
         public Builder withNumber(int number) {
             this.number = number;
@@ -73,8 +70,8 @@ public class BestAvailable extends ValueObject {
             return this;
         }
 
-        public BestAvailable build() {
-            return new BestAvailable(
+        public BestAvailableParams build() {
+            return new BestAvailableParams(
                     this.number,
                     this.categories,
                     this.zone,
