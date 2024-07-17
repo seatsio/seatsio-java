@@ -7,6 +7,7 @@ public class BestAvailableBuilder {
 
     private int number;
     private List<String> categories;
+    private String zone;
     private List<Map<String, Object>> extraData;
     private List<String> ticketTypes;
     private Boolean tryToPreventOrphanSeats;
@@ -17,7 +18,7 @@ public class BestAvailableBuilder {
     private BestAvailableBuilder() {
     }
 
-    public static BestAvailableBuilder someBestAvailable() {
+    public static BestAvailableBuilder bestAvailable() {
         return new BestAvailableBuilder();
     }
 
@@ -28,6 +29,11 @@ public class BestAvailableBuilder {
 
     public BestAvailableBuilder withCategories(List<String> categories) {
         this.categories = categories;
+        return this;
+    }
+
+    public BestAvailableBuilder withZone(String zone) {
+        this.zone = zone;
         return this;
     }
 
@@ -50,6 +56,7 @@ public class BestAvailableBuilder {
         return new BestAvailable(
                 this.number,
                 this.categories,
+                this.zone,
                 this.extraData,
                 this.ticketTypes,
                 this.tryToPreventOrphanSeats
