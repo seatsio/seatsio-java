@@ -3,13 +3,13 @@ package seatsio.events.channels;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.events.Channel;
+import seatsio.events.ChannelCreationParams;
 import seatsio.events.Event;
 
 import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static seatsio.events.ChannelCreationParamsBuilder.aChannel;
 
 public class AddChannelTest extends SeatsioClientTest {
 
@@ -36,8 +36,8 @@ public class AddChannelTest extends SeatsioClientTest {
         client.events.channels.add(
                 event.key,
                 List.of(
-                        aChannel().withKey("channelKey1").withName("channel 1").withColor("#FFFF98").withIndex(1).withObjects(Set.of("A-1", "A-2")).build(),
-                        aChannel().withKey("channelKey2").withName("channel 2").withColor("#FFFF99").withIndex(2).withObjects(Set.of("A-3")).build()
+                        new ChannelCreationParams.Builder().withKey("channelKey1").withName("channel 1").withColor("#FFFF98").withIndex(1).withObjects(Set.of("A-1", "A-2")).build(),
+                        new ChannelCreationParams.Builder().withKey("channelKey2").withName("channel 2").withColor("#FFFF99").withIndex(2).withObjects(Set.of("A-3")).build()
                 )
         );
 

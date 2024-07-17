@@ -223,16 +223,16 @@ public class Events {
         return changeObjectStatus(eventKey, objects, BOOKED, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
     }
 
-    public BestAvailableResult book(String eventKey, BestAvailable bestAvailable) {
-        return book(eventKey, bestAvailable, null, null, null, null, null);
+    public BestAvailableResult book(String eventKey, BestAvailableParams bestAvailableParams) {
+        return book(eventKey, bestAvailableParams, null, null, null, null, null);
     }
 
-    public BestAvailableResult book(String eventKey, BestAvailable bestAvailable, String holdToken) {
-        return book(eventKey, bestAvailable, holdToken, null, null, null, null);
+    public BestAvailableResult book(String eventKey, BestAvailableParams bestAvailableParams, String holdToken) {
+        return book(eventKey, bestAvailableParams, holdToken, null, null, null, null);
     }
 
-    public BestAvailableResult book(String eventKey, BestAvailable bestAvailable, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
-        return changeObjectStatus(eventKey, bestAvailable, BOOKED, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
+    public BestAvailableResult book(String eventKey, BestAvailableParams bestAvailableParams, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
+        return changeObjectStatus(eventKey, bestAvailableParams, BOOKED, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
     }
 
     public ChangeObjectStatusResult book(List<String> eventKeys, List<?> objects, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
@@ -247,12 +247,12 @@ public class Events {
         return changeObjectStatus(eventKey, objects, HELD, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
     }
 
-    public BestAvailableResult hold(String eventKey, BestAvailable bestAvailable, String holdToken) {
-        return hold(eventKey, bestAvailable, holdToken, null, null, null, null);
+    public BestAvailableResult hold(String eventKey, BestAvailableParams bestAvailableParams, String holdToken) {
+        return hold(eventKey, bestAvailableParams, holdToken, null, null, null, null);
     }
 
-    public BestAvailableResult hold(String eventKey, BestAvailable bestAvailable, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
-        return changeObjectStatus(eventKey, bestAvailable, HELD, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
+    public BestAvailableResult hold(String eventKey, BestAvailableParams bestAvailableParams, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
+        return changeObjectStatus(eventKey, bestAvailableParams, HELD, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
     }
 
     public ChangeObjectStatusResult hold(List<String> eventKeys, List<?> objects, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
@@ -275,18 +275,18 @@ public class Events {
         return changeObjectStatus(eventKeys, objects, FREE, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
     }
 
-    public BestAvailableResult changeObjectStatus(String eventKey, BestAvailable bestAvailable, String status) {
-        return changeObjectStatus(eventKey, bestAvailable, status, null, null, null, null, null);
+    public BestAvailableResult changeObjectStatus(String eventKey, BestAvailableParams bestAvailableParams, String status) {
+        return changeObjectStatus(eventKey, bestAvailableParams, status, null, null, null, null, null);
     }
 
-    public BestAvailableResult changeObjectStatus(String eventKey, BestAvailable bestAvailable, String status, String holdToken) {
-        return changeObjectStatus(eventKey, bestAvailable, status, holdToken, null, null, null, null);
+    public BestAvailableResult changeObjectStatus(String eventKey, BestAvailableParams bestAvailableParams, String status, String holdToken) {
+        return changeObjectStatus(eventKey, bestAvailableParams, status, holdToken, null, null, null, null);
     }
 
-    public BestAvailableResult changeObjectStatus(String eventKey, BestAvailable bestAvailable, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
+    public BestAvailableResult changeObjectStatus(String eventKey, BestAvailableParams bestAvailableParams, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
         String result = unirest.stringResponse(post(baseUrl + "/events/{key}/actions/change-object-status")
                 .routeParam("key", eventKey)
-                .body(changeObjectStatusRequest(bestAvailable, status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys).toString()));
+                .body(changeObjectStatusRequest(bestAvailableParams, status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys).toString()));
         return gson().fromJson(result, BestAvailableResult.class);
     }
 
@@ -382,9 +382,9 @@ public class Events {
         return request.build();
     }
 
-    private JsonObject changeObjectStatusRequest(BestAvailable bestAvailable, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
+    private JsonObject changeObjectStatusRequest(BestAvailableParams bestAvailableParams, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
         JsonObjectBuilder request = changeObjectStatusRequestBuilder(status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, null, null);
-        request.withProperty("bestAvailable", gson().toJsonTree(bestAvailable));
+        request.withProperty("bestAvailable", gson().toJsonTree(bestAvailableParams));
         return request.build();
     }
 
