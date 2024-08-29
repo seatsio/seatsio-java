@@ -4,6 +4,7 @@ import seatsio.util.ValueObject;
 
 public class Workspace extends ValueObject {
 
+    public long id;
     public String name;
     public String key;
     public String secretKey;
