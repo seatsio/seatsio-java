@@ -13,6 +13,7 @@ public class RetrieveWorkspaceTest extends SeatsioClientTest {
 
         Workspace retrievedWorkspace = client.workspaces.retrieve(workspace.key);
 
+        assertThat(retrievedWorkspace.id).isNotZero();
         assertThat(retrievedWorkspace.name).isEqualTo("my workspace");
         assertThat(retrievedWorkspace.key).isNotNull();
         assertThat(retrievedWorkspace.secretKey).isNotNull();
