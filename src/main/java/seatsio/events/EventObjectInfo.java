@@ -58,4 +58,5 @@ public class EventObjectInfo extends ValueObject {
     public Integer maxOccupancy;
     public int seasonStatusOverriddenQuantity;
     public String zone;
+    public Floor floor;
 }
