@@ -28,6 +28,21 @@ public class BookObjectsTest extends SeatsioClientTest {
     }
 
     @Test
+    public void floors() {
+        String chartKey = createTestChartWithFloors();
+        Event event = client.events.create(chartKey);
+
+        ChangeObjectStatusResult result = client.events.book(event.key, List.of("S1-A-1"));
+
+        assertThat(client.events.retrieveObjectInfo(event.key, "S1-A-1").status).isEqualTo(BOOKED);
+        assertThat(client.events.retrieveObjectInfo(event.key, "S1-A-2").status).isEqualTo(FREE);
+
+        assertThat(result.objects).containsOnlyKeys("S1-A-1");
+        assertThat(result.objects.get("S1-A-1").floor.name).isEqualTo("1");
+        assertThat(result.objects.get("S1-A-1").floor.displayName).isEqualTo("Floor 1");
+    }
+
+    @Test
     public void sections() {
         String chartKey = createTestChartWithSections();
         Event event = client.events.create(chartKey);
@@ -40,6 +55,7 @@ public class BookObjectsTest extends SeatsioClientTest {
 
         assertThat(result.objects).containsOnlyKeys("Section A-A-1", "Section A-A-2");
         assertThat(result.objects.get("Section A-A-1").entrance).isEqualTo("Entrance 1");
+        assertThat(result.objects.get("Section A-A-1").floor).isNull();
         assertThat(result.objects.get("Section A-A-1").section).isEqualTo("Section A");
         assertThat(result.objects.get("Section A-A-1").labels).isEqualTo(new Labels("1", "seat", "A", "row", "Section A"));
         assertThat(result.objects.get("Section A-A-1").ids).isEqualTo(new IDs("1", "A", "Section A"));
