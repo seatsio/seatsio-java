@@ -185,4 +185,14 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
         assertThat(bestAvailableResult.objects).containsOnly("A-5");
     }
 
+    @Test
+    public void accessibleSeats() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailableParams.Builder().withNumber(3).withAccessibleSeats(1).build(), "foo");
+
+        assertThat(bestAvailableResult.nextToEachOther).isTrue();
+        assertThat(bestAvailableResult.objects).containsOnly("A-6", "A-7", "A-8");
+    }
 }

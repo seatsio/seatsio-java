@@ -13,22 +13,24 @@ public class BestAvailableParams extends ValueObject {
     private final List<Map<String, Object>> extraData;
     private final List<String> ticketTypes;
     private final Boolean tryToPreventOrphanSeats;
+    private final Integer accessibleSeats;
 
     public BestAvailableParams(int number) {
-        this(number, null, null, null, null, null);
+        this(number, null, null, null, null, null, null);
     }
 
     public BestAvailableParams(int number, List<String> categories) {
-        this(number, categories, null, null, null, null);
+        this(number, categories, null, null, null, null, null);
     }
 
-    BestAvailableParams(int number, List<String> categories, String zone, List<Map<String, Object>> extraData, List<String> ticketTypes, Boolean tryToPreventOrphanSeats) {
+    BestAvailableParams(int number, List<String> categories, String zone, List<Map<String, Object>> extraData, List<String> ticketTypes, Boolean tryToPreventOrphanSeats, Integer accessibleSeats) {
         this.number = number;
         this.categories = categories;
         this.zone = zone;
         this.extraData = extraData;
         this.ticketTypes = ticketTypes;
         this.tryToPreventOrphanSeats = tryToPreventOrphanSeats;
+        this.accessibleSeats = accessibleSeats;
     }
 
     public static class Builder {
@@ -39,9 +41,15 @@ public class BestAvailableParams extends ValueObject {
         private List<Map<String, Object>> extraData;
         private List<String> ticketTypes;
         private Boolean tryToPreventOrphanSeats;
+        private Integer accessibleSeats;
 
         public Builder withNumber(int number) {
             this.number = number;
+            return this;
+        }
+
+        public Builder withAccessibleSeats(Integer accessibleSeats) {
+            this.accessibleSeats = accessibleSeats;
             return this;
         }
 
@@ -77,7 +85,8 @@ public class BestAvailableParams extends ValueObject {
                     this.zone,
                     this.extraData,
                     this.ticketTypes,
-                    this.tryToPreventOrphanSeats
+                    this.tryToPreventOrphanSeats,
+                    this.accessibleSeats
             );
         }
     }
