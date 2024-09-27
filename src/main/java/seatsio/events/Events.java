@@ -269,14 +269,14 @@ public class Events {
     }
 
     public ChangeObjectStatusResult release(String eventKey, List<?> objects, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
-        return releaseObjectStatus(singletonList(eventKey), objects, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
+        return releaseObjects(singletonList(eventKey), objects, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
     }
 
     public ChangeObjectStatusResult release(List<String> eventKeys, List<?> objects, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
-        return releaseObjectStatus(eventKeys, objects, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
+        return releaseObjects(eventKeys, objects, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
     }
 
-    private ChangeObjectStatusResult releaseObjectStatus(List<String> eventKeys, List<?> objects, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
+    private ChangeObjectStatusResult releaseObjects(List<String> eventKeys, List<?> objects, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
         JsonObject body = releaseStatusRequest(eventKeys, toObjects(objects), holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, null, null);
         String response = unirest.stringResponse(post(baseUrl + "/events/groups/actions/change-object-status")
                 .queryString("expand", "objects")
