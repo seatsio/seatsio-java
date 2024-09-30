@@ -32,6 +32,13 @@ public class ChartDraftReportsTest extends AbstractChartReportsTest {
         return chartKey;
     }
 
+    @Override
+    public String createTestChartWithFloorsForReport() {
+        String chartKey = createTestChartWithFloors();
+        createDraft(chartKey);
+        return chartKey;
+    }
+
     private void createDraft(String chartKey) {
         client.events.create(chartKey);
         client.charts.update(chartKey, "foo");

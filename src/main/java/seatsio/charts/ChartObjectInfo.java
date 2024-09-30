@@ -23,5 +23,5 @@ public class ChartObjectInfo {
     public Boolean isCompanionSeat;
     public Boolean hasRestrictedView;
     public String zone;
-
+    public FloorInfo floor;
 }
