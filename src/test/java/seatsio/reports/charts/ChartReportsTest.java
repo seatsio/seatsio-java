@@ -23,6 +23,11 @@ public class ChartReportsTest extends AbstractChartReportsTest {
     }
 
     @Override
+    public String createTestChartWithFloorsForReport() {
+        return createTestChartWithFloors();
+    }
+
+    @Override
     public ChartReportOptions updateOptions() {
         return ChartReportOptions.NONE;
     }

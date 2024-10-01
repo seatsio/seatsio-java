@@ -1,5 +1,6 @@
 package seatsio.charts;
 
+import seatsio.events.Floor;
 import seatsio.events.IDs;
 import seatsio.events.Labels;
 
@@ -23,5 +24,5 @@ public class ChartObjectInfo {
     public Boolean isCompanionSeat;
     public Boolean hasRestrictedView;
     public String zone;
-
+    public Floor floor;
 }
