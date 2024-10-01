@@ -3,7 +3,7 @@ package seatsio.reports.charts;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.charts.ChartObjectInfo;
-import seatsio.charts.FloorInfo;
+import seatsio.events.Floor;
 import seatsio.events.IDs;
 import seatsio.events.Labels;
 
@@ -82,10 +82,10 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
 
         List<ChartObjectInfo> seats = report.get("seat");
         assertThat(seats).hasSize(4);
-        assertThat(seats.get(0).floor).isEqualTo(new FloorInfo("1", "Floor 1"));
-        assertThat(seats.get(1).floor).isEqualTo(new FloorInfo("1", "Floor 1"));
-        assertThat(seats.get(2).floor).isEqualTo(new FloorInfo("2", "Floor 2"));
-        assertThat(seats.get(3).floor).isEqualTo(new FloorInfo("2", "Floor 2"));
+        assertThat(seats.get(0).floor).isEqualTo(floor("1", "Floor 1"));
+        assertThat(seats.get(1).floor).isEqualTo(floor("1", "Floor 1"));
+        assertThat(seats.get(2).floor).isEqualTo(floor("2", "Floor 2"));
+        assertThat(seats.get(3).floor).isEqualTo(floor("2", "Floor 2"));
     }
 
     @Test
@@ -140,10 +140,10 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
 
         Map<String, List<ChartObjectInfo>> report = client.chartReports.byLabel(chartKey, updateOptions());
 
-        assertThat(report.get("S1-A-1").get(0).floor).isEqualTo(new FloorInfo("1", "Floor 1"));
-        assertThat(report.get("S1-A-2").get(0).floor).isEqualTo(new FloorInfo("1", "Floor 1"));
-        assertThat(report.get("S2-B-1").get(0).floor).isEqualTo(new FloorInfo("2", "Floor 2"));
-        assertThat(report.get("S2-B-2").get(0).floor).isEqualTo(new FloorInfo("2", "Floor 2"));
+        assertThat(report.get("S1-A-1").get(0).floor).isEqualTo(floor("1", "Floor 1"));
+        assertThat(report.get("S1-A-2").get(0).floor).isEqualTo(floor("1", "Floor 1"));
+        assertThat(report.get("S2-B-1").get(0).floor).isEqualTo(floor("2", "Floor 2"));
+        assertThat(report.get("S2-B-2").get(0).floor).isEqualTo(floor("2", "Floor 2"));
     }
 
     @Test
@@ -164,13 +164,13 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
 
         List<ChartObjectInfo> fooCategory = report.get("1");
         assertThat(fooCategory).hasSize(2);
-        assertThat(fooCategory.get(0).floor).isEqualTo(new FloorInfo("1", "Floor 1"));
-        assertThat(fooCategory.get(1).floor).isEqualTo(new FloorInfo("1", "Floor 1"));
+        assertThat(fooCategory.get(0).floor).isEqualTo(floor("1", "Floor 1"));
+        assertThat(fooCategory.get(1).floor).isEqualTo(floor("1", "Floor 1"));
 
         List<ChartObjectInfo> barCategory = report.get("2");
         assertThat(barCategory).hasSize(2);
-        assertThat(barCategory.get(0).floor).isEqualTo(new FloorInfo("2", "Floor 2"));
-        assertThat(barCategory.get(1).floor).isEqualTo(new FloorInfo("2", "Floor 2"));
+        assertThat(barCategory.get(0).floor).isEqualTo(floor("2", "Floor 2"));
+        assertThat(barCategory.get(1).floor).isEqualTo(floor("2", "Floor 2"));
     }
 
     @Test
@@ -191,13 +191,13 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
 
         List<ChartObjectInfo> fooCategory = report.get("Foo");
         assertThat(fooCategory).hasSize(2);
-        assertThat(fooCategory.get(0).floor).isEqualTo(new FloorInfo("1", "Floor 1"));
-        assertThat(fooCategory.get(1).floor).isEqualTo(new FloorInfo("1", "Floor 1"));
+        assertThat(fooCategory.get(0).floor).isEqualTo(floor("1", "Floor 1"));
+        assertThat(fooCategory.get(1).floor).isEqualTo(floor("1", "Floor 1"));
 
         List<ChartObjectInfo> barCategory = report.get("Bar");
         assertThat(barCategory).hasSize(2);
-        assertThat(barCategory.get(0).floor).isEqualTo(new FloorInfo("2", "Floor 2"));
-        assertThat(barCategory.get(1).floor).isEqualTo(new FloorInfo("2", "Floor 2"));
+        assertThat(barCategory.get(0).floor).isEqualTo(floor("2", "Floor 2"));
+        assertThat(barCategory.get(1).floor).isEqualTo(floor("2", "Floor 2"));
     }
 
     @Test
@@ -218,13 +218,13 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
 
         List<ChartObjectInfo> section1 = report.get("S1");
         assertThat(section1).hasSize(2);
-        assertThat(section1.get(0).floor).isEqualTo(new FloorInfo("1", "Floor 1"));
-        assertThat(section1.get(0).floor).isEqualTo(new FloorInfo("1", "Floor 1"));
+        assertThat(section1.get(0).floor).isEqualTo(floor("1", "Floor 1"));
+        assertThat(section1.get(0).floor).isEqualTo(floor("1", "Floor 1"));
 
         List<ChartObjectInfo> section2 = report.get("S2");
         assertThat(section2).hasSize(2);
-        assertThat(section2.get(1).floor).isEqualTo(new FloorInfo("2", "Floor 2"));
-        assertThat(section2.get(1).floor).isEqualTo(new FloorInfo("2", "Floor 2"));
+        assertThat(section2.get(1).floor).isEqualTo(floor("2", "Floor 2"));
+        assertThat(section2.get(1).floor).isEqualTo(floor("2", "Floor 2"));
     }
 
     @Test
@@ -251,4 +251,11 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
     public abstract ChartReportOptions updateOptions();
 
     public abstract ChartReportOptions updateOptions(ChartReportOptions options);
+
+    private static Floor floor(String name, String displayName){
+        Floor floor = new Floor();
+        floor.name = name;
+        floor.displayName = displayName;
+        return floor;
+    }
 }
