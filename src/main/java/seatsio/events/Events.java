@@ -259,6 +259,14 @@ public class Events {
         return changeObjectStatus(eventKeys, objects, HELD, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
     }
 
+    public ChangeObjectStatusResult putUpForResale(String eventKey, List<?> objects) {
+        return changeObjectStatus(eventKey, objects, RESALE, null, null, null, null, null);
+    }
+
+    public ChangeObjectStatusResult putUpForResale(List<String> eventKeys, List<?> objects) {
+        return changeObjectStatus(eventKeys, objects, RESALE, null, null, null, null, null);
+    }
+
     public ChangeObjectStatusResult release(String eventKey, List<?> objects) {
         return release(eventKey, objects, null, null, null, null, null);
     }

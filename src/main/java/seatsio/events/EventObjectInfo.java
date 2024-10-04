@@ -20,6 +20,7 @@ public class EventObjectInfo extends ValueObject {
     public static final String FREE = "free";
     public static final String BOOKED = "booked";
     public static final String HELD = "reservedByToken";
+    public static final String RESALE = "resale";
 
     public String status;
     public String label;
