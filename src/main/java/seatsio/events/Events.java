@@ -15,8 +15,7 @@ import java.util.stream.Stream;
 
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
-import static seatsio.events.EventObjectInfo.BOOKED;
-import static seatsio.events.EventObjectInfo.HELD;
+import static seatsio.events.EventObjectInfo.*;
 import static seatsio.json.JsonArrayBuilder.aJsonArray;
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
 import static seatsio.json.SeatsioGson.gson;
