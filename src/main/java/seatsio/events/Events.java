@@ -15,8 +15,7 @@ import java.util.stream.Stream;
 
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
-import static seatsio.events.EventObjectInfo.BOOKED;
-import static seatsio.events.EventObjectInfo.HELD;
+import static seatsio.events.EventObjectInfo.*;
 import static seatsio.json.JsonArrayBuilder.aJsonArray;
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
 import static seatsio.json.SeatsioGson.gson;
@@ -258,6 +257,14 @@ public class Events {
 
     public ChangeObjectStatusResult hold(List<String> eventKeys, List<?> objects, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
         return changeObjectStatus(eventKeys, objects, HELD, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
+    }
+
+    public ChangeObjectStatusResult putUpForResale(String eventKey, List<?> objects) {
+        return changeObjectStatus(eventKey, objects, RESALE, null, null, null, null, null);
+    }
+
+    public ChangeObjectStatusResult putUpForResale(List<String> eventKeys, List<?> objects) {
+        return changeObjectStatus(eventKeys, objects, RESALE, null, null, null, null, null);
     }
 
     public ChangeObjectStatusResult release(String eventKey, List<?> objects) {
