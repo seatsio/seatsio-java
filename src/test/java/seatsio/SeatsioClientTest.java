@@ -75,6 +75,10 @@ public class SeatsioClientTest {
         return createTestChart("/sampleChartWithFloors.json");
     }
 
+    protected String createTestChartWithNullCategoryAccessible() {
+        return createTestChart("/sampleChartWithNullCategoryAccessible.json");
+    }
+
     protected String createTestChart(String fileName) {
         String testChartJson = testChartJson(fileName);
         String chartKey = randomUUID().toString();

@@ -1,6 +1,7 @@
 package seatsio.json;
 
 import com.google.gson.*;
+import seatsio.charts.Category;
 import seatsio.charts.CategoryKey;
 import seatsio.events.Event;
 
@@ -13,6 +14,7 @@ public class SeatsioGson {
     public static Gson gson() {
         return gsonBuilder()
                 .registerTypeAdapter(Event.class, new Event.EventJsonDeserializer())
+                .registerTypeAdapter(Category.class, new Category.CategoryJsonDeserializer())
                 .create();
     }
 

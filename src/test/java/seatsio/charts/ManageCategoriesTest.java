@@ -148,6 +148,20 @@ public class ManageCategoriesTest extends SeatsioClientTest {
         assertThat(e.getMessage()).isEqualTo("category not found");
     }
 
+    @Test
+    public void nullAccessibleShouldBeInterpretedAsFalse() {
+        String chartKey = createTestChartWithNullCategoryAccessible();
+
+        List<Category> categories = client.charts.listCategories(chartKey);
+
+        List<Category> expected = List.of(
+                new Category(CategoryKey.of(9L), "Cat1", "#87A9CD", false),
+                new Category(CategoryKey.of(10L), "Cat2", "#5E42ED", true),
+                new Category(CategoryKey.of("string11"), "Cat3", "#5E42BB", false)
+        );
+        assertThat(categories).isEqualTo(expected);
+    }
+
     private List<Map<?, ?>> categories(Map<?, ?> drawing) {
         Map<?, ?> categoriesMap = (Map<?, ?>) drawing.get("categories");
         return (List<Map<?, ?>>) categoriesMap.get("list");

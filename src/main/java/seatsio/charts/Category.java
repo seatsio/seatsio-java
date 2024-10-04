@@ -1,9 +1,16 @@
 package seatsio.charts;
 
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import seatsio.util.ValueObject;
 
+import java.lang.reflect.Type;
+
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
+import static seatsio.json.SeatsioGson.gsonBuilder;
 
 public class Category extends ValueObject {
 
@@ -46,5 +53,17 @@ public class Category extends ValueObject {
                 .withPropertyIfNotNull("color", this.color)
                 .withPropertyIfNotNull("accessible", this.accessible)
                 .build();
+    }
+
+    public static class CategoryJsonDeserializer implements JsonDeserializer<Category> {
+
+        @Override
+        public Category deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
+            JsonObject category = jsonElement.getAsJsonObject();
+            if (!category.has("accessible")) {
+                category.addProperty("accessible", false);
+            }
+            return gsonBuilder().create().fromJson(category, Category.class);
+        }
     }
 }
