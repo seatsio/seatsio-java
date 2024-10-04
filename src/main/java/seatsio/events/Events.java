@@ -15,7 +15,8 @@ import java.util.stream.Stream;
 
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
-import static seatsio.events.EventObjectInfo.*;
+import static seatsio.events.EventObjectInfo.BOOKED;
+import static seatsio.events.EventObjectInfo.HELD;
 import static seatsio.json.JsonArrayBuilder.aJsonArray;
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
 import static seatsio.json.SeatsioGson.gson;
@@ -276,11 +277,19 @@ public class Events {
     }
 
     public ChangeObjectStatusResult release(String eventKey, List<?> objects, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
-        return changeObjectStatus(eventKey, objects, FREE, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
+        return releaseObjects(singletonList(eventKey), objects, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
     }
 
     public ChangeObjectStatusResult release(List<String> eventKeys, List<?> objects, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
-        return changeObjectStatus(eventKeys, objects, FREE, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
+        return releaseObjects(eventKeys, objects, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys);
+    }
+
+    private ChangeObjectStatusResult releaseObjects(List<String> eventKeys, List<?> objects, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
+        JsonObject body = releaseObjectsRequest(eventKeys, toObjects(objects), holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, null, null);
+        String response = unirest.stringResponse(post(baseUrl + "/events/groups/actions/change-object-status")
+                .queryString("expand", "objects")
+                .body(body.toString()));
+        return gson().fromJson(response, ChangeObjectStatusResult.class);
     }
 
     public BestAvailableResult changeObjectStatus(String eventKey, BestAvailableParams bestAvailableParams, String status) {
@@ -390,6 +399,13 @@ public class Events {
         return request.build();
     }
 
+    private JsonObject releaseObjectsRequest(List<String> eventKeys, List<ObjectProperties> objects, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses) {
+        JsonObjectBuilder request = releaseObjectsRequestBuilder(holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, allowedPreviousStatuses, rejectedPreviousStatuses);
+        request.withProperty("events", eventKeys);
+        request.withProperty("objects", objects, object -> gson().toJsonTree(object));
+        return request.build();
+    }
+
     private JsonObject changeObjectStatusRequest(BestAvailableParams bestAvailableParams, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
         JsonObjectBuilder request = changeObjectStatusRequestBuilder(status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, null, null);
         request.withProperty("bestAvailable", gson().toJsonTree(bestAvailableParams));
@@ -399,6 +415,18 @@ public class Events {
     private JsonObjectBuilder changeObjectStatusRequestBuilder(String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses) {
         return aJsonObject()
                 .withProperty("status", status)
+                .withPropertyIfNotNull("holdToken", holdToken)
+                .withPropertyIfNotNull("orderId", orderId)
+                .withPropertyIfNotNull("keepExtraData", keepExtraData)
+                .withPropertyIfNotNull("ignoreChannels", ignoreChannels)
+                .withPropertyIfNotNull("channelKeys", channelKeys)
+                .withPropertyIfNotNull("allowedPreviousStatuses", allowedPreviousStatuses)
+                .withPropertyIfNotNull("rejectedPreviousStatuses", rejectedPreviousStatuses);
+    }
+
+    private JsonObjectBuilder releaseObjectsRequestBuilder(String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses) {
+        return aJsonObject()
+                .withProperty("type", "RELEASE")
                 .withPropertyIfNotNull("holdToken", holdToken)
                 .withPropertyIfNotNull("orderId", orderId)
                 .withPropertyIfNotNull("keepExtraData", keepExtraData)
