@@ -16,10 +16,10 @@ public class ListStatusChangesForObjectTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
         client.events.changeObjectStatus(List.of(
-                new StatusChangeRequest(event.key, List.of("A-1"), "s1"),
-                new StatusChangeRequest(event.key, List.of("A-1"), "s2"),
-                new StatusChangeRequest(event.key, List.of("A-1"), "s3"),
-                new StatusChangeRequest(event.key, List.of("A-1"), "s4")
+                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-1")).withStatus("s1").build(),
+                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-1")).withStatus("s2").build(),
+                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-1")).withStatus("s3").build(),
+                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-1")).withStatus("s4").build()
         ));
         waitForStatusChanges(client, event, 4);
 

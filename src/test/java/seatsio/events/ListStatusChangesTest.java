@@ -31,9 +31,9 @@ public class ListStatusChangesTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
         client.events.changeObjectStatus(List.of(
-                new StatusChangeRequest(event.key, List.of("A-1"), "s1"),
-                new StatusChangeRequest(event.key, List.of("A-2"), "s2"),
-                new StatusChangeRequest(event.key, List.of("A-3"), "s3")
+                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-1")).withStatus("s1").build(),
+                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-2")).withStatus("s2").build(),
+                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-3")).withStatus("s3").build()
         ));
         waitForStatusChanges(client, event, 3);
 
@@ -102,10 +102,10 @@ public class ListStatusChangesTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
         client.events.changeObjectStatus(List.of(
-                new StatusChangeRequest(event.key, List.of("A-1"), "s1"),
-                new StatusChangeRequest(event.key, List.of("A-2"), "s2"),
-                new StatusChangeRequest(event.key, List.of("B-1"), "s3"),
-                new StatusChangeRequest(event.key, List.of("A-3"), "s4")
+                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-1")).withStatus("s1").build(),
+                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-2")).withStatus("s2").build(),
+                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("B-1")).withStatus("s3").build(),
+                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-3")).withStatus("s4").build()
         ));
         waitForStatusChanges(client, event, 4);
 
@@ -120,9 +120,9 @@ public class ListStatusChangesTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
         client.events.changeObjectStatus(List.of(
-                new StatusChangeRequest(event.key, List.of("A-1"), "s1"),
-                new StatusChangeRequest(event.key, List.of("A-2"), "s2"),
-                new StatusChangeRequest(event.key, List.of("A-3"), "s3")
+                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-1")).withStatus("s1").build(),
+                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-2")).withStatus("s2").build(),
+                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-3")).withStatus("s3").build()
         ));
         waitForStatusChanges(client, event, 3);
 
@@ -138,9 +138,9 @@ public class ListStatusChangesTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
         client.events.changeObjectStatus(List.of(
-                new StatusChangeRequest(event.key, List.of("A-1"), "s1"),
-                new StatusChangeRequest(event.key, List.of("A-2"), "s2"),
-                new StatusChangeRequest(event.key, List.of("A-3"), "s3")
+                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-1")).withStatus("s1").build(),
+                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-2")).withStatus("s2").build(),
+                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-3")).withStatus("s3").build()
         ));
         waitForStatusChanges(client, event, 3);
 
@@ -158,9 +158,9 @@ public class ListStatusChangesTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
         client.events.changeObjectStatus(List.of(
-                new StatusChangeRequest(event.key, List.of("A-1"), "s1"),
-                new StatusChangeRequest(event.key, List.of("A-2"), "s2"),
-                new StatusChangeRequest(event.key, List.of("A-3"), "s3")
+                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-1")).withStatus("s1").build(),
+                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-2")).withStatus("s2").build(),
+                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-3")).withStatus("s3").build()
         ));
         waitForStatusChanges(client, event, 3);
 
@@ -178,9 +178,9 @@ public class ListStatusChangesTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
         client.events.changeObjectStatus(List.of(
-                new StatusChangeRequest(event.key, List.of("A-1"), "s1"),
-                new StatusChangeRequest(event.key, List.of("A-2"), "s2"),
-                new StatusChangeRequest(event.key, List.of("A-3"), "s3")
+                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-1")).withStatus("s1").build(),
+                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-2")).withStatus("s2").build(),
+                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-3")).withStatus("s3").build()
         ));
         waitForStatusChanges(client, event, 3);
 

@@ -16,6 +16,8 @@ import java.util.stream.Stream;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static seatsio.events.EventObjectInfo.*;
+import static seatsio.events.StatusChangeType.CHANGE_STATUS_TO;
+import static seatsio.events.StatusChangeType.RELEASE;
 import static seatsio.json.JsonArrayBuilder.aJsonArray;
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
 import static seatsio.json.SeatsioGson.gson;
@@ -329,14 +331,14 @@ public class Events {
     public ChangeObjectStatusResult changeObjectStatus(List<String> eventKeys, List<?> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
         String response = unirest.stringResponse(post(baseUrl + "/events/groups/actions/change-object-status")
                 .queryString("expand", "objects")
-                .body(changeObjectStatusRequest(eventKeys, toObjects(objects), status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, null, null).toString()));
+                .body(changeObjectStatusRequest(CHANGE_STATUS_TO, eventKeys, toObjects(objects), status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, null, null).toString()));
         return gson().fromJson(response, ChangeObjectStatusResult.class);
     }
 
     public ChangeObjectStatusResult changeObjectStatus(List<String> eventKeys, List<?> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses) {
         String response = unirest.stringResponse(post(baseUrl + "/events/groups/actions/change-object-status")
                 .queryString("expand", "objects")
-                .body(changeObjectStatusRequest(eventKeys, toObjects(objects), status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, allowedPreviousStatuses, rejectedPreviousStatuses).toString()));
+                .body(changeObjectStatusRequest(CHANGE_STATUS_TO, eventKeys, toObjects(objects), status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, allowedPreviousStatuses, rejectedPreviousStatuses).toString()));
         return gson().fromJson(response, ChangeObjectStatusResult.class);
     }
 
@@ -361,7 +363,7 @@ public class Events {
     public List<ChangeObjectStatusResult> changeObjectStatus(List<StatusChangeRequest> statusChangeRequests) {
         List<JsonElement> statusChangeRequestsAsJson = statusChangeRequests
                 .stream()
-                .map(s -> changeObjectStatusRequest(s.eventKey, toObjects(s.objects), s.status, s.holdToken, s.orderId, s.keepExtraData, s.ignoreChannels, s.channelKeys, s.allowedPreviousStatuses, s.rejectedPreviousStatuses))
+                .map(s -> changeObjectStatusRequest(s.type, s.eventKey, toObjects(s.objects), s.status, s.holdToken, s.orderId, s.keepExtraData, s.ignoreChannels, s.channelKeys, s.allowedPreviousStatuses, s.rejectedPreviousStatuses))
                 .collect(toList());
         JsonObject request = aJsonObject()
                 .withProperty("statusChanges", aJsonArray().withItems(statusChangeRequestsAsJson).build())
@@ -384,48 +386,37 @@ public class Events {
                 .collect(toList());
     }
 
-    private JsonObject changeObjectStatusRequest(String eventKey, List<ObjectProperties> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses) {
-        JsonObjectBuilder request = changeObjectStatusRequestBuilder(status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, allowedPreviousStatuses, rejectedPreviousStatuses);
+    private JsonObject changeObjectStatusRequest(StatusChangeType type, String eventKey, List<ObjectProperties> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses) {
+        JsonObjectBuilder request = changeObjectStatusRequestBuilder(type, status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, allowedPreviousStatuses, rejectedPreviousStatuses);
         request.withProperty("event", eventKey);
         request.withProperty("objects", objects, object -> gson().toJsonTree(object));
         return request.build();
     }
 
-    private JsonObject changeObjectStatusRequest(List<String> eventKeys, List<ObjectProperties> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses) {
-        JsonObjectBuilder request = changeObjectStatusRequestBuilder(status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, allowedPreviousStatuses, rejectedPreviousStatuses);
-        request.withProperty("events", eventKeys);
-        request.withProperty("objects", objects, object -> gson().toJsonTree(object));
-        return request.build();
-    }
-
-    private JsonObject releaseObjectsRequest(List<String> eventKeys, List<ObjectProperties> objects, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses) {
-        JsonObjectBuilder request = releaseObjectsRequestBuilder(holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, allowedPreviousStatuses, rejectedPreviousStatuses);
+    private JsonObject changeObjectStatusRequest(StatusChangeType type, List<String> eventKeys, List<ObjectProperties> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses) {
+        JsonObjectBuilder request = changeObjectStatusRequestBuilder(type, status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, allowedPreviousStatuses, rejectedPreviousStatuses);
         request.withProperty("events", eventKeys);
         request.withProperty("objects", objects, object -> gson().toJsonTree(object));
         return request.build();
     }
 
     private JsonObject changeObjectStatusRequest(BestAvailableParams bestAvailableParams, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys) {
-        JsonObjectBuilder request = changeObjectStatusRequestBuilder(status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, null, null);
+        JsonObjectBuilder request = changeObjectStatusRequestBuilder(CHANGE_STATUS_TO, status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, null, null);
         request.withProperty("bestAvailable", gson().toJsonTree(bestAvailableParams));
         return request.build();
     }
 
-    private JsonObjectBuilder changeObjectStatusRequestBuilder(String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses) {
-        return aJsonObject()
-                .withProperty("status", status)
-                .withPropertyIfNotNull("holdToken", holdToken)
-                .withPropertyIfNotNull("orderId", orderId)
-                .withPropertyIfNotNull("keepExtraData", keepExtraData)
-                .withPropertyIfNotNull("ignoreChannels", ignoreChannels)
-                .withPropertyIfNotNull("channelKeys", channelKeys)
-                .withPropertyIfNotNull("allowedPreviousStatuses", allowedPreviousStatuses)
-                .withPropertyIfNotNull("rejectedPreviousStatuses", rejectedPreviousStatuses);
+    private JsonObject releaseObjectsRequest(List<String> eventKeys, List<ObjectProperties> objects, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses) {
+        JsonObjectBuilder request = changeObjectStatusRequestBuilder(RELEASE, null, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, allowedPreviousStatuses, rejectedPreviousStatuses);
+        request.withProperty("events", eventKeys);
+        request.withProperty("objects", objects, object -> gson().toJsonTree(object));
+        return request.build();
     }
 
-    private JsonObjectBuilder releaseObjectsRequestBuilder(String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses) {
+    private JsonObjectBuilder changeObjectStatusRequestBuilder(StatusChangeType type, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses) {
         return aJsonObject()
-                .withProperty("type", "RELEASE")
+                .withProperty("type", type)
+                .withPropertyIfNotNull("status", type == RELEASE ? null : status)
                 .withPropertyIfNotNull("holdToken", holdToken)
                 .withPropertyIfNotNull("orderId", orderId)
                 .withPropertyIfNotNull("keepExtraData", keepExtraData)
