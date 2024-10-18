@@ -9,6 +9,9 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static seatsio.events.EventObjectInfo.FREE;
+import static seatsio.events.StatusChangeType.CHANGE_STATUS_TO;
+import static seatsio.events.StatusChangeType.RELEASE;
 
 public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
 
@@ -20,8 +23,8 @@ public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
         Event event2 = client.events.create(chartKey2);
 
         List<ChangeObjectStatusResult> result = client.events.changeObjectStatus(List.of(
-                new StatusChangeRequest(event1.key, List.of("A-1"), "lolzor"),
-                new StatusChangeRequest(event2.key, List.of("A-2"), "lolzor")
+                new StatusChangeRequest.Builder().withType(CHANGE_STATUS_TO).withEventKey(event1.key).withObjects(List.of("A-1")).withStatus("lolzor").build(),
+                new StatusChangeRequest.Builder().withType(CHANGE_STATUS_TO).withEventKey(event2.key).withObjects(List.of("A-2")).withStatus("lolzor").build()
         ));
 
         assertThat(result.get(0).objects.get("A-1").status).isEqualTo("lolzor");
@@ -39,7 +42,7 @@ public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
         )));
 
         List<ChangeObjectStatusResult> result = client.events.changeObjectStatus(List.of(
-                new StatusChangeRequest(event.key, List.of("A-1"), "lolzor", null, null, null, null, Set.of("channelKey1"))
+                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-1")).withStatus("lolzor").withChannelKeys(Set.of("channelKey1")).build()
         ));
 
         assertThat(result.get(0).objects.get("A-1").status).isEqualTo("lolzor");
@@ -53,7 +56,7 @@ public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
         )));
 
         List<ChangeObjectStatusResult> result = client.events.changeObjectStatus(List.of(
-                new StatusChangeRequest(event.key, List.of("A-1"), "lolzor", null, null, null, true, null)
+                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-1")).withStatus("lolzor").withIgnoreChannels(true).build()
         ));
 
         assertThat(result.get(0).objects.get("A-1").status).isEqualTo("lolzor");
@@ -66,7 +69,7 @@ public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
 
         try {
             client.events.changeObjectStatus(List.of(
-                    new StatusChangeRequest(event.key, List.of("A-1"), "lolzor", null, null, null, true, null, Set.of("MustBeThisStatus"), null)
+                    new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-1")).withStatus("lolzor").withAllowedPreviousStatuses(Set.of("MustBeThisStatus")).build()
             ));
             fail("expected exception");
         } catch (SeatsioException e) {
@@ -82,12 +85,26 @@ public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
 
         try {
             client.events.changeObjectStatus(List.of(
-                    new StatusChangeRequest(event.key, List.of("A-1"), "lolzor", null, null, null, true, null, null, Set.of("free"))
+                    new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-1")).withStatus("lolzor").withRejectedPreviousStatuses(Set.of("free")).build()
             ));
             fail("expected exception");
         } catch (SeatsioException e) {
             assertThat(e.errors).hasSize(1);
             assertThat(e.errors.get(0).getCode()).isEqualTo("ILLEGAL_STATUS_CHANGE");
         }
+    }
+
+    @Test
+    public void release() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        client.events.book(event.key, List.of("A-1"));
+
+        List<ChangeObjectStatusResult> result = client.events.changeObjectStatus(List.of(
+                new StatusChangeRequest.Builder().withType(RELEASE).withEventKey(event.key).withObjects(List.of("A-1")).build()
+        ));
+
+        assertThat(result.get(0).objects.get("A-1").status).isEqualTo(FREE);
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").status).isEqualTo(FREE);
     }
 }
