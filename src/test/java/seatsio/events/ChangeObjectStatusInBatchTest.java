@@ -10,6 +10,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static seatsio.events.EventObjectInfo.FREE;
+import static seatsio.events.StatusChangeType.CHANGE_STATUS_TO;
 import static seatsio.events.StatusChangeType.RELEASE;
 
 public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
@@ -22,8 +23,8 @@ public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
         Event event2 = client.events.create(chartKey2);
 
         List<ChangeObjectStatusResult> result = client.events.changeObjectStatus(List.of(
-                new StatusChangeRequest.Builder().withEventKey(event1.key).withObjects(List.of("A-1")).withStatus("lolzor").build(),
-                new StatusChangeRequest.Builder().withEventKey(event2.key).withObjects(List.of("A-2")).withStatus("lolzor").build()
+                new StatusChangeRequest.Builder().withType(CHANGE_STATUS_TO).withEventKey(event1.key).withObjects(List.of("A-1")).withStatus("lolzor").build(),
+                new StatusChangeRequest.Builder().withType(CHANGE_STATUS_TO).withEventKey(event2.key).withObjects(List.of("A-2")).withStatus("lolzor").build()
         ));
 
         assertThat(result.get(0).objects.get("A-1").status).isEqualTo("lolzor");
