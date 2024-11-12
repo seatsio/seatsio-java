@@ -88,7 +88,6 @@ public class Events {
 
     public void update(String key, UpdateEventParams params) {
         JsonObjectBuilder request = aJsonObject()
-                .withPropertyIfNotNull("chartKey", params.chartKey)
                 .withPropertyIfNotNull("eventKey", params.eventKey)
                 .withPropertyIfNotNull("name", params.name)
                 .withPropertyIfNotNull("date", params.date == null ? null : gson().toJsonTree(params.date))
