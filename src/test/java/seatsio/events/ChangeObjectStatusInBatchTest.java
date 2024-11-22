@@ -3,15 +3,16 @@ package seatsio.events;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.SeatsioException;
+import seatsio.seasons.SeasonParams;
 
 import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static seatsio.events.EventObjectInfo.BOOKED;
 import static seatsio.events.EventObjectInfo.FREE;
-import static seatsio.events.StatusChangeType.CHANGE_STATUS_TO;
-import static seatsio.events.StatusChangeType.RELEASE;
+import static seatsio.events.StatusChangeType.*;
 
 public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
 
@@ -106,5 +107,34 @@ public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
 
         assertThat(result.get(0).objects.get("A-1").status).isEqualTo(FREE);
         assertThat(client.events.retrieveObjectInfo(event.key, "A-1").status).isEqualTo(FREE);
+    }
+
+    @Test
+    public void overrideSeasonStatus() {
+        String chartKey = createTestChart();
+        client.seasons.create(chartKey, new SeasonParams().key("aSeason").eventKeys(List.of("event1")));
+        client.events.book("aSeason", List.of("A-1"));
+
+        List<ChangeObjectStatusResult> result = client.events.changeObjectStatus(List.of(
+                new StatusChangeRequest.Builder().withType(OVERRIDE_SEASON_STATUS).withEventKey("event1").withObjects(List.of("A-1")).build()
+        ));
+
+        assertThat(result.get(0).objects.get("A-1").status).isEqualTo(FREE);
+        assertThat(client.events.retrieveObjectInfo("event1", "A-1").status).isEqualTo(FREE);
+    }
+
+    @Test
+    public void useSeasonStatus() {
+        String chartKey = createTestChart();
+        client.seasons.create(chartKey, new SeasonParams().key("aSeason").eventKeys(List.of("event1")));
+        client.events.book("aSeason", List.of("A-1"));
+        client.events.overrideSeasonObjectStatus("event1", List.of("A-1"));
+
+        List<ChangeObjectStatusResult> result = client.events.changeObjectStatus(List.of(
+                new StatusChangeRequest.Builder().withType(USE_SEASON_STATUS).withEventKey("event1").withObjects(List.of("A-1")).build()
+        ));
+
+        assertThat(result.get(0).objects.get("A-1").status).isEqualTo(BOOKED);
+        assertThat(client.events.retrieveObjectInfo("event1", "A-1").status).isEqualTo(BOOKED);
     }
 }
