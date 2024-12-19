@@ -2,6 +2,7 @@ package seatsio;
 
 import kong.unirest.HttpRequest;
 import kong.unirest.RawResponse;
+import seatsio.events.BestAvailableObjectsNotFoundException;
 import seatsio.exceptions.RateLimitExceededException;
 
 import java.util.List;
@@ -38,6 +39,8 @@ public class SeatsioException extends RuntimeException {
             SeatsioExceptionTO parsedException = fromJson(responseBody);
             if (response.getStatus() == 429) {
                 return new RateLimitExceededException(parsedException.errors, parsedException.requestId);
+            } else if (parsedException.errors.stream().anyMatch(e -> e.getCode().equals("BEST_AVAILABLE_OBJECTS_NOT_FOUND"))) {
+                return new BestAvailableObjectsNotFoundException(parsedException.errors, parsedException.requestId);
             }
             return new SeatsioException(parsedException.errors, parsedException.requestId);
         }
