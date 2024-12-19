@@ -2,6 +2,7 @@ package seatsio.events;
 
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
+import seatsio.SeatsioException;
 
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,8 @@ import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Fail.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
 
@@ -194,5 +197,31 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
 
         assertThat(bestAvailableResult.nextToEachOther).isTrue();
         assertThat(bestAvailableResult.objects).containsOnly("A-6", "A-7", "A-8");
+    }
+
+    @Test
+    public void notFoundThrowsBestAvailableObjectsNotFoundException() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        try {
+            client.events.changeObjectStatus(event.key, new BestAvailableParams.Builder().withNumber(3000).build(), "foo");
+            fail("expected BestAvailableObjectsNotFoundException");
+        } catch(BestAvailableObjectsNotFoundException e) {
+            assertThat(e).isInstanceOf(BestAvailableObjectsNotFoundException.class);
+            assertThat(e.getMessage()).isEqualTo("Best available objects not found");
+        }
+    }
+
+    @Test
+    public void notFoundThrowsNormalSeatsioExceptionIfEventNotFound() {
+        String chartKey = createTestChart();
+        client.events.create(chartKey);
+
+        try {
+            client.events.changeObjectStatus("unknownEvent", new BestAvailableParams.Builder().withNumber(3).build(), "foo");
+        } catch(SeatsioException e) {
+            assertThat(e).isNotInstanceOf(BestAvailableObjectsNotFoundException.class);
+        }
     }
 }
