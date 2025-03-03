@@ -56,8 +56,8 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.assertj:assertj-core:3.27.3'
     testImplementation 'commons-io:commons-io:2.18.0'
-    testImplementation 'org.awaitility:awaitility:4.2.2'
-    testRuntimeOnly "org.slf4j:slf4j-api:2.0.16"
+    testImplementation 'org.awaitility:awaitility:4.3.0'
+    testRuntimeOnly "org.slf4j:slf4j-api:2.0.17"
 }
 
 test {
