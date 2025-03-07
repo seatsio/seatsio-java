@@ -12,6 +12,7 @@ import static java.util.stream.Collectors.toList;
 public class SeasonParams {
 
     private String key;
+    private String name;
     private List<String> eventKeys;
     private Integer numberOfEvents;
     private TableBookingConfig tableBookingConfig;
@@ -27,6 +28,15 @@ public class SeasonParams {
 
     public SeasonParams key(String key) {
         this.key = key;
+        return this;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public SeasonParams name(String name) {
+        this.name = name;
         return this;
     }
 

@@ -54,6 +54,15 @@ public class CreateSeasonTest extends SeatsioClientTest {
     }
 
     @Test
+    public void nameCanBePassedIn() {
+        Chart chart = client.charts.create();
+
+        Season season = client.seasons.create(chart.key, new SeasonParams().name("aSeason"));
+
+        assertThat(season.name).isEqualTo("aSeason");
+    }
+
+    @Test
     public void numberOfEventsCanBePassedIn() {
         Chart chart = client.charts.create();
 

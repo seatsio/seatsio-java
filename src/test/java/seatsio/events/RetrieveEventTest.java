@@ -45,8 +45,8 @@ public class RetrieveEventTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Season season = client.seasons.create(chartKey);
         client.seasons.createEvents(season.key, List.of("event1", "event2"));
-        Season partialSeason1 = client.seasons.createPartialSeason(season.key, null, null);
-        Season partialSeason2 = client.seasons.createPartialSeason(season.key, null, null);
+        Season partialSeason1 = client.seasons.createPartialSeason(season.key, null, null, null);
+        Season partialSeason2 = client.seasons.createPartialSeason(season.key, null, null, null);
 
         Season retrievedSeason = (Season) client.events.retrieve(season.key);
 
