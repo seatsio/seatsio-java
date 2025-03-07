@@ -31,6 +31,7 @@ public class Seasons {
         JsonObjectBuilder request = aJsonObject()
                 .withProperty("chartKey", chartKey)
                 .withPropertyIfNotNull("key", seasonParams.key())
+                .withPropertyIfNotNull("name", seasonParams.name())
                 .withPropertyIfNotNull("eventKeys", seasonParams.eventKeys())
                 .withPropertyIfNotNull("numberOfEvents", seasonParams.numberOfEvents())
                 .withPropertyIfNotNull("tableBookingConfig", seasonParams.tableBookingConfig())
@@ -59,9 +60,10 @@ public class Seasons {
         return gson().fromJson(response, EventCreationResult.class).events;
     }
 
-    public Season createPartialSeason(String topLevelSeasonKey, String key, List<String> eventKeys) {
+    public Season createPartialSeason(String topLevelSeasonKey, String key, String name, List<String> eventKeys) {
         JsonObjectBuilder request = aJsonObject()
                 .withPropertyIfNotNull("key", key)
+                .withPropertyIfNotNull("name", name)
                 .withPropertyIfNotNull("eventKeys", eventKeys);
         String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/seasons/{topLevelSeasonKey}/partial-seasons")
                 .routeParam("topLevelSeasonKey", topLevelSeasonKey)

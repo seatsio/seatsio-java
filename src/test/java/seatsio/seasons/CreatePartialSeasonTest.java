@@ -15,9 +15,21 @@ public class CreatePartialSeasonTest extends SeatsioClientTest {
         Chart chart = client.charts.create();
         Season topLevelSeason = client.seasons.create(chart.key, new SeasonParams().key("aTopLevelSeason"));
 
-        Season partialSeason = client.seasons.createPartialSeason(topLevelSeason.key, "aPartialSeason", null);
+        Season partialSeason = client.seasons.createPartialSeason(topLevelSeason.key, "aPartialSeason", null, null);
 
         assertThat(partialSeason.key).isEqualTo("aPartialSeason");
+        assertThat(partialSeason.isPartialSeason).isTrue();
+        assertThat(partialSeason.topLevelSeasonKey).isEqualTo(topLevelSeason.key);
+    }
+
+    @Test
+    public void nameCanBePassedIn() {
+        Chart chart = client.charts.create();
+        Season topLevelSeason = client.seasons.create(chart.key, new SeasonParams().key("aTopLevelSeason"));
+
+        Season partialSeason = client.seasons.createPartialSeason(topLevelSeason.key, null, "aPartialSeason", null);
+
+        assertThat(partialSeason.name).isEqualTo("aPartialSeason");
         assertThat(partialSeason.isPartialSeason).isTrue();
         assertThat(partialSeason.topLevelSeasonKey).isEqualTo(topLevelSeason.key);
     }
@@ -30,7 +42,7 @@ public class CreatePartialSeasonTest extends SeatsioClientTest {
                 .eventKeys(List.of("event1", "event2", "event3"));
         Season topLevelSeason = client.seasons.create(chart.key, seasonParams);
 
-        Season season = client.seasons.createPartialSeason(topLevelSeason.key, null, List.of("event1", "event3"));
+        Season season = client.seasons.createPartialSeason(topLevelSeason.key, null, null, List.of("event1", "event3"));
 
         assertThat(season.events).extracting(event -> event.key).containsExactly("event1", "event3");
         assertThat(season.events.get(0).partialSeasonKeysForEvent).containsExactly(season.key);
