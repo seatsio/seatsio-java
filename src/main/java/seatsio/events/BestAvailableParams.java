@@ -10,23 +10,25 @@ public class BestAvailableParams extends ValueObject {
     private final int number;
     private final List<String> categories;
     private final String zone;
+    private final List<String> sections;
     private final List<Map<String, Object>> extraData;
     private final List<String> ticketTypes;
     private final Boolean tryToPreventOrphanSeats;
     private final Integer accessibleSeats;
 
     public BestAvailableParams(int number) {
-        this(number, null, null, null, null, null, null);
+        this(number, null, null, null, null, null, null, null);
     }
 
     public BestAvailableParams(int number, List<String> categories) {
-        this(number, categories, null, null, null, null, null);
+        this(number, categories, null, null, null, null, null, null);
     }
 
-    BestAvailableParams(int number, List<String> categories, String zone, List<Map<String, Object>> extraData, List<String> ticketTypes, Boolean tryToPreventOrphanSeats, Integer accessibleSeats) {
+    BestAvailableParams(int number, List<String> categories, String zone, List<String> sections, List<Map<String, Object>> extraData, List<String> ticketTypes, Boolean tryToPreventOrphanSeats, Integer accessibleSeats) {
         this.number = number;
         this.categories = categories;
         this.zone = zone;
+        this.sections = sections;
         this.extraData = extraData;
         this.ticketTypes = ticketTypes;
         this.tryToPreventOrphanSeats = tryToPreventOrphanSeats;
@@ -38,6 +40,7 @@ public class BestAvailableParams extends ValueObject {
         private int number;
         private List<String> categories;
         private String zone;
+        private List<String> sections;
         private List<Map<String, Object>> extraData;
         private List<String> ticketTypes;
         private Boolean tryToPreventOrphanSeats;
@@ -63,6 +66,11 @@ public class BestAvailableParams extends ValueObject {
             return this;
         }
 
+        public Builder withSections(List<String> sections) {
+            this.sections = sections;
+            return this;
+        }
+
         public Builder withExtraData(List<Map<String, Object>> extraData) {
             this.extraData = extraData;
             return this;
@@ -83,6 +91,7 @@ public class BestAvailableParams extends ValueObject {
                     this.number,
                     this.categories,
                     this.zone,
+                    this.sections,
                     this.extraData,
                     this.ticketTypes,
                     this.tryToPreventOrphanSeats,

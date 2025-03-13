@@ -59,7 +59,7 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailableParams(3, asList("cat2")), "foo");
+        BestAvailableResult bestAvailableResult = client.events.changeObjectStatus(event.key, new BestAvailableParams.Builder().withNumber(3).withCategories(asList("cat2")).build(), "foo");
 
         assertThat(bestAvailableResult.objects).containsOnly("C-4", "C-5", "C-6");
     }
@@ -76,6 +76,20 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
         BestAvailableParams paramsFinishline = new BestAvailableParams.Builder().withNumber(2).withZone("finishline").build();
         BestAvailableResult bestAvailableResultFinishline = client.events.changeObjectStatus(event.key, paramsFinishline, "foo");
         assertThat(bestAvailableResultFinishline.objects).containsOnly("Goal Stand 4-A-1", "Goal Stand 4-A-2");
+    }
+
+    @Test
+    public void sections() {
+        String chartKey = createTestChartWithSections();
+        Event event = client.events.create(chartKey);
+
+        BestAvailableParams paramsSectionA = new BestAvailableParams.Builder().withNumber(2).withSections(List.of("Section A")).build();
+        BestAvailableResult bestAvailableResultSectionA = client.events.changeObjectStatus(event.key, paramsSectionA, "foo");
+        assertThat(bestAvailableResultSectionA.objects).containsOnly("Section A-A-1", "Section A-A-2");
+
+        BestAvailableParams paramsSectionB = new BestAvailableParams.Builder().withNumber(2).withSections(List.of("Section B")).build();
+        BestAvailableResult bestAvailableResultSectionB = client.events.changeObjectStatus(event.key, paramsSectionB, "foo");
+        assertThat(bestAvailableResultSectionB.objects).containsOnly("Section B-A-1", "Section B-A-2");
     }
 
     @Test
@@ -207,7 +221,7 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
         try {
             client.events.changeObjectStatus(event.key, new BestAvailableParams.Builder().withNumber(3000).build(), "foo");
             fail("expected BestAvailableObjectsNotFoundException");
-        } catch(BestAvailableObjectsNotFoundException e) {
+        } catch (BestAvailableObjectsNotFoundException e) {
             assertThat(e).isInstanceOf(BestAvailableObjectsNotFoundException.class);
             assertThat(e.getMessage()).isEqualTo("Best available objects not found");
         }
@@ -220,7 +234,7 @@ public class ChangeBestAvailableObjectStatusTest extends SeatsioClientTest {
 
         try {
             client.events.changeObjectStatus("unknownEvent", new BestAvailableParams.Builder().withNumber(3).build(), "foo");
-        } catch(SeatsioException e) {
+        } catch (SeatsioException e) {
             assertThat(e).isNotInstanceOf(BestAvailableObjectsNotFoundException.class);
         }
     }
