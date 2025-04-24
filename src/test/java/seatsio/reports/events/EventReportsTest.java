@@ -56,6 +56,7 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.channel).isEqualTo("channel1");
         assertThat(reportItem.distanceToFocalPoint).isNotNull();
         assertThat(reportItem.seasonStatusOverriddenQuantity).isEqualTo(0);
+        assertThat(reportItem.resaleListingId).isNull();
 
         EventObjectInfo gaItem = report.get("GA1").get(0);
         assertThat(gaItem.variableOccupancy).isFalse();
@@ -111,6 +112,18 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.isAccessible).isNull();
         assertThat(reportItem.isCompanionSeat).isNull();
         assertThat(reportItem.displayedObjectType).isNull();
+    }
+
+    @Test
+    public void resaleListingId() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        client.events.putUpForResale(event.key, List.of("A-1"), "listing1");
+
+        Map<String, List<EventObjectInfo>> report = client.eventReports.byLabel(event.key);
+
+        EventObjectInfo reportItem = report.get("A-1").get(0);
+        assertThat(reportItem.resaleListingId).isEqualTo("listing1");
     }
 
     @Test
