@@ -20,8 +20,9 @@ public class StatusChangeRequest extends ValueObject {
     public final Set<String> channelKeys;
     public final Set<String> allowedPreviousStatuses;
     public final Set<String> rejectedPreviousStatuses;
+    public final String resaleListingId;
 
-    public StatusChangeRequest(StatusChangeType type, String eventKey, List<?> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses) {
+    public StatusChangeRequest(StatusChangeType type, String eventKey, List<?> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses, String resaleListingId) {
         this.type = type;
         this.eventKey = eventKey;
         this.objects = objects;
@@ -33,6 +34,7 @@ public class StatusChangeRequest extends ValueObject {
         this.channelKeys = channelKeys;
         this.allowedPreviousStatuses = allowedPreviousStatuses;
         this.rejectedPreviousStatuses = rejectedPreviousStatuses;
+        this.resaleListingId = resaleListingId;
     }
 
     public static class Builder {
@@ -47,6 +49,7 @@ public class StatusChangeRequest extends ValueObject {
         private Set<String> channelKeys;
         private Set<String> allowedPreviousStatuses;
         private Set<String> rejectedPreviousStatuses;
+        private String resaleListingId;
 
         public Builder withType(StatusChangeType type) {
             this.type = type;
@@ -103,8 +106,13 @@ public class StatusChangeRequest extends ValueObject {
             return this;
         }
 
+        public Builder withResaleListingId(String resaleListingId) {
+            this.resaleListingId = resaleListingId;
+            return this;
+        }
+
         public StatusChangeRequest build() {
-            return new StatusChangeRequest(type, eventKey, objects, status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, allowedPreviousStatuses, rejectedPreviousStatuses);
+            return new StatusChangeRequest(type, eventKey, objects, status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, allowedPreviousStatuses, rejectedPreviousStatuses, resaleListingId);
         }
     }
 }

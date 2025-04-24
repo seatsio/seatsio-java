@@ -60,4 +60,5 @@ public class EventObjectInfo extends ValueObject {
     public int seasonStatusOverriddenQuantity;
     public String zone;
     public Floor floor;
+    public String resaleListingId;
 }

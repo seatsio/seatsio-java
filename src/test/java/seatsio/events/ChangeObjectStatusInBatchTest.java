@@ -10,8 +10,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static seatsio.events.EventObjectInfo.BOOKED;
-import static seatsio.events.EventObjectInfo.FREE;
+import static seatsio.events.EventObjectInfo.*;
 import static seatsio.events.StatusChangeType.*;
 
 public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
@@ -136,5 +135,24 @@ public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
 
         assertThat(result.get(0).objects.get("A-1").status).isEqualTo(BOOKED);
         assertThat(client.events.retrieveObjectInfo("event1", "A-1").status).isEqualTo(BOOKED);
+    }
+
+    @Test
+    public void resaleListingId() {
+        String chartKey1 = createTestChart();
+        String chartKey2 = createTestChart();
+        Event event1 = client.events.create(chartKey1);
+        Event event2 = client.events.create(chartKey2);
+
+        List<ChangeObjectStatusResult> result = client.events.changeObjectStatus(List.of(
+                new StatusChangeRequest.Builder().withType(CHANGE_STATUS_TO).withEventKey(event1.key).withObjects(List.of("A-1")).withResaleListingId("listing1").withStatus(RESALE).build(),
+                new StatusChangeRequest.Builder().withType(CHANGE_STATUS_TO).withEventKey(event2.key).withObjects(List.of("A-2")).withResaleListingId("listing1").withStatus(RESALE).build()
+        ));
+
+        assertThat(result.get(0).objects.get("A-1").resaleListingId).isEqualTo("listing1");
+        assertThat(client.events.retrieveObjectInfo(event1.key, "A-1").resaleListingId).isEqualTo("listing1");
+
+        assertThat(result.get(1).objects.get("A-2").resaleListingId).isEqualTo("listing1");
+        assertThat(client.events.retrieveObjectInfo(event2.key, "A-2").resaleListingId).isEqualTo("listing1");
     }
 }

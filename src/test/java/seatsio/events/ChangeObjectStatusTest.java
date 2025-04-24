@@ -12,6 +12,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static seatsio.events.EventObjectInfo.FREE;
+import static seatsio.events.EventObjectInfo.RESALE;
 
 public class ChangeObjectStatusTest extends SeatsioClientTest {
 
@@ -227,7 +228,7 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
 
         try {
-            client.events.changeObjectStatus(event.key, List.of("A-1"), "someStatus", null, null, null, null, null, Set.of("onlyAllowedPreviousStatus"), null);
+            client.events.changeObjectStatus(event.key, List.of("A-1"), "someStatus", null, null, null, null, null, Set.of("onlyAllowedPreviousStatus"), null, null);
             fail("expected exception");
         } catch (SeatsioException e) {
             assertThat(e.errors).hasSize(1);
@@ -241,11 +242,21 @@ public class ChangeObjectStatusTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
 
         try {
-            client.events.changeObjectStatus(event.key, List.of("A-1"), "someStatus", null, null, null, null, null, null, Set.of("free"));
+            client.events.changeObjectStatus(event.key, List.of("A-1"), "someStatus", null, null, null, null, null, null, Set.of("free"), null);
             fail("expected exception");
         } catch (SeatsioException e) {
             assertThat(e.errors).hasSize(1);
             assertThat(e.errors.get(0).getCode()).isEqualTo("ILLEGAL_STATUS_CHANGE");
         }
+    }
+
+    @Test
+    public void resaleListingId() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        client.events.changeObjectStatus(event.key, List.of("A-1"), RESALE, null, null, null, null, null, null, null, "listing1");
+
+        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").resaleListingId).isEqualTo("listing1");
     }
 }

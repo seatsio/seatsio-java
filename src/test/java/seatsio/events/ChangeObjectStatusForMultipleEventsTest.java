@@ -11,6 +11,7 @@ import java.util.Set;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static seatsio.events.EventObjectInfo.RESALE;
 
 public class ChangeObjectStatusForMultipleEventsTest extends SeatsioClientTest {
 
@@ -93,7 +94,7 @@ public class ChangeObjectStatusForMultipleEventsTest extends SeatsioClientTest {
         Event event2 = client.events.create(chartKey);
 
         try {
-            client.events.changeObjectStatus(asList(event1.key, event2.key), List.of("A-1"), EventObjectInfo.BOOKED, null, null, null, null, null, Set.of("MustBeThisStatus"), null);
+            client.events.changeObjectStatus(asList(event1.key, event2.key), List.of("A-1"), EventObjectInfo.BOOKED, null, null, null, null, null, Set.of("MustBeThisStatus"), null, null);
             fail("expected exception");
         } catch (SeatsioException e) {
             assertThat(e.errors).hasSize(1);
@@ -108,12 +109,24 @@ public class ChangeObjectStatusForMultipleEventsTest extends SeatsioClientTest {
         Event event2 = client.events.create(chartKey);
 
         try {
-            client.events.changeObjectStatus(asList(event1.key, event2.key), List.of("A-1"), EventObjectInfo.BOOKED, null, null, null, null, null, null, Set.of("free"));
+            client.events.changeObjectStatus(asList(event1.key, event2.key), List.of("A-1"), EventObjectInfo.BOOKED, null, null, null, null, null, null, Set.of("free"), null);
             fail("expected exception");
         } catch (SeatsioException e) {
             assertThat(e.errors).hasSize(1);
             assertThat(e.errors.get(0).getCode()).isEqualTo("ILLEGAL_STATUS_CHANGE");
         }
+    }
+
+    @Test
+    public void resaleListingId() {
+        String chartKey = createTestChart();
+        Event event1 = client.events.create(chartKey);
+        Event event2 = client.events.create(chartKey);
+
+        client.events.changeObjectStatus(asList(event1.key, event2.key), List.of("A-1"), RESALE, null, null, null, null, null, null, null, "listing1");
+
+        assertThat(client.events.retrieveObjectInfo(event1.key, "A-1").resaleListingId).isEqualTo("listing1");
+        assertThat(client.events.retrieveObjectInfo(event2.key, "A-1").resaleListingId).isEqualTo("listing1");
     }
 
 }
