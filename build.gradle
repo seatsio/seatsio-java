@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'io.seats'
-version = '87.0.0'
+version = '87.1.0'
 
 apply plugin: 'java'
 sourceCompatibility = 11
