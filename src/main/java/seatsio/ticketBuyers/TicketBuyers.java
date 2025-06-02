@@ -10,6 +10,7 @@ import java.util.UUID;
 import static java.util.stream.Collectors.toSet;
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
 import static seatsio.json.SeatsioGson.gson;
+import static seatsio.util.UnirestWrapper.delete;
 import static seatsio.util.UnirestWrapper.post;
 
 public class TicketBuyers {
@@ -32,5 +33,17 @@ public class TicketBuyers {
                 .buildAsString();
         String response = unirest.stringResponse(post(baseUrl + "/ticket-buyers").body(request));
         return gson().fromJson(response, AddTicketBuyerIdsResponse.class);
+    }
+
+    public RemoveTicketBuyerIdsResponse remove(UUID... uuids) {
+        return this.remove(Arrays.asList(uuids));
+    }
+
+    public RemoveTicketBuyerIdsResponse remove(Collection<UUID> uuids) {
+        String request = aJsonObject()
+                .withProperty("ids", uuids.stream().filter(Objects::nonNull).map(UUID::toString).collect(toSet()))
+                .buildAsString();
+        String response = unirest.stringResponse(delete(baseUrl + "/ticket-buyers").body(request));
+        return gson().fromJson(response, RemoveTicketBuyerIdsResponse.class);
     }
 }
