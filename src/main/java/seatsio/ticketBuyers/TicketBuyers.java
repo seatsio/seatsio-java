@@ -1,11 +1,16 @@
 package seatsio.ticketBuyers;
 
+import seatsio.events.Event;
+import seatsio.util.Lister;
+import seatsio.util.Page;
+import seatsio.util.PageFetcher;
 import seatsio.util.UnirestWrapper;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toSet;
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
@@ -45,5 +50,37 @@ public class TicketBuyers {
                 .buildAsString();
         String response = unirest.stringResponse(delete(baseUrl + "/ticket-buyers").body(request));
         return gson().fromJson(response, RemoveTicketBuyerIdsResponse.class);
+    }
+
+    public Stream<UUID> listAll() {
+        return list().all();
+    }
+
+    public Page<UUID> listFirstPage() {
+        return listFirstPage(null);
+    }
+
+    public Page<UUID> listFirstPage(Integer pageSize) {
+        return list().firstPage(pageSize);
+    }
+
+    public Page<UUID> listPageAfter(long id) {
+        return listPageAfter(id, null);
+    }
+
+    public Page<UUID> listPageAfter(long id, Integer pageSize) {
+        return list().pageAfter(id, pageSize);
+    }
+
+    public Page<UUID> listPageBefore(long id) {
+        return listPageBefore(id, null);
+    }
+
+    public Page<UUID> listPageBefore(long id, Integer pageSize) {
+        return list().pageBefore(id, pageSize);
+    }
+
+    private Lister<UUID> list() {
+        return new Lister<>(new PageFetcher<>(baseUrl, "/ticket-buyers", unirest, UUID.class));
     }
 }
