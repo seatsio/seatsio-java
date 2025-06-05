@@ -8,6 +8,7 @@ import seatsio.reports.charts.ChartReports;
 import seatsio.reports.events.EventReports;
 import seatsio.reports.usage.UsageReports;
 import seatsio.seasons.Seasons;
+import seatsio.ticketBuyers.TicketBuyers;
 import seatsio.util.UnirestWrapper;
 import seatsio.workspaces.Workspaces;
 
@@ -25,6 +26,7 @@ public class SeatsioClient {
     public final ChartReports chartReports;
     public final UsageReports usageReports;
     public final EventLog eventLog;
+    public final TicketBuyers ticketBuyers;
 
     public SeatsioClient(String secretKey, String workspaceKey, String baseUrl) {
         this.baseUrl = baseUrl;
@@ -38,6 +40,7 @@ public class SeatsioClient {
         this.chartReports = new ChartReports(baseUrl, unirest);
         this.usageReports = new UsageReports(baseUrl, unirest);
         this.eventLog = new EventLog(baseUrl, unirest);
+        this.ticketBuyers = new TicketBuyers(baseUrl, unirest);
     }
 
     public SeatsioClient(Region region, String secretKey, String workspaceKey) {
