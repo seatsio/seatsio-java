@@ -70,6 +70,11 @@ public class Workspaces {
                 .routeParam("key", key));
     }
 
+    public void delete(String key) {
+        unirest.stringResponse(UnirestWrapper.delete(baseUrl + "/workspaces/{key}")
+                .routeParam("key", key));
+    }
+
     public void setDefault(String key) {
         unirest.stringResponse(UnirestWrapper.post(baseUrl + "/workspaces/actions/set-default/{key}")
                 .routeParam("key", key));

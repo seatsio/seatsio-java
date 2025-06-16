@@ -1,0 +1,29 @@
+package seatsio.workspaces;
+
+import org.junit.jupiter.api.Test;
+import seatsio.SeatsioClientTest;
+import seatsio.SeatsioException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+public class DeleteWorkspaceTest extends SeatsioClientTest {
+
+    @Test
+    public void deleteInactiveWorkspace() {
+        Workspace workspace = client.workspaces.create("my workspace");
+        client.workspaces.deactivate(workspace.key);
+        client.workspaces.delete(workspace.key);
+
+        SeatsioException ex = assertThrows(SeatsioException.class, () -> client.workspaces.retrieve(workspace.key));
+        assertThat(ex.getMessage()).isEqualTo("No workspace found with public key '" + workspace.key + "'");
+    }
+
+    @Test
+    public void deleteActiveWorkspace() {
+        Workspace workspace = client.workspaces.create("my workspace");
+
+        SeatsioException ex = assertThrows(SeatsioException.class, () -> client.workspaces.delete(workspace.key));
+        assertThat(ex.getMessage()).isEqualTo("Cannot delete active workspace, please deactivate it first");
+    }
+}
