@@ -16,6 +16,6 @@ public class DeleteWorkspaceTest extends SeatsioClientTest {
         client.workspaces.delete(workspace.key);
 
         SeatsioException ex = assertThrows(SeatsioException.class, () -> client.workspaces.retrieve(workspace.key));
-        assertThat(ex.getMessage()).isEqualTo("No workspace found with public key '" + workspace.key + "'");
+        assertThat(ex.errors.get(0).getCode()).isEqualTo("WORKSPACE_NOT_FOUND");
     }
 }
