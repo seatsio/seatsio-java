@@ -49,6 +49,7 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.isAccessible).isFalse();
         assertThat(reportItem.isCompanionSeat).isFalse();
         assertThat(reportItem.displayedObjectType).isNull();
+        assertThat(reportItem.parentDisplayedObjectType).isNull();
         assertThat(reportItem.leftNeighbour).isNull();
         assertThat(reportItem.rightNeighbour).isEqualTo("A-2");
         assertThat(reportItem.isAvailable).isFalse();
@@ -112,6 +113,7 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.isAccessible).isNull();
         assertThat(reportItem.isCompanionSeat).isNull();
         assertThat(reportItem.displayedObjectType).isNull();
+        assertThat(reportItem.parentDisplayedObjectType).isNull();
     }
 
     @Test

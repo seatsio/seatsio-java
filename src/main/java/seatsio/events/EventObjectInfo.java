@@ -47,6 +47,7 @@ public class EventObjectInfo extends ValueObject {
     public Boolean isCompanionSeat;
     public Boolean hasRestrictedView;
     public String displayedObjectType;
+    public String parentDisplayedObjectType;
     public String leftNeighbour;
     public String rightNeighbour;
     public boolean isAvailable;
