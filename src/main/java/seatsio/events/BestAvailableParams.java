@@ -7,14 +7,14 @@ import java.util.Map;
 
 public class BestAvailableParams extends ValueObject {
 
-    private final int number;
-    private final List<String> categories;
-    private final String zone;
-    private final List<String> sections;
-    private final List<Map<String, Object>> extraData;
-    private final List<String> ticketTypes;
-    private final Boolean tryToPreventOrphanSeats;
-    private final Integer accessibleSeats;
+    public final int number;
+    public final List<String> categories;
+    public final String zone;
+    public final List<String> sections;
+    public final List<Map<String, Object>> extraData;
+    public final List<String> ticketTypes;
+    public final Boolean tryToPreventOrphanSeats;
+    public final Integer accessibleSeats;
 
     public BestAvailableParams(int number) {
         this(number, null, null, null, null, null, null, null);

@@ -9,11 +9,11 @@ import static seatsio.json.JsonObjectBuilder.aJsonObject;
 
 public class ChannelCreationParams extends ValueObject {
 
-    private final String key;
-    private final String name;
-    private final String color;
-    private final Integer index;
-    private final Set<String> objects;
+    public final String key;
+    public final String name;
+    public final String color;
+    public final Integer index;
+    public final Set<String> objects;
 
     public ChannelCreationParams(String key, String name, String color, Integer index, Set<String> objects) {
         this.key = key;
