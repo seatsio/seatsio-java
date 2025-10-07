@@ -7,10 +7,10 @@ import static seatsio.json.JsonObjectBuilder.aJsonObject;
 
 public class Category extends ValueObject {
 
-    private final CategoryKey key;
-    private final String label;
-    private final String color;
-    private final Boolean accessible;
+    public final CategoryKey key;
+    public final String label;
+    public final String color;
+    public final Boolean accessible;
 
     public Category(CategoryKey key, String label, String color) {
         this(key, label, color, false);

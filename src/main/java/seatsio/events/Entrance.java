@@ -4,9 +4,10 @@ import seatsio.util.ValueObject;
 
 public class Entrance extends ValueObject {
 
-    private String label;
+    public final String label;
 
     protected Entrance() {
+        this(null);
     }
 
     public Entrance(String label) {
