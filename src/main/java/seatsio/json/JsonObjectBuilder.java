@@ -33,6 +33,10 @@ public class JsonObjectBuilder {
         return setValue(propertyName, value, JsonPrimitive::new);
     }
 
+    public JsonObjectBuilder withProperty(String propertyName, Object value) {
+        return withProperty(propertyName, new Gson().toJsonTree(value));
+    }
+
     public <E extends Enum> JsonObjectBuilder withProperty(String propertyName, E e) {
         return withProperty(propertyName, e.toString());
     }
