@@ -136,15 +136,9 @@ public class Events {
                 .collect(toMap(Map.Entry::getKey, e -> e.getValue().forSaleConfig));
     }
 
-
-    public void markAsForSale(String eventKey, List<String> objects, Map<String, Integer> areaPlaces, List<String> categories) {
-        unirest.stringResponse(post(baseUrl + "/events/{key}/actions/mark-as-for-sale")
-                .routeParam("key", eventKey)
-                .body(forSaleRequest(objects, areaPlaces, categories).toString()));
-    }
-
-    public void markAsNotForSale(String eventKey, List<String> objects, Map<String, Integer> areaPlaces, List<String> categories) {
-        unirest.stringResponse(post(baseUrl + "/events/{key}/actions/mark-as-not-for-sale")
+    public void replaceForSaleConfig(boolean forSale, String eventKey, List<String> objects, Map<String, Integer> areaPlaces, List<String> categories) {
+        String action = forSale ? "mark-as-for-sale" : "mark-as-not-for-sale";
+        unirest.stringResponse(post(baseUrl + "/events/{key}/actions/" + action)
                 .routeParam("key", eventKey)
                 .body(forSaleRequest(objects, areaPlaces, categories).toString()));
     }
