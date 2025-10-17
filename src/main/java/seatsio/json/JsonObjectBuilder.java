@@ -8,6 +8,7 @@ import java.util.function.Function;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static seatsio.json.JsonArrayBuilder.aJsonArray;
+import static seatsio.json.SeatsioGson.gson;
 
 public class JsonObjectBuilder {
 
@@ -34,7 +35,7 @@ public class JsonObjectBuilder {
     }
 
     public JsonObjectBuilder withProperty(String propertyName, Object value) {
-        return withProperty(propertyName, new Gson().toJsonTree(value));
+        return withProperty(propertyName, gson().toJsonTree(value));
     }
 
     public <E extends Enum> JsonObjectBuilder withProperty(String propertyName, E e) {
@@ -104,7 +105,7 @@ public class JsonObjectBuilder {
         if (value == null) {
             return this;
         }
-        return withProperty(propertyName, new Gson().toJsonTree(value));
+        return withProperty(propertyName, gson().toJsonTree(value));
     }
 
     public <T> JsonObjectBuilder withPropertyIfNotNull(String propertyName, Map<String, T> map, Function<T, JsonElement> f) {
@@ -112,7 +113,7 @@ public class JsonObjectBuilder {
             return this;
         }
         Map<String, JsonElement> appliedMap = map.entrySet().stream().collect(toMap(Map.Entry::getKey, t -> f.apply(t.getValue())));
-        return withProperty(propertyName, new Gson().toJsonTree(appliedMap));
+        return withProperty(propertyName, gson().toJsonTree(appliedMap));
     }
 
     private <T> JsonObjectBuilder setValue(String propertyName, T value, Function<T, JsonPrimitive> f) {

@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

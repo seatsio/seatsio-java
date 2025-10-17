@@ -158,6 +158,7 @@ public class Events {
     public void markAsNotForSale(String eventKey, List<String> objects, Map<String, Integer> areaPlaces, List<String> categories) {
         replaceForSaleConfig(false, eventKey, objects, areaPlaces, categories);
     }
+
     private JsonObject forSaleRequest(List<String> objects, Map<String, Integer> areaPlaces, List<String> categories) {
         return aJsonObject()
                 .withPropertyIfNotNull("objects", objects)
