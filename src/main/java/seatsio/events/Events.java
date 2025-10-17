@@ -143,6 +143,21 @@ public class Events {
                 .body(forSaleRequest(objects, areaPlaces, categories).toString()));
     }
 
+    /**
+     * @deprecated Use {@link #replaceForSaleConfig(boolean, String, List, Map, List)} instead.
+     */
+    @Deprecated
+    public void markAsForSale(String eventKey, List<String> objects, Map<String, Integer> areaPlaces, List<String> categories) {
+        replaceForSaleConfig(true, eventKey, objects, areaPlaces, categories);
+    }
+
+    /**
+     * @deprecated Use {@link #replaceForSaleConfig(boolean, String, List, Map, List)} instead.
+     */
+    @Deprecated
+    public void markAsNotForSale(String eventKey, List<String> objects, Map<String, Integer> areaPlaces, List<String> categories) {
+        replaceForSaleConfig(false, eventKey, objects, areaPlaces, categories);
+    }
     private JsonObject forSaleRequest(List<String> objects, Map<String, Integer> areaPlaces, List<String> categories) {
         return aJsonObject()
                 .withPropertyIfNotNull("objects", objects)
