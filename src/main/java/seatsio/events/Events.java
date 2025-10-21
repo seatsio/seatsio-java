@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static seatsio.events.EventObjectInfo.*;
 import static seatsio.events.StatusChangeType.CHANGE_STATUS_TO;
 import static seatsio.events.StatusChangeType.RELEASE;
@@ -86,7 +87,7 @@ public class Events {
         update(eventKey, new UpdateEventParams().withCategories(new ArrayList<>()));
     }
 
-    public void update(String key, UpdateEventParams params) {
+    public void update(String eventKey, UpdateEventParams params) {
         JsonObjectBuilder request = aJsonObject()
                 .withPropertyIfNotNull("eventKey", params.eventKey)
                 .withPropertyIfNotNull("name", params.name)
@@ -96,7 +97,7 @@ public class Events {
                 .withPropertyIfNotNull("categories", categoriesAsJson(params.categories))
                 .withPropertyIfNotNull("isInThePast", params.isInThePast);
         unirest.stringResponse(post(baseUrl + "/events/{key}")
-                .routeParam("key", key)
+                .routeParam("key", eventKey)
                 .body(request.build().toString()));
     }
 
@@ -107,27 +108,55 @@ public class Events {
         return categories.stream().map(Category::toJson).collect(toList());
     }
 
-    public void delete(String key) {
+    public void delete(String eventKey) {
         unirest.stringResponse(UnirestWrapper.delete(baseUrl + "/events/{key}")
-                .routeParam("key", key));
+                .routeParam("key", eventKey));
     }
 
-    public Event retrieve(String key) {
+    public Event retrieve(String eventKey) {
         String response = unirest.stringResponse(UnirestWrapper.get(baseUrl + "/events/{key}")
-                .routeParam("key", key));
+                .routeParam("key", eventKey));
         return gson().fromJson(response, Event.class);
     }
 
-    public void markAsForSale(String key, List<String> objects, Map<String, Integer> areaPlaces, List<String> categories) {
-        unirest.stringResponse(post(baseUrl + "/events/{key}/actions/mark-as-for-sale")
-                .routeParam("key", key)
+    public ForSaleConfig editForSaleConfig(String eventKey, List<ObjectAndQuantity> forSale, List<ObjectAndQuantity> notForSale) {
+        String response = unirest.stringResponse(post(baseUrl + "/events/{key}/actions/edit-for-sale-config")
+                .routeParam("key", eventKey)
+                .body(editForSaleConfigRequest(forSale, notForSale).toString()));
+        return gson().fromJson(response, EditForSaleConfigResponse.class).forSaleConfig;
+    }
+
+    public Map<String, ForSaleConfig> editForSaleConfigForEvents(Map<String, ForSaleAndNotForSaleParams> events) {
+        String response = unirest.stringResponse(post(baseUrl + "/events/actions/edit-for-sale-config")
+                .body(editForSaleConfigForEventsRequest(events).toString()));
+        var typeToken = new TypeToken<Map<String, EditForSaleConfigResponse>>() {
+        };
+        Map<String, EditForSaleConfigResponse> parsedResponse = gson().fromJson(response, typeToken.getType());
+        return parsedResponse.entrySet().stream()
+                .collect(toMap(Map.Entry::getKey, e -> e.getValue().forSaleConfig));
+    }
+
+    public void replaceForSaleConfig(boolean forSale, String eventKey, List<String> objects, Map<String, Integer> areaPlaces, List<String> categories) {
+        String action = forSale ? "mark-as-for-sale" : "mark-as-not-for-sale";
+        unirest.stringResponse(post(baseUrl + "/events/{key}/actions/" + action)
+                .routeParam("key", eventKey)
                 .body(forSaleRequest(objects, areaPlaces, categories).toString()));
     }
 
-    public void markAsNotForSale(String key, List<String> objects, Map<String, Integer> areaPlaces, List<String> categories) {
-        unirest.stringResponse(post(baseUrl + "/events/{key}/actions/mark-as-not-for-sale")
-                .routeParam("key", key)
-                .body(forSaleRequest(objects, areaPlaces, categories).toString()));
+    /**
+     * @deprecated Use {@link #replaceForSaleConfig(boolean, String, List, Map, List)} instead.
+     */
+    @Deprecated
+    public void markAsForSale(String eventKey, List<String> objects, Map<String, Integer> areaPlaces, List<String> categories) {
+        replaceForSaleConfig(true, eventKey, objects, areaPlaces, categories);
+    }
+
+    /**
+     * @deprecated Use {@link #replaceForSaleConfig(boolean, String, List, Map, List)} instead.
+     */
+    @Deprecated
+    public void markAsNotForSale(String eventKey, List<String> objects, Map<String, Integer> areaPlaces, List<String> categories) {
+        replaceForSaleConfig(false, eventKey, objects, areaPlaces, categories);
     }
 
     private JsonObject forSaleRequest(List<String> objects, Map<String, Integer> areaPlaces, List<String> categories) {
@@ -138,9 +167,20 @@ public class Events {
                 .build();
     }
 
-    public void markEverythingAsForSale(String key) {
+    private JsonObject editForSaleConfigRequest(List<ObjectAndQuantity> forSale, List<ObjectAndQuantity> notForSale) {
+        return aJsonObject()
+                .withPropertyIfNotNull("forSale", forSale)
+                .withPropertyIfNotNull("notForSale", notForSale)
+                .build();
+    }
+
+    private JsonObject editForSaleConfigForEventsRequest(Map<String, ForSaleAndNotForSaleParams> events) {
+        return aJsonObject().withProperty("events", events).build();
+    }
+
+    public void markEverythingAsForSale(String eventKey) {
         unirest.stringResponse(post(baseUrl + "/events/{key}/actions/mark-everything-as-for-sale")
-                .routeParam("key", key));
+                .routeParam("key", eventKey));
     }
 
     public Stream<Event> listAll() {
@@ -203,10 +243,10 @@ public class Events {
         return sortField + ":" + sortDirection.name();
     }
 
-    public Lister<StatusChange> statusChangesForObject(String key, String objectId) {
+    public Lister<StatusChange> statusChangesForObject(String eventKey, String objectId) {
         PageFetcher<StatusChange> pageFetcher = new PageFetcher<>(
                 baseUrl,
-                "/events/{key}/objects/{objectId}/status-changes", Map.of("key", key, "objectId", objectId),
+                "/events/{key}/objects/{objectId}/status-changes", Map.of("key", eventKey, "objectId", objectId),
                 unirest,
                 StatusChange.class);
         return new Lister<>(pageFetcher);
@@ -426,34 +466,37 @@ public class Events {
                 .withPropertyIfNotNull("resaleListingId", resaleListingId);
     }
 
-    public EventObjectInfo retrieveObjectInfo(String key, String label) {
-        return retrieveObjectInfos(key, List.of(label)).get(label);
+    public EventObjectInfo retrieveObjectInfo(String eventKey, String label) {
+        return retrieveObjectInfos(eventKey, List.of(label)).get(label);
     }
 
-    public Map<String, EventObjectInfo> retrieveObjectInfos(String key, List<String> labels) {
+    public Map<String, EventObjectInfo> retrieveObjectInfos(String eventKey, List<String> labels) {
         String response = unirest.stringResponse(UnirestWrapper.get(baseUrl + "/events/{key}/objects")
                 .queryString("label", labels)
-                .routeParam("key", key));
+                .routeParam("key", eventKey));
         TypeToken<Map<String, EventObjectInfo>> typeToken = new TypeToken<>() {
         };
         return gson().fromJson(response, typeToken.getType());
     }
 
-    public void updateExtraData(String key, String object, Map<String, Object> extraData) {
+    public void updateExtraData(String eventKey, String object, Map<String, Object> extraData) {
         JsonObjectBuilder request = aJsonObject();
         request.withProperty("extraData", gson().toJsonTree(extraData));
         unirest.stringResponse(post(baseUrl + "/events/{key}/objects/{object}/actions/update-extra-data")
-                .routeParam("key", key)
+                .routeParam("key", eventKey)
                 .routeParam("object", object)
                 .body(request.build().toString()));
     }
 
-    public void updateExtraDatas(String key, Map<String, Map<String, Object>> extraData) {
+    public void updateExtraDatas(String eventKey, Map<String, Map<String, Object>> extraData) {
         JsonObjectBuilder request = aJsonObject();
         request.withProperty("extraData", gson().toJsonTree(extraData));
         unirest.stringResponse(post(baseUrl + "/events/{key}/actions/update-extra-data")
-                .routeParam("key", key)
+                .routeParam("key", eventKey)
                 .body(request.build().toString()));
     }
 
+    private static class EditForSaleConfigResponse {
+        ForSaleConfig forSaleConfig;
+    }
 }
