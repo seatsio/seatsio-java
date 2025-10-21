@@ -496,6 +496,14 @@ public class Events {
                 .body(request.build().toString()));
     }
 
+    public Event moveEventToNewChartCopy(String eventKey) {
+        String response = unirest.stringResponse(post(baseUrl + "/events/{key}/actions/move-to-new-chart-copy")
+                .routeParam("key", eventKey));
+        TypeToken<Event> typeToken = new TypeToken<>() {
+        };
+        return gson().fromJson(response, typeToken.getType());
+    }
+
     private static class EditForSaleConfigResponse {
         ForSaleConfig forSaleConfig;
     }
