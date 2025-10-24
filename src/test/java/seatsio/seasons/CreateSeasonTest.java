@@ -119,7 +119,7 @@ public class CreateSeasonTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         ForSaleConfigParams params = new ForSaleConfigParams(false, List.of("A-1"), Map.of("GA1", 5), List.of("Cat1"));
 
-        Season season = client.seasons.create(chartKey, new SeasonParams().forSaleConfigParams(params));
+        Season season = client.seasons.create(chartKey, new SeasonParams().forSaleConfigParams(params).eventKeys(List.of("event1")));
 
         ForSaleConfig forSaleConfig = new ForSaleConfig();
         forSaleConfig.forSale = params.forSale;
@@ -127,5 +127,18 @@ public class CreateSeasonTest extends SeatsioClientTest {
         forSaleConfig.areaPlaces = params.areaPlaces;
         forSaleConfig.categories = params.categories;
         assertThat(season.forSaleConfig).isEqualTo(forSaleConfig);
+
+        assertThat(client.events.retrieve("event1").season.forSaleConfig).isEqualTo(forSaleConfig);
+    }
+
+    @Test
+    public void forSalePropagatedCanBePassedIn() {
+        String chartKey = createTestChart();
+        ForSaleConfigParams params = new ForSaleConfigParams(false, List.of("A-1"), null, null);
+
+        Season season = client.seasons.create(chartKey, new SeasonParams().forSalePropagated(false).forSaleConfigParams(params).eventKeys(List.of("event1")));
+
+        assertThat(season.forSalePropagated).isFalse();
+        assertThat(client.events.retrieve("event1").season.forSaleConfig).isNull();
     }
 }

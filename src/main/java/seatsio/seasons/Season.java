@@ -8,6 +8,7 @@ public class Season extends Event {
 
     public List<Event> events;
     public List<String> partialSeasonKeys;
+    public Boolean forSalePropagated;
 
     public boolean isSeason() {
         return true;

@@ -36,7 +36,8 @@ public class Seasons {
                 .withPropertyIfNotNull("numberOfEvents", seasonParams.numberOfEvents())
                 .withPropertyIfNotNull("tableBookingConfig", seasonParams.tableBookingConfig())
                 .withPropertyIfNotNull("channels", seasonParams.getChannelsAsJson())
-                .withPropertyIfNotNull("forSaleConfig", seasonParams.getForSaleConfigAsJson());
+                .withPropertyIfNotNull("forSaleConfig", seasonParams.getForSaleConfigAsJson())
+                .withPropertyIfNotNull("forSalePropagated", seasonParams.forSalePropagated());
         String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/seasons")
                 .body(request.build().toString()));
         return gson().fromJson(response, Season.class);
