@@ -18,6 +18,7 @@ public class SeasonParams {
     private TableBookingConfig tableBookingConfig;
     private List<Channel> channels;
     private ForSaleConfigParams forSaleConfigParams;
+    private Boolean forSalePropagated;
 
     public SeasonParams() {
     }
@@ -74,6 +75,15 @@ public class SeasonParams {
 
     public SeasonParams forSaleConfigParams(ForSaleConfigParams forSaleConfigParams) {
         this.forSaleConfigParams = forSaleConfigParams;
+        return this;
+    }
+
+    public Boolean forSalePropagated() {
+        return forSalePropagated;
+    }
+
+    public SeasonParams forSalePropagated(Boolean forSalePropagated) {
+        this.forSalePropagated = forSalePropagated;
         return this;
     }
 
