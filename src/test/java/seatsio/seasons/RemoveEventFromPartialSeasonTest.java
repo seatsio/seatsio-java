@@ -12,7 +12,7 @@ public class RemoveEventFromPartialSeasonTest extends SeatsioClientTest {
     @Test
     public void test() {
         String chartKey = createTestChart();
-        SeasonParams seasonParams = new SeasonParams()
+        CreateSeasonParams seasonParams = new CreateSeasonParams()
                 .key("aSeason")
                 .eventKeys(List.of("event1", "event2"));
         client.seasons.create(chartKey, seasonParams);

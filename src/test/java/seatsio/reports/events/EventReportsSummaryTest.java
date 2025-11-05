@@ -5,16 +5,13 @@ import seatsio.SeatsioClientTest;
 import seatsio.events.Channel;
 import seatsio.events.CreateEventParams;
 import seatsio.events.Event;
-import seatsio.reports.charts.ChartReportSummaryItem;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static seatsio.events.EventObjectInfo.*;
-import static seatsio.reports.charts.ChartReportSummaryItemBuilder.aChartReportSummaryItem;
 import static seatsio.reports.events.EventReportSummaryItemBuilder.anEventReportSummaryItem;
 
 public class EventReportsSummaryTest extends SeatsioClientTest {

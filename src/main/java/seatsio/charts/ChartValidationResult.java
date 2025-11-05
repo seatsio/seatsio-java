@@ -1,6 +1,7 @@
 package seatsio.charts;
 
 import seatsio.util.ValueObject;
+
 import java.util.List;
 
 public class ChartValidationResult extends ValueObject {
