@@ -1,8 +1,10 @@
 package seatsio.seasons;
 
 import seatsio.SeatsioClient;
+import seatsio.charts.CategoryKey;
 import seatsio.events.Event;
 import seatsio.events.EventCreationResult;
+import seatsio.events.UpdateEventParams;
 import seatsio.json.JsonObjectBuilder;
 import seatsio.util.UnirestWrapper;
 
@@ -10,6 +12,7 @@ import java.util.List;
 
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
 import static seatsio.json.SeatsioGson.gson;
+import static seatsio.util.UnirestWrapper.post;
 
 public class Seasons {
 
@@ -24,7 +27,7 @@ public class Seasons {
     }
 
     public Season create(String chartKey) {
-        return create(chartKey, new SeasonParams());
+        return create(chartKey, new CreateSeasonParams());
     }
 
     public Season create(String chartKey, SeasonParams seasonParams) {
@@ -92,4 +95,15 @@ public class Seasons {
     public Season retrieve(String key) {
         return (Season) seatsioClient.events.retrieve(key);
     }
+
+    public void update(String eventKey, UpdateSeasonParams params) {
+        JsonObjectBuilder request = aJsonObject()
+                .withPropertyIfNotNull("eventKey", params.key())
+                .withPropertyIfNotNull("tableBookingConfig", params.tableBookingConfig())
+                .withPropertyIfNotNull("name", params.name());
+        unirest.stringResponse(post(baseUrl + "/events/{key}")
+                .routeParam("key", eventKey)
+                .body(request.build().toString()));
+    }
+
 }

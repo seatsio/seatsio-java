@@ -10,7 +10,7 @@ import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 
-public abstract class EventParams<T extends EventParams> {
+public abstract class EventParams<T extends EventParams<?>> {
 
     public String eventKey;
     public String name;

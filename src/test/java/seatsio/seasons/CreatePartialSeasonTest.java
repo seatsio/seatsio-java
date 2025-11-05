@@ -13,7 +13,7 @@ public class CreatePartialSeasonTest extends SeatsioClientTest {
     @Test
     public void keyCanBePassedIn() {
         Chart chart = client.charts.create();
-        Season topLevelSeason = client.seasons.create(chart.key, new SeasonParams().key("aTopLevelSeason"));
+        Season topLevelSeason = client.seasons.create(chart.key, new CreateSeasonParams().key("aTopLevelSeason"));
 
         Season partialSeason = client.seasons.createPartialSeason(topLevelSeason.key, "aPartialSeason", null, null);
 
@@ -25,7 +25,7 @@ public class CreatePartialSeasonTest extends SeatsioClientTest {
     @Test
     public void nameCanBePassedIn() {
         Chart chart = client.charts.create();
-        Season topLevelSeason = client.seasons.create(chart.key, new SeasonParams().key("aTopLevelSeason"));
+        Season topLevelSeason = client.seasons.create(chart.key, new CreateSeasonParams().key("aTopLevelSeason"));
 
         Season partialSeason = client.seasons.createPartialSeason(topLevelSeason.key, null, "aPartialSeason", null);
 
@@ -37,7 +37,7 @@ public class CreatePartialSeasonTest extends SeatsioClientTest {
     @Test
     public void eventKeysCanBePassedIn() {
         Chart chart = client.charts.create();
-        SeasonParams seasonParams = new SeasonParams()
+        CreateSeasonParams seasonParams = new CreateSeasonParams()
                 .key("aTopLevelSeason")
                 .eventKeys(List.of("event1", "event2", "event3"));
         Season topLevelSeason = client.seasons.create(chart.key, seasonParams);

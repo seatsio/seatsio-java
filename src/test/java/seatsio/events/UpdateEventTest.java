@@ -5,6 +5,7 @@ import seatsio.SeatsioClientTest;
 import seatsio.charts.Category;
 import seatsio.charts.CategoryKey;
 import seatsio.charts.Chart;
+import seatsio.seasons.CreateSeasonParams;
 import seatsio.seasons.SeasonParams;
 
 import java.time.LocalDate;
@@ -133,7 +134,7 @@ public class UpdateEventTest extends SeatsioClientTest {
     @Test
     public void updateIsInThePast() {
         String chartKey = createTestChart();
-        client.seasons.create(chartKey, new SeasonParams().eventKeys(List.of("event1")));
+        client.seasons.create(chartKey, new CreateSeasonParams().eventKeys(List.of("event1")));
         Event event = client.events.retrieve("event1");
         assertThat(event.isInThePast).isFalse();
 

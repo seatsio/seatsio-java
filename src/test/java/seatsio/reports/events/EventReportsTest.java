@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.events.*;
 import seatsio.holdTokens.HoldToken;
+import seatsio.seasons.CreateSeasonParams;
 import seatsio.seasons.Season;
 import seatsio.seasons.SeasonParams;
 
@@ -81,7 +82,7 @@ public class EventReportsTest extends SeatsioClientTest {
     @Test
     public void seasonStatusOverriddenQuantity() {
         String chartKey = createTestChart();
-        Season season = client.seasons.create(chartKey, new SeasonParams().numberOfEvents(1));
+        Season season = client.seasons.create(chartKey, new CreateSeasonParams().numberOfEvents(1));
         Event event = season.events.get(0);
         client.events.overrideSeasonObjectStatus(event.key, List.of("A-1"));
 
