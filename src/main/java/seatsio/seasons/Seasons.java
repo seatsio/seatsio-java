@@ -30,7 +30,7 @@ public class Seasons {
         return create(chartKey, new CreateSeasonParams());
     }
 
-    public Season create(String chartKey, SeasonParams seasonParams) {
+    public Season create(String chartKey, CreateSeasonParams seasonParams) {
         JsonObjectBuilder request = aJsonObject()
                 .withProperty("chartKey", chartKey)
                 .withPropertyIfNotNull("key", seasonParams.key())

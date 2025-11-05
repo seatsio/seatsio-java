@@ -21,9 +21,6 @@ public abstract class SeasonParams<T extends  SeasonParams<?>> {
     private ForSaleConfigParams forSaleConfigParams;
     private Boolean forSalePropagated;
 
-    public SeasonParams() {
-    }
-
     public String key() {
         return key;
     }
