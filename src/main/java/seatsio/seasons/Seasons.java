@@ -100,7 +100,8 @@ public class Seasons {
         JsonObjectBuilder request = aJsonObject()
                 .withPropertyIfNotNull("eventKey", params.key())
                 .withPropertyIfNotNull("tableBookingConfig", params.tableBookingConfig())
-                .withPropertyIfNotNull("name", params.name());
+                .withPropertyIfNotNull("name", params.name())
+                .withPropertyIfNotNull("forSalePropagated", params.forSalePropagated());
         unirest.stringResponse(post(baseUrl + "/events/{key}")
                 .routeParam("key", eventKey)
                 .body(request.build().toString()));

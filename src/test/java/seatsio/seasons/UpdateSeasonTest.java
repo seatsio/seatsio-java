@@ -45,8 +45,19 @@ public class UpdateSeasonTest extends SeatsioClientTest {
         TableBookingConfig newTableBookingConfig = TableBookingConfig.custom(Map.of("T1", BY_TABLE, "T2", BY_SEAT));
         client.seasons.update(season.key, new UpdateSeasonParams().tableBookingConfig(newTableBookingConfig));
 
-        Event retrievedEvent = client.seasons.retrieve(season.key);
-        assertThat(retrievedEvent.tableBookingConfig).isEqualTo(newTableBookingConfig);
+        Season retrievedSeason = client.seasons.retrieve(season.key);
+        assertThat(retrievedSeason.tableBookingConfig).isEqualTo(newTableBookingConfig);
+    }
+
+    @Test
+    public void updateForSalePropagated() {
+        String chartKey = createTestChartWithTables();
+        Season season = client.seasons.create(chartKey, new CreateSeasonParams().forSalePropagated(false));
+
+        client.seasons.update(season.key, new UpdateSeasonParams().forSalePropagated(true));
+
+        Season retrievedSeason = client.seasons.retrieve(season.key);
+        assertThat(retrievedSeason.forSalePropagated).isTrue();
     }
 
 
