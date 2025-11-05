@@ -3,7 +3,6 @@ package seatsio.reports.charts;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;

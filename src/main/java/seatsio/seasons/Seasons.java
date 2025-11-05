@@ -1,10 +1,8 @@
 package seatsio.seasons;
 
 import seatsio.SeatsioClient;
-import seatsio.charts.CategoryKey;
 import seatsio.events.Event;
 import seatsio.events.EventCreationResult;
-import seatsio.events.UpdateEventParams;
 import seatsio.json.JsonObjectBuilder;
 import seatsio.util.UnirestWrapper;
 

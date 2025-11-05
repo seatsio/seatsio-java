@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.SeatsioException;
 import seatsio.seasons.CreateSeasonParams;
-import seatsio.seasons.SeasonParams;
 
 import java.util.List;
 import java.util.Set;

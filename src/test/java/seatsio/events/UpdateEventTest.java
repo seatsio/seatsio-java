@@ -6,7 +6,6 @@ import seatsio.charts.Category;
 import seatsio.charts.CategoryKey;
 import seatsio.charts.Chart;
 import seatsio.seasons.CreateSeasonParams;
-import seatsio.seasons.SeasonParams;
 
 import java.time.LocalDate;
 import java.util.List;

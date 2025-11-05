@@ -3,7 +3,6 @@ package seatsio.seasons;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.charts.Chart;
-import seatsio.events.Event;
 import seatsio.events.TableBookingConfig;
 
 import java.util.Map;

@@ -6,7 +6,6 @@ import seatsio.events.*;
 import seatsio.holdTokens.HoldToken;
 import seatsio.seasons.CreateSeasonParams;
 import seatsio.seasons.Season;
-import seatsio.seasons.SeasonParams;
 
 import java.util.List;
 import java.util.Map;

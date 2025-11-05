@@ -1,7 +1,6 @@
 package seatsio.events;
 
 import org.junit.jupiter.api.Test;
-import seatsio.SeatsioClient;
 import seatsio.SeatsioClientTest;
 
 import java.util.List;
