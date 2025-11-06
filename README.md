@@ -25,7 +25,7 @@ Note that v74.0.0 is the first version that's hosted on Maven Central instead of
 
 ## Java version
 
-You need at least Java 11 to use seatsio-java.
+You need at least Java 17 to use seatsio-java.
 
 ## Versioning
 
