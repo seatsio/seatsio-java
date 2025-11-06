@@ -17,10 +17,10 @@ public class ManageCategoriesTest extends SeatsioClientTest {
     public void addCategory() {
         Chart chart = client.charts.create("aChart", "SIMPLE", null);
 
-        client.charts.addCategory(chart.key,  new Category(CategoryKey.of(1L), "Category 1", "#aaaaaa", true));
+        client.charts.addCategory(chart.key(),  new Category(CategoryKey.of(1L), "Category 1", "#aaaaaa", true));
 
-        Chart retrievedChart = client.charts.retrieve(chart.key);
-        Map<?, ?> drawing = client.charts.retrievePublishedVersion(retrievedChart.key);
+        Chart retrievedChart = client.charts.retrieve(chart.key());
+        Map<?, ?> drawing = client.charts.retrievePublishedVersion(retrievedChart.key());
         assertThat(categories(drawing)).containsExactly(
                 Map.of(
                         "key", 1.0,
@@ -39,10 +39,10 @@ public class ManageCategoriesTest extends SeatsioClientTest {
         );
         Chart chart = client.charts.create("aChart", "SIMPLE", categories);
 
-        client.charts.removeCategory(chart.key, CategoryKey.of(1L));
+        client.charts.removeCategory(chart.key(), CategoryKey.of(1L));
 
-        Chart retrievedChart = client.charts.retrieve(chart.key);
-        Map<?, ?> drawing = client.charts.retrievePublishedVersion(retrievedChart.key);
+        Chart retrievedChart = client.charts.retrieve(chart.key());
+        Map<?, ?> drawing = client.charts.retrievePublishedVersion(retrievedChart.key());
         assertThat(categories(drawing)).containsExactly(
                 Map.of(
                         "key", "cat2",
@@ -61,7 +61,7 @@ public class ManageCategoriesTest extends SeatsioClientTest {
         );
         Chart chart = client.charts.create("aChart", "SIMPLE", categories);
 
-        final List<Category> categoryList = client.charts.listCategories(chart.key);
+        final List<Category> categoryList = client.charts.listCategories(chart.key());
         assertThat(categoryList).isEqualTo(categories);
     }
 
@@ -78,11 +78,11 @@ public class ManageCategoriesTest extends SeatsioClientTest {
         );
         Chart chart = client.charts.create("aChart", "SIMPLE", categories);
 
-        client.charts.updateCategory(chart.key, CategoryKey.of("cat2"),
+        client.charts.updateCategory(chart.key(), CategoryKey.of("cat2"),
                 new CategoryUpdateParams("New label", "#cccccc", false));
 
-        Chart retrievedChart = client.charts.retrieve(chart.key);
-        Map<?, ?> drawing = client.charts.retrievePublishedVersion(retrievedChart.key);
+        Chart retrievedChart = client.charts.retrieve(chart.key());
+        Map<?, ?> drawing = client.charts.retrievePublishedVersion(retrievedChart.key());
         assertThat(categories(drawing)).containsExactly(
                 Map.of(
                         "key", 1.0,
@@ -107,11 +107,11 @@ public class ManageCategoriesTest extends SeatsioClientTest {
         );
         Chart chart = client.charts.create("aChart", "SIMPLE", categories);
 
-        client.charts.updateCategory(chart.key, CategoryKey.of("cat2"),
+        client.charts.updateCategory(chart.key(), CategoryKey.of("cat2"),
                 new CategoryUpdateParams(null, null, null));
 
-        Chart retrievedChart = client.charts.retrieve(chart.key);
-        Map<?, ?> drawing = client.charts.retrievePublishedVersion(retrievedChart.key);
+        Chart retrievedChart = client.charts.retrieve(chart.key());
+        Map<?, ?> drawing = client.charts.retrievePublishedVersion(retrievedChart.key());
         assertThat(categories(drawing)).containsExactly(
                 Map.of(
                         "key", 1.0,
@@ -143,7 +143,7 @@ public class ManageCategoriesTest extends SeatsioClientTest {
         );
         Chart chart = client.charts.create("aChart", "SIMPLE", categories);
 
-        SeatsioException e = assertThrows(SeatsioException.class, () -> client.charts.updateCategory(chart.key, CategoryKey.of(3L),
+        SeatsioException e = assertThrows(SeatsioException.class, () -> client.charts.updateCategory(chart.key(), CategoryKey.of(3L),
                 new CategoryUpdateParams("New label", "#cccccc", false)));
         assertThat(e.getMessage()).isEqualTo("category not found");
     }

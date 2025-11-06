@@ -13,10 +13,10 @@ public class CopyChartTest extends SeatsioClientTest {
     public void test() {
         Chart chart = client.charts.create("my chart", "SIMPLE");
 
-        Chart copiedChart = client.charts.copy(chart.key);
+        Chart copiedChart = client.charts.copy(chart.key());
 
-        assertThat(copiedChart.name).isEqualTo("my chart (copy)");
-        Map<?, ?> drawing = client.charts.retrievePublishedVersion(copiedChart.key);
+        assertThat(copiedChart.name()).isEqualTo("my chart (copy)");
+        Map<?, ?> drawing = client.charts.retrievePublishedVersion(copiedChart.key());
         assertThat(drawing.get("venueType")).isEqualTo("SIMPLE");
     }
 

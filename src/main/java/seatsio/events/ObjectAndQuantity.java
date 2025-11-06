@@ -1,16 +1,9 @@
 package seatsio.events;
 
-public class ObjectAndQuantity {
-
-    private String object;
-    private Integer quantity;
+public record ObjectAndQuantity(String object, Integer quantity) {
 
     public ObjectAndQuantity(String object) {
-        this.object = object;
+        this(object, null);
     }
 
-    public ObjectAndQuantity(String object, Integer quantity) {
-        this.object = object;
-        this.quantity = quantity;
-    }
 }

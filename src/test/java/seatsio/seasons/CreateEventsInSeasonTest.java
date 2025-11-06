@@ -15,10 +15,10 @@ public class CreateEventsInSeasonTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Season season = client.seasons.create(chartKey);
 
-        List<Event> events = client.seasons.createEvents(season.key, List.of("event1", "event2"));
+        List<Event> events = client.seasons.createEvents(season.key(), List.of("event1", "event2"));
 
         assertThat(events)
-                .extracting(s -> s.key)
+                .extracting(Event::key)
                 .containsExactly("event2", "event1");
     }
 
@@ -27,7 +27,7 @@ public class CreateEventsInSeasonTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Season season = client.seasons.create(chartKey);
 
-        List<Event> events = client.seasons.createEvents(season.key, 2);
+        List<Event> events = client.seasons.createEvents(season.key(), 2);
 
         assertThat(events).hasSize(2);
     }

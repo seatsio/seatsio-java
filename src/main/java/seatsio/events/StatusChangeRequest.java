@@ -1,41 +1,14 @@
 package seatsio.events;
 
-import seatsio.util.ValueObject;
-
 import java.util.List;
 import java.util.Set;
 
 import static seatsio.events.StatusChangeType.CHANGE_STATUS_TO;
 
-public class StatusChangeRequest extends ValueObject {
-
-    public final StatusChangeType type;
-    public final String eventKey;
-    public final List<?> objects;
-    public final String status;
-    public final String holdToken;
-    public final String orderId;
-    public final Boolean keepExtraData;
-    public final Boolean ignoreChannels;
-    public final Set<String> channelKeys;
-    public final Set<String> allowedPreviousStatuses;
-    public final Set<String> rejectedPreviousStatuses;
-    public final String resaleListingId;
-
-    public StatusChangeRequest(StatusChangeType type, String eventKey, List<?> objects, String status, String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels, Set<String> channelKeys, Set<String> allowedPreviousStatuses, Set<String> rejectedPreviousStatuses, String resaleListingId) {
-        this.type = type;
-        this.eventKey = eventKey;
-        this.objects = objects;
-        this.status = status;
-        this.holdToken = holdToken;
-        this.orderId = orderId;
-        this.keepExtraData = keepExtraData;
-        this.ignoreChannels = ignoreChannels;
-        this.channelKeys = channelKeys;
-        this.allowedPreviousStatuses = allowedPreviousStatuses;
-        this.rejectedPreviousStatuses = rejectedPreviousStatuses;
-        this.resaleListingId = resaleListingId;
-    }
+public record StatusChangeRequest(StatusChangeType type, String eventKey, List<?> objects, String status,
+                                  String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels,
+                                  Set<String> channelKeys, Set<String> allowedPreviousStatuses,
+                                  Set<String> rejectedPreviousStatuses, String resaleListingId) {
 
     public static class Builder {
         private StatusChangeType type = CHANGE_STATUS_TO;

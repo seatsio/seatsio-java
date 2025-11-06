@@ -1,17 +1,9 @@
 package seatsio.events;
 
-import seatsio.util.ValueObject;
-
 import java.util.List;
 import java.util.Map;
 
-public class ForSaleConfig extends ValueObject {
+public record ForSaleConfig(boolean forSale, List<String> objects, Map<String, Integer> areaPlaces,
+                            List<String> categories) {
 
-    public boolean forSale;
-    public List<String> objects;
-    public Map<String, Integer> areaPlaces;
-    public List<String> categories;
-
-    public ForSaleConfig() {
-    }
 }

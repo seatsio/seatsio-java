@@ -16,13 +16,13 @@ public class CopyChartFromWorkspaceToTest extends SeatsioClientTest {
         Chart chart = client.charts.create("my chart", "SIMPLE");
         Workspace toWorkspace = client.workspaces.create("my ws");
 
-        Chart copiedChart = client.charts.copyToWorkspace(chart.key, workspace.key, toWorkspace.key);
+        Chart copiedChart = client.charts.copyToWorkspace(chart.key(), workspace.key(), toWorkspace.key());
 
-        SeatsioClient workspaceClient = new SeatsioClient(toWorkspace.secretKey, null, apiUrl());
-        assertThat(copiedChart.name).isEqualTo("my chart");
-        Chart retrievedChart = workspaceClient.charts.retrieve(copiedChart.key);
-        assertThat(retrievedChart.name).isEqualTo("my chart");
-        Map<?, ?> drawing = workspaceClient.charts.retrievePublishedVersion(copiedChart.key);
+        SeatsioClient workspaceClient = new SeatsioClient(toWorkspace.secretKey(), null, apiUrl());
+        assertThat(copiedChart.name()).isEqualTo("my chart");
+        Chart retrievedChart = workspaceClient.charts.retrieve(copiedChart.key());
+        assertThat(retrievedChart.name()).isEqualTo("my chart");
+        Map<?, ?> drawing = workspaceClient.charts.retrievePublishedVersion(copiedChart.key());
         assertThat(drawing.get("venueType")).isEqualTo("SIMPLE");
     }
 

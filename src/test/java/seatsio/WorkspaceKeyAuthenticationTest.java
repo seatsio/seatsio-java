@@ -12,10 +12,10 @@ public class WorkspaceKeyAuthenticationTest extends SeatsioClientTest {
     public void clientTakesOptionalWorkspaceKey() {
         Workspace workspace = client.workspaces.create("some workspace");
 
-        SeatsioClient workspaceClient = new SeatsioClient(user.secretKey, workspace.key, apiUrl());
+        SeatsioClient workspaceClient = new SeatsioClient(user.secretKey, workspace.key(), apiUrl());
         HoldToken holdToken = workspaceClient.holdTokens.create();
 
-        assertThat(holdToken.workspaceKey).isEqualTo(workspace.key);
+        assertThat(holdToken.workspaceKey()).isEqualTo(workspace.key());
     }
 
 }

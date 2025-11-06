@@ -17,15 +17,15 @@ public class RemoveChannelTest extends SeatsioClientTest {
     @Test
     public void removeChannel() {
         Chart chart = client.charts.create();
-        Event event = client.events.create(chart.key, new CreateEventParams().withChannels(List.of(
+        Event event = client.events.create(chart.key(), new CreateEventParams().withChannels(List.of(
                 new Channel("channelKey1", "channel 1", "#FFFF99", 1, null),
                 new Channel("channelKey2", "channel 2", "#FFFF99", 2, null)
         )));
 
-        client.events.channels.remove(event.key, "channelKey2");
+        client.events.channels.remove(event.key(), "channelKey2");
 
-        Event retrievedEvent = client.events.retrieve(event.key);
-        assertThat(retrievedEvent.channels).containsExactly(
+        Event retrievedEvent = client.events.retrieve(event.key());
+        assertThat(retrievedEvent.channels()).containsExactly(
                 new Channel("channelKey1", "channel 1", "#FFFF99", 1, new HashSet<>())
         );
     }

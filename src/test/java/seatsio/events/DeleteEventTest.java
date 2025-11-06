@@ -13,11 +13,11 @@ public class DeleteEventTest extends SeatsioClientTest {
     @Test
     public void test() {
         Chart chart = client.charts.create();
-        Event event = client.events.create(chart.key);
+        Event event = client.events.create(chart.key());
 
-        client.events.delete(event.key);
+        client.events.delete(event.key());
 
-        assertThrows(SeatsioException.class, () -> client.events.retrieve(event.key));
+        assertThrows(SeatsioException.class, () -> client.events.retrieve(event.key()));
     }
 
     @Test
@@ -25,8 +25,8 @@ public class DeleteEventTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Season season = client.seasons.create(chartKey);
 
-        client.events.delete(season.key);
+        client.events.delete(season.key());
 
-        assertThrows(SeatsioException.class, () -> client.events.retrieve(season.key));
+        assertThrows(SeatsioException.class, () -> client.events.retrieve(season.key()));
     }
 }

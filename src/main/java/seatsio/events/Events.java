@@ -8,7 +8,10 @@ import seatsio.SortDirection;
 import seatsio.charts.Category;
 import seatsio.charts.CategoryKey;
 import seatsio.json.JsonObjectBuilder;
-import seatsio.util.*;
+import seatsio.util.Lister;
+import seatsio.util.Page;
+import seatsio.util.PageFetcher;
+import seatsio.util.UnirestWrapper;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -76,7 +79,7 @@ public class Events {
 
         String response = unirest.stringResponse(post(baseUrl + "/events/actions/create-multiple").body(request.build().toString()));
 
-        return gson().fromJson(response, EventCreationResult.class).events;
+        return gson().fromJson(response, EventCreationResult.class).events();
     }
 
     public void removeObjectCategories(String eventKey) {
@@ -402,7 +405,7 @@ public class Events {
     public List<ChangeObjectStatusResult> changeObjectStatus(List<StatusChangeRequest> statusChangeRequests) {
         List<JsonElement> statusChangeRequestsAsJson = statusChangeRequests
                 .stream()
-                .map(s -> changeObjectStatusRequest(s.type, s.eventKey, toObjects(s.objects), s.status, s.holdToken, s.orderId, s.keepExtraData, s.ignoreChannels, s.channelKeys, s.allowedPreviousStatuses, s.rejectedPreviousStatuses, s.resaleListingId))
+                .map(s -> changeObjectStatusRequest(s.type(), s.eventKey(), toObjects(s.objects()), s.status(), s.holdToken(), s.orderId(), s.keepExtraData(), s.ignoreChannels(), s.channelKeys(), s.allowedPreviousStatuses(), s.rejectedPreviousStatuses(), s.resaleListingId()))
                 .collect(toList());
         JsonObject request = aJsonObject()
                 .withProperty("statusChanges", aJsonArray().withItems(statusChangeRequestsAsJson).build())
@@ -413,9 +416,7 @@ public class Events {
         return gson().fromJson(response, ChangeObjectStatusInBatchResult.class).results;
     }
 
-    private static class ChangeObjectStatusInBatchResult extends ValueObject {
-
-        public List<ChangeObjectStatusResult> results;
+    private record ChangeObjectStatusInBatchResult(List<ChangeObjectStatusResult> results) {
 
     }
 

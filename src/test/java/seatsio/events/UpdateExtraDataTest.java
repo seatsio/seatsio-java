@@ -15,9 +15,9 @@ public class UpdateExtraDataTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
         Map<String, Object> extraData = Map.of("foo", "bar");
 
-        client.events.updateExtraData(event.key, "A-1", extraData);
+        client.events.updateExtraData(event.key(), "A-1", extraData);
 
-        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").extraData).isEqualTo(extraData);
+        assertThat(client.events.retrieveObjectInfo(event.key(), "A-1").extraData()).isEqualTo(extraData);
     }
 
 }

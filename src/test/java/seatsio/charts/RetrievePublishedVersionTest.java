@@ -13,7 +13,7 @@ public class RetrievePublishedVersionTest extends SeatsioClientTest {
     public void test() {
         Chart chart = client.charts.create("chartName");
 
-        Map<?, ?> publishedVersion = client.charts.retrievePublishedVersion(chart.key);
+        Map<?, ?> publishedVersion = client.charts.retrievePublishedVersion(chart.key());
 
         assertThat(publishedVersion.get("name")).isEqualTo("chartName");
     }

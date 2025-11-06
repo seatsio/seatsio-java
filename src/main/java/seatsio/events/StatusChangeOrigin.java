@@ -1,7 +1,5 @@
 package seatsio.events;
 
-public class StatusChangeOrigin {
+public record StatusChangeOrigin(StatusChangeOriginType type, String ip) {
 
-    public StatusChangeOriginType type;
-    public String ip;
 }

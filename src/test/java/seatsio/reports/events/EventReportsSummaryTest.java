@@ -20,9 +20,9 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
     public void summaryByStatus() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.book(event.key, List.of("A-1"));
+        client.events.book(event.key(), List.of("A-1"));
 
-        Map<String, EventReportSummaryItem> report = client.eventReports.summaryByStatus(event.key);
+        Map<String, EventReportSummaryItem> report = client.eventReports.summaryByStatus(event.key());
 
         EventReportSummaryItem bookedReport = anEventReportSummaryItem()
                 .withCount(1)
@@ -54,7 +54,7 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        Map<String, EventReportSummaryItem> report = client.eventReports.summaryByObjectType(event.key);
+        Map<String, EventReportSummaryItem> report = client.eventReports.summaryByObjectType(event.key());
 
         EventReportSummaryItem seatReport = anEventReportSummaryItem()
                 .withCount(32)
@@ -101,9 +101,9 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
     public void summaryByCategoryKey() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.book(event.key, List.of("A-1"));
+        client.events.book(event.key(), List.of("A-1"));
 
-        Map<String, EventReportSummaryItem> report = client.eventReports.summaryByCategoryKey(event.key);
+        Map<String, EventReportSummaryItem> report = client.eventReports.summaryByCategoryKey(event.key());
 
         EventReportSummaryItem cat9Report = anEventReportSummaryItem()
                 .withCount(116)
@@ -156,9 +156,9 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
     public void summaryByCategoryLabel() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.book(event.key, List.of("A-1"));
+        client.events.book(event.key(), List.of("A-1"));
 
-        Map<String, EventReportSummaryItem> report = client.eventReports.summaryByCategoryLabel(event.key);
+        Map<String, EventReportSummaryItem> report = client.eventReports.summaryByCategoryLabel(event.key());
 
         EventReportSummaryItem cat1Report = anEventReportSummaryItem()
                 .withCount(116)
@@ -211,9 +211,9 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
     public void summaryBySection() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.book(event.key, List.of("A-1"));
+        client.events.book(event.key(), List.of("A-1"));
 
-        Map<String, EventReportSummaryItem> report = client.eventReports.summaryBySection(event.key);
+        Map<String, EventReportSummaryItem> report = client.eventReports.summaryBySection(event.key());
 
         EventReportSummaryItem noSectionReport = anEventReportSummaryItem()
                 .withCount(232)
@@ -234,7 +234,7 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
         String chartKey = createTestChartWithZones();
         Event event = client.events.create(chartKey);
 
-        Map<String, EventReportSummaryItem> report = client.eventReports.summaryByZone(event.key);
+        Map<String, EventReportSummaryItem> report = client.eventReports.summaryByZone(event.key());
 
         EventReportSummaryItem reportForZoneFinishline = anEventReportSummaryItem()
                 .withCount(2865)
@@ -279,9 +279,9 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
     public void summaryByAvailability() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.book(event.key, List.of("A-1"));
+        client.events.book(event.key(), List.of("A-1"));
 
-        Map<String, EventReportSummaryItem> report = client.eventReports.summaryByAvailability(event.key);
+        Map<String, EventReportSummaryItem> report = client.eventReports.summaryByAvailability(event.key());
 
         EventReportSummaryItem availableReport = anEventReportSummaryItem()
                 .withCount(231)
@@ -312,9 +312,9 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
     public void summaryByAvailabilityReason() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.book(event.key, List.of("A-1"));
+        client.events.book(event.key(), List.of("A-1"));
 
-        Map<String, EventReportSummaryItem> report = client.eventReports.summaryByAvailabilityReason(event.key);
+        Map<String, EventReportSummaryItem> report = client.eventReports.summaryByAvailabilityReason(event.key());
 
         EventReportSummaryItem availableReport = anEventReportSummaryItem()
                 .withCount(231)
@@ -364,7 +364,7 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 new Channel("channel1", "channel 1", "#FFFF99", 1, Set.of("A-1", "A-2"))
         )));
 
-        Map<String, EventReportSummaryItem> report = client.eventReports.summaryByChannel(event.key);
+        Map<String, EventReportSummaryItem> report = client.eventReports.summaryByChannel(event.key());
 
         EventReportSummaryItem channel1Report = anEventReportSummaryItem()
                 .withCount(2)

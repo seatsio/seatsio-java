@@ -13,23 +13,23 @@ public class RetrieveChartTest extends SeatsioClientTest {
     @Test
     public void test() {
         Chart chart = client.charts.create();
-        client.charts.addTag(chart.key, "tag1");
-        client.charts.addTag(chart.key, "tag2");
+        client.charts.addTag(chart.key(), "tag1");
+        client.charts.addTag(chart.key(), "tag2");
 
-        Chart retrievedChart = client.charts.retrieve(chart.key);
+        Chart retrievedChart = client.charts.retrieve(chart.key());
 
-        assertThat(retrievedChart.id).isNotZero();
-        assertThat(retrievedChart.key).isNotBlank();
-        assertThat(retrievedChart.status).isEqualTo("NOT_USED");
-        assertThat(retrievedChart.name).isEqualTo("Untitled chart");
-        assertThat(retrievedChart.publishedVersionThumbnailUrl).isNotBlank();
-        assertThat(chart.draftVersionThumbnailUrl).isNull();
-        assertThat(retrievedChart.events).isNull();
-        assertThat(retrievedChart.tags).containsOnly("tag1", "tag2");
-        assertThat(retrievedChart.archived).isFalse();
-        assertThat(retrievedChart.venueType).isEqualTo("SIMPLE");
-        assertThat(retrievedChart.validation).isNotNull();
-        assertThat(retrievedChart.zones).isNull();
+        assertThat(retrievedChart.id()).isNotZero();
+        assertThat(retrievedChart.key()).isNotBlank();
+        assertThat(retrievedChart.status()).isEqualTo("NOT_USED");
+        assertThat(retrievedChart.name()).isEqualTo("Untitled chart");
+        assertThat(retrievedChart.publishedVersionThumbnailUrl()).isNotBlank();
+        assertThat(chart.draftVersionThumbnailUrl()).isNull();
+        assertThat(retrievedChart.events()).isNull();
+        assertThat(retrievedChart.tags()).containsOnly("tag1", "tag2");
+        assertThat(retrievedChart.archived()).isFalse();
+        assertThat(retrievedChart.venueType()).isEqualTo("SIMPLE");
+        assertThat(retrievedChart.validation()).isNotNull();
+        assertThat(retrievedChart.zones()).isNull();
     }
 
     @Test
@@ -38,7 +38,7 @@ public class RetrieveChartTest extends SeatsioClientTest {
 
         Chart retrievedChart = client.charts.retrieve(chart);
 
-        assertThat(retrievedChart.zones).isEqualTo(List.of(
+        assertThat(retrievedChart.zones()).isEqualTo(List.of(
                 new Zone("finishline", "Finish Line"),
                 new Zone("midtrack", "Mid Track")
         ));
@@ -47,13 +47,13 @@ public class RetrieveChartTest extends SeatsioClientTest {
     @Test
     public void withEvents() {
         Chart chart = client.charts.create();
-        Event event1 = client.events.create(chart.key);
-        Event event2 = client.events.create(chart.key);
+        Event event1 = client.events.create(chart.key());
+        Event event2 = client.events.create(chart.key());
 
-        Chart retrievedChart = client.charts.retrieveWithEvents(chart.key);
+        Chart retrievedChart = client.charts.retrieveWithEvents(chart.key());
 
-        assertThat(retrievedChart.events)
+        assertThat(retrievedChart.events())
                 .extracting("id")
-                .containsExactly(event2.id, event1.id);
+                .containsExactly(event2.id(), event1.id());
     }
 }

@@ -46,13 +46,6 @@ public class ChartReportSummaryItemBuilder {
     }
 
     public ChartReportSummaryItem build() {
-        ChartReportSummaryItem chartSummaryReportItem = new ChartReportSummaryItem();
-        chartSummaryReportItem.count = count;
-        chartSummaryReportItem.byCategoryKey = byCategoryKey;
-        chartSummaryReportItem.byCategoryLabel = byCategoryLabel;
-        chartSummaryReportItem.bySection = bySection;
-        chartSummaryReportItem.byObjectType = byObjectType;
-        chartSummaryReportItem.byZone = byZone;
-        return chartSummaryReportItem;
+        return new ChartReportSummaryItem(count, byCategoryKey, byCategoryLabel, bySection, byObjectType, byZone);
     }
 }

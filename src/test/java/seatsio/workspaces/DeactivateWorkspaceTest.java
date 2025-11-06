@@ -11,10 +11,10 @@ public class DeactivateWorkspaceTest extends SeatsioClientTest {
     public void deactivateWorkspace() {
         Workspace workspace = client.workspaces.create("my workspace");
 
-        client.workspaces.deactivate(workspace.key);
+        client.workspaces.deactivate(workspace.key());
 
-        Workspace retrievedWorkspace = client.workspaces.retrieve(workspace.key);
-        assertThat(retrievedWorkspace.isActive).isFalse();
+        Workspace retrievedWorkspace = client.workspaces.retrieve(workspace.key());
+        assertThat(retrievedWorkspace.isActive()).isFalse();
     }
 
 }

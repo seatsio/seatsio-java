@@ -2,6 +2,7 @@ package seatsio.seasons;
 
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
+import seatsio.events.Event;
 
 import java.util.List;
 
@@ -18,8 +19,8 @@ public class AddEventsToPartialSeasonTest extends SeatsioClientTest {
         Season updatedPartialSeason = client.seasons.addEventsToPartialSeason("aSeason", "aPartialSeason", List.of("event1", "event2"));
 
         assertThat(updatedPartialSeason.events)
-                .extracting(s -> s.key)
+                .extracting(Event::key)
                 .containsExactly("event1", "event2");
-        assertThat(updatedPartialSeason.events.get(0).partialSeasonKeysForEvent).containsExactly("aPartialSeason");
+        assertThat(updatedPartialSeason.events.get(0).partialSeasonKeysForEvent()).containsExactly("aPartialSeason");
     }
 }

@@ -66,8 +66,8 @@ import seatsio.events.Event;
 
 SeatsioClient client = new SeatsioClient(Region.EU, <WORKSPACE SECRET KEY>);
 Chart chart = client.charts.create();
-Event event = client.events.create(chart.key);
-System.out.println("Created event with key " + event.key);
+Event event = client.events.create(chart.key());
+System.out.println("Created event with key " + event.key());
 ```
 
 ### Booking objects
@@ -122,7 +122,7 @@ SeatsioClient client = new SeatsioClient(Region.EU, "<WORKSPACE SECRET KEY>");
 
 Stream<Chart> charts = client.charts.listAll();
 charts.forEach(chart -> {
-  System.out.println("Chart " + chart.key);
+  System.out.println("Chart " + chart.key());
 });
 ```
 
@@ -137,15 +137,15 @@ import seatsio.events.EventObjectInfo;
 
 SeatsioClient client = new SeatsioClient(Region.EU, "<WORKSPACE SECRET KEY>");
 
-Map<String, EventObjectInfo> eventObjectInfos = client.events.retrieveObjectInfos(event.key, List.of("A-1", "A-2"));
+Map<String, EventObjectInfo> eventObjectInfos = client.events.retrieveObjectInfos(event.key(), List.of("A-1", "A-2"));
 
-System.out.println(eventObjectInfos.get("A-1").categoryLabel);
-System.out.println(eventObjectInfos.get("A-1").categoryKey);
-System.out.println(eventObjectInfos.get("A-1").status);
+System.out.println(eventObjectInfos.get("A-1").categoryLabel());
+System.out.println(eventObjectInfos.get("A-1").categoryKey());
+System.out.println(eventObjectInfos.get("A-1").status());
 
-System.out.println(eventObjectInfos.get("A-2").categoryLabel);
-System.out.println(eventObjectInfos.get("A-2").categoryKey);
-System.out.println(eventObjectInfos.get("A-2").status);
+System.out.println(eventObjectInfos.get("A-2").categoryLabel());
+System.out.println(eventObjectInfos.get("A-2").categoryKey());
+System.out.println(eventObjectInfos.get("A-2").status());
 ```
 
 ### Listing charts page by page
@@ -159,7 +159,7 @@ Each page contains an `items` array of charts, and `nextPageStartsAfter` and `pr
 
 Page<Chart> firstPage = client.charts.listFirstPage();
 for(Chart chart: charts.items) {
-  System.out.println("Chart " + chart.key)
+  System.out.println("Chart " + chart.key())
 }
 ```
 
@@ -168,7 +168,7 @@ for(Chart chart: charts.items) {
 
 Page<Chart> nextPage = client.charts.listPageAfter(firstPage.nextPageStartsAfter);
 for(Chart chart: charts.items) {
-  System.out.println("Chart " + chart.key)
+  System.out.println("Chart " + chart.key())
 }
 ```
 
@@ -177,7 +177,7 @@ for(Chart chart: charts.items) {
 
 Page<Chart> previousPage = client.charts.listPageBefore(nextPage.previousPageEndsBefore);
 for(Chart chart: charts.items) {
-  System.out.println("Chart " + chart.key)
+  System.out.println("Chart " + chart.key())
 }
 ```
 
@@ -203,8 +203,8 @@ import seatsio.events.Event;
 // workspace public key can be found on https://app.seats.io/workspace-settings
 SeatsioClient client = new SeatsioClient(Region.EU, <COMPANY ADMIN KEY>, <WORKSPACE PUBLIC KEY>);
 Chart chart = client.charts.create();
-Event event = client.events.create(chart.key);
-System.out.println("Created event with key " + event.key);
+Event event = client.events.create(chart.key());
+System.out.println("Created event with key " + event.key());
 ```
 
 ### Listing categories
@@ -217,7 +217,7 @@ SeatsioClient client = new SeatsioClient(Region.EU, "<WORKSPACE SECRET KEY>");
 
 List<Category> categories = client.charts.listCategories("the chart key");
 categories.forEach(category -> {
-  System.out.println("Category " + category.label);
+  System.out.println("Category " + category.label());
 });
 ```
 

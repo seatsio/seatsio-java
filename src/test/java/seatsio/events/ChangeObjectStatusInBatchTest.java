@@ -23,15 +23,15 @@ public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
         Event event2 = client.events.create(chartKey2);
 
         List<ChangeObjectStatusResult> result = client.events.changeObjectStatus(List.of(
-                new StatusChangeRequest.Builder().withType(CHANGE_STATUS_TO).withEventKey(event1.key).withObjects(List.of("A-1")).withStatus("lolzor").build(),
-                new StatusChangeRequest.Builder().withType(CHANGE_STATUS_TO).withEventKey(event2.key).withObjects(List.of("A-2")).withStatus("lolzor").build()
+                new StatusChangeRequest.Builder().withType(CHANGE_STATUS_TO).withEventKey(event1.key()).withObjects(List.of("A-1")).withStatus("lolzor").build(),
+                new StatusChangeRequest.Builder().withType(CHANGE_STATUS_TO).withEventKey(event2.key()).withObjects(List.of("A-2")).withStatus("lolzor").build()
         ));
 
-        assertThat(result.get(0).objects.get("A-1").status).isEqualTo("lolzor");
-        assertThat(client.events.retrieveObjectInfo(event1.key, "A-1").status).isEqualTo("lolzor");
+        assertThat(result.get(0).objects().get("A-1").status()).isEqualTo("lolzor");
+        assertThat(client.events.retrieveObjectInfo(event1.key(), "A-1").status()).isEqualTo("lolzor");
 
-        assertThat(result.get(1).objects.get("A-2").status).isEqualTo("lolzor");
-        assertThat(client.events.retrieveObjectInfo(event2.key, "A-2").status).isEqualTo("lolzor");
+        assertThat(result.get(1).objects().get("A-2").status()).isEqualTo("lolzor");
+        assertThat(client.events.retrieveObjectInfo(event2.key(), "A-2").status()).isEqualTo("lolzor");
     }
 
     @Test
@@ -42,10 +42,10 @@ public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
         )));
 
         List<ChangeObjectStatusResult> result = client.events.changeObjectStatus(List.of(
-                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-1")).withStatus("lolzor").withChannelKeys(Set.of("channelKey1")).build()
+                new StatusChangeRequest.Builder().withEventKey(event.key()).withObjects(List.of("A-1")).withStatus("lolzor").withChannelKeys(Set.of("channelKey1")).build()
         ));
 
-        assertThat(result.get(0).objects.get("A-1").status).isEqualTo("lolzor");
+        assertThat(result.get(0).objects().get("A-1").status()).isEqualTo("lolzor");
     }
 
     @Test
@@ -56,10 +56,10 @@ public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
         )));
 
         List<ChangeObjectStatusResult> result = client.events.changeObjectStatus(List.of(
-                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-1")).withStatus("lolzor").withIgnoreChannels(true).build()
+                new StatusChangeRequest.Builder().withEventKey(event.key()).withObjects(List.of("A-1")).withStatus("lolzor").withIgnoreChannels(true).build()
         ));
 
-        assertThat(result.get(0).objects.get("A-1").status).isEqualTo("lolzor");
+        assertThat(result.get(0).objects().get("A-1").status()).isEqualTo("lolzor");
     }
 
     @Test
@@ -69,7 +69,7 @@ public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
 
         try {
             client.events.changeObjectStatus(List.of(
-                    new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-1")).withStatus("lolzor").withAllowedPreviousStatuses(Set.of("MustBeThisStatus")).build()
+                    new StatusChangeRequest.Builder().withEventKey(event.key()).withObjects(List.of("A-1")).withStatus("lolzor").withAllowedPreviousStatuses(Set.of("MustBeThisStatus")).build()
             ));
             fail("expected exception");
         } catch (SeatsioException e) {
@@ -85,7 +85,7 @@ public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
 
         try {
             client.events.changeObjectStatus(List.of(
-                    new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-1")).withStatus("lolzor").withRejectedPreviousStatuses(Set.of("free")).build()
+                    new StatusChangeRequest.Builder().withEventKey(event.key()).withObjects(List.of("A-1")).withStatus("lolzor").withRejectedPreviousStatuses(Set.of("free")).build()
             ));
             fail("expected exception");
         } catch (SeatsioException e) {
@@ -98,14 +98,14 @@ public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
     public void release() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.book(event.key, List.of("A-1"));
+        client.events.book(event.key(), List.of("A-1"));
 
         List<ChangeObjectStatusResult> result = client.events.changeObjectStatus(List.of(
-                new StatusChangeRequest.Builder().withType(RELEASE).withEventKey(event.key).withObjects(List.of("A-1")).build()
+                new StatusChangeRequest.Builder().withType(RELEASE).withEventKey(event.key()).withObjects(List.of("A-1")).build()
         ));
 
-        assertThat(result.get(0).objects.get("A-1").status).isEqualTo(FREE);
-        assertThat(client.events.retrieveObjectInfo(event.key, "A-1").status).isEqualTo(FREE);
+        assertThat(result.get(0).objects().get("A-1").status()).isEqualTo(FREE);
+        assertThat(client.events.retrieveObjectInfo(event.key(), "A-1").status()).isEqualTo(FREE);
     }
 
     @Test
@@ -118,8 +118,8 @@ public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
                 new StatusChangeRequest.Builder().withType(OVERRIDE_SEASON_STATUS).withEventKey("event1").withObjects(List.of("A-1")).build()
         ));
 
-        assertThat(result.get(0).objects.get("A-1").status).isEqualTo(FREE);
-        assertThat(client.events.retrieveObjectInfo("event1", "A-1").status).isEqualTo(FREE);
+        assertThat(result.get(0).objects().get("A-1").status()).isEqualTo(FREE);
+        assertThat(client.events.retrieveObjectInfo("event1", "A-1").status()).isEqualTo(FREE);
     }
 
     @Test
@@ -133,8 +133,8 @@ public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
                 new StatusChangeRequest.Builder().withType(USE_SEASON_STATUS).withEventKey("event1").withObjects(List.of("A-1")).build()
         ));
 
-        assertThat(result.get(0).objects.get("A-1").status).isEqualTo(BOOKED);
-        assertThat(client.events.retrieveObjectInfo("event1", "A-1").status).isEqualTo(BOOKED);
+        assertThat(result.get(0).objects().get("A-1").status()).isEqualTo(BOOKED);
+        assertThat(client.events.retrieveObjectInfo("event1", "A-1").status()).isEqualTo(BOOKED);
     }
 
     @Test
@@ -145,14 +145,14 @@ public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
         Event event2 = client.events.create(chartKey2);
 
         List<ChangeObjectStatusResult> result = client.events.changeObjectStatus(List.of(
-                new StatusChangeRequest.Builder().withType(CHANGE_STATUS_TO).withEventKey(event1.key).withObjects(List.of("A-1")).withResaleListingId("listing1").withStatus(RESALE).build(),
-                new StatusChangeRequest.Builder().withType(CHANGE_STATUS_TO).withEventKey(event2.key).withObjects(List.of("A-2")).withResaleListingId("listing1").withStatus(RESALE).build()
+                new StatusChangeRequest.Builder().withType(CHANGE_STATUS_TO).withEventKey(event1.key()).withObjects(List.of("A-1")).withResaleListingId("listing1").withStatus(RESALE).build(),
+                new StatusChangeRequest.Builder().withType(CHANGE_STATUS_TO).withEventKey(event2.key()).withObjects(List.of("A-2")).withResaleListingId("listing1").withStatus(RESALE).build()
         ));
 
-        assertThat(result.get(0).objects.get("A-1").resaleListingId).isEqualTo("listing1");
-        assertThat(client.events.retrieveObjectInfo(event1.key, "A-1").resaleListingId).isEqualTo("listing1");
+        assertThat(result.get(0).objects().get("A-1").resaleListingId()).isEqualTo("listing1");
+        assertThat(client.events.retrieveObjectInfo(event1.key(), "A-1").resaleListingId()).isEqualTo("listing1");
 
-        assertThat(result.get(1).objects.get("A-2").resaleListingId).isEqualTo("listing1");
-        assertThat(client.events.retrieveObjectInfo(event2.key, "A-2").resaleListingId).isEqualTo("listing1");
+        assertThat(result.get(1).objects().get("A-2").resaleListingId()).isEqualTo("listing1");
+        assertThat(client.events.retrieveObjectInfo(event2.key(), "A-2").resaleListingId()).isEqualTo("listing1");
     }
 }

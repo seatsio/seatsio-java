@@ -40,17 +40,17 @@ public class CreateEventsTest extends SeatsioClientTest {
         List<Event> events = client.events.create(chartKey, List.of(new CreateEventParams()));
 
         Event event = events.get(0);
-        assertThat(event.id).isNotZero();
-        assertThat(event.key).isNotNull();
-        assertThat(event.chartKey).isEqualTo(chartKey);
-        assertThat(event.tableBookingConfig).isEqualTo(TableBookingConfig.inherit());
-        assertThat(event.supportsBestAvailable).isTrue();
-        assertThat(event.categories).hasSize(3);
-        assertThat(event.tableBookingConfig).isEqualTo(TableBookingConfig.inherit());
-        assertThat(event.forSaleConfig).isNull();
+        assertThat(event.id()).isNotZero();
+        assertThat(event.key()).isNotNull();
+        assertThat(event.chartKey()).isEqualTo(chartKey);
+        assertThat(event.tableBookingConfig()).isEqualTo(TableBookingConfig.inherit());
+        assertThat(event.supportsBestAvailable()).isTrue();
+        assertThat(event.categories()).hasSize(3);
+        assertThat(event.tableBookingConfig()).isEqualTo(TableBookingConfig.inherit());
+        assertThat(event.forSaleConfig()).isNull();
         Instant now = Instant.now();
-        assertThat(event.createdOn).isBetween(now.minus(1, MINUTES), now.plus(1, MINUTES));
-        assertThat(event.updatedOn).isNull();
+        assertThat(event.createdOn()).isBetween(now.minus(1, MINUTES), now.plus(1, MINUTES));
+        assertThat(event.updatedOn()).isNull();
     }
 
     @Test
@@ -162,11 +162,6 @@ public class CreateEventsTest extends SeatsioClientTest {
     }
 
     private static ForSaleConfig toForSaleConfig(ForSaleConfigParams params) {
-        ForSaleConfig forSaleConfig = new ForSaleConfig();
-        forSaleConfig.forSale = params.forSale;
-        forSaleConfig.objects = params.objects;
-        forSaleConfig.areaPlaces = params.areaPlaces;
-        forSaleConfig.categories = params.categories;
-        return forSaleConfig;
+        return new ForSaleConfig(params.forSale, params.objects, params.areaPlaces, params.categories);
     }
 }

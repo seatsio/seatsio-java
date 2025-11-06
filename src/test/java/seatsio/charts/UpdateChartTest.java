@@ -18,11 +18,11 @@ public class UpdateChartTest extends SeatsioClientTest {
 
         Chart chart = client.charts.create(null, "SIMPLE", categories);
 
-        client.charts.update(chart.key, "aChart");
+        client.charts.update(chart.key(), "aChart");
 
-        Chart retrievedChart = client.charts.retrieve(chart.key);
-        assertThat(retrievedChart.name).isEqualTo("aChart");
-        Map<?, ?> drawing = client.charts.retrievePublishedVersion(retrievedChart.key);
+        Chart retrievedChart = client.charts.retrieve(chart.key());
+        assertThat(retrievedChart.name()).isEqualTo("aChart");
+        Map<?, ?> drawing = client.charts.retrievePublishedVersion(retrievedChart.key());
         assertThat(drawing.get("venueType")).isEqualTo("SIMPLE");
         assertThat(categories(drawing)).containsExactly(
                 Map.of("key", 1.0, "label", "Category 1", "color", "#aaaaaa", "accessible", false)
@@ -37,11 +37,11 @@ public class UpdateChartTest extends SeatsioClientTest {
                 new Category(CategoryKey.of("anotherCat"), "Category 2", "#bbbbbb", true)
         );
 
-        client.charts.update(chart.key, null, categories);
+        client.charts.update(chart.key(), null, categories);
 
-        Chart retrievedChart = client.charts.retrieve(chart.key);
-        assertThat(retrievedChart.name).isEqualTo("aChart");
-        Map<?, ?> drawing = client.charts.retrievePublishedVersion(retrievedChart.key);
+        Chart retrievedChart = client.charts.retrieve(chart.key());
+        assertThat(retrievedChart.name()).isEqualTo("aChart");
+        Map<?, ?> drawing = client.charts.retrievePublishedVersion(retrievedChart.key());
         assertThat(drawing.get("venueType")).isEqualTo("SIMPLE");
         assertThat(categories(drawing)).containsExactly(
                 Map.of("key", 1.0, "label", "Category 1", "color", "#aaaaaa", "accessible", false),

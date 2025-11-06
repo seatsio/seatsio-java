@@ -59,7 +59,7 @@ public class Seasons {
         String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/seasons/{key}/actions/create-events")
                 .routeParam("key", key)
                 .body(request.build().toString()));
-        return gson().fromJson(response, EventCreationResult.class).events;
+        return gson().fromJson(response, EventCreationResult.class).events();
     }
 
     public Season createPartialSeason(String topLevelSeasonKey, String key, String name, List<String> eventKeys) {
