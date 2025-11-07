@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,5 +30,16 @@ public class EditForSaleConfigTest extends SeatsioClientTest {
 
         assertThat(forSaleConfig.forSale()).isFalse();
         assertThat(forSaleConfig.objects()).containsExactly("A-1", "A-2");
+    }
+
+    @Test
+    public void makeAreaPlacesNotForSale() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        ForSaleConfig forSaleConfig = client.events.editForSaleConfig(event.key(), null, List.of(new ObjectAndQuantity("GA1", 5)));
+
+        assertThat(forSaleConfig.forSale()).isFalse();
+        assertThat(forSaleConfig.areaPlaces()).isEqualTo(Map.of("GA1", 5));
     }
 }
