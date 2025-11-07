@@ -17,64 +17,64 @@ public class ListEventLogItemsTest extends SeatsioClientTest {
     @Test
     public void listAll() throws InterruptedException {
         Chart chart = client.charts.create();
-        client.charts.update(chart.key, "a chart");
+        client.charts.update(chart.key(), "a chart");
 
         waitUntilEventLogItemsAvailable();
 
         Stream<EventLogItem> eventLogItems = client.eventLog.listAll();
 
         assertThat(eventLogItems)
-                .extracting(eventLogItem -> eventLogItem.type)
+                .extracting(eventLogItem -> eventLogItem.type())
                 .containsExactly("chart.created", "chart.published");
     }
 
     @Test
     public void properties() throws InterruptedException {
         Chart chart = client.charts.create();
-        client.charts.update(chart.key, "a chart");
+        client.charts.update(chart.key(), "a chart");
 
         waitUntilEventLogItemsAvailable();
 
         Stream<EventLogItem> eventLogItems = client.eventLog.listAll();
 
         EventLogItem eventLogItem = eventLogItems.findFirst().get();
-        assertThat(eventLogItem.type).isEqualTo("chart.created");
-        assertThat(eventLogItem.timestamp).isNotNull();
-        assertThat(eventLogItem.data).isEqualTo(Map.of("key", chart.key, "workspaceKey", workspace.key));
-        assertThat(eventLogItem.id).isGreaterThan(0);
+        assertThat(eventLogItem.type()).isEqualTo("chart.created");
+        assertThat(eventLogItem.timestamp()).isNotNull();
+        assertThat(eventLogItem.data()).isEqualTo(Map.of("key", chart.key(), "workspaceKey", workspace.key()));
+        assertThat(eventLogItem.id()).isGreaterThan(0);
     }
 
     @Test
     public void listFirstPage() throws InterruptedException {
         Chart chart = client.charts.create();
-        client.charts.update(chart.key, "a chart");
-        client.events.create(chart.key, new CreateEventParams().withForSaleConfigParams(new ForSaleConfigParams(false)));
+        client.charts.update(chart.key(), "a chart");
+        client.events.create(chart.key(), new CreateEventParams().withForSaleConfigParams(new ForSaleConfigParams(false)));
 
         waitUntilEventLogItemsAvailable();
 
         Page<EventLogItem> eventLogItems = client.eventLog.listFirstPage(2);
 
         assertThat(eventLogItems.items)
-                .extracting(eventLogItem -> eventLogItem.type)
+                .extracting(eventLogItem -> eventLogItem.type())
                 .containsExactly("chart.created", "chart.published");
     }
 
     @Test
     public void listPageAfter() throws InterruptedException {
         Chart chart = client.charts.create();
-        client.charts.update(chart.key, "a chart");
-        client.events.create(chart.key, new CreateEventParams().withForSaleConfigParams(new ForSaleConfigParams(false)));
+        client.charts.update(chart.key(), "a chart");
+        client.events.create(chart.key(), new CreateEventParams().withForSaleConfigParams(new ForSaleConfigParams(false)));
 
         waitUntilEventLogItemsAvailable();
 
         Page<EventLogItem> eventLogItems1 = client.eventLog.listPageAfter(0, 2);
         assertThat(eventLogItems1.items)
-                .extracting(eventLogItem -> eventLogItem.type)
+                .extracting(eventLogItem -> eventLogItem.type())
                 .containsExactly("chart.created", "chart.published");
 
         Page<EventLogItem> eventLogItems2 = client.eventLog.listPageAfter(eventLogItems1.nextPageStartsAfter.get(), 2);
         assertThat(eventLogItems2.items)
-                .extracting(eventLogItem -> eventLogItem.type)
+                .extracting(eventLogItem -> eventLogItem.type())
                 .containsExactly("event.for.sale.config.updated");
 
     }

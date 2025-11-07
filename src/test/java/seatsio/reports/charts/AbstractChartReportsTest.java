@@ -5,6 +5,7 @@ import seatsio.SeatsioClientTest;
 import seatsio.charts.ChartObjectInfo;
 import seatsio.events.Floor;
 import seatsio.events.IDs;
+import seatsio.events.LabelAndType;
 import seatsio.events.Labels;
 
 import java.util.List;
@@ -23,22 +24,22 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
         Map<String, List<ChartObjectInfo>> report = client.chartReports.byLabel(chartKey, updateOptions());
 
         ChartObjectInfo reportItem = report.get("A-1").get(0);
-        assertThat(reportItem.label).isEqualTo("A-1");
-        assertThat(reportItem.labels).isEqualTo(new Labels("1", "seat", "A", "row"));
-        assertThat(reportItem.ids).isEqualTo(new IDs("1", "A", null));
-        assertThat(reportItem.categoryLabel).isEqualTo("Cat1");
-        assertThat(reportItem.categoryKey).isEqualTo("9");
-        assertThat(reportItem.section).isNull();
-        assertThat(reportItem.entrance).isNull();
-        assertThat(reportItem.capacity).isNull();
-        assertThat(reportItem.objectType).isEqualTo("seat");
-        assertThat(reportItem.leftNeighbour).isNull();
-        assertThat(reportItem.rightNeighbour).isEqualTo("A-2");
-        assertThat(reportItem.distanceToFocalPoint).isNotNull();
-        assertThat(reportItem.isAccessible).isNotNull();
-        assertThat(reportItem.isCompanionSeat).isNotNull();
-        assertThat(reportItem.hasRestrictedView).isNotNull();
-        assertThat(reportItem.floor).isNull();
+        assertThat(reportItem.label()).isEqualTo("A-1");
+        assertThat(reportItem.labels()).isEqualTo(new Labels(new LabelAndType("1", "seat"), new LabelAndType("A", "row"), null));
+        assertThat(reportItem.ids()).isEqualTo(new IDs("1", "A", null));
+        assertThat(reportItem.categoryLabel()).isEqualTo("Cat1");
+        assertThat(reportItem.categoryKey()).isEqualTo("9");
+        assertThat(reportItem.section()).isNull();
+        assertThat(reportItem.entrance()).isNull();
+        assertThat(reportItem.capacity()).isNull();
+        assertThat(reportItem.objectType()).isEqualTo("seat");
+        assertThat(reportItem.leftNeighbour()).isNull();
+        assertThat(reportItem.rightNeighbour()).isEqualTo("A-2");
+        assertThat(reportItem.distanceToFocalPoint()).isNotNull();
+        assertThat(reportItem.isAccessible()).isNotNull();
+        assertThat(reportItem.isCompanionSeat()).isNotNull();
+        assertThat(reportItem.hasRestrictedView()).isNotNull();
+        assertThat(reportItem.floor()).isNull();
     }
 
     @Test
@@ -48,9 +49,9 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
         Map<String, List<ChartObjectInfo>> report = client.chartReports.byLabel(chartKey, updateOptions());
 
         ChartObjectInfo reportItem = report.get("GA1").get(0);
-        assertThat(reportItem.capacity).isEqualTo(100);
-        assertThat(reportItem.objectType).isEqualTo("generalAdmission");
-        assertThat(reportItem.bookAsAWhole).isEqualTo(false);
+        assertThat(reportItem.capacity()).isEqualTo(100);
+        assertThat(reportItem.objectType()).isEqualTo("generalAdmission");
+        assertThat(reportItem.bookAsAWhole()).isEqualTo(false);
     }
 
     @Test
@@ -60,8 +61,8 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
         Map<String, List<ChartObjectInfo>> report = client.chartReports.byLabel(chartKey, updateOptions(options().bookWholeTablesMode(TRUE)));
 
         ChartObjectInfo reportItem = report.get("T1").get(0);
-        assertThat(reportItem.bookAsAWhole).isEqualTo(false);
-        assertThat(reportItem.numSeats).isEqualTo(6);
+        assertThat(reportItem.bookAsAWhole()).isEqualTo(false);
+        assertThat(reportItem.numSeats()).isEqualTo(6);
     }
 
     @Test
@@ -82,10 +83,10 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
 
         List<ChartObjectInfo> seats = report.get("seat");
         assertThat(seats).hasSize(4);
-        assertThat(seats.get(0).floor).isEqualTo(floor("1", "Floor 1"));
-        assertThat(seats.get(1).floor).isEqualTo(floor("1", "Floor 1"));
-        assertThat(seats.get(2).floor).isEqualTo(floor("2", "Floor 2"));
-        assertThat(seats.get(3).floor).isEqualTo(floor("2", "Floor 2"));
+        assertThat(seats.get(0).floor()).isEqualTo(floor("1", "Floor 1"));
+        assertThat(seats.get(1).floor()).isEqualTo(floor("1", "Floor 1"));
+        assertThat(seats.get(2).floor()).isEqualTo(floor("2", "Floor 2"));
+        assertThat(seats.get(3).floor()).isEqualTo(floor("2", "Floor 2"));
     }
 
     @Test
@@ -140,10 +141,10 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
 
         Map<String, List<ChartObjectInfo>> report = client.chartReports.byLabel(chartKey, updateOptions());
 
-        assertThat(report.get("S1-A-1").get(0).floor).isEqualTo(floor("1", "Floor 1"));
-        assertThat(report.get("S1-A-2").get(0).floor).isEqualTo(floor("1", "Floor 1"));
-        assertThat(report.get("S2-B-1").get(0).floor).isEqualTo(floor("2", "Floor 2"));
-        assertThat(report.get("S2-B-2").get(0).floor).isEqualTo(floor("2", "Floor 2"));
+        assertThat(report.get("S1-A-1").get(0).floor()).isEqualTo(floor("1", "Floor 1"));
+        assertThat(report.get("S1-A-2").get(0).floor()).isEqualTo(floor("1", "Floor 1"));
+        assertThat(report.get("S2-B-1").get(0).floor()).isEqualTo(floor("2", "Floor 2"));
+        assertThat(report.get("S2-B-2").get(0).floor()).isEqualTo(floor("2", "Floor 2"));
     }
 
     @Test
@@ -164,13 +165,13 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
 
         List<ChartObjectInfo> fooCategory = report.get("1");
         assertThat(fooCategory).hasSize(2);
-        assertThat(fooCategory.get(0).floor).isEqualTo(floor("1", "Floor 1"));
-        assertThat(fooCategory.get(1).floor).isEqualTo(floor("1", "Floor 1"));
+        assertThat(fooCategory.get(0).floor()).isEqualTo(floor("1", "Floor 1"));
+        assertThat(fooCategory.get(1).floor()).isEqualTo(floor("1", "Floor 1"));
 
         List<ChartObjectInfo> barCategory = report.get("2");
         assertThat(barCategory).hasSize(2);
-        assertThat(barCategory.get(0).floor).isEqualTo(floor("2", "Floor 2"));
-        assertThat(barCategory.get(1).floor).isEqualTo(floor("2", "Floor 2"));
+        assertThat(barCategory.get(0).floor()).isEqualTo(floor("2", "Floor 2"));
+        assertThat(barCategory.get(1).floor()).isEqualTo(floor("2", "Floor 2"));
     }
 
     @Test
@@ -191,13 +192,13 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
 
         List<ChartObjectInfo> fooCategory = report.get("Foo");
         assertThat(fooCategory).hasSize(2);
-        assertThat(fooCategory.get(0).floor).isEqualTo(floor("1", "Floor 1"));
-        assertThat(fooCategory.get(1).floor).isEqualTo(floor("1", "Floor 1"));
+        assertThat(fooCategory.get(0).floor()).isEqualTo(floor("1", "Floor 1"));
+        assertThat(fooCategory.get(1).floor()).isEqualTo(floor("1", "Floor 1"));
 
         List<ChartObjectInfo> barCategory = report.get("Bar");
         assertThat(barCategory).hasSize(2);
-        assertThat(barCategory.get(0).floor).isEqualTo(floor("2", "Floor 2"));
-        assertThat(barCategory.get(1).floor).isEqualTo(floor("2", "Floor 2"));
+        assertThat(barCategory.get(0).floor()).isEqualTo(floor("2", "Floor 2"));
+        assertThat(barCategory.get(1).floor()).isEqualTo(floor("2", "Floor 2"));
     }
 
     @Test
@@ -218,13 +219,13 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
 
         List<ChartObjectInfo> section1 = report.get("S1");
         assertThat(section1).hasSize(2);
-        assertThat(section1.get(0).floor).isEqualTo(floor("1", "Floor 1"));
-        assertThat(section1.get(0).floor).isEqualTo(floor("1", "Floor 1"));
+        assertThat(section1.get(0).floor()).isEqualTo(floor("1", "Floor 1"));
+        assertThat(section1.get(0).floor()).isEqualTo(floor("1", "Floor 1"));
 
         List<ChartObjectInfo> section2 = report.get("S2");
         assertThat(section2).hasSize(2);
-        assertThat(section2.get(1).floor).isEqualTo(floor("2", "Floor 2"));
-        assertThat(section2.get(1).floor).isEqualTo(floor("2", "Floor 2"));
+        assertThat(section2.get(1).floor()).isEqualTo(floor("2", "Floor 2"));
+        assertThat(section2.get(1).floor()).isEqualTo(floor("2", "Floor 2"));
     }
 
     @Test
@@ -234,7 +235,7 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
         Map<String, List<ChartObjectInfo>> report = client.chartReports.byZone(chartKey, updateOptions());
 
         assertThat(report.get("midtrack")).hasSize(6032);
-        assertThat(report.get("midtrack").get(0).zone).isEqualTo("midtrack");
+        assertThat(report.get("midtrack").get(0).zone()).isEqualTo("midtrack");
         assertThat(report.get("finishline")).hasSize(2865);
     }
 
@@ -253,9 +254,6 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
     public abstract ChartReportOptions updateOptions(ChartReportOptions options);
 
     private static Floor floor(String name, String displayName){
-        Floor floor = new Floor();
-        floor.name = name;
-        floor.displayName = displayName;
-        return floor;
+        return new Floor(name, displayName);
     }
 }

@@ -3,10 +3,6 @@ package seatsio.eventLog;
 import java.time.Instant;
 import java.util.Map;
 
-public class EventLogItem {
+public record EventLogItem(long id, String type, Instant timestamp, Map<?, ?> data) {
 
-    public long id;
-    public String type;
-    public Instant timestamp;
-    public Map<?, ?> data;
 }

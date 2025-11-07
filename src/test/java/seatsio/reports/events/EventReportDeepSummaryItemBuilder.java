@@ -11,6 +11,7 @@ public class EventReportDeepSummaryItemBuilder {
     private Map<String, EventReportSummaryItem> byStatus;
     private Map<String, EventReportSummaryItem> byAvailability;
     private Map<String, EventReportSummaryItem> byChannel;
+    private Map<String, EventReportSummaryItem> byZone;
 
     public static EventReportDeepSummaryItemBuilder anEventReportDeepSummaryItem() {
         return new EventReportDeepSummaryItemBuilder();
@@ -52,14 +53,6 @@ public class EventReportDeepSummaryItemBuilder {
     }
 
     public EventReportDeepSummaryItem build() {
-        EventReportDeepSummaryItem eventReportDeepSummaryItem = new EventReportDeepSummaryItem();
-        eventReportDeepSummaryItem.count = count;
-        eventReportDeepSummaryItem.byStatus = byStatus;
-        eventReportDeepSummaryItem.byCategoryKey = byCategoryKey;
-        eventReportDeepSummaryItem.byCategoryLabel = byCategoryLabel;
-        eventReportDeepSummaryItem.bySection = bySection;
-        eventReportDeepSummaryItem.byAvailability = byAvailability;
-        eventReportDeepSummaryItem.byChannel = byChannel;
-        return eventReportDeepSummaryItem;
+        return new EventReportDeepSummaryItem(count, byStatus, byCategoryKey, byCategoryLabel, bySection, byAvailability, byChannel, byZone);
     }
 }

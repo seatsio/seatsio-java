@@ -11,13 +11,13 @@ public class UpdateWorkspaceTest extends SeatsioClientTest {
     public void updateWorkspace() {
         Workspace workspace = client.workspaces.create("my workspace");
 
-        client.workspaces.update(workspace.key, "my ws");
+        client.workspaces.update(workspace.key(), "my ws");
 
-        Workspace retrievedWorkspace = client.workspaces.retrieve(workspace.key);
-        assertThat(retrievedWorkspace.name).isEqualTo("my ws");
-        assertThat(retrievedWorkspace.key).isNotNull();
-        assertThat(retrievedWorkspace.secretKey).isNotNull();
-        assertThat(retrievedWorkspace.isTest).isFalse();
+        Workspace retrievedWorkspace = client.workspaces.retrieve(workspace.key());
+        assertThat(retrievedWorkspace.name()).isEqualTo("my ws");
+        assertThat(retrievedWorkspace.key()).isNotNull();
+        assertThat(retrievedWorkspace.secretKey()).isNotNull();
+        assertThat(retrievedWorkspace.isTest()).isFalse();
     }
 
 }

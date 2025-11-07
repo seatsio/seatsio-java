@@ -11,10 +11,10 @@ public class SetDefaultWorkspaceTest extends SeatsioClientTest {
     public void test() {
         Workspace workspace = client.workspaces.create("my workspace");
 
-        client.workspaces.setDefault(workspace.key);
+        client.workspaces.setDefault(workspace.key());
 
-        Workspace retrievedWorkspace = client.workspaces.retrieve(workspace.key);
-        assertThat(retrievedWorkspace.isDefault).isTrue();
+        Workspace retrievedWorkspace = client.workspaces.retrieve(workspace.key());
+        assertThat(retrievedWorkspace.isDefault()).isTrue();
     }
 
 }

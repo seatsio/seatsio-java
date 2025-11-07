@@ -14,17 +14,17 @@ public class CreateChartTest extends SeatsioClientTest {
     public void defaultParameters() {
         Chart chart = client.charts.create();
 
-        assertThat(chart.id).isNotZero();
-        assertThat(chart.key).isNotBlank();
-        assertThat(chart.status).isEqualTo("NOT_USED");
-        assertThat(chart.name).isEqualTo("Untitled chart");
-        assertThat(chart.publishedVersionThumbnailUrl).isNotBlank();
-        assertThat(chart.draftVersionThumbnailUrl).isNull();
-        assertThat(chart.events).isNull();
-        assertThat(chart.tags).isEmpty();
-        assertThat(chart.archived).isFalse();
+        assertThat(chart.id()).isNotZero();
+        assertThat(chart.key()).isNotBlank();
+        assertThat(chart.status()).isEqualTo("NOT_USED");
+        assertThat(chart.name()).isEqualTo("Untitled chart");
+        assertThat(chart.publishedVersionThumbnailUrl()).isNotBlank();
+        assertThat(chart.draftVersionThumbnailUrl()).isNull();
+        assertThat(chart.events()).isNull();
+        assertThat(chart.tags()).isEmpty();
+        assertThat(chart.archived()).isFalse();
 
-        Map<?, ?> drawing = client.charts.retrievePublishedVersion(chart.key);
+        Map<?, ?> drawing = client.charts.retrievePublishedVersion(chart.key());
         assertThat(drawing.get("venueType")).isEqualTo("SIMPLE");
         assertThat(categories(drawing)).isEmpty();
     }
@@ -33,8 +33,8 @@ public class CreateChartTest extends SeatsioClientTest {
     public void name() {
         Chart chart = client.charts.create("aChart");
 
-        assertThat(chart.name).isEqualTo("aChart");
-        Map<?, ?> drawing = client.charts.retrievePublishedVersion(chart.key);
+        assertThat(chart.name()).isEqualTo("aChart");
+        Map<?, ?> drawing = client.charts.retrievePublishedVersion(chart.key());
         assertThat(drawing.get("venueType")).isEqualTo("SIMPLE");
         assertThat(categories(drawing)).isEmpty();
     }
@@ -43,8 +43,8 @@ public class CreateChartTest extends SeatsioClientTest {
     public void venueType() {
         Chart chart = client.charts.create(null, "SIMPLE");
 
-        assertThat(chart.name).isEqualTo("Untitled chart");
-        Map<?, ?> drawing = client.charts.retrievePublishedVersion(chart.key);
+        assertThat(chart.name()).isEqualTo("Untitled chart");
+        Map<?, ?> drawing = client.charts.retrievePublishedVersion(chart.key());
         assertThat(drawing.get("venueType")).isEqualTo("SIMPLE");
         assertThat(categories(drawing)).isEmpty();
     }
@@ -57,8 +57,8 @@ public class CreateChartTest extends SeatsioClientTest {
         );
         Chart chart = client.charts.create(null, null, categories);
 
-        assertThat(chart.name).isEqualTo("Untitled chart");
-        Map<?, ?> drawing = client.charts.retrievePublishedVersion(chart.key);
+        assertThat(chart.name()).isEqualTo("Untitled chart");
+        Map<?, ?> drawing = client.charts.retrievePublishedVersion(chart.key());
         assertThat(drawing.get("venueType")).isEqualTo("SIMPLE");
         assertThat(categories(drawing)).containsExactly(
                 Map.of("key", 1.0, "label", "Category 1", "color", "#aaaaaa", "accessible", false),

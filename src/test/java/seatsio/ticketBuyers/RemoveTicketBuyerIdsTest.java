@@ -18,8 +18,8 @@ public class RemoveTicketBuyerIdsTest extends SeatsioClientTest {
 
         RemoveTicketBuyerIdsResponse removeResponse = client.ticketBuyers.remove(ticketBuyerId1, ticketBuyerId2, ticketBuyerId3);
 
-        assertThat(removeResponse.getRemoved()).containsOnly(ticketBuyerId1, ticketBuyerId2);
-        assertThat(removeResponse.getNotPresent()).containsOnly(ticketBuyerId3);
+        assertThat(removeResponse.removed()).containsOnly(ticketBuyerId1, ticketBuyerId2);
+        assertThat(removeResponse.notPresent()).containsOnly(ticketBuyerId3);
     }
 
     @Test
@@ -31,8 +31,8 @@ public class RemoveTicketBuyerIdsTest extends SeatsioClientTest {
 
         RemoveTicketBuyerIdsResponse response = client.ticketBuyers.remove(ticketBuyerId1, null);
 
-        assertThat(response.getRemoved()).containsOnly(ticketBuyerId1);
-        assertThat(response.getNotPresent()).isEmpty();
+        assertThat(response.removed()).containsOnly(ticketBuyerId1);
+        assertThat(response.notPresent()).isEmpty();
     }
 
 }

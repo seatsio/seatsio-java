@@ -16,29 +16,109 @@ import static seatsio.json.SeatsioGson.gsonBuilder;
 
 public class Event extends ValueObject {
 
-    public long id;
-    public String key;
-    public String chartKey;
-    public String name;
-    public LocalDate date;
-    public ForSaleConfig forSaleConfig;
-    public Boolean supportsBestAvailable;
-    public Instant createdOn;
-    public Instant updatedOn;
-    public TableBookingConfig tableBookingConfig;
-    public List<Channel> channels;
-    public String topLevelSeasonKey;
-    public boolean isTopLevelSeason;
-    public boolean isPartialSeason;
-    public boolean isEventInSeason;
-    public Map<String, CategoryKey> objectCategories;
-    public List<Category> categories;
-    public boolean isInThePast;
-    public List<String> partialSeasonKeysForEvent;
-    public SeasonData season;
+    private long id;
+    private String key;
+    private String chartKey;
+    private String name;
+    private LocalDate date;
+    private ForSaleConfig forSaleConfig;
+    private Boolean supportsBestAvailable;
+    private Instant createdOn;
+    private Instant updatedOn;
+    private TableBookingConfig tableBookingConfig;
+    private List<Channel> channels;
+    private String topLevelSeasonKey;
+    private boolean isTopLevelSeason;
+    private boolean isPartialSeason;
+    private boolean isEventInSeason;
+    private Map<String, CategoryKey> objectCategories;
+    private List<Category> categories;
+    private boolean isInThePast;
+    private List<String> partialSeasonKeysForEvent;
+    private SeasonData season;
 
     public boolean isSeason() {
         return false;
+    }
+
+    public long id() {
+        return id;
+    }
+
+    public String key() {
+        return key;
+    }
+
+    public String chartKey() {
+        return chartKey;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public LocalDate date() {
+        return date;
+    }
+
+    public ForSaleConfig forSaleConfig() {
+        return forSaleConfig;
+    }
+
+    public Boolean supportsBestAvailable() {
+        return supportsBestAvailable;
+    }
+
+    public Instant createdOn() {
+        return createdOn;
+    }
+
+    public Instant updatedOn() {
+        return updatedOn;
+    }
+
+    public TableBookingConfig tableBookingConfig() {
+        return tableBookingConfig;
+    }
+
+    public List<Channel> channels() {
+        return channels;
+    }
+
+    public String topLevelSeasonKey() {
+        return topLevelSeasonKey;
+    }
+
+    public boolean isTopLevelSeason() {
+        return isTopLevelSeason;
+    }
+
+    public boolean isPartialSeason() {
+        return isPartialSeason;
+    }
+
+    public boolean isEventInSeason() {
+        return isEventInSeason;
+    }
+
+    public Map<String, CategoryKey> objectCategories() {
+        return objectCategories;
+    }
+
+    public List<Category> categories() {
+        return categories;
+    }
+
+    public boolean isInThePast() {
+        return isInThePast;
+    }
+
+    public List<String> partialSeasonKeysForEvent() {
+        return partialSeasonKeysForEvent;
+    }
+
+    public SeasonData season() {
+        return season;
     }
 
     public static class EventJsonDeserializer implements JsonDeserializer<Event> {

@@ -70,17 +70,7 @@ public class EventReportSummaryItemBuilder {
     }
 
     public EventReportSummaryItem build() {
-        EventReportSummaryItem eventSummaryReportItem = new EventReportSummaryItem();
-        eventSummaryReportItem.count = count;
-        eventSummaryReportItem.byStatus = byStatus;
-        eventSummaryReportItem.byCategoryKey = byCategoryKey;
-        eventSummaryReportItem.byCategoryLabel = byCategoryLabel;
-        eventSummaryReportItem.bySection = bySection;
-        eventSummaryReportItem.byAvailability = byAvailability;
-        eventSummaryReportItem.byAvailabilityReason = byAvailabilityReason;
-        eventSummaryReportItem.byChannel = byChannel;
-        eventSummaryReportItem.byObjectType = byObjectType;
-        eventSummaryReportItem.byZone = byZone;
-        return eventSummaryReportItem;
+        return new EventReportSummaryItem(count, byStatus, byCategoryKey, byCategoryLabel, bySection, byAvailability,
+                byAvailabilityReason, byChannel, byObjectType, byZone);
     }
 }

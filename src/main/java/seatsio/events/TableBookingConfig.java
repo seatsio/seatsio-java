@@ -1,18 +1,8 @@
 package seatsio.events;
 
-import seatsio.util.ValueObject;
-
 import java.util.Map;
 
-public class TableBookingConfig extends ValueObject {
-
-    public final Map<String, TableBookingMode> tables;
-    public final String mode;
-
-    private TableBookingConfig(String mode, Map<String, TableBookingMode> tables) {
-        this.mode = mode;
-        this.tables = tables;
-    }
+public record TableBookingConfig(String mode, Map<String, TableBookingMode> tables) {
 
     public static TableBookingConfig inherit() {
         return new TableBookingConfig("INHERIT", null);

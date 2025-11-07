@@ -10,12 +10,12 @@ public class ActivateWorkspaceTest extends SeatsioClientTest {
     @Test
     public void activateWorkspace() {
         Workspace workspace = client.workspaces.create("my workspace");
-        client.workspaces.deactivate(workspace.key);
+        client.workspaces.deactivate(workspace.key());
 
-        client.workspaces.activate(workspace.key);
+        client.workspaces.activate(workspace.key());
 
-        Workspace retrievedWorkspace = client.workspaces.retrieve(workspace.key);
-        assertThat(retrievedWorkspace.isActive).isTrue();
+        Workspace retrievedWorkspace = client.workspaces.retrieve(workspace.key());
+        assertThat(retrievedWorkspace.isActive()).isTrue();
     }
 
 }

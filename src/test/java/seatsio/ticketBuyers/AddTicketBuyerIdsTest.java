@@ -16,8 +16,8 @@ public class AddTicketBuyerIdsTest extends SeatsioClientTest {
         UUID ticketBuyerId2 = UUID.randomUUID();
         UUID ticketBuyerId3 = UUID.randomUUID();
         AddTicketBuyerIdsResponse response = client.ticketBuyers.add(ticketBuyerId1, ticketBuyerId2, ticketBuyerId3);
-        assertThat(response.getAdded()).containsOnly(ticketBuyerId1, ticketBuyerId2, ticketBuyerId3);
-        assertThat(response.getAlreadyPresent()).isEmpty();
+        assertThat(response.added()).containsOnly(ticketBuyerId1, ticketBuyerId2, ticketBuyerId3);
+        assertThat(response.alreadyPresent()).isEmpty();
     }
 
     @Test
@@ -28,8 +28,8 @@ public class AddTicketBuyerIdsTest extends SeatsioClientTest {
                 ticketBuyerId1, ticketBuyerId1, ticketBuyerId1,
                 ticketBuyerId2, ticketBuyerId2
         ));
-        assertThat(response.getAdded()).containsOnly(ticketBuyerId1, ticketBuyerId2);
-        assertThat(response.getAlreadyPresent()).isEmpty();
+        assertThat(response.added()).containsOnly(ticketBuyerId1, ticketBuyerId2);
+        assertThat(response.alreadyPresent()).isEmpty();
     }
 
     @Test
@@ -37,19 +37,19 @@ public class AddTicketBuyerIdsTest extends SeatsioClientTest {
         UUID ticketBuyerId1 = UUID.randomUUID();
         UUID ticketBuyerId2 = UUID.randomUUID();
         AddTicketBuyerIdsResponse response = client.ticketBuyers.add(ticketBuyerId1, ticketBuyerId2);
-        assertThat(response.getAdded()).containsOnly(ticketBuyerId1, ticketBuyerId2);
-        assertThat(response.getAlreadyPresent()).isEmpty();
+        assertThat(response.added()).containsOnly(ticketBuyerId1, ticketBuyerId2);
+        assertThat(response.alreadyPresent()).isEmpty();
 
         AddTicketBuyerIdsResponse secondResponse = client.ticketBuyers.add(ticketBuyerId1);
-        assertThat(secondResponse.getAlreadyPresent()).containsOnly(ticketBuyerId1);
+        assertThat(secondResponse.alreadyPresent()).containsOnly(ticketBuyerId1);
     }
 
     @Test
     public void nullDoesNotGetAdded() {
         UUID ticketBuyerId1 = UUID.randomUUID();
         AddTicketBuyerIdsResponse response = client.ticketBuyers.add(ticketBuyerId1, null);
-        assertThat(response.getAdded()).containsOnly(ticketBuyerId1);
-        assertThat(response.getAlreadyPresent()).isEmpty();
+        assertThat(response.added()).containsOnly(ticketBuyerId1);
+        assertThat(response.alreadyPresent()).isEmpty();
     }
 
 }

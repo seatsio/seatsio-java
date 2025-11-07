@@ -19,6 +19,6 @@ public class OverrideSeasonObjectStatusTest extends SeatsioClientTest {
 
         client.events.overrideSeasonObjectStatus("event1", List.of("A-1"));
 
-        assertThat(client.events.retrieveObjectInfo("event1", "A-1").status).isEqualTo(FREE);
+        assertThat(client.events.retrieveObjectInfo("event1", "A-1").status()).isEqualTo(FREE);
     }
 }

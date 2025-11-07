@@ -13,23 +13,23 @@ public class ListEventsTest extends SeatsioClientTest {
     @Test
     public void test() {
         Chart chart = client.charts.create();
-        Event event1 = client.events.create(chart.key);
-        Event event2 = client.events.create(chart.key);
-        Event event3 = client.events.create(chart.key);
+        Event event1 = client.events.create(chart.key());
+        Event event2 = client.events.create(chart.key());
+        Event event3 = client.events.create(chart.key());
 
         Stream<Event> events = client.events.listAll();
 
         assertThat(events)
-                .extracting(event -> event.key)
-                .containsExactly(event3.key, event2.key, event1.key);
+                .extracting(event -> event.key())
+                .containsExactly(event3.key(), event2.key(), event1.key());
     }
 
     @Test
     public void listSeasons() {
         Chart chart = client.charts.create();
-        client.seasons.create(chart.key);
-        client.seasons.create(chart.key);
-        client.seasons.create(chart.key);
+        client.seasons.create(chart.key());
+        client.seasons.create(chart.key());
+        client.seasons.create(chart.key());
 
         Stream<Event> seasons = client.events.listAll();
 

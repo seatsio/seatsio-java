@@ -2,7 +2,6 @@ package seatsio.events;
 
 import java.util.Map;
 
-public class ChangeObjectStatusResult {
+public record ChangeObjectStatusResult(Map<String, EventObjectInfo> objects) {
 
-    public Map<String, EventObjectInfo> objects;
 }

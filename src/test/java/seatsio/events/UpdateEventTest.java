@@ -20,13 +20,13 @@ public class UpdateEventTest extends SeatsioClientTest {
     @Test
     public void updateEventKey() {
         Chart chart = client.charts.create();
-        Event event = client.events.create(chart.key);
+        Event event = client.events.create(chart.key());
 
-        client.events.update(event.key, new UpdateEventParams().withKey("newKey"));
+        client.events.update(event.key(), new UpdateEventParams().withKey("newKey"));
 
         Event retrievedEvent = client.events.retrieve("newKey");
-        assertThat(retrievedEvent.key).isEqualTo("newKey");
-        assertThat(retrievedEvent.id).isEqualTo(event.id);
+        assertThat(retrievedEvent.key()).isEqualTo("newKey");
+        assertThat(retrievedEvent.id()).isEqualTo(event.id());
     }
 
     @Test
@@ -35,10 +35,10 @@ public class UpdateEventTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
 
         TableBookingConfig newTableBookingConfig = TableBookingConfig.custom(Map.of("T1", BY_TABLE, "T2", BY_SEAT));
-        client.events.update(event.key, new UpdateEventParams().withTableBookingConfig(newTableBookingConfig));
+        client.events.update(event.key(), new UpdateEventParams().withTableBookingConfig(newTableBookingConfig));
 
-        Event retrievedEvent = client.events.retrieve(event.key);
-        assertThat(retrievedEvent.tableBookingConfig).isEqualTo(newTableBookingConfig);
+        Event retrievedEvent = client.events.retrieve(event.key());
+        assertThat(retrievedEvent.tableBookingConfig()).isEqualTo(newTableBookingConfig);
     }
 
     @Test
@@ -52,10 +52,10 @@ public class UpdateEventTest extends SeatsioClientTest {
         Map<String, CategoryKey> newObjectCategories = Map.of(
                 "A-2", CategoryKey.of(10L)
         );
-        client.events.update(event.key, new UpdateEventParams().withObjectCategories(newObjectCategories));
+        client.events.update(event.key(), new UpdateEventParams().withObjectCategories(newObjectCategories));
 
-        Event retrievedEvent = client.events.retrieve(event.key);
-        assertThat(retrievedEvent.objectCategories).isEqualTo(newObjectCategories);
+        Event retrievedEvent = client.events.retrieve(event.key());
+        assertThat(retrievedEvent.objectCategories()).isEqualTo(newObjectCategories);
     }
 
     @Test
@@ -66,10 +66,10 @@ public class UpdateEventTest extends SeatsioClientTest {
         );
         Event event = client.events.create(chartKey, new CreateEventParams().withObjectCategories(objectCategories));
 
-        client.events.removeObjectCategories(event.key);
+        client.events.removeObjectCategories(event.key());
 
-        Event retrievedEvent = client.events.retrieve(event.key);
-        assertThat(retrievedEvent.objectCategories).isNull();
+        Event retrievedEvent = client.events.retrieve(event.key());
+        assertThat(retrievedEvent.objectCategories()).isNull();
     }
 
     @Test
@@ -82,11 +82,11 @@ public class UpdateEventTest extends SeatsioClientTest {
                 eventCategory
         );
 
-        client.events.update(event.key, new UpdateEventParams().withCategories(categories));
+        client.events.update(event.key(), new UpdateEventParams().withCategories(categories));
 
-        Event retrievedEvent = client.events.retrieve(event.key);
+        Event retrievedEvent = client.events.retrieve(event.key());
         int numberOfCategoriesOnChart = 3; // see sampleChart.json
-        assertThat(retrievedEvent.categories)
+        assertThat(retrievedEvent.categories())
                 .hasSize(numberOfCategoriesOnChart + categories.size())
                 .contains(eventCategory);
     }
@@ -99,11 +99,11 @@ public class UpdateEventTest extends SeatsioClientTest {
 
         Event event = client.events.create(chartKey, new CreateEventParams().withCategories(categories));
 
-        client.events.removeCategories(event.key);
+        client.events.removeCategories(event.key());
 
-        Event retrievedEvent = client.events.retrieve(event.key);
+        Event retrievedEvent = client.events.retrieve(event.key());
         int numberOfCategoriesOnChart = 3; // see sampleChart.json
-        assertThat(retrievedEvent.categories)
+        assertThat(retrievedEvent.categories())
                 .hasSize(numberOfCategoriesOnChart)
                 .doesNotContain(eventCategory);
     }
@@ -113,10 +113,10 @@ public class UpdateEventTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey, new CreateEventParams().withName("My event"));
 
-        client.events.update(event.key, new UpdateEventParams().withName("Another event"));
+        client.events.update(event.key(), new UpdateEventParams().withName("Another event"));
 
-        Event retrievedEvent = client.events.retrieve(event.key);
-        assertThat(retrievedEvent.name).isEqualTo("Another event");
+        Event retrievedEvent = client.events.retrieve(event.key());
+        assertThat(retrievedEvent.name()).isEqualTo("Another event");
     }
 
     @Test
@@ -124,10 +124,10 @@ public class UpdateEventTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey, new CreateEventParams().withDate(LocalDate.of(2022, 1, 5)));
 
-        client.events.update(event.key, new UpdateEventParams().withDate(LocalDate.of(2022, 1, 6)));
+        client.events.update(event.key(), new UpdateEventParams().withDate(LocalDate.of(2022, 1, 6)));
 
-        Event retrievedEvent = client.events.retrieve(event.key);
-        assertThat(retrievedEvent.date).isEqualTo(LocalDate.of(2022, 1, 6));
+        Event retrievedEvent = client.events.retrieve(event.key());
+        assertThat(retrievedEvent.date()).isEqualTo(LocalDate.of(2022, 1, 6));
     }
 
     @Test
@@ -135,11 +135,11 @@ public class UpdateEventTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         client.seasons.create(chartKey, new CreateSeasonParams().eventKeys(List.of("event1")));
         Event event = client.events.retrieve("event1");
-        assertThat(event.isInThePast).isFalse();
+        assertThat(event.isInThePast()).isFalse();
 
         client.events.update("event1", new UpdateEventParams().withIsInThePast(true));
 
-        Event retrievedEvent = client.events.retrieve(event.key);
-        assertThat(retrievedEvent.isInThePast).isTrue();
+        Event retrievedEvent = client.events.retrieve(event.key());
+        assertThat(retrievedEvent.isInThePast()).isTrue();
     }
 }

@@ -20,6 +20,6 @@ public class UseSeasonObjectStatusTest extends SeatsioClientTest {
 
         client.events.useSeasonObjectStatus("event1", List.of("A-1"));
 
-        assertThat(client.events.retrieveObjectInfo("event1", "A-1").status).isEqualTo(BOOKED);
+        assertThat(client.events.retrieveObjectInfo("event1", "A-1").status()).isEqualTo(BOOKED);
     }
 }

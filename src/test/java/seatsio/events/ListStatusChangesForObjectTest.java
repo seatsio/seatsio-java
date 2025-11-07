@@ -16,17 +16,17 @@ public class ListStatusChangesForObjectTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
         client.events.changeObjectStatus(List.of(
-                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-1")).withStatus("s1").build(),
-                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-1")).withStatus("s2").build(),
-                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-1")).withStatus("s3").build(),
-                new StatusChangeRequest.Builder().withEventKey(event.key).withObjects(List.of("A-1")).withStatus("s4").build()
+                new StatusChangeRequest.Builder().withEventKey(event.key()).withObjects(List.of("A-1")).withStatus("s1").build(),
+                new StatusChangeRequest.Builder().withEventKey(event.key()).withObjects(List.of("A-1")).withStatus("s2").build(),
+                new StatusChangeRequest.Builder().withEventKey(event.key()).withObjects(List.of("A-1")).withStatus("s3").build(),
+                new StatusChangeRequest.Builder().withEventKey(event.key()).withObjects(List.of("A-1")).withStatus("s4").build()
         ));
         waitForStatusChanges(client, event, 4);
 
-        Stream<StatusChange> statusChanges = client.events.statusChangesForObject(event.key, "A-1").all();
+        Stream<StatusChange> statusChanges = client.events.statusChangesForObject(event.key(), "A-1").all();
 
         assertThat(statusChanges)
-                .extracting(statusChange -> statusChange.status)
+                .extracting(StatusChange::status)
                 .containsExactly("s4", "s3", "s2", "s1");
     }
 }

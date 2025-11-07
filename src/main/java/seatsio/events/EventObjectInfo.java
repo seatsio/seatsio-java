@@ -1,10 +1,18 @@
 package seatsio.events;
 
-import seatsio.util.ValueObject;
-
 import java.util.Map;
 
-public class EventObjectInfo extends ValueObject {
+public record EventObjectInfo(String status, String label, Labels labels, IDs ids, String categoryLabel,
+                              String categoryKey, String ticketType, String holdToken, String objectType,
+                              Boolean bookAsAWhole, String orderId, boolean forSale, String section, String entrance,
+                              Integer capacity, Integer numBooked, Integer numFree, Integer numHeld, Integer numSeats,
+                              Integer numNotForSale, Map<?, ?> extraData, Boolean isAccessible, Boolean isCompanionSeat,
+                              Boolean hasRestrictedView, String displayedObjectType, String parentDisplayedObjectType,
+                              String leftNeighbour, String rightNeighbour, boolean isAvailable,
+                              String availabilityReason, String channel, Double distanceToFocalPoint,
+                              Map<String, Map<String, Integer>> holds, Boolean variableOccupancy, Integer minOccupancy,
+                              Integer maxOccupancy, int seasonStatusOverriddenQuantity, String zone, Floor floor,
+                              String resaleListingId) {
 
     public static final String AVAILABLE = "available";
     public static final String NOT_AVAILABLE = "not_available";
@@ -22,44 +30,4 @@ public class EventObjectInfo extends ValueObject {
     public static final String HELD = "reservedByToken";
     public static final String RESALE = "resale";
 
-    public String status;
-    public String label;
-    public Labels labels;
-    public IDs ids;
-    public String categoryLabel;
-    public String categoryKey;
-    public String ticketType;
-    public String holdToken;
-    public String objectType;
-    public Boolean bookAsAWhole;
-    public String orderId;
-    public boolean forSale;
-    public String section;
-    public String entrance;
-    public Integer capacity;
-    public Integer numBooked;
-    public Integer numFree;
-    public Integer numHeld;
-    public Integer numSeats;
-    public Integer numNotForSale;
-    public Map<?, ?> extraData;
-    public Boolean isAccessible;
-    public Boolean isCompanionSeat;
-    public Boolean hasRestrictedView;
-    public String displayedObjectType;
-    public String parentDisplayedObjectType;
-    public String leftNeighbour;
-    public String rightNeighbour;
-    public boolean isAvailable;
-    public String availabilityReason;
-    public String channel;
-    public Double distanceToFocalPoint;
-    public Map<String, Map<String, Integer>> holds;
-    public Boolean variableOccupancy;
-    public Integer minOccupancy;
-    public Integer maxOccupancy;
-    public int seasonStatusOverriddenQuantity;
-    public String zone;
-    public Floor floor;
-    public String resaleListingId;
 }

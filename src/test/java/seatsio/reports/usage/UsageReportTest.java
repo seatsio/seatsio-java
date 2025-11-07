@@ -24,9 +24,9 @@ public class UsageReportTest extends SeatsioClientTest {
 
         UsageSummaryForAllMonths report = client.usageReports.summaryForAllMonths();
 
-        assertThat(report.usageCutoffDate).isNotNull();
-        assertThat(report.usage.size()).isGreaterThan(0);
-        assertThat(report.usage.get(0).month).isEqualTo(new Month(2014, 2));
+        assertThat(report.usageCutoffDate()).isNotNull();
+        assertThat(report.usage().size()).isGreaterThan(0);
+        assertThat(report.usage().get(0).month()).isEqualTo(new Month(2014, 2));
     }
 
     @Test
@@ -38,8 +38,8 @@ public class UsageReportTest extends SeatsioClientTest {
         List<UsageDetails> report = client.usageReports.detailsForMonth(new Month(2021, 11));
 
         assertThat(report.size()).isGreaterThan(0);
-        assertThat(report.get(0).usageByChart.size()).isGreaterThan(0);
-        assertThat(report.get(0).usageByChart.get(0).usageByEvent).containsExactly(new UsageByEvent(
+        assertThat(report.get(0).usageByChart().size()).isGreaterThan(0);
+        assertThat(report.get(0).usageByChart().get(0).usageByEvent()).containsExactly(new UsageByEvent(
                 new UsageEvent(580293, "largeStadiumEvent", false), 143
         ));
     }

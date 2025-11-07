@@ -16,7 +16,7 @@ public class ValidateChartTest extends SeatsioClientTest {
 
         ChartValidationResult validationRes = client.charts.validatePublishedVersion(chartKey);
 
-        assertThat(validationRes.errors).isEmpty();
+        assertThat(validationRes.errors()).isEmpty();
     }
 
     @Test

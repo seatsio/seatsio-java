@@ -26,20 +26,20 @@ public class CreateSeasonTest extends SeatsioClientTest {
 
         Season season = client.seasons.create(chartKey);
 
-        assertThat(season.id).isNotZero();
-        assertThat(season.isTopLevelSeason).isTrue();
-        assertThat(season.topLevelSeasonKey).isNull();
-        assertThat(season.key).isNotNull();
+        assertThat(season.id()).isNotZero();
+        assertThat(season.isTopLevelSeason()).isTrue();
+        assertThat(season.topLevelSeasonKey()).isNull();
+        assertThat(season.key()).isNotNull();
         assertThat(season.partialSeasonKeys).isEmpty();
-        assertThat(season.id).isNotZero();
-        assertThat(season.key).isNotNull();
-        assertThat(season.chartKey).isEqualTo(chartKey);
-        assertThat(season.tableBookingConfig).isEqualTo(TableBookingConfig.inherit());
-        assertThat(season.supportsBestAvailable).isTrue();
-        assertThat(season.forSaleConfig).isNull();
+        assertThat(season.id()).isNotZero();
+        assertThat(season.key()).isNotNull();
+        assertThat(season.chartKey()).isEqualTo(chartKey);
+        assertThat(season.tableBookingConfig()).isEqualTo(TableBookingConfig.inherit());
+        assertThat(season.supportsBestAvailable()).isTrue();
+        assertThat(season.forSaleConfig()).isNull();
         Instant now = Instant.now();
-        assertThat(season.createdOn).isBetween(now.minus(1, MINUTES), now.plus(1, MINUTES));
-        assertThat(season.updatedOn).isNull();
+        assertThat(season.createdOn()).isBetween(now.minus(1, MINUTES), now.plus(1, MINUTES));
+        assertThat(season.updatedOn()).isNull();
 
         assertThat(season.events).isEmpty();
     }
@@ -48,25 +48,25 @@ public class CreateSeasonTest extends SeatsioClientTest {
     public void keyCanBePassedIn() {
         Chart chart = client.charts.create();
 
-        Season season = client.seasons.create(chart.key, new CreateSeasonParams().key("aSeason"));
+        Season season = client.seasons.create(chart.key(), new CreateSeasonParams().key("aSeason"));
 
-        assertThat(season.key).isEqualTo("aSeason");
+        assertThat(season.key()).isEqualTo("aSeason");
     }
 
     @Test
     public void nameCanBePassedIn() {
         Chart chart = client.charts.create();
 
-        Season season = client.seasons.create(chart.key, new CreateSeasonParams().name("aSeason"));
+        Season season = client.seasons.create(chart.key(), new CreateSeasonParams().name("aSeason"));
 
-        assertThat(season.name).isEqualTo("aSeason");
+        assertThat(season.name()).isEqualTo("aSeason");
     }
 
     @Test
     public void numberOfEventsCanBePassedIn() {
         Chart chart = client.charts.create();
 
-        Season season = client.seasons.create(chart.key, new CreateSeasonParams().key("aSeason").numberOfEvents(2));
+        Season season = client.seasons.create(chart.key(), new CreateSeasonParams().key("aSeason").numberOfEvents(2));
 
         assertThat(season.events).hasSize(2);
     }
@@ -75,9 +75,9 @@ public class CreateSeasonTest extends SeatsioClientTest {
     public void eventKeysCanBePassedIn() {
         Chart chart = client.charts.create();
 
-        Season season = client.seasons.create(chart.key, new CreateSeasonParams().key("aSeason").eventKeys(List.of("event1", "event2")));
+        Season season = client.seasons.create(chart.key(), new CreateSeasonParams().key("aSeason").eventKeys(List.of("event1", "event2")));
 
-        assertThat(season.events).extracting(event -> event.key).containsExactly("event1", "event2");
+        assertThat(season.events).extracting(event -> event.key()).containsExactly("event1", "event2");
     }
 
     @Test
@@ -86,8 +86,8 @@ public class CreateSeasonTest extends SeatsioClientTest {
 
         Season season = client.seasons.create(chartKey, new CreateSeasonParams().tableBookingConfig(TableBookingConfig.custom(Map.of("T1", BY_TABLE, "T2", BY_SEAT))));
 
-        assertThat(season.key).isNotNull();
-        assertThat(season.tableBookingConfig).isEqualTo(TableBookingConfig.custom(Map.of("T1", BY_TABLE, "T2", BY_SEAT)));
+        assertThat(season.key()).isNotNull();
+        assertThat(season.tableBookingConfig()).isEqualTo(TableBookingConfig.custom(Map.of("T1", BY_TABLE, "T2", BY_SEAT)));
     }
 
     @Test
@@ -96,8 +96,8 @@ public class CreateSeasonTest extends SeatsioClientTest {
 
         Season season = client.seasons.create(chartKey, new CreateSeasonParams().tableBookingConfig(TableBookingConfig.inherit()));
 
-        assertThat(season.key).isNotNull();
-        assertThat(season.tableBookingConfig).isEqualTo(TableBookingConfig.inherit());
+        assertThat(season.key()).isNotNull();
+        assertThat(season.tableBookingConfig()).isEqualTo(TableBookingConfig.inherit());
     }
 
     @Test
@@ -110,8 +110,8 @@ public class CreateSeasonTest extends SeatsioClientTest {
 
         Season season = client.seasons.create(chartKey, new CreateSeasonParams().channels(channels));
 
-        assertThat(season.key).isNotNull();
-        assertThat(season.channels).isEqualTo(channels);
+        assertThat(season.key()).isNotNull();
+        assertThat(season.channels()).isEqualTo(channels);
     }
 
     @Test
@@ -121,14 +121,10 @@ public class CreateSeasonTest extends SeatsioClientTest {
 
         Season season = client.seasons.create(chartKey, new CreateSeasonParams().forSaleConfigParams(params).eventKeys(List.of("event1")));
 
-        ForSaleConfig forSaleConfig = new ForSaleConfig();
-        forSaleConfig.forSale = params.forSale;
-        forSaleConfig.objects = params.objects;
-        forSaleConfig.areaPlaces = params.areaPlaces;
-        forSaleConfig.categories = params.categories;
-        assertThat(season.forSaleConfig).isEqualTo(forSaleConfig);
+        ForSaleConfig forSaleConfig = new ForSaleConfig(params.forSale, params.objects, params.areaPlaces, params.categories);
+        assertThat(season.forSaleConfig()).isEqualTo(forSaleConfig);
 
-        assertThat(client.events.retrieve("event1").season.forSaleConfig).isEqualTo(forSaleConfig);
+        assertThat(client.events.retrieve("event1").season().forSaleConfig()).isEqualTo(forSaleConfig);
     }
 
     @Test
@@ -139,6 +135,6 @@ public class CreateSeasonTest extends SeatsioClientTest {
         Season season = client.seasons.create(chartKey, new CreateSeasonParams().forSalePropagated(false).forSaleConfigParams(params).eventKeys(List.of("event1")));
 
         assertThat(season.forSalePropagated).isFalse();
-        assertThat(client.events.retrieve("event1").season.forSaleConfig).isNull();
+        assertThat(client.events.retrieve("event1").season().forSaleConfig()).isNull();
     }
 }

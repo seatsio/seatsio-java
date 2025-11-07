@@ -12,8 +12,8 @@ public class MoveEventToNewChartCopyTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        Event movedEvent = client.events.moveEventToNewChartCopy(event.key);
-        assertThat(movedEvent.key).isNotNull();
-        assertThat(movedEvent.chartKey).isNotEqualTo(chartKey);
+        Event movedEvent = client.events.moveEventToNewChartCopy(event.key());
+        assertThat(movedEvent.key()).isNotNull();
+        assertThat(movedEvent.chartKey()).isNotEqualTo(chartKey);
     }
 }

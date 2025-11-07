@@ -3,18 +3,8 @@ package seatsio.events;
 import java.time.Instant;
 import java.util.Map;
 
-public class StatusChange {
+public record StatusChange(long id, long eventId, String status, int quantity, String objectLabel, Instant date,
+                           String orderId, Map<?, ?> extraData, StatusChangeOrigin origin, boolean isPresentOnChart,
+                           ObjectNotPresentReason notPresentOnChartReason, String holdToken) {
 
-    public long id;
-    public long eventId;
-    public String status;
-    public int quantity;
-    public String objectLabel;
-    public Instant date;
-    public String orderId;
-    public Map<?, ?> extraData;
-    public StatusChangeOrigin origin;
-    public boolean isPresentOnChart;
-    public ObjectNotPresentReason notPresentOnChartReason;
-    public String holdToken;
 }

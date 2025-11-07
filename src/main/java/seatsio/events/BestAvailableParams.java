@@ -1,20 +1,11 @@
 package seatsio.events;
 
-import seatsio.util.ValueObject;
-
 import java.util.List;
 import java.util.Map;
 
-public class BestAvailableParams extends ValueObject {
-
-    public final int number;
-    public final List<String> categories;
-    public final String zone;
-    public final List<String> sections;
-    public final List<Map<String, Object>> extraData;
-    public final List<String> ticketTypes;
-    public final Boolean tryToPreventOrphanSeats;
-    public final Integer accessibleSeats;
+public record BestAvailableParams(int number, List<String> categories, String zone, List<String> sections,
+                                  List<Map<String, Object>> extraData, List<String> ticketTypes,
+                                  Boolean tryToPreventOrphanSeats, Integer accessibleSeats) {
 
     public BestAvailableParams(int number) {
         this(number, null, null, null, null, null, null, null);
@@ -22,17 +13,6 @@ public class BestAvailableParams extends ValueObject {
 
     public BestAvailableParams(int number, List<String> categories) {
         this(number, categories, null, null, null, null, null, null);
-    }
-
-    BestAvailableParams(int number, List<String> categories, String zone, List<String> sections, List<Map<String, Object>> extraData, List<String> ticketTypes, Boolean tryToPreventOrphanSeats, Integer accessibleSeats) {
-        this.number = number;
-        this.categories = categories;
-        this.zone = zone;
-        this.sections = sections;
-        this.extraData = extraData;
-        this.ticketTypes = ticketTypes;
-        this.tryToPreventOrphanSeats = tryToPreventOrphanSeats;
-        this.accessibleSeats = accessibleSeats;
     }
 
     public static class Builder {

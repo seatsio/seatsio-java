@@ -19,13 +19,13 @@ public class ReplaceChannelsTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        client.events.channels.replace(event.key, List.of(
+        client.events.channels.replace(event.key(), List.of(
                 new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1")),
                 new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-2"))
         ));
 
-        Event retrievedEvent = client.events.retrieve(event.key);
-        assertThat(retrievedEvent.channels).containsExactly(
+        Event retrievedEvent = client.events.retrieve(event.key());
+        assertThat(retrievedEvent.channels()).containsExactly(
                 new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1")),
                 new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-2"))
         );
@@ -34,15 +34,15 @@ public class ReplaceChannelsTest extends SeatsioClientTest {
     @Test
     public void replaceChannelsWithOnlyRequiredFields() {
         Chart chart = client.charts.create();
-        Event event = client.events.create(chart.key);
+        Event event = client.events.create(chart.key());
 
-        client.events.channels.replace(event.key, List.of(
+        client.events.channels.replace(event.key(), List.of(
                 new Channel("channelKey1", "channel 1", "#FFFF99", null, null),
                 new Channel("channelKey2", "channel 2", "#FFFF99", null, null)
         ));
 
-        Event retrievedEvent = client.events.retrieve(event.key);
-        assertThat(retrievedEvent.channels).containsExactly(
+        Event retrievedEvent = client.events.retrieve(event.key());
+        assertThat(retrievedEvent.channels()).containsExactly(
                 new Channel("channelKey1", "channel 1", "#FFFF99", null, new HashSet<>()),
                 new Channel("channelKey2", "channel 2", "#FFFF99", null, new HashSet<>())
         );

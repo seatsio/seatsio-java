@@ -15,7 +15,7 @@ public class RetrieveEventObjectInfosTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        Map<String, EventObjectInfo> objectInfos = client.events.retrieveObjectInfos(event.key, List.of("A-1", "A-2"));
+        Map<String, EventObjectInfo> objectInfos = client.events.retrieveObjectInfos(event.key(), List.of("A-1", "A-2"));
 
         assertThat(objectInfos).containsOnlyKeys("A-1", "A-2");
     }

@@ -25,16 +25,16 @@ public class CreateEventTest extends SeatsioClientTest {
 
         Event event = client.events.create(chartKey);
 
-        assertThat(event.id).isNotZero();
-        assertThat(event.key).isNotNull();
-        assertThat(event.chartKey).isEqualTo(chartKey);
-        assertThat(event.tableBookingConfig).isEqualTo(TableBookingConfig.inherit());
-        assertThat(event.supportsBestAvailable).isTrue();
-        assertThat(event.forSaleConfig).isNull();
+        assertThat(event.id()).isNotZero();
+        assertThat(event.key()).isNotNull();
+        assertThat(event.chartKey()).isEqualTo(chartKey);
+        assertThat(event.tableBookingConfig()).isEqualTo(TableBookingConfig.inherit());
+        assertThat(event.supportsBestAvailable()).isTrue();
+        assertThat(event.forSaleConfig()).isNull();
         Instant now = Instant.now();
-        assertThat(event.createdOn).isBetween(now.minus(1, MINUTES), now.plus(1, MINUTES));
-        assertThat(event.updatedOn).isNull();
-        assertThat(event.categories).containsExactly(
+        assertThat(event.createdOn()).isBetween(now.minus(1, MINUTES), now.plus(1, MINUTES));
+        assertThat(event.updatedOn()).isNull();
+        assertThat(event.categories()).containsExactly(
                 new Category(9L, "Cat1", "#87A9CD", false),
                 new Category(10L, "Cat2", "#5E42ED", false),
                 new Category("string11", "Cat3", "#5E42BB", false)
@@ -47,7 +47,7 @@ public class CreateEventTest extends SeatsioClientTest {
 
         Event event = client.events.create(chartKey, new CreateEventParams().withKey("anEvent"));
 
-        assertThat(event.key).isEqualTo("anEvent");
+        assertThat(event.key()).isEqualTo("anEvent");
     }
 
     @Test
@@ -57,8 +57,8 @@ public class CreateEventTest extends SeatsioClientTest {
         TableBookingConfig tableBookingConfig = TableBookingConfig.custom(Map.of("T1", BY_TABLE, "T2", BY_SEAT));
         Event event = client.events.create(chartKey, new CreateEventParams().withTableBookingConfig(tableBookingConfig));
 
-        assertThat(event.key).isNotNull();
-        assertThat(event.tableBookingConfig).isEqualTo(tableBookingConfig);
+        assertThat(event.key()).isNotNull();
+        assertThat(event.tableBookingConfig()).isEqualTo(tableBookingConfig);
     }
 
     @Test
@@ -68,8 +68,8 @@ public class CreateEventTest extends SeatsioClientTest {
         TableBookingConfig inherit = TableBookingConfig.inherit();
         Event event = client.events.create(chartKey, new CreateEventParams().withTableBookingConfig(inherit));
 
-        assertThat(event.key).isNotNull();
-        assertThat(event.tableBookingConfig).isEqualTo(inherit);
+        assertThat(event.key()).isNotNull();
+        assertThat(event.tableBookingConfig()).isEqualTo(inherit);
     }
 
     @Test
@@ -79,7 +79,7 @@ public class CreateEventTest extends SeatsioClientTest {
 
         Event event = client.events.create(chartKey, new CreateEventParams().withObjectCategories(objectCategories));
 
-        assertThat(event.objectCategories).containsOnly(entry("A-1", CategoryKey.of(10L)));
+        assertThat(event.objectCategories()).containsOnly(entry("A-1", CategoryKey.of(10L)));
     }
 
     @Test
@@ -93,7 +93,7 @@ public class CreateEventTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey, new CreateEventParams().withCategories(categories));
 
         int numberOfCategoriesOnChart = 3; // see sampleChart.json
-        assertThat(event.categories)
+        assertThat(event.categories())
                 .hasSize(numberOfCategoriesOnChart + categories.size())
                 .contains(eventCategory);
     }
@@ -108,7 +108,7 @@ public class CreateEventTest extends SeatsioClientTest {
 
         Event event = client.events.create(chartKey, new CreateEventParams().withChannels(channels));
 
-        assertThat(event.channels).containsExactly(
+        assertThat(event.channels()).containsExactly(
                 new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1")),
                 new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-2"))
         );
@@ -120,7 +120,7 @@ public class CreateEventTest extends SeatsioClientTest {
 
         Event event = client.events.create(chartKey, new CreateEventParams().withName("My event"));
 
-        assertThat(event.name).isEqualTo("My event");
+        assertThat(event.name()).isEqualTo("My event");
     }
 
     @Test
@@ -129,7 +129,7 @@ public class CreateEventTest extends SeatsioClientTest {
 
         Event event = client.events.create(chartKey, new CreateEventParams().withDate(LocalDate.of(2022, 10, 1)));
 
-        assertThat(event.date).isEqualTo(LocalDate.of(2022, 10, 1));
+        assertThat(event.date()).isEqualTo(LocalDate.of(2022, 10, 1));
     }
 
     @Test
@@ -139,11 +139,7 @@ public class CreateEventTest extends SeatsioClientTest {
 
         Event event = client.events.create(chartKey, new CreateEventParams().withForSaleConfigParams(params));
 
-        ForSaleConfig forSaleConfig = new ForSaleConfig();
-        forSaleConfig.forSale = params.forSale;
-        forSaleConfig.objects = params.objects;
-        forSaleConfig.areaPlaces = params.areaPlaces;
-        forSaleConfig.categories = params.categories;
-        assertThat(event.forSaleConfig).isEqualTo(forSaleConfig);
+        ForSaleConfig forSaleConfig = new ForSaleConfig(params.forSale, params.objects, params.areaPlaces, params.categories);
+        assertThat(event.forSaleConfig()).isEqualTo(forSaleConfig);
     }
 }

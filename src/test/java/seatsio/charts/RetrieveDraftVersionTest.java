@@ -12,10 +12,10 @@ public class RetrieveDraftVersionTest extends SeatsioClientTest {
     @Test
     public void test() {
         Chart chart = client.charts.create();
-        client.events.create(chart.key);
-        client.charts.update(chart.key, "newName");
+        client.events.create(chart.key());
+        client.charts.update(chart.key(), "newName");
 
-        Map<?, ?> draft = client.charts.retrieveDraftVersion(chart.key);
+        Map<?, ?> draft = client.charts.retrieveDraftVersion(chart.key());
 
         assertThat(draft.get("name")).isEqualTo("newName");
     }
