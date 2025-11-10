@@ -15,10 +15,21 @@ public class EditForSaleConfigTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey, new CreateEventParams().withForSaleConfigParams(new ForSaleConfigParams(false, List.of("A-1", "A-2", "A-3"), null, null)));
 
-        ForSaleConfig forSaleConfig = client.events.editForSaleConfig(event.key(), List.of(new ObjectAndQuantity("A-1"), new ObjectAndQuantity("A-2")), null);
+        EditForSaleConfigResult result = client.events.editForSaleConfig(event.key(), List.of(new ObjectAndQuantity("A-1"), new ObjectAndQuantity("A-2")), null);
 
-        assertThat(forSaleConfig.forSale()).isFalse();
-        assertThat(forSaleConfig.objects()).containsExactly("A-3");
+        assertThat(result.forSaleConfig().forSale()).isFalse();
+        assertThat(result.forSaleConfig().objects()).containsExactly("A-3");
+    }
+
+    @Test
+    public void rateLimitInfoIsReturned() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey, new CreateEventParams().withForSaleConfigParams(new ForSaleConfigParams(false, List.of("A-1", "A-2", "A-3"), null, null)));
+
+        EditForSaleConfigResult result = client.events.editForSaleConfig(event.key(), List.of(new ObjectAndQuantity("A-1"), new ObjectAndQuantity("A-2")), null);
+
+        assertThat(result.rateLimitInfo().rateLimitRemainingCalls()).isEqualTo(9);
+        assertThat(result.rateLimitInfo().rateLimitResetDate()).isNotNull();
     }
 
     @Test
@@ -26,10 +37,10 @@ public class EditForSaleConfigTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        ForSaleConfig forSaleConfig = client.events.editForSaleConfig(event.key(), null, List.of(new ObjectAndQuantity("A-1"), new ObjectAndQuantity("A-2")));
+        EditForSaleConfigResult result = client.events.editForSaleConfig(event.key(), null, List.of(new ObjectAndQuantity("A-1"), new ObjectAndQuantity("A-2")));
 
-        assertThat(forSaleConfig.forSale()).isFalse();
-        assertThat(forSaleConfig.objects()).containsExactly("A-1", "A-2");
+        assertThat(result.forSaleConfig().forSale()).isFalse();
+        assertThat(result.forSaleConfig().objects()).containsExactly("A-1", "A-2");
     }
 
     @Test
@@ -37,9 +48,9 @@ public class EditForSaleConfigTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        ForSaleConfig forSaleConfig = client.events.editForSaleConfig(event.key(), null, List.of(new ObjectAndQuantity("GA1", 5)));
+        EditForSaleConfigResult result = client.events.editForSaleConfig(event.key(), null, List.of(new ObjectAndQuantity("GA1", 5)));
 
-        assertThat(forSaleConfig.forSale()).isFalse();
-        assertThat(forSaleConfig.areaPlaces()).isEqualTo(Map.of("GA1", 5));
+        assertThat(result.forSaleConfig().forSale()).isFalse();
+        assertThat(result.forSaleConfig().areaPlaces()).isEqualTo(Map.of("GA1", 5));
     }
 }

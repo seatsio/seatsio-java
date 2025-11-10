@@ -18,7 +18,6 @@ import java.util.stream.Stream;
 
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 import static seatsio.events.EventObjectInfo.*;
 import static seatsio.events.StatusChangeType.CHANGE_STATUS_TO;
 import static seatsio.events.StatusChangeType.RELEASE;
@@ -122,21 +121,19 @@ public class Events {
         return gson().fromJson(response, Event.class);
     }
 
-    public ForSaleConfig editForSaleConfig(String eventKey, List<ObjectAndQuantity> forSale, List<ObjectAndQuantity> notForSale) {
+    public EditForSaleConfigResult editForSaleConfig(String eventKey, List<ObjectAndQuantity> forSale, List<ObjectAndQuantity> notForSale) {
         String response = unirest.stringResponse(post(baseUrl + "/events/{key}/actions/edit-for-sale-config")
                 .routeParam("key", eventKey)
                 .body(editForSaleConfigRequest(forSale, notForSale).toString()));
-        return gson().fromJson(response, EditForSaleConfigResponse.class).forSaleConfig;
+        return gson().fromJson(response, EditForSaleConfigResult.class);
     }
 
-    public Map<String, ForSaleConfig> editForSaleConfigForEvents(Map<String, ForSaleAndNotForSaleParams> events) {
+    public Map<String, EditForSaleConfigResult> editForSaleConfigForEvents(Map<String, ForSaleAndNotForSaleParams> events) {
         String response = unirest.stringResponse(post(baseUrl + "/events/actions/edit-for-sale-config")
                 .body(editForSaleConfigForEventsRequest(events).toString()));
-        var typeToken = new TypeToken<Map<String, EditForSaleConfigResponse>>() {
+        var typeToken = new TypeToken<Map<String, EditForSaleConfigResult>>() {
         };
-        Map<String, EditForSaleConfigResponse> parsedResponse = gson().fromJson(response, typeToken.getType());
-        return parsedResponse.entrySet().stream()
-                .collect(toMap(Map.Entry::getKey, e -> e.getValue().forSaleConfig));
+        return gson().fromJson(response, typeToken.getType());
     }
 
     public void replaceForSaleConfig(boolean forSale, String eventKey, List<String> objects, Map<String, Integer> areaPlaces, List<String> categories) {
@@ -503,7 +500,4 @@ public class Events {
         return gson().fromJson(response, Event.class);
     }
 
-    private static class EditForSaleConfigResponse {
-        ForSaleConfig forSaleConfig;
-    }
 }
