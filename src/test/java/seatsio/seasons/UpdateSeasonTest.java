@@ -7,7 +7,6 @@ import seatsio.charts.Category;
 import seatsio.charts.CategoryKey;
 import seatsio.charts.Chart;
 import seatsio.events.TableBookingConfig;
-import seatsio.events.UpdateEventParams;
 
 import java.util.List;
 import java.util.Map;
