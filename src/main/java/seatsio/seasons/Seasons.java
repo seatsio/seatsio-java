@@ -1,6 +1,7 @@
 package seatsio.seasons;
 
 import seatsio.SeatsioClient;
+import seatsio.charts.CategoryKey;
 import seatsio.events.Event;
 import seatsio.events.EventCreationResult;
 import seatsio.json.JsonObjectBuilder;
@@ -37,6 +38,8 @@ public class Seasons {
                 .withPropertyIfNotNull("numberOfEvents", seasonParams.numberOfEvents())
                 .withPropertyIfNotNull("tableBookingConfig", seasonParams.tableBookingConfig())
                 .withPropertyIfNotNull("channels", seasonParams.getChannelsAsJson())
+                .withPropertyIfNotNull("objectCategories", seasonParams.objectCategories(), CategoryKey::toJson)
+                .withPropertyIfNotNull("categories", seasonParams.categoriesAsJson())
                 .withPropertyIfNotNull("forSaleConfig", seasonParams.getForSaleConfigAsJson())
                 .withPropertyIfNotNull("forSalePropagated", seasonParams.forSalePropagated());
         String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/seasons")
@@ -99,7 +102,9 @@ public class Seasons {
                 .withPropertyIfNotNull("eventKey", params.key())
                 .withPropertyIfNotNull("tableBookingConfig", params.tableBookingConfig())
                 .withPropertyIfNotNull("name", params.name())
-                .withPropertyIfNotNull("forSalePropagated", params.forSalePropagated());
+                .withPropertyIfNotNull("forSalePropagated", params.forSalePropagated())
+                .withPropertyIfNotNull("objectCategories", params.objectCategories(), CategoryKey::toJson)
+                .withPropertyIfNotNull("categories", params.categoriesAsJson());
         unirest.stringResponse(post(baseUrl + "/events/{key}")
                 .routeParam("key", eventKey)
                 .body(request.build().toString()));
