@@ -10,14 +10,14 @@ seatsio-java is available in the Maven Central repository:
 ```
 // build.gradle
 dependencies {
-  compile 'io.seats:seatsio-java:90.1.0'
+  compile 'io.seats:seatsio-java:90.2.0'
 }
 
 // pom.xml
 <dependency>
   <groupId>io.seats</groupId>
   <artifactId>seatsio-java</artifactId>
-  <version>90.1.0</version>
+  <version>90.2.0</version>
 </dependency>
 ```
 
