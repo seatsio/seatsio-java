@@ -1,11 +1,14 @@
 package seatsio.seasons;
 
 import com.google.gson.JsonObject;
+import seatsio.charts.Category;
+import seatsio.charts.CategoryKey;
 import seatsio.events.Channel;
 import seatsio.events.ForSaleConfigParams;
 import seatsio.events.TableBookingConfig;
 
 import java.util.List;
+import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 
@@ -18,6 +21,8 @@ public abstract class SeasonParams<T extends  SeasonParams<?>> {
     private Integer numberOfEvents;
     private TableBookingConfig tableBookingConfig;
     private List<Channel> channels;
+    private Map<String, CategoryKey> objectCategories;
+    private List<Category> categories;
     private ForSaleConfigParams forSaleConfigParams;
     private Boolean forSalePropagated;
 
@@ -68,6 +73,31 @@ public abstract class SeasonParams<T extends  SeasonParams<?>> {
 
     public T channels(List<Channel> channels) {
         this.channels = channels;
+        return (T) this;
+    }
+
+    public Map<String, CategoryKey> objectCategories() {
+        return objectCategories;
+    }
+
+    public T withObjectCategories(Map<String, CategoryKey> objectCategories) {
+        this.objectCategories = objectCategories;
+        return (T) this;
+    }
+
+    public List<JsonObject> categoriesAsJson() {
+        if (categories == null) {
+            return null;
+        }
+        return categories.stream().map(Category::toJson).collect(toList());
+    }
+
+    public List<Category> categories() {
+        return categories;
+    }
+
+    public T withCategories(List<Category> categories) {
+        this.categories = categories;
         return (T) this;
     }
 
