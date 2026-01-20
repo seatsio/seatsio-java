@@ -35,7 +35,7 @@ public class ErrorHandlingTest extends SeatsioClientTest {
 
     @Test
     public void testSocketTimeout() {
-        SeatsioException e = assertThrows(SeatsioException.class, () -> new UnirestWrapper("secretKey", null).stringResponse(get("https://httpbin.seatsio.net/delay/5").socketTimeout(1000)));
+        SeatsioException e = assertThrows(SeatsioException.class, () -> new UnirestWrapper("secretKey", null).stringResponse(get("https://httpbin.seatsio.net/delay/5").socketTimeout(10)));
         assertThat(e.getMessage()).contains("Error while executing GET https://httpbin.seatsio.net/delay/5");
         assertThat(e.getCause()).isInstanceOf(UnirestException.class);
         assertThat(e.getCause().getCause()).isInstanceOf(java.net.SocketTimeoutException.class);
