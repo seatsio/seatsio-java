@@ -9,7 +9,9 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class UnirestWrapper {
 
-    private static UnirestInstance unirest = new UnirestInstance(new Config().concurrency(200, 200));
+    private static UnirestInstance unirest = new UnirestInstance(new Config()
+            .socketTimeout(10000)
+            .concurrency(200, 200));
 
     private int maxRetries = 5;
     private final String secretKey;
