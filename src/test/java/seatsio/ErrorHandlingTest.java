@@ -1,5 +1,6 @@
 package seatsio;
 
+import kong.unirest.UnirestException;
 import org.junit.jupiter.api.Test;
 import seatsio.util.UnirestWrapper;
 
@@ -29,6 +30,15 @@ public class ErrorHandlingTest extends SeatsioClientTest {
     public void testWeirdError() {
         SeatsioException e = assertThrows(SeatsioException.class, () -> new SeatsioClient("", null, "unknownProtocol://").charts.retrieve("unexistingChart"));
         assertThat(e.getMessage()).contains("Error while executing GET unknownProtocol:///charts/unexistingChart");
+        assertThat(e.errors).isNull();
+    }
+
+    @Test
+    public void testSocketTimeout() {
+        SeatsioException e = assertThrows(SeatsioException.class, () -> new UnirestWrapper("secretKey", null).stringResponse(get("https://httpbin.seatsio.net/delay/5").socketTimeout(10)));
+        assertThat(e.getMessage()).contains("Error while executing GET https://httpbin.seatsio.net/delay/5");
+        assertThat(e.getCause()).isInstanceOf(UnirestException.class);
+        assertThat(e.getCause().getCause()).isInstanceOf(java.net.SocketTimeoutException.class);
         assertThat(e.errors).isNull();
     }
 }
