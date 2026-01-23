@@ -15,6 +15,7 @@ import java.io.InputStream;
 
 import static java.util.UUID.randomUUID;
 import static kong.unirest.Unirest.post;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @Execution(ExecutionMode.CONCURRENT)
 public class SeatsioClientTest {
@@ -43,8 +44,14 @@ public class SeatsioClientTest {
         return "https://api-staging-eu.seatsio.net";
     }
 
+    protected static String apiSecret() {
+        return System.getenv("CORE_V2_STAGING_EU_SYSTEM_API_SECRET");
+    }
+
     private TestCompany createTestCompany() throws UnirestException {
-        HttpResponse<String> response = post(apiUrl() + "/system/public/users/actions/create-test-company").asString();
+        HttpResponse<String> response = post(apiUrl() + "/system/private/create-test-company")
+                .basicAuth(apiSecret(), "")
+                .asString();
         if(response.getStatus() >= 400) {
             throw new SeatsioException("Creating test company failed wide code " + response.getStatus());
         }
