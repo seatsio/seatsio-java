@@ -36,19 +36,11 @@ public class SeatsioClientTest {
     }
 
     protected static String apiUrl() {
-        String url = System.getenv("API_URL");
-        if (url != null) {
-            return url;
-        }
-        return "https://api-staging-eu.seatsio.net";
+        return System.getenv().getOrDefault("API_URL", "http://localhost:9001");
     }
 
     protected static String apiSecret() {
-        String secret = System.getenv("CORE_V2_STAGING_EU_SYSTEM_API_SECRET");
-        if (secret == null || secret.isBlank()) {
-            throw new RuntimeException("Missing CORE_V2_STAGING_EU_SYSTEM_API_SECRET");
-        }
-        return secret;
+        return System.getenv().getOrDefault("CORE_V2_STAGING_EU_SYSTEM_API_SECRET", "superSecretSystemApi");
     }
 
     private TestCompany createTestCompany() throws UnirestException {
