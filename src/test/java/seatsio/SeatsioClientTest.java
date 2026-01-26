@@ -15,7 +15,6 @@ import java.io.InputStream;
 
 import static java.util.UUID.randomUUID;
 import static kong.unirest.Unirest.post;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @Execution(ExecutionMode.CONCURRENT)
 public class SeatsioClientTest {
@@ -45,7 +44,11 @@ public class SeatsioClientTest {
     }
 
     protected static String apiSecret() {
-        return System.getenv("CORE_V2_STAGING_EU_SYSTEM_API_SECRET");
+        String secret = System.getenv("CORE_V2_STAGING_EU_SYSTEM_API_SECRET");
+        if (secret == null || secret.isBlank()) {
+            throw new RuntimeException("Missing CORE_V2_STAGING_EU_SYSTEM_API_SECRET");
+        }
+        return secret;
     }
 
     private TestCompany createTestCompany() throws UnirestException {
