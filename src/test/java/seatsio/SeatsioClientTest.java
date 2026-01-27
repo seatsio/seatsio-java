@@ -15,7 +15,6 @@ import java.io.InputStream;
 
 import static java.util.UUID.randomUUID;
 import static kong.unirest.Unirest.post;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @Execution(ExecutionMode.CONCURRENT)
 public class SeatsioClientTest {
@@ -37,15 +36,11 @@ public class SeatsioClientTest {
     }
 
     protected static String apiUrl() {
-        String url = System.getenv("API_URL");
-        if (url != null) {
-            return url;
-        }
-        return "https://api-staging-eu.seatsio.net";
+        return System.getenv().getOrDefault("API_URL", "http://localhost:9001");
     }
 
     protected static String apiSecret() {
-        return System.getenv("CORE_V2_STAGING_EU_SYSTEM_API_SECRET");
+        return System.getenv().getOrDefault("CORE_V2_STAGING_EU_SYSTEM_API_SECRET", "superSecretSystemApi");
     }
 
     private TestCompany createTestCompany() throws UnirestException {
