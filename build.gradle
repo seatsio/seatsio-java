@@ -1,12 +1,14 @@
 plugins {
     id "com.vanniktech.maven.publish" version "0.35.0"
+    id "java"
 }
 
 group = 'io.seats'
 version = '90.6.0'
 
-apply plugin: 'java'
-sourceCompatibility = 17
+java {
+    sourceCompatibility = 17
+}
 
 repositories {
     mavenCentral()
