@@ -36,9 +36,14 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
         assertThat(reportItem.leftNeighbour()).isNull();
         assertThat(reportItem.rightNeighbour()).isEqualTo("A-2");
         assertThat(reportItem.distanceToFocalPoint()).isNotNull();
-        assertThat(reportItem.isAccessible()).isNotNull();
-        assertThat(reportItem.isCompanionSeat()).isNotNull();
-        assertThat(reportItem.hasRestrictedView()).isNotNull();
+        assertThat(reportItem.isAccessible()).isFalse();
+        assertThat(reportItem.isCompanionSeat()).isFalse();
+        assertThat(reportItem.hasLiftUpArmrests()).isFalse();
+        assertThat(reportItem.isHearingImpaired()).isFalse();
+        assertThat(reportItem.isSemiAmbulatorySeat()).isFalse();
+        assertThat(reportItem.hasSignLanguageInterpretation()).isFalse();
+        assertThat(reportItem.isPlusSize()).isFalse();
+        assertThat(reportItem.hasRestrictedView()).isFalse();
         assertThat(reportItem.floor()).isNull();
     }
 

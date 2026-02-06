@@ -48,6 +48,11 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.hasRestrictedView()).isFalse();
         assertThat(reportItem.isAccessible()).isFalse();
         assertThat(reportItem.isCompanionSeat()).isFalse();
+        assertThat(reportItem.hasLiftUpArmrests()).isFalse();
+        assertThat(reportItem.isHearingImpaired()).isFalse();
+        assertThat(reportItem.isSemiAmbulatorySeat()).isFalse();
+        assertThat(reportItem.hasSignLanguageInterpretation()).isFalse();
+        assertThat(reportItem.isPlusSize()).isFalse();
         assertThat(reportItem.displayedObjectType()).isNull();
         assertThat(reportItem.parentDisplayedObjectType()).isNull();
         assertThat(reportItem.leftNeighbour()).isNull();
@@ -112,6 +117,11 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.hasRestrictedView()).isNull();
         assertThat(reportItem.isAccessible()).isNull();
         assertThat(reportItem.isCompanionSeat()).isNull();
+        assertThat(reportItem.hasLiftUpArmrests()).isNull();
+        assertThat(reportItem.isHearingImpaired()).isNull();
+        assertThat(reportItem.isSemiAmbulatorySeat()).isNull();
+        assertThat(reportItem.hasSignLanguageInterpretation()).isNull();
+        assertThat(reportItem.isPlusSize()).isNull();
         assertThat(reportItem.displayedObjectType()).isNull();
         assertThat(reportItem.parentDisplayedObjectType()).isNull();
     }
