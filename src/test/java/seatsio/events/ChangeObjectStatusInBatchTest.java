@@ -10,6 +10,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static seatsio.events.EventObjectInfo.*;
 import static seatsio.events.StatusChangeType.*;
 
@@ -123,6 +124,32 @@ public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
     }
 
     @Test
+    public void overrideSeasonStatus_partialSeason() {
+        String chartKey = createTestChart();
+        client.seasons.create(chartKey, new CreateSeasonParams().key("aSeason").eventKeys(List.of("event1")));
+        client.seasons.createPartialSeason("aSeason", "aPartialSeason", null, List.of("event1"));
+        client.events.book("aPartialSeason", List.of("A-1"));
+
+        List<ChangeObjectStatusResult> result = client.events.changeObjectStatus(List.of(
+                new StatusChangeRequest.Builder().withType(OVERRIDE_SEASON_STATUS).withEventKey("event1").withSeason("aPartialSeason").withObjects(List.of("A-1")).build()
+        ));
+
+        assertThat(result.get(0).objects().get("A-1").status()).isEqualTo(FREE);
+        assertThat(client.events.retrieveObjectInfo("event1", "A-1").status()).isEqualTo(FREE);
+    }
+
+    @Test
+    public void overrideSeasonStatus_partialSeason_invalid() {
+        String chartKey = createTestChart();
+        client.seasons.create(chartKey, new CreateSeasonParams().key("aSeason").eventKeys(List.of("event1")));
+        client.seasons.createPartialSeason("aSeason", "aPartialSeason", null, List.of());
+
+        assertThrows(SeatsioException.class, () -> client.events.changeObjectStatus(List.of(
+                new StatusChangeRequest.Builder().withType(OVERRIDE_SEASON_STATUS).withEventKey("event1").withSeason("aPartialSeason").withObjects(List.of("A-1")).build()
+        )));
+    }
+
+    @Test
     public void useSeasonStatus() {
         String chartKey = createTestChart();
         client.seasons.create(chartKey, new CreateSeasonParams().key("aSeason").eventKeys(List.of("event1")));
@@ -135,6 +162,35 @@ public class ChangeObjectStatusInBatchTest extends SeatsioClientTest {
 
         assertThat(result.get(0).objects().get("A-1").status()).isEqualTo(BOOKED);
         assertThat(client.events.retrieveObjectInfo("event1", "A-1").status()).isEqualTo(BOOKED);
+    }
+
+    @Test
+    public void useSeasonStatus_partialSeason() {
+        String chartKey = createTestChart();
+        client.seasons.create(chartKey, new CreateSeasonParams().key("aSeason").eventKeys(List.of("event1")));
+        client.seasons.createPartialSeason("aSeason", "aPartialSeason", null, List.of("event1"));
+        client.events.book("aPartialSeason", List.of("A-1"));
+        client.events.overrideSeasonObjectStatus("event1", List.of("A-1"), "aPartialSeason");
+
+        List<ChangeObjectStatusResult> result = client.events.changeObjectStatus(List.of(
+                new StatusChangeRequest.Builder().withType(USE_SEASON_STATUS).withEventKey("event1").withSeason("aPartialSeason").withObjects(List.of("A-1")).build()
+        ));
+
+        assertThat(result.get(0).objects().get("A-1").status()).isEqualTo(BOOKED);
+        assertThat(client.events.retrieveObjectInfo("event1", "A-1").status()).isEqualTo(BOOKED);
+    }
+
+    @Test
+    public void useSeasonStatus_partialSeason_invalid() {
+        String chartKey = createTestChart();
+        client.seasons.create(chartKey, new CreateSeasonParams().key("aSeason").eventKeys(List.of("event1", "event2")));
+        client.seasons.createPartialSeason("aSeason", "aPartialSeason", null, List.of("event1"));
+        client.events.book("aPartialSeason", List.of("A-1"));
+        client.events.overrideSeasonObjectStatus("event1", List.of("A-1"), "aPartialSeason");
+
+        assertThrows(SeatsioException.class, () -> client.events.changeObjectStatus(List.of(
+                new StatusChangeRequest.Builder().withType(USE_SEASON_STATUS).withEventKey("event2").withSeason("aPartialSeason").withObjects(List.of("A-1")).build()
+        )));
     }
 
     @Test
