@@ -5,7 +5,7 @@ import java.util.Set;
 
 import static seatsio.events.StatusChangeType.CHANGE_STATUS_TO;
 
-public record StatusChangeRequest(StatusChangeType type, String eventKey, List<?> objects, String status,
+public record StatusChangeRequest(StatusChangeType type, String eventKey, List<?> objects, String season, String status,
                                   String holdToken, String orderId, Boolean keepExtraData, Boolean ignoreChannels,
                                   Set<String> channelKeys, Set<String> allowedPreviousStatuses,
                                   Set<String> rejectedPreviousStatuses, String resaleListingId) {
@@ -14,6 +14,7 @@ public record StatusChangeRequest(StatusChangeType type, String eventKey, List<?
         private StatusChangeType type = CHANGE_STATUS_TO;
         private String eventKey;
         private List<?> objects;
+        private String season;
         private String status;
         private String holdToken;
         private String orderId;
@@ -36,6 +37,11 @@ public record StatusChangeRequest(StatusChangeType type, String eventKey, List<?
 
         public Builder withObjects(List<?> objects) {
             this.objects = objects;
+            return this;
+        }
+
+        public Builder withSeason(String season) {
+            this.season = season;
             return this;
         }
 
@@ -85,7 +91,7 @@ public record StatusChangeRequest(StatusChangeType type, String eventKey, List<?
         }
 
         public StatusChangeRequest build() {
-            return new StatusChangeRequest(type, eventKey, objects, status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, allowedPreviousStatuses, rejectedPreviousStatuses, resaleListingId);
+            return new StatusChangeRequest(type, eventKey, objects, season, status, holdToken, orderId, keepExtraData, ignoreChannels, channelKeys, allowedPreviousStatuses, rejectedPreviousStatuses, resaleListingId);
         }
     }
 }
