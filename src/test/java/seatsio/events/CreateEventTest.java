@@ -1,6 +1,7 @@
 package seatsio.events;
 
 import org.junit.jupiter.api.Test;
+import seatsio.SeatsioClient;
 import seatsio.SeatsioClientTest;
 import seatsio.charts.Category;
 import seatsio.charts.CategoryKey;
@@ -102,15 +103,15 @@ public class CreateEventTest extends SeatsioClientTest {
     public void channelsCanBePassedIn() {
         String chartKey = createTestChart();
         List<Channel> channels = List.of(
-                new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1")),
-                new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-2"))
+                new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1"), Map.of()),
+                new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-2"), Map.of())
         );
 
         Event event = client.events.create(chartKey, new CreateEventParams().withChannels(channels));
 
         assertThat(event.channels()).containsExactly(
-                new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1")),
-                new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-2"))
+                new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1"), Map.of()),
+                new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-2"), Map.of())
         );
     }
 

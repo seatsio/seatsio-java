@@ -22,7 +22,7 @@ public class EventReportsTest extends SeatsioClientTest {
     public void reportItemProperties() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey, new CreateEventParams().withChannels(List.of(
-                new Channel("channel1", "channel 1", "#FFFF99", 1, Set.of("A-1"))
+                new Channel("channel1", "channel 1", "#FFFF99", 1, Set.of("A-1"), Map.of())
         )));
         Map<String, String> extraData = Map.of("foo", "bar");
         client.events.book(event.key(), asList(new ObjectProperties("A-1", "ticketType1", extraData)), null, "order1", null, true, null);
@@ -398,7 +398,7 @@ public class EventReportsTest extends SeatsioClientTest {
     public void byChannel() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey, new CreateEventParams().withChannels(List.of(
-                new Channel("channel1", "channel 1", "#FFFF99", 1, Set.of("A-1", "A-2"))
+                new Channel("channel1", "channel 1", "#FFFF99", 1, Set.of("A-1", "A-2"), Map.of())
         )));
 
         Map<String, List<EventObjectInfo>> report = client.eventReports.byChannel(event.key());
@@ -411,7 +411,7 @@ public class EventReportsTest extends SeatsioClientTest {
     public void bySpecificChannel() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey, new CreateEventParams().withChannels(List.of(
-                new Channel("channel1", "channel 1", "#FFFF99", 1, Set.of("A-1", "A-2"))
+                new Channel("channel1", "channel 1", "#FFFF99", 1, Set.of("A-1", "A-2"), Map.of())
         )));
 
         List<EventObjectInfo> report = client.eventReports.byChannel(event.key(), "channel1");

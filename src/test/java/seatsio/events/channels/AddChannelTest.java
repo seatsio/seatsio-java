@@ -7,6 +7,7 @@ import seatsio.events.ChannelCreationParams;
 import seatsio.events.Event;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,13 +19,13 @@ public class AddChannelTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        client.events.channels.add(event.key(), "channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2"));
-        client.events.channels.add(event.key(), "channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-3"));
+        client.events.channels.add(event.key(), "channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2"), null);
+        client.events.channels.add(event.key(), "channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-3"), null);
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels()).containsExactly(
-                new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2")),
-                new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-3"))
+                new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2"), Map.of()),
+                new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-3"), Map.of())
         );
     }
 
@@ -43,8 +44,8 @@ public class AddChannelTest extends SeatsioClientTest {
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels()).containsExactly(
-                new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2")),
-                new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-3"))
+                new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2"), Map.of()),
+                new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-3"), Map.of())
         );
     }
 
@@ -53,11 +54,11 @@ public class AddChannelTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        client.events.channels.add(event.key(), "channelKey1", "channel 1", "#FFFF98", null, Set.of("A-1", "A-2"));
+        client.events.channels.add(event.key(), "channelKey1", "channel 1", "#FFFF98", null, Set.of("A-1", "A-2"), null);
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels()).containsExactly(
-                new Channel("channelKey1", "channel 1", "#FFFF98", null, Set.of("A-1", "A-2"))
+                new Channel("channelKey1", "channel 1", "#FFFF98", null, Set.of("A-1", "A-2"), Map.of())
         );
     }
 
@@ -66,11 +67,11 @@ public class AddChannelTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        client.events.channels.add(event.key(), "channelKey1", "channel 1", "#FFFF98", 1, null);
+        client.events.channels.add(event.key(), "channelKey1", "channel 1", "#FFFF98", 1, null, null);
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels()).containsExactly(
-                new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of())
+                new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of(), Map.of())
         );
     }
 

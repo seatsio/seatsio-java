@@ -105,7 +105,7 @@ public class BookObjectsTest extends SeatsioClientTest {
     public void channelKeys() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey, new CreateEventParams().withChannels(List.of(
-                new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1", "A-2"))
+                new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1", "A-2"), Map.of())
         )));
 
         client.events.book(event.key(), List.of("A-1"), null, null, true, null, Set.of("channelKey1"));
@@ -117,7 +117,7 @@ public class BookObjectsTest extends SeatsioClientTest {
     public void ignoreChannels() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey, new CreateEventParams().withChannels(List.of(
-                new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1", "A-2"))
+                new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1", "A-2"), Map.of())
         )));
 
         client.events.book(event.key(), List.of("A-1"), null, null, null, true, null);
