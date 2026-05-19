@@ -52,22 +52,24 @@ public class Channels {
         );
     }
 
-    public void addObjects(String eventKey, String channelKey, Set<String> objects) {
+    public void addObjects(String eventKey, String channelKey, Set<String> objects, Map<String, Integer> areaPlaces) {
         unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events/{eventKey}/channels/{channelKey}/objects")
                 .routeParam("eventKey", eventKey)
                 .routeParam("channelKey", channelKey)
                 .body(aJsonObject()
-                        .withProperty("objects", objects)
+                        .withPropertyIfNotNull("objects", objects)
+                        .withPropertyIfNotNull("areaPlaces", areaPlaces)
                         .buildAsString())
         );
     }
 
-    public void removeObjects(String eventKey, String channelKey, Set<String> objects) {
+    public void removeObjects(String eventKey, String channelKey, Set<String> objects, Map<String, Integer> areaPlaces) {
         unirest.stringResponse(UnirestWrapper.delete(baseUrl + "/events/{eventKey}/channels/{channelKey}/objects")
                 .routeParam("eventKey", eventKey)
                 .routeParam("channelKey", channelKey)
                 .body(aJsonObject()
-                        .withProperty("objects", objects)
+                        .withPropertyIfNotNull("objects", objects)
+                        .withPropertyIfNotNull("areaPlaces", areaPlaces)
                         .buildAsString())
         );
     }
