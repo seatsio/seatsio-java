@@ -16,16 +16,15 @@ public class RemoveObjectsFromChannelTest extends SeatsioClientTest {
     public void removeObjects() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
-        client.events.channels.add(event.key(), "channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2", "A-3", "A-4"), null);
+        client.events.channels.add(event.key(), "channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2", "A-3", "A-4"));
 
-        client.events.channels.removeObjects(event.key(), "channelKey1", Set.of("A-3", "A-4"), null);
+        client.events.channels.removeObjects(event.key(), "channelKey1", Set.of("A-3", "A-4"));
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels()).containsExactly(
-                new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2"), Map.of())
+                new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2"))
         );
     }
-
 
     @Test
     public void removeAreaPlaces() {

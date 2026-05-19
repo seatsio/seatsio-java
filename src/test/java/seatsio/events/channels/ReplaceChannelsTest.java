@@ -21,14 +21,29 @@ public class ReplaceChannelsTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey);
 
         client.events.channels.replace(event.key(), List.of(
-                new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1"), Map.of()),
-                new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-2"), Map.of())
+                new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1")),
+                new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-2"))
         ));
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels()).containsExactly(
-                new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1"), Map.of()),
-                new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-2"), Map.of())
+                new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1")),
+                new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-2"))
+        );
+    }
+
+    @Test
+    public void replaceChannelsWithAreaPlaces() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        client.events.channels.replace(event.key(), List.of(
+                new Channel("channelKey1", "channel 1", "#FFFF99", 1, null, Map.of("GA1", 3))
+        ));
+
+        Event retrievedEvent = client.events.retrieve(event.key());
+        assertThat(retrievedEvent.channels()).containsExactly(
+                new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of(), Map.of("GA1", 3))
         );
     }
 
@@ -44,8 +59,8 @@ public class ReplaceChannelsTest extends SeatsioClientTest {
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels()).containsExactly(
-                new Channel("channelKey1", "channel 1", "#FFFF99", null, new HashSet<>(), Map.of()),
-                new Channel("channelKey2", "channel 2", "#FFFF99", null, new HashSet<>(), Map.of())
+                new Channel("channelKey1", "channel 1", "#FFFF99", null, new HashSet<>()),
+                new Channel("channelKey2", "channel 2", "#FFFF99", null, new HashSet<>())
         );
     }
 

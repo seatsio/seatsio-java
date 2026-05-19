@@ -9,6 +9,10 @@ import static seatsio.json.JsonObjectBuilder.aJsonObject;
 
 public record Channel(String key, String name, String color, Integer index, Set<String> objects, Map<String, Integer> areaPlaces) {
 
+    public Channel(String key, String name, String color, Integer index, Set<String> objects) {
+        this(key, name, color, index, objects, Map.of());
+    }
+
     public JsonObject toJson() {
         return aJsonObject()
                 .withProperty("key", key)

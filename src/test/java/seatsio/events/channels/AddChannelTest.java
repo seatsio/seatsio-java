@@ -19,13 +19,13 @@ public class AddChannelTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        client.events.channels.add(event.key(), "channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2"), null);
-        client.events.channels.add(event.key(), "channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-3"), null);
+        client.events.channels.add(event.key(), "channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2"));
+        client.events.channels.add(event.key(), "channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-3"));
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels()).containsExactly(
-                new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2"), Map.of()),
-                new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-3"), Map.of())
+                new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2")),
+                new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-3"))
         );
     }
 
@@ -44,8 +44,8 @@ public class AddChannelTest extends SeatsioClientTest {
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels()).containsExactly(
-                new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2"), Map.of()),
-                new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-3"), Map.of())
+                new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2")),
+                new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-3"))
         );
     }
 
@@ -54,24 +54,50 @@ public class AddChannelTest extends SeatsioClientTest {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        client.events.channels.add(event.key(), "channelKey1", "channel 1", "#FFFF98", null, Set.of("A-1", "A-2"), null);
+        client.events.channels.add(event.key(), "channelKey1", "channel 1", "#FFFF98", null, Set.of("A-1", "A-2"));
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels()).containsExactly(
-                new Channel("channelKey1", "channel 1", "#FFFF98", null, Set.of("A-1", "A-2"), Map.of())
+                new Channel("channelKey1", "channel 1", "#FFFF98", null, Set.of("A-1", "A-2"))
         );
     }
 
     @Test
-    public void objectsAreOptional() {
+    public void objectsAndAreaPlacesAreOptional() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
-        client.events.channels.add(event.key(), "channelKey1", "channel 1", "#FFFF98", 1, null, null);
+        client.events.channels.add(event.key(), "channelKey1", "channel 1", "#FFFF98", 1, null);
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels()).containsExactly(
-                new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of(), Map.of())
+                new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of())
+        );
+    }
+
+    @Test
+    public void areaPlaces() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        client.events.channels.add(event.key(), "channelKey1", "channel 1", "#FFFF98", 1, null, Map.of("GA1", 3));
+
+        Event retrievedEvent = client.events.retrieve(event.key());
+        assertThat(retrievedEvent.channels()).containsExactly(
+                new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of(), Map.of("GA1", 3))
+        );
+    }
+
+    @Test
+    public void objectsAndAreaPlaces() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        client.events.channels.add(event.key(), "channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2"), Map.of("GA1", 3));
+
+        Event retrievedEvent = client.events.retrieve(event.key());
+        assertThat(retrievedEvent.channels()).containsExactly(
+                new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2"), Map.of("GA1", 3))
         );
     }
 

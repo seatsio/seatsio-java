@@ -22,6 +22,10 @@ public class Channels {
         this.unirest = unirest;
     }
 
+    public void add(String eventKey, String channelKey, String name, String color, Integer index, Set<String> objects) {
+        add(eventKey, channelKey, name, color, index, objects, null);
+    }
+
     public void add(String eventKey, String channelKey, String name, String color, Integer index, Set<String> objects, Map<String, Integer> areaPlaces) {
         this.add(eventKey, List.of(new ChannelCreationParams(channelKey, name, color, index, objects, areaPlaces)));
     }
@@ -41,6 +45,10 @@ public class Channels {
     }
 
     public void update(String eventKey, String channelKey, String name, String color, Set<String> objects) {
+        update(eventKey, channelKey, name, color, objects, null);
+    }
+
+    public void update(String eventKey, String channelKey, String name, String color, Set<String> objects, Map<String, Integer> areaPlaces) {
         unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events/{eventKey}/channels/{channelKey}")
                 .routeParam("eventKey", eventKey)
                 .routeParam("channelKey", channelKey)
@@ -48,8 +56,13 @@ public class Channels {
                         .withPropertyIfNotNull("name", name)
                         .withPropertyIfNotNull("color", color)
                         .withPropertyIfNotNull("objects", objects)
+                        .withPropertyIfNotNull("areaPlaces", areaPlaces)
                         .buildAsString())
         );
+    }
+
+    public void addObjects(String eventKey, String channelKey, Set<String> objects) {
+        addObjects(eventKey, channelKey, objects, null);
     }
 
     public void addObjects(String eventKey, String channelKey, Set<String> objects, Map<String, Integer> areaPlaces) {
@@ -61,6 +74,10 @@ public class Channels {
                         .withPropertyIfNotNull("areaPlaces", areaPlaces)
                         .buildAsString())
         );
+    }
+
+    public void removeObjects(String eventKey, String channelKey, Set<String> objects) {
+        removeObjects(eventKey, channelKey, objects, null);
     }
 
     public void removeObjects(String eventKey, String channelKey, Set<String> objects, Map<String, Integer> areaPlaces) {
