@@ -62,6 +62,7 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.channel()).isEqualTo("channel1");
         assertThat(reportItem.distanceToFocalPoint()).isNotNull();
         assertThat(reportItem.seasonStatusOverriddenQuantity()).isEqualTo(0);
+        assertThat(reportItem.seasonStatusOverriddenQuantities()).isEqualTo(Map.of());
         assertThat(reportItem.resaleListingId()).isNull();
 
         EventObjectInfo gaItem = report.get("GA1").get(0);
@@ -94,6 +95,7 @@ public class EventReportsTest extends SeatsioClientTest {
 
         EventObjectInfo reportItem = report.get("A-1").get(0);
         assertThat(reportItem.seasonStatusOverriddenQuantity()).isEqualTo(1);
+        assertThat(reportItem.seasonStatusOverriddenQuantities()).isEqualTo(Map.of(season.key(), 1));
     }
 
     @Test
