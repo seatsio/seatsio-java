@@ -54,6 +54,11 @@ public record ChannelCreationParams(String key, String name, String color, Integ
             return this;
         }
 
+        public Builder withAreaPlaces(Map<String, Integer> areaPlaces) {
+            this.areaPlaces = areaPlaces;
+            return this;
+        }
+
         public ChannelCreationParams build() {
             return new ChannelCreationParams(
                     this.key,

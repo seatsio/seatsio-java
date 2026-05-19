@@ -50,6 +50,24 @@ public class AddChannelTest extends SeatsioClientTest {
     }
 
     @Test
+    public void addChannelsWithAreaPlaces() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        client.events.channels.add(
+                event.key(),
+                List.of(
+                        new ChannelCreationParams.Builder().withKey("channelKey1").withName("channel 1").withColor("#FFFF98").withIndex(1).withAreaPlaces(Map.of("GA1", 3)).build()
+                )
+        );
+
+        Event retrievedEvent = client.events.retrieve(event.key());
+        assertThat(retrievedEvent.channels()).containsExactly(
+                new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of(), Map.of("GA1", 3))
+        );
+    }
+
+    @Test
     public void indexIsOptional() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
