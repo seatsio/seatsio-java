@@ -9,7 +9,6 @@ import seatsio.events.Event;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
