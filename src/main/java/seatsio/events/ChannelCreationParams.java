@@ -2,11 +2,16 @@ package seatsio.events;
 
 import com.google.gson.JsonObject;
 
+import java.util.Map;
 import java.util.Set;
 
 import static seatsio.json.JsonObjectBuilder.aJsonObject;
 
-public record ChannelCreationParams(String key, String name, String color, Integer index, Set<String> objects) {
+public record ChannelCreationParams(String key, String name, String color, Integer index, Set<String> objects, Map<String, Integer> areaPlaces) {
+
+    public ChannelCreationParams(String key, String name, String color, Integer index, Set<String> objects) {
+        this(key, name, color, index, objects, null);
+    }
 
     public JsonObject toJson() {
         return aJsonObject()
@@ -15,6 +20,7 @@ public record ChannelCreationParams(String key, String name, String color, Integ
                 .withProperty("color", color)
                 .withPropertyIfNotNull("index", index)
                 .withPropertyIfNotNull("objects", objects)
+                .withPropertyIfNotNull("areaPlaces", areaPlaces)
                 .build();
     }
 
@@ -25,6 +31,7 @@ public record ChannelCreationParams(String key, String name, String color, Integ
         private String color;
         private Integer index;
         private Set<String> objects;
+        private Map<String, Integer> areaPlaces;
 
         public Builder withKey(String channelKey) {
             this.key = channelKey;
@@ -51,13 +58,19 @@ public record ChannelCreationParams(String key, String name, String color, Integ
             return this;
         }
 
+        public Builder withAreaPlaces(Map<String, Integer> areaPlaces) {
+            this.areaPlaces = areaPlaces;
+            return this;
+        }
+
         public ChannelCreationParams build() {
             return new ChannelCreationParams(
                     this.key,
                     this.name,
                     this.color,
                     this.index,
-                    this.objects
+                    this.objects,
+                    this.areaPlaces
             );
         }
     }

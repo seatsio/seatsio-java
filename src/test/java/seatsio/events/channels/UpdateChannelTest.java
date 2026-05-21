@@ -5,6 +5,7 @@ import seatsio.SeatsioClientTest;
 import seatsio.events.Channel;
 import seatsio.events.Event;
 
+import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,6 +51,20 @@ public class UpdateChannelTest extends SeatsioClientTest {
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels()).containsExactly(
                 new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-3"))
+        );
+    }
+
+    @Test
+    public void updateAreaPlaces() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+        client.events.channels.add(event.key(), "channelKey1", "channel 1", "#FFFF98", 1, null);
+
+        client.events.channels.update(event.key(), "channelKey1", null, null, null, Map.of("GA1", 3));
+
+        Event retrievedEvent = client.events.retrieve(event.key());
+        assertThat(retrievedEvent.channels()).containsExactly(
+                new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of(), Map.of("GA1", 3))
         );
     }
 }

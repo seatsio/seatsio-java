@@ -7,6 +7,7 @@ import seatsio.events.ChannelCreationParams;
 import seatsio.events.Event;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,6 +50,24 @@ public class AddChannelTest extends SeatsioClientTest {
     }
 
     @Test
+    public void addChannelsWithAreaPlaces() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        client.events.channels.add(
+                event.key(),
+                List.of(
+                        new ChannelCreationParams.Builder().withKey("channelKey1").withName("channel 1").withColor("#FFFF98").withIndex(1).withAreaPlaces(Map.of("GA1", 3)).build()
+                )
+        );
+
+        Event retrievedEvent = client.events.retrieve(event.key());
+        assertThat(retrievedEvent.channels()).containsExactly(
+                new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of(), Map.of("GA1", 3))
+        );
+    }
+
+    @Test
     public void indexIsOptional() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
@@ -62,7 +81,7 @@ public class AddChannelTest extends SeatsioClientTest {
     }
 
     @Test
-    public void objectsAreOptional() {
+    public void objectsAndAreaPlacesAreOptional() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
@@ -71,6 +90,32 @@ public class AddChannelTest extends SeatsioClientTest {
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels()).containsExactly(
                 new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of())
+        );
+    }
+
+    @Test
+    public void areaPlaces() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        client.events.channels.add(event.key(), "channelKey1", "channel 1", "#FFFF98", 1, null, Map.of("GA1", 3));
+
+        Event retrievedEvent = client.events.retrieve(event.key());
+        assertThat(retrievedEvent.channels()).containsExactly(
+                new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of(), Map.of("GA1", 3))
+        );
+    }
+
+    @Test
+    public void objectsAndAreaPlaces() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        client.events.channels.add(event.key(), "channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2"), Map.of("GA1", 3));
+
+        Event retrievedEvent = client.events.retrieve(event.key());
+        assertThat(retrievedEvent.channels()).containsExactly(
+                new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2"), Map.of("GA1", 3))
         );
     }
 

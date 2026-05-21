@@ -5,6 +5,7 @@ import seatsio.util.UnirestWrapper;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
@@ -22,7 +23,11 @@ public class Channels {
     }
 
     public void add(String eventKey, String channelKey, String name, String color, Integer index, Set<String> objects) {
-        this.add(eventKey, List.of(new ChannelCreationParams(channelKey, name, color, index, objects)));
+        add(eventKey, channelKey, name, color, index, objects, null);
+    }
+
+    public void add(String eventKey, String channelKey, String name, String color, Integer index, Set<String> objects, Map<String, Integer> areaPlaces) {
+        this.add(eventKey, List.of(new ChannelCreationParams(channelKey, name, color, index, objects, areaPlaces)));
     }
 
     public void add(String eventKey, Collection<ChannelCreationParams> paramsList) {
@@ -40,6 +45,10 @@ public class Channels {
     }
 
     public void update(String eventKey, String channelKey, String name, String color, Set<String> objects) {
+        update(eventKey, channelKey, name, color, objects, null);
+    }
+
+    public void update(String eventKey, String channelKey, String name, String color, Set<String> objects, Map<String, Integer> areaPlaces) {
         unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events/{eventKey}/channels/{channelKey}")
                 .routeParam("eventKey", eventKey)
                 .routeParam("channelKey", channelKey)
@@ -47,26 +56,37 @@ public class Channels {
                         .withPropertyIfNotNull("name", name)
                         .withPropertyIfNotNull("color", color)
                         .withPropertyIfNotNull("objects", objects)
+                        .withPropertyIfNotNull("areaPlaces", areaPlaces)
                         .buildAsString())
         );
     }
 
     public void addObjects(String eventKey, String channelKey, Set<String> objects) {
+        addObjects(eventKey, channelKey, objects, null);
+    }
+
+    public void addObjects(String eventKey, String channelKey, Set<String> objects, Map<String, Integer> areaPlaces) {
         unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events/{eventKey}/channels/{channelKey}/objects")
                 .routeParam("eventKey", eventKey)
                 .routeParam("channelKey", channelKey)
                 .body(aJsonObject()
-                        .withProperty("objects", objects)
+                        .withPropertyIfNotNull("objects", objects)
+                        .withPropertyIfNotNull("areaPlaces", areaPlaces)
                         .buildAsString())
         );
     }
 
     public void removeObjects(String eventKey, String channelKey, Set<String> objects) {
+        removeObjects(eventKey, channelKey, objects, null);
+    }
+
+    public void removeObjects(String eventKey, String channelKey, Set<String> objects, Map<String, Integer> areaPlaces) {
         unirest.stringResponse(UnirestWrapper.delete(baseUrl + "/events/{eventKey}/channels/{channelKey}/objects")
                 .routeParam("eventKey", eventKey)
                 .routeParam("channelKey", channelKey)
                 .body(aJsonObject()
-                        .withProperty("objects", objects)
+                        .withPropertyIfNotNull("objects", objects)
+                        .withPropertyIfNotNull("areaPlaces", areaPlaces)
                         .buildAsString())
         );
     }
