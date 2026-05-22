@@ -109,10 +109,9 @@ public class CreateEventTest extends SeatsioClientTest {
         Event event = client.events.create(chartKey, new CreateEventParams().withChannels(channels));
 
         assertThat(event.channels())
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                 .containsExactly(
-                        new Channel("channelKey1", null, "channel 1", "#FFFF99", 1, Set.of("A-1"), Map.of("GA1", 3)),
-                        new Channel("channelKey2", null, "channel 2", "#FFFF99", 2, Set.of("A-2"), Map.of())
+                        new Channel("channelKey1", event.channels().get(0).id(), "channel 1", "#FFFF99", 1, Set.of("A-1"), Map.of("GA1", 3)),
+                        new Channel("channelKey2", event.channels().get(1).id(), "channel 2", "#FFFF99", 2, Set.of("A-2"), Map.of())
                 );
     }
 

@@ -28,10 +28,9 @@ public class ReplaceChannelsTest extends SeatsioClientTest {
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels())
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                 .containsExactly(
-                        new Channel("channelKey1", null, "channel 1", "#FFFF99", 1, Set.of("A-1"), Map.of()),
-                        new Channel("channelKey2", null, "channel 2", "#FFFF99", 2, Set.of("A-2"), Map.of())
+                        new Channel("channelKey1", retrievedEvent.channels().get(0).id(), "channel 1", "#FFFF99", 1, Set.of("A-1"), Map.of()),
+                        new Channel("channelKey2", retrievedEvent.channels().get(1).id(), "channel 2", "#FFFF99", 2, Set.of("A-2"), Map.of())
                 );
     }
 
@@ -46,9 +45,8 @@ public class ReplaceChannelsTest extends SeatsioClientTest {
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels())
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                 .containsExactly(
-                        new Channel("channelKey1", null, "channel 1", "#FFFF99", 1, Set.of(), Map.of("GA1", 3))
+                        new Channel("channelKey1", retrievedEvent.channels().get(0).id(), "channel 1", "#FFFF99", 1, Set.of(), Map.of("GA1", 3))
                 );
     }
 
@@ -64,10 +62,9 @@ public class ReplaceChannelsTest extends SeatsioClientTest {
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels())
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                 .containsExactly(
-                        new Channel("channelKey1", null, "channel 1", "#FFFF99", null, new HashSet<>(), Map.of()),
-                        new Channel("channelKey2", null, "channel 2", "#FFFF99", null, new HashSet<>(), Map.of())
+                        new Channel("channelKey1", retrievedEvent.channels().get(0).id(), "channel 1", "#FFFF99", null, new HashSet<>(), Map.of()),
+                        new Channel("channelKey2", retrievedEvent.channels().get(1).id(), "channel 2", "#FFFF99", null, new HashSet<>(), Map.of())
                 );
     }
 

@@ -23,10 +23,9 @@ public class AddObjectsToChannelTest extends SeatsioClientTest {
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels())
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                 .containsExactly(
-                        new Channel("channelKey1", null, "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2", "A-3", "A-4"), Map.of()),
-                        new Channel("channelKey2", null, "channel 2", "#FFFF99", 2, Set.of(), Map.of())
+                        new Channel("channelKey1", retrievedEvent.channels().get(0).id(), "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2", "A-3", "A-4"), Map.of()),
+                        new Channel("channelKey2", retrievedEvent.channels().get(1).id(), "channel 2", "#FFFF99", 2, Set.of(), Map.of())
                 );
     }
 
@@ -41,10 +40,9 @@ public class AddObjectsToChannelTest extends SeatsioClientTest {
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels())
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                 .containsExactly(
-                        new Channel("channelKey1", null, "channel 1", "#FFFF98", 1, Set.of(), Map.of("GA1", 30)),
-                        new Channel("channelKey2", null, "channel 2", "#FFFF99", 2, Set.of(), Map.of("GA1", 5))
+                        new Channel("channelKey1", retrievedEvent.channels().get(0).id(), "channel 1", "#FFFF98", 1, Set.of(), Map.of("GA1", 30)),
+                        new Channel("channelKey2", retrievedEvent.channels().get(1).id(), "channel 2", "#FFFF99", 2, Set.of(), Map.of("GA1", 5))
                 );
     }
 
@@ -58,9 +56,8 @@ public class AddObjectsToChannelTest extends SeatsioClientTest {
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels())
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                 .containsExactly(
-                        new Channel("channelKey1", null, "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2", "A-3"), Map.of("GA1", 15))
+                        new Channel("channelKey1", retrievedEvent.channels().get(0).id(), "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2", "A-3"), Map.of("GA1", 15))
                 );
     }
 }
