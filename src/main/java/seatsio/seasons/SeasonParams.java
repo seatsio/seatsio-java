@@ -3,7 +3,7 @@ package seatsio.seasons;
 import com.google.gson.JsonObject;
 import seatsio.charts.Category;
 import seatsio.charts.CategoryKey;
-import seatsio.events.Channel;
+import seatsio.events.ChannelCreationParams;
 import seatsio.events.ForSaleConfigParams;
 import seatsio.events.TableBookingConfig;
 
@@ -20,7 +20,7 @@ public abstract class SeasonParams<T extends  SeasonParams<?>> {
     private List<String> eventKeys;
     private Integer numberOfEvents;
     private TableBookingConfig tableBookingConfig;
-    private List<Channel> channels;
+    private List<ChannelCreationParams> channels;
     private Map<String, CategoryKey> objectCategories;
     private List<Category> categories;
     private ForSaleConfigParams forSaleConfigParams;
@@ -71,7 +71,7 @@ public abstract class SeasonParams<T extends  SeasonParams<?>> {
         return tableBookingConfig;
     }
 
-    public T channels(List<Channel> channels) {
+    public T channels(List<ChannelCreationParams> channels) {
         this.channels = channels;
         return (T) this;
     }
@@ -119,7 +119,7 @@ public abstract class SeasonParams<T extends  SeasonParams<?>> {
         if (channels == null) {
             return null;
         }
-        return channels.stream().map(Channel::toJson).collect(toList());
+        return channels.stream().map(ChannelCreationParams::toJson).collect(toList());
     }
 
     public JsonObject getForSaleConfigAsJson() {
