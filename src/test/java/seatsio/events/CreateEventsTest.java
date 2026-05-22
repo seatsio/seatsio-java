@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.SeatsioException;
 import seatsio.charts.CategoryKey;
+import seatsio.events.Channel;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -127,11 +128,11 @@ public class CreateEventsTest extends SeatsioClientTest {
         ));
 
         assertThat(events).hasSize(1);
-        assertThat(events.get(0).channels())
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
+        List<Channel> eventChannels = events.get(0).channels();
+        assertThat(eventChannels)
                 .containsExactly(
-                        new Channel("channelKey1", null, "channel 1", "#FFFF99", 1, Set.of("A-1"), Map.of("GA1", 3)),
-                        new Channel("channelKey2", null, "channel 2", "#FFFF99", 2, Set.of("A-2"), Map.of())
+                        new Channel("channelKey1", eventChannels.get(0).id(), "channel 1", "#FFFF99", 1, Set.of("A-1"), Map.of("GA1", 3)),
+                        new Channel("channelKey2", eventChannels.get(1).id(), "channel 2", "#FFFF99", 2, Set.of("A-2"), Map.of())
                 );
     }
 
