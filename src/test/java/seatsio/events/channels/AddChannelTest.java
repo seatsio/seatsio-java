@@ -24,7 +24,7 @@ public class AddChannelTest extends SeatsioClientTest {
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels())
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                 .containsExactly(
                         new Channel("channelKey1", null, "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2"), Map.of()),
                         new Channel("channelKey2", null, "channel 2", "#FFFF99", 2, Set.of("A-3"), Map.of())
@@ -46,7 +46,7 @@ public class AddChannelTest extends SeatsioClientTest {
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels())
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                 .containsExactly(
                         new Channel("channelKey1", null, "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2"), Map.of()),
                         new Channel("channelKey2", null, "channel 2", "#FFFF99", 2, Set.of("A-3"), Map.of())
@@ -67,7 +67,7 @@ public class AddChannelTest extends SeatsioClientTest {
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels())
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                 .containsExactly(
                         new Channel("channelKey1", null, "channel 1", "#FFFF98", 1, Set.of(), Map.of("GA1", 3))
                 );
@@ -82,7 +82,7 @@ public class AddChannelTest extends SeatsioClientTest {
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels())
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                 .containsExactly(
                         new Channel("channelKey1", null, "channel 1", "#FFFF98", null, Set.of("A-1", "A-2"), Map.of())
                 );
@@ -97,7 +97,7 @@ public class AddChannelTest extends SeatsioClientTest {
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels())
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                 .containsExactly(
                         new Channel("channelKey1", null, "channel 1", "#FFFF98", 1, Set.of(), Map.of())
                 );
@@ -112,7 +112,7 @@ public class AddChannelTest extends SeatsioClientTest {
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels())
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                 .containsExactly(
                         new Channel("channelKey1", null, "channel 1", "#FFFF98", 1, Set.of(), Map.of("GA1", 3))
                 );
@@ -127,14 +127,14 @@ public class AddChannelTest extends SeatsioClientTest {
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels())
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                 .containsExactly(
                         new Channel("channelKey1", null, "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2"), Map.of("GA1", 3))
                 );
     }
 
     @Test
-    public void publicKeyIsReturned() {
+    public void idIsReturned() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
 
@@ -142,7 +142,7 @@ public class AddChannelTest extends SeatsioClientTest {
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels()).hasSize(1);
-        assertThat(retrievedEvent.channels().get(0).publicKey()).isNotNull();
+        assertThat(retrievedEvent.channels().get(0).id()).isNotNull();
     }
 
 }

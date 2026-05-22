@@ -22,7 +22,7 @@ public class UpdateChannelTest extends SeatsioClientTest {
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels())
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                 .containsExactly(
                         new Channel("channelKey1", null, "channel 2", "#FFFF98", 1, Set.of("A-1", "A-2"), Map.of())
                 );
@@ -38,7 +38,7 @@ public class UpdateChannelTest extends SeatsioClientTest {
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels())
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                 .containsExactly(
                         new Channel("channelKey1", null, "channel 1", "#FFFF99", 1, Set.of("A-1", "A-2"), Map.of())
                 );
@@ -54,7 +54,7 @@ public class UpdateChannelTest extends SeatsioClientTest {
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels())
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                 .containsExactly(
                         new Channel("channelKey1", null, "channel 1", "#FFFF98", 1, Set.of("A-3"), Map.of())
                 );
@@ -70,7 +70,7 @@ public class UpdateChannelTest extends SeatsioClientTest {
 
         Event retrievedEvent = client.events.retrieve(event.key());
         assertThat(retrievedEvent.channels())
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                 .containsExactly(
                         new Channel("channelKey1", null, "channel 1", "#FFFF98", 1, Set.of(), Map.of("GA1", 3))
                 );
