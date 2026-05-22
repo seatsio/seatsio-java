@@ -26,8 +26,8 @@ public class AddChannelTest extends SeatsioClientTest {
         assertThat(retrievedEvent.channels())
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
                 .containsExactly(
-                        new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2"), Map.of(), null),
-                        new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-3"), Map.of(), null)
+                        new Channel("channelKey1", null, "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2"), Map.of()),
+                        new Channel("channelKey2", null, "channel 2", "#FFFF99", 2, Set.of("A-3"), Map.of())
                 );
     }
 
@@ -48,8 +48,8 @@ public class AddChannelTest extends SeatsioClientTest {
         assertThat(retrievedEvent.channels())
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
                 .containsExactly(
-                        new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2"), Map.of(), null),
-                        new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-3"), Map.of(), null)
+                        new Channel("channelKey1", null, "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2"), Map.of()),
+                        new Channel("channelKey2", null, "channel 2", "#FFFF99", 2, Set.of("A-3"), Map.of())
                 );
     }
 
@@ -69,7 +69,7 @@ public class AddChannelTest extends SeatsioClientTest {
         assertThat(retrievedEvent.channels())
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
                 .containsExactly(
-                        new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of(), Map.of("GA1", 3), null)
+                        new Channel("channelKey1", null, "channel 1", "#FFFF98", 1, Set.of(), Map.of("GA1", 3))
                 );
     }
 
@@ -84,7 +84,7 @@ public class AddChannelTest extends SeatsioClientTest {
         assertThat(retrievedEvent.channels())
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
                 .containsExactly(
-                        new Channel("channelKey1", "channel 1", "#FFFF98", null, Set.of("A-1", "A-2"), Map.of(), null)
+                        new Channel("channelKey1", null, "channel 1", "#FFFF98", null, Set.of("A-1", "A-2"), Map.of())
                 );
     }
 
@@ -99,7 +99,7 @@ public class AddChannelTest extends SeatsioClientTest {
         assertThat(retrievedEvent.channels())
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
                 .containsExactly(
-                        new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of(), Map.of(), null)
+                        new Channel("channelKey1", null, "channel 1", "#FFFF98", 1, Set.of(), Map.of())
                 );
     }
 
@@ -114,7 +114,7 @@ public class AddChannelTest extends SeatsioClientTest {
         assertThat(retrievedEvent.channels())
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
                 .containsExactly(
-                        new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of(), Map.of("GA1", 3), null)
+                        new Channel("channelKey1", null, "channel 1", "#FFFF98", 1, Set.of(), Map.of("GA1", 3))
                 );
     }
 
@@ -129,7 +129,7 @@ public class AddChannelTest extends SeatsioClientTest {
         assertThat(retrievedEvent.channels())
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
                 .containsExactly(
-                        new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2"), Map.of("GA1", 3), null)
+                        new Channel("channelKey1", null, "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2"), Map.of("GA1", 3))
                 );
     }
 

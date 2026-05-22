@@ -115,8 +115,8 @@ public class CreateSeasonTest extends SeatsioClientTest {
         assertThat(season.channels())
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
                 .containsExactly(
-                        new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1"), Map.of(), null),
-                        new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-2"), Map.of(), null)
+                        new Channel("channelKey1", null, "channel 1", "#FFFF99", 1, Set.of("A-1"), Map.of()),
+                        new Channel("channelKey2", null, "channel 2", "#FFFF99", 2, Set.of("A-2"), Map.of())
                 );
     }
 

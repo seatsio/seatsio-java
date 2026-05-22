@@ -111,8 +111,8 @@ public class CreateEventTest extends SeatsioClientTest {
         assertThat(event.channels())
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
                 .containsExactly(
-                        new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1"), Map.of("GA1", 3), null),
-                        new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-2"), Map.of(), null)
+                        new Channel("channelKey1", null, "channel 1", "#FFFF99", 1, Set.of("A-1"), Map.of("GA1", 3)),
+                        new Channel("channelKey2", null, "channel 2", "#FFFF99", 2, Set.of("A-2"), Map.of())
                 );
     }
 

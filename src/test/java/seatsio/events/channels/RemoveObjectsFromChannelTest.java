@@ -24,7 +24,7 @@ public class RemoveObjectsFromChannelTest extends SeatsioClientTest {
         assertThat(retrievedEvent.channels())
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
                 .containsExactly(
-                        new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2"), Map.of(), null)
+                        new Channel("channelKey1", null, "channel 1", "#FFFF98", 1, Set.of("A-1", "A-2"), Map.of())
                 );
     }
 
@@ -40,7 +40,7 @@ public class RemoveObjectsFromChannelTest extends SeatsioClientTest {
         assertThat(retrievedEvent.channels())
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
                 .containsExactly(
-                        new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of(), Map.of("GA1", 20), null)
+                        new Channel("channelKey1", null, "channel 1", "#FFFF98", 1, Set.of(), Map.of("GA1", 20))
                 );
     }
 
@@ -56,7 +56,7 @@ public class RemoveObjectsFromChannelTest extends SeatsioClientTest {
         assertThat(retrievedEvent.channels())
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
                 .containsExactly(
-                        new Channel("channelKey1", "channel 1", "#FFFF98", 1, Set.of("A-1"), Map.of("GA1", 20), null)
+                        new Channel("channelKey1", null, "channel 1", "#FFFF98", 1, Set.of("A-1"), Map.of("GA1", 20))
                 );
     }
 }

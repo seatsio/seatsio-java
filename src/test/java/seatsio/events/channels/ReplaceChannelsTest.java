@@ -30,8 +30,8 @@ public class ReplaceChannelsTest extends SeatsioClientTest {
         assertThat(retrievedEvent.channels())
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
                 .containsExactly(
-                        new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1"), Map.of(), null),
-                        new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-2"), Map.of(), null)
+                        new Channel("channelKey1", null, "channel 1", "#FFFF99", 1, Set.of("A-1"), Map.of()),
+                        new Channel("channelKey2", null, "channel 2", "#FFFF99", 2, Set.of("A-2"), Map.of())
                 );
     }
 
@@ -48,7 +48,7 @@ public class ReplaceChannelsTest extends SeatsioClientTest {
         assertThat(retrievedEvent.channels())
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
                 .containsExactly(
-                        new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of(), Map.of("GA1", 3), null)
+                        new Channel("channelKey1", null, "channel 1", "#FFFF99", 1, Set.of(), Map.of("GA1", 3))
                 );
     }
 
@@ -66,8 +66,8 @@ public class ReplaceChannelsTest extends SeatsioClientTest {
         assertThat(retrievedEvent.channels())
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
                 .containsExactly(
-                        new Channel("channelKey1", "channel 1", "#FFFF99", null, new HashSet<>(), Map.of(), null),
-                        new Channel("channelKey2", "channel 2", "#FFFF99", null, new HashSet<>(), Map.of(), null)
+                        new Channel("channelKey1", null, "channel 1", "#FFFF99", null, new HashSet<>(), Map.of()),
+                        new Channel("channelKey2", null, "channel 2", "#FFFF99", null, new HashSet<>(), Map.of())
                 );
     }
 

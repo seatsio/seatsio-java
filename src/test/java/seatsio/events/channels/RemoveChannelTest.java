@@ -30,7 +30,7 @@ public class RemoveChannelTest extends SeatsioClientTest {
         assertThat(retrievedEvent.channels())
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields("publicKey")
                 .containsExactly(
-                        new Channel("channelKey1", "channel 1", "#FFFF99", 1, new HashSet<>(), Map.of(), null)
+                        new Channel("channelKey1", null, "channel 1", "#FFFF99", 1, new HashSet<>(), Map.of())
                 );
     }
 
