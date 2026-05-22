@@ -91,14 +91,14 @@ public class Channels {
         );
     }
 
-    public void replace(String eventKey, List<Channel> channels) {
+    public void replace(String eventKey, List<ChannelCreationParams> channels) {
         unirest.stringResponse(UnirestWrapper.post(baseUrl + "/events/{key}/channels/replace")
                 .routeParam("key", eventKey)
                 .body(channelsToJson(channels))
         );
     }
 
-    private static String channelsToJson(List<Channel> channels) {
+    private static String channelsToJson(List<ChannelCreationParams> channels) {
         JsonArray channelsJson = new JsonArray();
         channels.forEach(channel -> channelsJson.add(channel.toJson()));
         return aJsonObject().withProperty("channels", channelsJson).buildAsString();

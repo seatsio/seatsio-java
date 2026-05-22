@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.charts.Chart;
 import seatsio.events.Channel;
+import seatsio.events.ChannelCreationParams;
 import seatsio.events.ForSaleConfig;
 import seatsio.events.ForSaleConfigParams;
 import seatsio.events.TableBookingConfig;
@@ -103,15 +104,20 @@ public class CreateSeasonTest extends SeatsioClientTest {
     @Test
     public void channelsCanBePassedIn() {
         String chartKey = createTestChart();
-        List<Channel> channels = List.of(
-                new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1")),
-                new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-2"))
+        List<ChannelCreationParams> channels = List.of(
+                new ChannelCreationParams("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1")),
+                new ChannelCreationParams("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-2"))
         );
 
         Season season = client.seasons.create(chartKey, new CreateSeasonParams().channels(channels));
 
         assertThat(season.key()).isNotNull();
-        assertThat(season.channels()).isEqualTo(channels);
+        assertThat(season.channels())
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
+                .containsExactly(
+                        new Channel("channelKey1", null, "channel 1", "#FFFF99", 1, Set.of("A-1"), Map.of()),
+                        new Channel("channelKey2", null, "channel 2", "#FFFF99", 2, Set.of("A-2"), Map.of())
+                );
     }
 
     @Test

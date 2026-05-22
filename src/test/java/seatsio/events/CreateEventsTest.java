@@ -117,21 +117,22 @@ public class CreateEventsTest extends SeatsioClientTest {
     @Test
     public void channelsCanBePassedIn() {
         String chartKey = createTestChart();
-        List<Channel> channels = List.of(
-                new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1"), Map.of("GA1", 3)),
-                new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-2"))
+        List<ChannelCreationParams> channels = List.of(
+                new ChannelCreationParams("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1"), Map.of("GA1", 3)),
+                new ChannelCreationParams("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-2"))
         );
 
         List<Event> events = client.events.create(chartKey, List.of(
                 new CreateEventParams().withChannels(channels)
         ));
 
-        assertThat(events)
-                .extracting("channels")
-                .containsExactly(List.of(
-                        new Channel("channelKey1", "channel 1", "#FFFF99", 1, Set.of("A-1"), Map.of("GA1", 3)),
-                        new Channel("channelKey2", "channel 2", "#FFFF99", 2, Set.of("A-2"))
-                ));
+        assertThat(events).hasSize(1);
+        assertThat(events.get(0).channels())
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
+                .containsExactly(
+                        new Channel("channelKey1", null, "channel 1", "#FFFF99", 1, Set.of("A-1"), Map.of("GA1", 3)),
+                        new Channel("channelKey2", null, "channel 2", "#FFFF99", 2, Set.of("A-2"), Map.of())
+                );
     }
 
     @Test

@@ -8,10 +8,10 @@ import static java.util.stream.Collectors.toList;
 
 public class CreateEventParams extends EventParams<CreateEventParams> {
 
-    public List<Channel> channels;
+    public List<ChannelCreationParams> channels;
     public ForSaleConfigParams forSaleConfigParams;
 
-    public CreateEventParams withChannels(List<Channel> channels) {
+    public CreateEventParams withChannels(List<ChannelCreationParams> channels) {
         this.channels = channels;
         return this;
     }
@@ -25,7 +25,7 @@ public class CreateEventParams extends EventParams<CreateEventParams> {
         if (channels == null) {
             return null;
         }
-        return channels.stream().map(Channel::toJson).collect(toList());
+        return channels.stream().map(ChannelCreationParams::toJson).collect(toList());
     }
 
     public JsonObject getForSaleConfigAsJson() {
