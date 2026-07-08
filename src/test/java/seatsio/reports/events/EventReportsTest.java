@@ -420,4 +420,24 @@ public class EventReportsTest extends SeatsioClientTest {
 
         assertThat(report).hasSize(2);
     }
+
+    @Test
+    public void flatList() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        List<EventObjectInfo> report = client.eventReports.flatList(event.key());
+
+        assertThat(report.get(0).label()).isEqualTo("A-1");
+    }
+
+    @Test
+    public void flatListCsv() {
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        String csv = client.eventReports.flatListCsv(event.key());
+
+        assertThat(csv.lines().skip(1).findFirst().get()).startsWith("A-1,");
+    }
 }
