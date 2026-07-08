@@ -20,6 +20,18 @@ public class EventReports extends Reports {
         this.unirest = unirest;
     }
 
+    public List<EventObjectInfo> flatList(String eventKey) {
+        String result = unirest.stringResponse(get(baseUrl + "/reports/events/{key}")
+                .routeParam("key", eventKey));
+        TypeToken<List<EventObjectInfo>> typeToken = new TypeToken<List<EventObjectInfo>>() {};
+        return gson().fromJson(result, typeToken.getType());
+    }
+
+    public String flatListCsv(String eventKey) {
+        return unirest.stringResponse(get(baseUrl + "/reports/events/{key}.csv")
+                .routeParam("key", eventKey));
+    }
+
     public Map<String, List<EventObjectInfo>> byLabel(String eventKey) {
         return fetchReport("byLabel", eventKey);
     }
