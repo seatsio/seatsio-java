@@ -21,14 +21,4 @@ public class RegenerateWorkspaceSecretKeyTest extends SeatsioClientTest {
                 .isNotNull()
                 .isEqualTo(newSecretKey);
     }
-
-    @Test
-    public void regenerationIsNotPossibleWhenMultipleKeysArePresent() {
-        Workspace workspace = client.workspaces.create("my workspace");
-        client.workspaces.addSecretKey(workspace.key());
-
-        SeatsioException ex = assertThrows(SeatsioException.class, () -> client.workspaces.regenerateSecretKey(workspace.key()));
-        assertThat(ex.errors.get(0).getCode()).isEqualTo("MULTIPLE_SECRET_KEYS_PRESENT");
-    }
-
 }

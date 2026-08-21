@@ -51,6 +51,7 @@ public class Workspaces {
                 .body(request.build().toString()));
     }
 
+    @Deprecated(since = "v91.0.0", forRemoval = true)
     public String regenerateSecretKey(String key) {
         String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/workspaces/{key}/actions/regenerate-secret-key")
                 .routeParam("key", key));
