@@ -60,6 +60,24 @@ public class Workspaces {
         return result.getAsJsonPrimitive("secretKey").getAsString();
     }
 
+    public String addSecretKey(String key) {
+        String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/workspaces/{key}/actions/add-secret-key")
+                .routeParam("key", key));
+
+        JsonObject result = JsonParser.parseString(response)
+                .getAsJsonObject();
+        return result.getAsJsonPrimitive("secretKey").getAsString();
+    }
+
+    public void removeSecretKey(String key, String secretKeyToRemove) {
+        String request = aJsonObject()
+                .withProperty("secretKey", secretKeyToRemove)
+                .buildAsString();
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/workspaces/{key}/actions/remove-secret-key")
+                .routeParam("key", key)
+                .body(request));
+    }
+
     public void activate(String key) {
         unirest.stringResponse(UnirestWrapper.post(baseUrl + "/workspaces/{key}/actions/activate")
                 .routeParam("key", key));
