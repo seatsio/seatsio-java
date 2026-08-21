@@ -51,6 +51,7 @@ public class Workspaces {
                 .body(request.build().toString()));
     }
 
+    @Deprecated(since = "v91.0.0", forRemoval = true)
     public String regenerateSecretKey(String key) {
         String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/workspaces/{key}/actions/regenerate-secret-key")
                 .routeParam("key", key));
@@ -58,6 +59,24 @@ public class Workspaces {
         JsonObject result = JsonParser.parseString(response)
                 .getAsJsonObject();
         return result.getAsJsonPrimitive("secretKey").getAsString();
+    }
+
+    public String addSecretKey(String key) {
+        String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/workspaces/{key}/actions/add-secret-key")
+                .routeParam("key", key));
+
+        JsonObject result = JsonParser.parseString(response)
+                .getAsJsonObject();
+        return result.getAsJsonPrimitive("secretKey").getAsString();
+    }
+
+    public void removeSecretKey(String key, String secretKeyToRemove) {
+        String request = aJsonObject()
+                .withProperty("secretKey", secretKeyToRemove)
+                .buildAsString();
+        unirest.stringResponse(UnirestWrapper.post(baseUrl + "/workspaces/{key}/actions/remove-secret-key")
+                .routeParam("key", key)
+                .body(request));
     }
 
     public void activate(String key) {

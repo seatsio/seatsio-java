@@ -2,8 +2,10 @@ package seatsio.workspaces;
 
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
+import seatsio.SeatsioException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class RegenerateWorkspaceSecretKeyTest extends SeatsioClientTest {
 
@@ -19,5 +21,4 @@ public class RegenerateWorkspaceSecretKeyTest extends SeatsioClientTest {
                 .isNotNull()
                 .isEqualTo(newSecretKey);
     }
-
 }
