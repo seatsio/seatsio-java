@@ -3,6 +3,8 @@ package seatsio.reports.events;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.events.Event;
+import seatsio.seasons.CreateSeasonParams;
+import seatsio.seasons.Season;
 
 import java.util.List;
 import java.util.Map;
@@ -11,6 +13,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static seatsio.events.EventObjectInfo.*;
 
 public class EventReportsDeepSummaryTest extends SeatsioClientTest {
+
+    @Test
+    public void withSeasonBookingsNotPropagatedCanBeUsedToFetchAReportForAnEventInASeason() {
+        String chartKey = createTestChart();
+        Season season = client.seasons.create(chartKey, new CreateSeasonParams().numberOfEvents(1));
+        Event event = season.events.get(0);
+        client.events.book(season.key(), List.of("A-1", "A-2"));
+
+        Map<String, EventReportDeepSummaryItem> report = client.eventReports.withSeasonBookingsNotPropagated().deepSummaryByStatus(event.key());
+
+        assertThat(report.get(FREE).count()).isEqualTo(232);
+    }
 
     @Test
     public void deepSummaryByStatus() {

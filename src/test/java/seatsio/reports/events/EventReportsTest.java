@@ -19,6 +19,33 @@ import static seatsio.events.TableBookingConfig.allByTable;
 public class EventReportsTest extends SeatsioClientTest {
 
     @Test
+    public void withSeasonBookingsNotPropagatedReturnsANewInstanceRatherThanMutatingTheOriginal() {
+        EventReports withoutPropagation = client.eventReports.withSeasonBookingsNotPropagated();
+
+        assertThat(withoutPropagation).isNotSameAs(client.eventReports);
+
+        String chartKey = createTestChart();
+        Event event = client.events.create(chartKey);
+
+        Map<String, List<EventObjectInfo>> reportFromOriginal = client.eventReports.byLabel(event.key());
+        assertThat(reportFromOriginal.get("A-1")).hasSize(1);
+    }
+
+    @Test
+    public void withSeasonBookingsNotPropagatedCanBeUsedToFetchAReportForAnEventInASeason() {
+        String chartKey = createTestChart();
+        Season season = client.seasons.create(chartKey, new CreateSeasonParams().numberOfEvents(1));
+        Event event = season.events.get(0);
+        client.events.book(season.key(), List.of("A-1", "A-2"));
+        client.events.book(event.key(), List.of("A-3"));
+
+        Map<String, List<EventObjectInfo>> report = client.eventReports.withSeasonBookingsNotPropagated().byLabel(event.key());
+
+        assertThat(report.get("A-1").get(0).status()).isNotEqualTo(BOOKED);
+        assertThat(report.get("A-3").get(0).status()).isEqualTo(BOOKED);
+    }
+
+    @Test
     public void reportItemProperties() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey, new CreateEventParams().withChannels(List.of(
@@ -164,6 +191,21 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(report.get("lolzor")).hasSize(2);
         assertThat(report.get("booked")).hasSize(1);
         assertThat(report.get("free")).hasSize(31);
+    }
+
+    @Test
+    public void byStatusWithSeasonBookingsNotPropagated() {
+        String chartKey = createTestChart();
+        Season season = client.seasons.create(chartKey, new CreateSeasonParams().numberOfEvents(1));
+        Event event = season.events.get(0);
+        client.events.book(season.key(), List.of("A-1", "A-2"));
+        client.events.book(event.key(), List.of("A-3"));
+
+        Map<String, List<EventObjectInfo>> reportWithPropagation = client.eventReports.byStatus(season.key());
+        Map<String, List<EventObjectInfo>> reportWithoutPropagation = client.eventReports.withSeasonBookingsNotPropagated().byStatus(season.key());
+
+        assertThat(findByLabel(reportWithPropagation, "A-3").status()).isEqualTo(BOOKED);
+        assertThat(findByLabel(reportWithoutPropagation, "A-3").status()).isNotEqualTo(BOOKED);
     }
 
     @Test
@@ -432,6 +474,21 @@ public class EventReportsTest extends SeatsioClientTest {
     }
 
     @Test
+    public void flatListWithSeasonBookingsNotPropagated() {
+        String chartKey = createTestChart();
+        Season season = client.seasons.create(chartKey, new CreateSeasonParams().numberOfEvents(1));
+        Event event = season.events.get(0);
+        client.events.book(season.key(), List.of("A-1", "A-2"));
+        client.events.book(event.key(), List.of("A-3"));
+
+        List<EventObjectInfo> reportWithPropagation = client.eventReports.flatList(season.key());
+        List<EventObjectInfo> reportWithoutPropagation = client.eventReports.withSeasonBookingsNotPropagated().flatList(season.key());
+
+        assertThat(findByLabel(reportWithPropagation, "A-3").status()).isEqualTo(BOOKED);
+        assertThat(findByLabel(reportWithoutPropagation, "A-3").status()).isNotEqualTo(BOOKED);
+    }
+
+    @Test
     public void flatListCsv() {
         String chartKey = createTestChart();
         Event event = client.events.create(chartKey);
@@ -439,5 +496,16 @@ public class EventReportsTest extends SeatsioClientTest {
         String csv = client.eventReports.flatListCsv(event.key());
 
         assertThat(csv.lines().skip(1).findFirst().get()).startsWith("A-1,");
+    }
+
+    private EventObjectInfo findByLabel(Map<String, List<EventObjectInfo>> report, String label) {
+        return findByLabel(report.values().stream().flatMap(List::stream).toList(), label);
+    }
+
+    private EventObjectInfo findByLabel(List<EventObjectInfo> report, String label) {
+        return report.stream()
+                .filter(item -> item.label().equals(label))
+                .findFirst()
+                .orElseThrow();
     }
 }

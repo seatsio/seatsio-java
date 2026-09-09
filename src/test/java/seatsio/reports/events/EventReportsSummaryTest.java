@@ -5,6 +5,8 @@ import seatsio.SeatsioClientTest;
 import seatsio.events.ChannelCreationParams;
 import seatsio.events.CreateEventParams;
 import seatsio.events.Event;
+import seatsio.seasons.CreateSeasonParams;
+import seatsio.seasons.Season;
 
 import java.util.List;
 import java.util.Map;
@@ -15,6 +17,18 @@ import static seatsio.events.EventObjectInfo.*;
 import static seatsio.reports.events.EventReportSummaryItemBuilder.anEventReportSummaryItem;
 
 public class EventReportsSummaryTest extends SeatsioClientTest {
+
+    @Test
+    public void withSeasonBookingsNotPropagatedCanBeUsedToFetchAReportForAnEventInASeason() {
+        String chartKey = createTestChart();
+        Season season = client.seasons.create(chartKey, new CreateSeasonParams().numberOfEvents(1));
+        Event event = season.events.get(0);
+        client.events.book(season.key(), List.of("A-1", "A-2"));
+
+        Map<String, EventReportSummaryItem> report = client.eventReports.withSeasonBookingsNotPropagated().summaryByStatus(event.key());
+
+        assertThat(report.get(FREE).count()).isEqualTo(232);
+    }
 
     @Test
     public void summaryByStatus() {
@@ -47,6 +61,21 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .withByZone(Map.of(NO_ZONE, 231))
                 .build();
         assertThat(report).isEqualTo(Map.of(BOOKED, bookedReport, FREE, freeReport));
+    }
+
+    @Test
+    public void summaryByStatusWithSeasonBookingsNotPropagated() {
+        String chartKey = createTestChart();
+        Season season = client.seasons.create(chartKey, new CreateSeasonParams().numberOfEvents(1));
+        Event event = season.events.get(0);
+        client.events.book(season.key(), List.of("A-1", "A-2"));
+        client.events.book(event.key(), List.of("A-3"));
+
+        Map<String, EventReportSummaryItem> reportWithPropagation = client.eventReports.summaryByStatus(season.key());
+        Map<String, EventReportSummaryItem> reportWithoutPropagation = client.eventReports.withSeasonBookingsNotPropagated().summaryByStatus(season.key());
+
+        assertThat(reportWithPropagation.get(BOOKED).count()).isEqualTo(3);
+        assertThat(reportWithoutPropagation.get(BOOKED).count()).isEqualTo(2);
     }
 
     @Test
@@ -390,5 +419,4 @@ public class EventReportsSummaryTest extends SeatsioClientTest {
                 .build();
         assertThat(report).isEqualTo(Map.of("channel1", channel1Report, NO_CHANNEL, noChannelReport));
     }
-
 }
