@@ -40,7 +40,11 @@ public abstract class Reports {
     }
 
     protected <T> List<T> fetchReportFiltered(String reportType, String eventKey, String filter) {
-        return (List<T>) fetchReport(reportType, eventKey, null).getOrDefault(filter, new ArrayList<>());
+        return fetchReportFiltered(reportType, eventKey, filter, null);
+    }
+
+    protected <T> List<T> fetchReportFiltered(String reportType, String eventKey, String filter, Map<String, Object> queryParams) {
+        return (List<T>) fetchReport(reportType, eventKey, queryParams).getOrDefault(filter, new ArrayList<>());
     }
 
     protected abstract <T> TypeToken<Map<String, List<T>>> getTypeToken();
