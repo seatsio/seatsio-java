@@ -183,6 +183,11 @@ public class Events {
                 .routeParam("key", eventKey));
     }
 
+    public void markEverythingAsForNotSale(String eventKey) {
+        unirest.stringResponse(post(baseUrl + "/events/{key}/actions/mark-everything-as-not-for-sale")
+                .routeParam("key", eventKey));
+    }
+
     public Stream<Event> listAll() {
         return list().all();
     }
