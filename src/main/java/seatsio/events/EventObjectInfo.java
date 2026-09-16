@@ -13,7 +13,7 @@ public record EventObjectInfo(String status, String label, Labels labels, IDs id
                               String availabilityReason, String channel, Double distanceToFocalPoint,
                               Map<String, Map<String, Integer>> holds, Boolean variableOccupancy, Integer minOccupancy,
                               Integer maxOccupancy, int seasonStatusOverriddenQuantity, Map<String, Integer> seasonStatusOverriddenQuantities, String zone, Floor floor,
-                              String resaleListingId, AreaType type) {
+                              String resaleListingId, AreaType areaType) {
 
     public static final String AVAILABLE = "available";
     public static final String NOT_AVAILABLE = "not_available";

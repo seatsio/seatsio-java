@@ -46,7 +46,7 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
         assertThat(reportItem.isPlusSize()).isFalse();
         assertThat(reportItem.hasRestrictedView()).isFalse();
         assertThat(reportItem.floor()).isNull();
-        assertThat(reportItem.type()).isNull();
+        assertThat(reportItem.areaType()).isNull();
     }
 
     @Test
@@ -59,7 +59,7 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
         assertThat(reportItem.capacity()).isEqualTo(100);
         assertThat(reportItem.objectType()).isEqualTo("generalAdmission");
         assertThat(reportItem.bookAsAWhole()).isEqualTo(false);
-        assertThat(reportItem.type()).isEqualTo(AreaType.GENERAL_ADMISSION);
+        assertThat(reportItem.areaType()).isEqualTo(AreaType.GENERAL_ADMISSION);
     }
 
     @Test
