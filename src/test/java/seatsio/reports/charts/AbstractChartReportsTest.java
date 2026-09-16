@@ -3,6 +3,7 @@ package seatsio.reports.charts;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.charts.ChartObjectInfo;
+import seatsio.events.AreaType;
 import seatsio.events.Floor;
 import seatsio.events.IDs;
 import seatsio.events.LabelAndType;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static seatsio.events.AreaType.GENERAL_ADMISSION;
 import static seatsio.reports.charts.ChartReportBookWholeTablesMode.*;
 import static seatsio.reports.charts.ChartReportOptions.options;
 
@@ -45,6 +47,7 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
         assertThat(reportItem.isPlusSize()).isFalse();
         assertThat(reportItem.hasRestrictedView()).isFalse();
         assertThat(reportItem.floor()).isNull();
+        assertThat(reportItem.areaType()).isNull();
     }
 
     @Test
@@ -57,6 +60,7 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
         assertThat(reportItem.capacity()).isEqualTo(100);
         assertThat(reportItem.objectType()).isEqualTo("generalAdmission");
         assertThat(reportItem.bookAsAWhole()).isEqualTo(false);
+        assertThat(reportItem.areaType()).isEqualTo(GENERAL_ADMISSION);
     }
 
     @Test
