@@ -10,6 +10,7 @@ public record ChartObjectInfo(String label, Labels labels, IDs ids, String categ
                               Double distanceToFocalPoint, Integer numSeats, Boolean isAccessible,
                               Boolean isCompanionSeat, Boolean hasLiftUpArmrests, Boolean isHearingImpaired,
                               Boolean isSemiAmbulatorySeat, Boolean hasSignLanguageInterpretation,
-                              Boolean isPlusSize, Boolean hasRestrictedView, String zone, Floor floor) {
+                              Boolean isPlusSize, Boolean hasRestrictedView, String zone, Floor floor,
+                              String areaType) {
 
 }

@@ -33,6 +33,7 @@ public class RetrieveEventObjectInfoTest extends SeatsioClientTest {
         EventObjectInfo objectInfo = client.events.retrieveObjectInfo(event.key(), "GA1");
 
         assertThat(objectInfo.holds()).isEqualTo(Map.of(holdToken.holdToken(), Map.of("NO_TICKET_TYPE", 1)));
+        assertThat(objectInfo.areaType()).isEqualTo("generalAdmission");
     }
 
 }

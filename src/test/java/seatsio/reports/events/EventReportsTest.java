@@ -91,6 +91,7 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.seasonStatusOverriddenQuantity()).isEqualTo(0);
         assertThat(reportItem.seasonStatusOverriddenQuantities()).isEqualTo(Map.of());
         assertThat(reportItem.resaleListingId()).isNull();
+        assertThat(reportItem.areaType()).isNull();
 
         EventObjectInfo gaItem = report.get("GA1").get(0);
         assertThat(gaItem.variableOccupancy()).isFalse();
@@ -153,6 +154,7 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.isPlusSize()).isNull();
         assertThat(reportItem.displayedObjectType()).isNull();
         assertThat(reportItem.parentDisplayedObjectType()).isNull();
+        assertThat(reportItem.areaType()).isEqualTo("generalAdmission");
     }
 
     @Test
