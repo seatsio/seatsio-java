@@ -1,16 +1,15 @@
 package seatsio.events;
 
-import com.google.gson.annotations.SerializedName;
+/**
+ * Not a Java enum, for forward compatibility: the backend may return area types that this
+ * version of the library doesn't know about yet.
+ */
+public final class AreaType {
 
-public enum AreaType {
+    public static final String GENERAL_ADMISSION = "generalAdmission";
+    public static final String FIXED_OCCUPANCY = "fixedOccupancy";
+    public static final String VARIABLE_OCCUPANCY = "variableOccupancy";
 
-    @SerializedName("generalAdmission")
-    GENERAL_ADMISSION,
-
-    @SerializedName("fixedOccupancy")
-    FIXED_OCCUPANCY,
-
-    @SerializedName("variableOccupancy")
-    VARIABLE_OCCUPANCY
+    private AreaType() {
+    }
 }
-

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static seatsio.events.AreaType.GENERAL_ADMISSION;
 import static seatsio.events.EventObjectInfo.FREE;
 
 public class RetrieveEventObjectInfoTest extends SeatsioClientTest {
@@ -33,7 +34,7 @@ public class RetrieveEventObjectInfoTest extends SeatsioClientTest {
         EventObjectInfo objectInfo = client.events.retrieveObjectInfo(event.key(), "GA1");
 
         assertThat(objectInfo.holds()).isEqualTo(Map.of(holdToken.holdToken(), Map.of("NO_TICKET_TYPE", 1)));
-        assertThat(objectInfo.areaType()).isEqualTo(AreaType.GENERAL_ADMISSION);
+        assertThat(objectInfo.areaType()).isEqualTo(GENERAL_ADMISSION);
     }
 
 }

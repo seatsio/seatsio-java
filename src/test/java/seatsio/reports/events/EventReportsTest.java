@@ -13,6 +13,7 @@ import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static seatsio.events.AreaType.GENERAL_ADMISSION;
 import static seatsio.events.EventObjectInfo.*;
 import static seatsio.events.TableBookingConfig.allByTable;
 
@@ -154,7 +155,7 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.isPlusSize()).isNull();
         assertThat(reportItem.displayedObjectType()).isNull();
         assertThat(reportItem.parentDisplayedObjectType()).isNull();
-        assertThat(reportItem.areaType()).isEqualTo(AreaType.GENERAL_ADMISSION);
+        assertThat(reportItem.areaType()).isEqualTo(GENERAL_ADMISSION);
     }
 
     @Test
