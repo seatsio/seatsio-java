@@ -3,6 +3,7 @@ package seatsio.reports.charts;
 import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClientTest;
 import seatsio.charts.ChartObjectInfo;
+import seatsio.events.AreaType;
 import seatsio.events.Floor;
 import seatsio.events.IDs;
 import seatsio.events.LabelAndType;
@@ -45,7 +46,7 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
         assertThat(reportItem.isPlusSize()).isFalse();
         assertThat(reportItem.hasRestrictedView()).isFalse();
         assertThat(reportItem.floor()).isNull();
-        assertThat(reportItem.areaType()).isNull();
+        assertThat(reportItem.type()).isNull();
     }
 
     @Test
@@ -58,7 +59,7 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
         assertThat(reportItem.capacity()).isEqualTo(100);
         assertThat(reportItem.objectType()).isEqualTo("generalAdmission");
         assertThat(reportItem.bookAsAWhole()).isEqualTo(false);
-        assertThat(reportItem.areaType()).isEqualTo("generalAdmission");
+        assertThat(reportItem.type()).isEqualTo(AreaType.GENERAL_ADMISSION);
     }
 
     @Test
