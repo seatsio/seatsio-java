@@ -6,6 +6,7 @@ import seatsio.util.UnirestWrapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static seatsio.Httpbin.httpbinUrl;
 import static seatsio.util.UnirestWrapper.get;
 
 public class ErrorHandlingTest extends SeatsioClientTest {
@@ -21,8 +22,8 @@ public class ErrorHandlingTest extends SeatsioClientTest {
 
     @Test
     public void test500() {
-        SeatsioException e = assertThrows(SeatsioException.class, () -> new UnirestWrapper("secretKey", null).stringResponse(get("https://httpbingo.org/status/500")));
-        assertThat(e.getMessage()).isEqualTo("GET https://httpbingo.org/status/500 resulted in a 500 Internal Server Error response. Body: ");
+        SeatsioException e = assertThrows(SeatsioException.class, () -> new UnirestWrapper("secretKey", null).stringResponse(get(httpbinUrl("/status/500"))));
+        assertThat(e.getMessage()).isEqualTo("GET " + httpbinUrl("/status/500") + " resulted in a 500 Internal Server Error response. Body: ");
         assertThat(e.errors).isNull();
     }
 
@@ -35,8 +36,8 @@ public class ErrorHandlingTest extends SeatsioClientTest {
 
     @Test
     public void testSocketTimeout() {
-        SeatsioException e = assertThrows(SeatsioException.class, () -> new UnirestWrapper("secretKey", null).stringResponse(get("https://httpbingo.org/delay/5").socketTimeout(10)));
-        assertThat(e.getMessage()).contains("Error while executing GET https://httpbingo.org/delay/5");
+        SeatsioException e = assertThrows(SeatsioException.class, () -> new UnirestWrapper("secretKey", null).stringResponse(get(httpbinUrl("/delay/5")).socketTimeout(10)));
+        assertThat(e.getMessage()).contains("Error while executing GET " + httpbinUrl("/delay/5"));
         assertThat(e.getCause()).isInstanceOf(UnirestException.class);
         assertThat(e.getCause().getCause()).isInstanceOf(java.net.SocketTimeoutException.class);
         assertThat(e.errors).isNull();
