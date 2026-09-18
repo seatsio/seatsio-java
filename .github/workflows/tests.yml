@@ -10,10 +10,10 @@ on:
       api-url:
         type: string
         default: 'https://api-staging-eu.seatsio.net'
-      java-versions:
-        description: 'JSON array of java versions to test against'
-        type: string
-        default: '[17, 24]'
+      single-run:
+        description: 'Run the tests only once, on a single java version (e.g. when used as a smoke test for the server)'
+        type: boolean
+        default: false
     secrets:
       DEMO_COMPANY_SECRET_KEY:
         required: false
@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java-version: ${{ fromJSON(inputs.java-versions) }}
+        java-version: ${{ inputs.single-run && fromJSON('[24]') || fromJSON('[17, 24]') }}
 
     services:
       httpbin:
