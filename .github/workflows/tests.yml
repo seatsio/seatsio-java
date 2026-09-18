@@ -1,0 +1,55 @@
+name: 'Tests'
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        description: 'The seatsio-java ref to test'
+        type: string
+        default: 'master'
+      api-url:
+        type: string
+        default: 'https://api-staging-eu.seatsio.net'
+      java-versions:
+        description: 'JSON array of java versions to test against'
+        type: string
+        default: '[17, 24]'
+    secrets:
+      DEMO_COMPANY_SECRET_KEY:
+        required: false
+      CORE_V2_STAGING_EU_SYSTEM_API_SECRET:
+        required: false
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: ${{ fromJSON(inputs.java-versions) }}
+
+    services:
+      httpbin:
+        image: mccutchen/go-httpbin:v2.15.0
+        ports:
+          - 8080:8080
+
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        repository: seatsio/seatsio-java
+        ref: ${{ inputs.ref }}
+    - uses: actions/setup-java@v6
+      with:
+        distribution: 'zulu'
+        java-version: ${{ matrix.java-version }}
+    - run: chmod +x gradlew
+    - uses: zcong1993/setup-timezone@master
+      with:
+        timezone: Europe/Brussels
+    - run: ./gradlew build
+      env:
+        API_URL: ${{ inputs.api-url }}
+        HTTPBIN_URL: http://localhost:8080
+        DEMO_COMPANY_SECRET_KEY: ${{ secrets.DEMO_COMPANY_SECRET_KEY }}
+        CORE_V2_STAGING_EU_SYSTEM_API_SECRET: ${{ secrets.CORE_V2_STAGING_EU_SYSTEM_API_SECRET }}
