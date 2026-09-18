@@ -9,15 +9,18 @@ on:
         default: 'master'
       api-url:
         type: string
+        default: 'https://api-staging-na.seatsio.net'
+      usage-reporting-tests-api-url:
+        type: string
         default: 'https://api-staging-eu.seatsio.net'
       single-run:
         description: 'Run the tests only once, on a single java version (e.g. when used as a smoke test for the server)'
         type: boolean
         default: false
     secrets:
-      DEMO_COMPANY_SECRET_KEY:
+      USAGE_REPORTING_TESTS_SECRET_KEY:
         required: false
-      CORE_V2_STAGING_EU_SYSTEM_API_SECRET:
+      CORE_V2_API_SECRET:
         required: false
 
 jobs:
@@ -51,6 +54,7 @@ jobs:
     - run: ./gradlew build
       env:
         API_URL: ${{ inputs.api-url }}
+        USAGE_REPORTING_TESTS_API_URL: ${{ inputs.usage-reporting-tests-api-url }}
         HTTPBIN_URL: http://localhost:8080
-        DEMO_COMPANY_SECRET_KEY: ${{ secrets.DEMO_COMPANY_SECRET_KEY }}
-        CORE_V2_STAGING_EU_SYSTEM_API_SECRET: ${{ secrets.CORE_V2_STAGING_EU_SYSTEM_API_SECRET }}
+        USAGE_REPORTING_TESTS_SECRET_KEY: ${{ secrets.USAGE_REPORTING_TESTS_SECRET_KEY }}
+        CORE_V2_API_SECRET: ${{ secrets.CORE_V2_API_SECRET }}

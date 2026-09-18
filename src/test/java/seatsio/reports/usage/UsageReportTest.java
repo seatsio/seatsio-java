@@ -1,8 +1,9 @@
 package seatsio.reports.usage;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import seatsio.SeatsioClient;
-import seatsio.SeatsioClientTest;
 import seatsio.reports.usage.detailsForEventInMonth.UsageForObjectV1;
 import seatsio.reports.usage.detailsForMonth.UsageByEvent;
 import seatsio.reports.usage.detailsForMonth.UsageDetails;
@@ -14,13 +15,14 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-public class UsageReportTest extends SeatsioClientTest {
+@Execution(ExecutionMode.CONCURRENT)
+public class UsageReportTest {
 
     @Test
     public void usageReportForAllMonths() {
-        assumeTrue(isDemoCompanySecretKeySet());
+        assumeTrue(isConfigured());
 
-        SeatsioClient client = seatsioClient(demoCompanySecretKey());
+        SeatsioClient client = usageReportingClient();
 
         UsageSummaryForAllMonths report = client.usageReports.summaryForAllMonths();
 
@@ -31,9 +33,9 @@ public class UsageReportTest extends SeatsioClientTest {
 
     @Test
     public void usageReportForMonth() {
-        assumeTrue(isDemoCompanySecretKeySet());
+        assumeTrue(isConfigured());
 
-        SeatsioClient client = seatsioClient(demoCompanySecretKey());
+        SeatsioClient client = usageReportingClient();
 
         List<UsageDetails> report = client.usageReports.detailsForMonth(new Month(2021, 11));
 
@@ -46,13 +48,33 @@ public class UsageReportTest extends SeatsioClientTest {
 
     @Test
     public void usageReportForEventInMonth() {
-        assumeTrue(isDemoCompanySecretKeySet());
+        assumeTrue(isConfigured());
 
-        SeatsioClient client = seatsioClient(demoCompanySecretKey());
+        SeatsioClient client = usageReportingClient();
 
         List<?> report = client.usageReports.detailsForEventInMonth(580293, new Month(2021, 11));
 
         assertThat(report.size()).isGreaterThan(0);
         assertThat((UsageForObjectV1) report.get(0)).isEqualTo(new UsageForObjectV1("102-9-14", 0, null, 1, 1));
+    }
+
+    private static SeatsioClient usageReportingClient() {
+        return new SeatsioClient(secretKey(), null, apiUrl());
+    }
+
+    private static String apiUrl() {
+        return System.getenv("USAGE_REPORTING_TESTS_API_URL");
+    }
+
+    private static String secretKey() {
+        return System.getenv("USAGE_REPORTING_TESTS_SECRET_KEY");
+    }
+
+    private static boolean isConfigured() {
+        return isSet(secretKey()) && isSet(apiUrl());
+    }
+
+    private static boolean isSet(String value) {
+        return value != null && !value.isBlank();
     }
 }

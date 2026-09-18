@@ -40,7 +40,7 @@ public class SeatsioClientTest {
     }
 
     protected static String apiSecret() {
-        return System.getenv().getOrDefault("CORE_V2_STAGING_EU_SYSTEM_API_SECRET", "superSecretSystemApi");
+        return System.getenv().getOrDefault("CORE_V2_API_SECRET", "superSecretSystemApi");
     }
 
     private TestCompany createTestCompany() throws UnirestException {
@@ -86,14 +86,6 @@ public class SeatsioClientTest {
         return chartKey;
     }
 
-    protected String demoCompanySecretKey() {
-        return System.getenv("DEMO_COMPANY_SECRET_KEY");
-    }
-
-    protected boolean isDemoCompanySecretKeySet() {
-        String demoCompanySecretKey = demoCompanySecretKey();
-        return demoCompanySecretKey != null && !demoCompanySecretKey.isBlank();
-    }
 
     private String testChartJson(String fileName) {
         try {
