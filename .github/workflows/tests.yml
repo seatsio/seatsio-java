@@ -43,6 +43,7 @@ jobs:
       with:
         distribution: 'zulu'
         java-version: ${{ matrix.java-version }}
+        cache: 'gradle'
     - run: chmod +x gradlew
     - uses: zcong1993/setup-timezone@master
       with:
