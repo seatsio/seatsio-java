@@ -91,7 +91,8 @@ public class SeatsioClientTest {
     }
 
     protected boolean isDemoCompanySecretKeySet() {
-        return System.getenv().containsKey("DEMO_COMPANY_SECRET_KEY");
+        String demoCompanySecretKey = demoCompanySecretKey();
+        return demoCompanySecretKey != null && !demoCompanySecretKey.isBlank();
     }
 
     private String testChartJson(String fileName) {

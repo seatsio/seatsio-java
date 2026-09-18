@@ -18,7 +18,7 @@ on:
       DEMO_COMPANY_SECRET_KEY:
         required: false
       CORE_V2_STAGING_EU_SYSTEM_API_SECRET:
-        required: true
+        required: false
 
 jobs:
   test:
