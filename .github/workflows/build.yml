@@ -11,4 +11,6 @@ jobs:
     uses: ./.github/workflows/tests.yml
     with:
       ref: ${{ github.event.pull_request.head.sha || github.sha }}
-    secrets: inherit
+    secrets:
+      USAGE_REPORTING_TESTS_SECRET_KEY: ${{ secrets.DEMO_COMPANY_SECRET_KEY }}
+      CORE_V2_API_SECRET: ${{ secrets.CORE_V2_STAGING_NA_SYSTEM_API_SECRET }}
