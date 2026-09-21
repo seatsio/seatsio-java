@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'io.seats'
-version = '91.3.0'
+version = '91.4.0'
 
 java {
     sourceCompatibility = 17
