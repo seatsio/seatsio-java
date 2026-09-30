@@ -10,6 +10,8 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static seatsio.events.AreaType.GENERAL_ADMISSION;
 import static seatsio.events.EventObjectInfo.FREE;
+import static seatsio.events.TableBookingConfig.allByTable;
+import static seatsio.events.TableType.BOOK_BY_TABLE;
 
 public class RetrieveEventObjectInfoTest extends SeatsioClientTest {
 
@@ -35,6 +37,18 @@ public class RetrieveEventObjectInfoTest extends SeatsioClientTest {
 
         assertThat(objectInfo.holds()).isEqualTo(Map.of(holdToken.holdToken(), Map.of("NO_TICKET_TYPE", 1)));
         assertThat(objectInfo.areaType()).isEqualTo(GENERAL_ADMISSION);
+        assertThat(objectInfo.tableType()).isNull();
+    }
+
+    @Test
+    public void table() {
+        String chartKey = createTestChartWithTables();
+        Event event = client.events.create(chartKey, new CreateEventParams().withTableBookingConfig(allByTable()));
+
+        EventObjectInfo objectInfo = client.events.retrieveObjectInfo(event.key(), "T1");
+
+        assertThat(objectInfo.tableType()).isEqualTo(BOOK_BY_TABLE);
+        assertThat(objectInfo.areaType()).isNull();
     }
 
 }

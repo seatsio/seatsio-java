@@ -15,6 +15,7 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static seatsio.events.AreaType.GENERAL_ADMISSION;
 import static seatsio.events.EventObjectInfo.*;
+import static seatsio.events.TableType.BOOK_BY_TABLE;
 import static seatsio.events.TableBookingConfig.allByTable;
 
 public class EventReportsTest extends SeatsioClientTest {
@@ -93,6 +94,7 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.seasonStatusOverriddenQuantities()).isEqualTo(Map.of());
         assertThat(reportItem.resaleListingId()).isNull();
         assertThat(reportItem.areaType()).isNull();
+        assertThat(reportItem.tableType()).isNull();
 
         EventObjectInfo gaItem = report.get("GA1").get(0);
         assertThat(gaItem.variableOccupancy()).isFalse();
@@ -156,6 +158,7 @@ public class EventReportsTest extends SeatsioClientTest {
         assertThat(reportItem.displayedObjectType()).isNull();
         assertThat(reportItem.parentDisplayedObjectType()).isNull();
         assertThat(reportItem.areaType()).isEqualTo(GENERAL_ADMISSION);
+        assertThat(reportItem.tableType()).isNull();
     }
 
     @Test
@@ -180,6 +183,7 @@ public class EventReportsTest extends SeatsioClientTest {
         EventObjectInfo reportItem = report.get("T1").get(0);
         assertThat(reportItem.bookAsAWhole()).isEqualTo(false);
         assertThat(reportItem.numSeats()).isEqualTo(6);
+        assertThat(reportItem.tableType()).isEqualTo(BOOK_BY_TABLE);
     }
 
     @Test
