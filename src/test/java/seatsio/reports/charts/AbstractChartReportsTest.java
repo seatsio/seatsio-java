@@ -14,6 +14,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static seatsio.events.AreaType.GENERAL_ADMISSION;
+import static seatsio.events.TableType.BOOK_BY_SEAT;
 import static seatsio.reports.charts.ChartReportBookWholeTablesMode.*;
 import static seatsio.reports.charts.ChartReportOptions.options;
 
@@ -48,6 +49,7 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
         assertThat(reportItem.hasRestrictedView()).isFalse();
         assertThat(reportItem.floor()).isNull();
         assertThat(reportItem.areaType()).isNull();
+        assertThat(reportItem.tableType()).isNull();
     }
 
     @Test
@@ -61,6 +63,7 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
         assertThat(reportItem.objectType()).isEqualTo("generalAdmission");
         assertThat(reportItem.bookAsAWhole()).isEqualTo(false);
         assertThat(reportItem.areaType()).isEqualTo(GENERAL_ADMISSION);
+        assertThat(reportItem.tableType()).isNull();
     }
 
     @Test
@@ -72,6 +75,7 @@ public abstract class AbstractChartReportsTest extends SeatsioClientTest {
         ChartObjectInfo reportItem = report.get("T1").get(0);
         assertThat(reportItem.bookAsAWhole()).isEqualTo(false);
         assertThat(reportItem.numSeats()).isEqualTo(6);
+        assertThat(reportItem.tableType()).isEqualTo(BOOK_BY_SEAT);
     }
 
     @Test
