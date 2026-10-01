@@ -58,7 +58,7 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.27.7'
     testImplementation 'commons-io:commons-io:2.22.0'
     testImplementation 'org.awaitility:awaitility:4.3.0'
-    testRuntimeOnly "org.slf4j:slf4j-api:2.0.18"
+    testRuntimeOnly "org.slf4j:slf4j-api:2.0.20"
 }
 
 test {
