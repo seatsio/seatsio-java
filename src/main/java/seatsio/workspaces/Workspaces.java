@@ -32,9 +32,14 @@ public class Workspaces {
     }
 
     public Workspace create(String name, Boolean isTest) {
+        return create(name, isTest, null);
+    }
+
+    public Workspace create(String name, Boolean isTest, ForSaleMode forSaleMode) {
         JsonObjectBuilder request = aJsonObject()
                 .withProperty("name", name)
-                .withPropertyIfNotNull("isTest", isTest);
+                .withPropertyIfNotNull("isTest", isTest)
+                .withPropertyIfNotNull("forSaleMode", forSaleMode);
 
         String response = unirest.stringResponse(UnirestWrapper.post(baseUrl + "/workspaces")
                 .body(request.build().toString()));
@@ -43,8 +48,13 @@ public class Workspaces {
     }
 
     public void update(String key, String name) {
+        update(key, name, null);
+    }
+
+    public void update(String key, String name, ForSaleMode forSaleMode) {
         JsonObjectBuilder request = aJsonObject()
-                .withProperty("name", name);
+                .withProperty("name", name)
+                .withPropertyIfNotNull("forSaleMode", forSaleMode);
 
         unirest.stringResponse(UnirestWrapper.post(baseUrl + "/workspaces/{key}")
                 .routeParam("key", key)

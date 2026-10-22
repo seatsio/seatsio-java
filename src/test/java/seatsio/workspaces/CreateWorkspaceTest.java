@@ -29,4 +29,13 @@ public class CreateWorkspaceTest extends SeatsioClientTest {
         assertThat(workspace.isActive()).isTrue();
     }
 
+    @Test
+    public void createWorkspaceWithForSaleMode() {
+        Workspace workspace = client.workspaces.create("my workspace", null, ForSaleMode.UNLIMITED_BILLABLE);
+
+        assertThat(workspace.name()).isEqualTo("my workspace");
+        assertThat(workspace.key()).isNotNull();
+        assertThat(workspace.isActive()).isTrue();
+    }
+
 }
