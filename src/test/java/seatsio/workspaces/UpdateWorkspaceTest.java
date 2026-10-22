@@ -20,4 +20,14 @@ public class UpdateWorkspaceTest extends SeatsioClientTest {
         assertThat(retrievedWorkspace.isTest()).isFalse();
     }
 
+    @Test
+    public void updateForSaleMode() {
+        Workspace workspace = client.workspaces.create("my workspace");
+
+        client.workspaces.update(workspace.key(), "my ws", ForSaleMode.UNLIMITED_BILLABLE);
+
+        Workspace retrievedWorkspace = client.workspaces.retrieve(workspace.key());
+        assertThat(retrievedWorkspace.name()).isEqualTo("my ws");
+    }
+
 }
