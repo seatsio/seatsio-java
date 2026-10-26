@@ -12,6 +12,8 @@ import seatsio.ticketBuyers.TicketBuyers;
 import seatsio.util.UnirestWrapper;
 import seatsio.workspaces.Workspaces;
 
+import java.time.Duration;
+
 public class SeatsioClient {
 
     private final String baseUrl;
@@ -53,6 +55,16 @@ public class SeatsioClient {
 
     public SeatsioClient maxRetries(int maxRetries) {
         unirest.maxRetries(maxRetries);
+        return this;
+    }
+
+    public SeatsioClient connectTimeout(Duration connectTimeout) {
+        unirest.connectTimeout(connectTimeout);
+        return this;
+    }
+
+    public SeatsioClient socketTimeout(Duration socketTimeout) {
+        unirest.socketTimeout(socketTimeout);
         return this;
     }
 

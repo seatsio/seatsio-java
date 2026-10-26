@@ -259,6 +259,20 @@ SeatsioClient client = new SeatsioClient(Region.EU, <WORKSPACE SECRET KEY>).maxR
 
 Passing in 0 disables exponential backoff completely. In that case, the client will never retry a failed request.
 
+## Timeouts
+
+By default, the client waits up to 10 seconds to establish a connection, and up to 30 seconds for the server to respond.
+
+To change these timeouts, create the `SeatsioClient` as follows:
+
+```java
+SeatsioClient client = new SeatsioClient(Region.EU, <WORKSPACE SECRET KEY>)
+        .connectTimeout(Duration.ofSeconds(5))
+        .socketTimeout(Duration.ofSeconds(60));
+```
+
+The timeouts apply per `SeatsioClient` instance. A request that times out is not retried: a `SeatsioException` is thrown.
+
 ## Multi-threading
 
 It's perfectly fine to re-use an instance of `SeatsioClient` in different threads. All methods are thread-safe.

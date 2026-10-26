@@ -3,6 +3,7 @@ package seatsio.util;
 import kong.unirest.*;
 import seatsio.SeatsioException;
 
+import java.time.Duration;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -10,10 +11,13 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class UnirestWrapper {
 
     private static UnirestInstance unirest = new UnirestInstance(new Config()
-            .socketTimeout(10000)
+            .connectTimeout(10000)
+            .socketTimeout(30000)
             .concurrency(200, 200));
 
     private int maxRetries = 5;
+    private int connectTimeoutMillis = 10000;
+    private int socketTimeoutMillis = 30000;
     private final String secretKey;
     private final String workspaceKey;
 
@@ -36,6 +40,8 @@ public class UnirestWrapper {
             AtomicReference<RawResponse> response = new AtomicReference<>();
             AtomicReference<byte[]> responseBody = new AtomicReference<>();
             request.header("X-Client-Lib", "Java");
+            request.connectTimeout(connectTimeoutMillis);
+            request.socketTimeout(socketTimeoutMillis);
             authenticate(request, secretKey, workspaceKey).thenConsume(r -> {
                 response.set((RawResponse) r);
                 responseBody.set(response.get().getContentAsBytes());
@@ -90,6 +96,16 @@ public class UnirestWrapper {
 
     public UnirestWrapper maxRetries(int maxRetries) {
         this.maxRetries = maxRetries;
+        return this;
+    }
+
+    public UnirestWrapper connectTimeout(Duration connectTimeout) {
+        this.connectTimeoutMillis = Math.toIntExact(connectTimeout.toMillis());
+        return this;
+    }
+
+    public UnirestWrapper socketTimeout(Duration socketTimeout) {
+        this.socketTimeoutMillis = Math.toIntExact(socketTimeout.toMillis());
         return this;
     }
 
