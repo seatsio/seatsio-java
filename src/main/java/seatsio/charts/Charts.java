@@ -3,6 +3,7 @@ package seatsio.charts;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import seatsio.events.Event;
 import seatsio.json.JsonObjectBuilder;
 import seatsio.util.*;
 
@@ -38,6 +39,10 @@ public class Charts {
         String response = unirest.stringResponse(get(baseUrl + "/charts/{key}?expand=events")
                 .routeParam("key", key));
         return gson().fromJson(response, Chart.class);
+    }
+
+    public Lister<Event> events(String chartKey) {
+        return new Lister<>(new PageFetcher<>(baseUrl, "/charts/{key}/events", Map.of("key", chartKey), unirest, Event.class));
     }
 
     public Chart create() {
