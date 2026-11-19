@@ -1,9 +1,15 @@
 package seatsio.util;
 
 import kong.unirest.*;
+import org.apache.http.client.ClientProtocolException;
+import seatsio.SeatsioClient;
 import seatsio.SeatsioException;
 
+import java.io.IOException;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Pattern;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -13,42 +19,103 @@ public class UnirestWrapper {
             .socketTimeout(10000)
             .concurrency(200, 200));
 
-    private int maxRetries = 5;
+    private static final Set<HttpMethod> SAFE_METHODS = Set.of(HttpMethod.GET, HttpMethod.HEAD, HttpMethod.OPTIONS, HttpMethod.TRACE);
+    private static final Pattern V4_UUID = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}", Pattern.CASE_INSENSITIVE);
+
     private final String secretKey;
     private final String workspaceKey;
+    private final String idempotencyKey;
+    private final RetrySettings retrySettings;
 
     public UnirestWrapper(String secretKey, String workspaceKey) {
+        this(secretKey, workspaceKey, null, new RetrySettings());
+    }
+
+    private UnirestWrapper(String secretKey, String workspaceKey, String idempotencyKey, RetrySettings retrySettings) {
         this.secretKey = secretKey;
         this.workspaceKey = workspaceKey;
+        this.idempotencyKey = idempotencyKey;
+        this.retrySettings = retrySettings;
+    }
+
+    public UnirestWrapper withIdempotencyKey(String idempotencyKey) {
+        if (idempotencyKey == null || !V4_UUID.matcher(idempotencyKey).matches()) {
+            throw new IllegalArgumentException("Idempotency key " + idempotencyKey + " is not a v4 UUID");
+        }
+        return new UnirestWrapper(secretKey, workspaceKey, idempotencyKey, retrySettings);
     }
 
     public String stringResponse(HttpRequest request) {
-        byte[] response = execute(request, 0);
+        byte[] response = binaryResponse(request);
         return new String(response, UTF_8);
     }
 
     public byte[] binaryResponse(HttpRequest request) {
-        return execute(request, 0);
+        addIdempotencyKey(request);
+        request.header("X-Client-Lib", "Java");
+        authenticate(request, secretKey, workspaceKey);
+        return execute(request);
     }
 
-    private byte[] execute(HttpRequest request, int retryCount) {
-        try {
-            AtomicReference<RawResponse> response = new AtomicReference<>();
-            AtomicReference<byte[]> responseBody = new AtomicReference<>();
-            request.header("X-Client-Lib", "Java");
-            authenticate(request, secretKey, workspaceKey).thenConsume(r -> {
-                response.set((RawResponse) r);
-                responseBody.set(response.get().getContentAsBytes());
-            });
-            if (retryCount >= maxRetries || response.get().getStatus() != 429) {
-                return processResponse(request, response.get(), responseBody.get());
-            } else {
-                long waitTime = (long) Math.pow(2, retryCount + 2) * 100;
-                sleep(waitTime);
-                return execute(request, ++retryCount);
+    private void addIdempotencyKey(HttpRequest request) {
+        if (!isSafe(request)) {
+            request.header(SeatsioClient.IDEMPOTENCY_KEY_HEADER, idempotencyKey != null ? idempotencyKey : UUID.randomUUID().toString());
+        }
+    }
+
+    private byte[] execute(HttpRequest request) {
+        for (int retryCount = 0; ; retryCount++) {
+            try {
+                AtomicReference<RawResponse> response = new AtomicReference<>();
+                AtomicReference<byte[]> responseBody = new AtomicReference<>();
+                request.thenConsume(r -> {
+                    response.set((RawResponse) r);
+                    responseBody.set(response.get().getContentAsBytes());
+                });
+                if (!isRetryable(response.get(), responseBody.get()) || !waitBeforeRetry(retryCount)) {
+                    return processResponse(request, response.get(), responseBody.get());
+                }
+            } catch (UnirestException e) {
+                if (!isRetryable(request, e) || !waitBeforeRetry(retryCount)) {
+                    throw new SeatsioException(e, request);
+                }
             }
-        } catch (UnirestException e) {
-            throw new SeatsioException(e, request);
+        }
+    }
+
+    private static boolean isRetryable(RawResponse response, byte[] responseBody) {
+        return response.getStatus() == 429 || isIdempotencyKeyInUse(response, responseBody);
+    }
+
+    public static boolean isIdempotencyKeyInUse(RawResponse response, byte[] responseBody) {
+        if (response.getStatus() != 409) {
+            return false;
+        }
+        ErrorResponse errorResponse = ErrorResponse.parseIfAny(response, responseBody);
+        return errorResponse != null && "IDEMPOTENCY_KEY_IN_USE".equals(errorResponse.firstErrorCode());
+    }
+
+    private boolean isRetryable(HttpRequest request, UnirestException e) {
+        return retrySettings.retryNonIdempotentRequests
+                && !isSafe(request)
+                && e.getCause() instanceof IOException
+                && !(e.getCause() instanceof ClientProtocolException);
+    }
+
+    private static boolean isSafe(HttpRequest request) {
+        return SAFE_METHODS.contains(request.getHttpMethod());
+    }
+
+    private boolean waitBeforeRetry(int retryCount) {
+        if (retryCount >= retrySettings.maxRetries) {
+            return false;
+        }
+        try {
+            Thread.sleep((long) Math.pow(2, retryCount + 2) * 100);
+            return true;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return false;
         }
     }
 
@@ -80,21 +147,22 @@ public class UnirestWrapper {
         return request;
     }
 
-    public static void sleep(long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+    public UnirestWrapper maxRetries(int maxRetries) {
+        retrySettings.maxRetries = maxRetries;
+        return this;
     }
 
-    public UnirestWrapper maxRetries(int maxRetries) {
-        this.maxRetries = maxRetries;
+    public UnirestWrapper retryNonIdempotentRequests(boolean retryNonIdempotentRequests) {
+        retrySettings.retryNonIdempotentRequests = retryNonIdempotentRequests;
         return this;
+    }
+
+    private static class RetrySettings {
+        volatile int maxRetries = 5;
+        volatile boolean retryNonIdempotentRequests = false;
     }
 
     public static void reinitializeHttpConnectionPool() {
         unirest.shutDown(false);
     }
-
 }

@@ -10,4 +10,8 @@ public class RateLimitExceededException extends SeatsioException {
     public RateLimitExceededException(List<ApiError> errors, String requestId) {
         super(errors, requestId);
     }
+
+    public RateLimitExceededException(String message) {
+        super(message);
+    }
 }

@@ -43,9 +43,22 @@ public class SeatsioClientTest {
         return System.getenv().getOrDefault("CORE_V2_API_SECRET", "superSecretSystemApi");
     }
 
+    protected void useTestCompanyWithIdempotencyEnabled() {
+        TestCompany testCompany = createTestCompany("{\"idempotencyEnabled\": true}");
+        user = testCompany.admin;
+        workspace = testCompany.workspace;
+        client = seatsioClient(user.secretKey);
+    }
+
     private TestCompany createTestCompany() throws UnirestException {
+        return createTestCompany("{}");
+    }
+
+    private TestCompany createTestCompany(String params) throws UnirestException {
         HttpResponse<String> response = post(apiUrl() + "/system/private/create-test-company")
                 .basicAuth(apiSecret(), "")
+                .header("Content-Type", "application/json")
+                .body(params)
                 .asString();
         if(response.getStatus() >= 400) {
             throw new SeatsioException("Creating test company failed wide code " + response.getStatus());

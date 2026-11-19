@@ -14,6 +14,8 @@ import seatsio.workspaces.Workspaces;
 
 public class SeatsioClient {
 
+    public static final String IDEMPOTENCY_KEY_HEADER = "Idempotency-Key";
+
     private final String baseUrl;
     private final UnirestWrapper unirest;
 
@@ -29,8 +31,12 @@ public class SeatsioClient {
     public final TicketBuyers ticketBuyers;
 
     public SeatsioClient(String secretKey, String workspaceKey, String baseUrl) {
+        this(baseUrl, new UnirestWrapper(secretKey, workspaceKey));
+    }
+
+    private SeatsioClient(String baseUrl, UnirestWrapper unirest) {
         this.baseUrl = baseUrl;
-        this.unirest = new UnirestWrapper(secretKey, workspaceKey);
+        this.unirest = unirest;
         this.workspaces = new Workspaces(baseUrl, unirest);
         this.holdTokens = new HoldTokens(baseUrl, unirest);
         this.charts = new Charts(baseUrl, unirest);
@@ -56,6 +62,22 @@ public class SeatsioClient {
         return this;
     }
 
+    public SeatsioClient retryNonIdempotentRequests(boolean retryNonIdempotentRequests) {
+        unirest.retryNonIdempotentRequests(retryNonIdempotentRequests);
+        return this;
+    }
+
+    /**
+     * Returns a client that sends the given Idempotency-Key with every POST, PUT and DELETE request.
+     * Use it to retry an operation whose outcome is unknown: take the key from SeatsioException.idempotencyKey and
+     * make the same call again on the returned client. Use the returned client for that one operation only.
+     *
+     * @throws IllegalArgumentException if the key is not a v4 UUID
+     */
+    public SeatsioClient withIdempotencyKey(String idempotencyKey) {
+        return new SeatsioClient(baseUrl, unirest.withIdempotencyKey(idempotencyKey));
+    }
+
     public String getBaseUrl() {
         return baseUrl;
     }
@@ -63,5 +85,4 @@ public class SeatsioClient {
     public void reinitializeHttpConnectionPool() {
         this.unirest.reinitializeHttpConnectionPool();
     }
-
 }
