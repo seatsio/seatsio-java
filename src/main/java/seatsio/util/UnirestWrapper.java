@@ -96,7 +96,7 @@ public class UnirestWrapper {
     }
 
     private boolean isRetryable(HttpRequest request, UnirestException e) {
-        return retrySettings.retryNonIdempotentRequests
+        return retrySettings.retryWritesOnNetworkErrors
                 && !isSafe(request)
                 && e.getCause() instanceof IOException
                 && !(e.getCause() instanceof ClientProtocolException);
@@ -152,14 +152,14 @@ public class UnirestWrapper {
         return this;
     }
 
-    public UnirestWrapper retryNonIdempotentRequests(boolean retryNonIdempotentRequests) {
-        retrySettings.retryNonIdempotentRequests = retryNonIdempotentRequests;
+    public UnirestWrapper retryWritesOnNetworkErrors(boolean retryWritesOnNetworkErrors) {
+        retrySettings.retryWritesOnNetworkErrors = retryWritesOnNetworkErrors;
         return this;
     }
 
     private static class RetrySettings {
         volatile int maxRetries = 5;
-        volatile boolean retryNonIdempotentRequests = false;
+        volatile boolean retryWritesOnNetworkErrors = false;
     }
 
     public static void reinitializeHttpConnectionPool() {

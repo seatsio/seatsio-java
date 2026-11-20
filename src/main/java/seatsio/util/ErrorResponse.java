@@ -5,8 +5,10 @@ import kong.unirest.RawResponse;
 import seatsio.ApiError;
 
 import java.util.List;
+import java.util.Objects;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.stream.Collectors.toList;
 import static seatsio.json.SeatsioGson.gson;
 
 public class ErrorResponse {
@@ -20,16 +22,21 @@ public class ErrorResponse {
         }
         try {
             ErrorResponse errorResponse = gson().fromJson(new String(responseBody, UTF_8), ErrorResponse.class);
-            if (errorResponse == null || errorResponse.errors == null || errorResponse.errors.isEmpty() || errorResponse.errors.contains(null)) {
+            if (errorResponse == null) {
                 return null;
             }
+            errorResponse.errors = errorResponse.errors == null ? List.of() : errorResponse.errors.stream().filter(Objects::nonNull).collect(toList());
             return errorResponse;
         } catch (JsonParseException e) {
             return null;
         }
     }
 
+    public boolean hasErrorCode() {
+        return !errors.isEmpty();
+    }
+
     public String firstErrorCode() {
-        return errors.get(0).getCode();
+        return hasErrorCode() ? errors.get(0).getCode() : null;
     }
 }

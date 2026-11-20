@@ -2,94 +2,104 @@ package seatsio;
 
 import kong.unirest.HttpRequest;
 import kong.unirest.Unirest;
+import mockwebserver3.Dispatcher;
+import mockwebserver3.MockResponse;
+import mockwebserver3.MockWebServer;
+import mockwebserver3.QueueDispatcher;
+import mockwebserver3.RecordedRequest;
+import mockwebserver3.SocketEffect;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import seatsio.exceptions.RateLimitExceededException;
 import seatsio.util.UnirestWrapper;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static seatsio.FakeServer.Reply.closeConnectionWithoutAnswering;
-import static seatsio.FakeServer.Reply.error;
-import static seatsio.FakeServer.Reply.json;
-import static seatsio.FakeServer.Reply.status;
 
 public class IdempotentRetryTest {
 
     private static final int APACHE_DEFAULT_ATTEMPTS = 1 + 3;
 
-    private FakeServer server;
+    private final MockWebServer server = new MockWebServer();
+
+    @BeforeEach
+    public void startServer() throws IOException {
+        ((QueueDispatcher) server.getDispatcher()).setFailFast(true);
+        server.start();
+    }
 
     @AfterEach
-    public void stopServer() throws Exception {
+    public void stopServer() {
         Thread.interrupted();
-        if (server != null) {
-            server.close();
-        }
+        server.close();
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"POST", "PUT", "DELETE", "PATCH"})
     public void writesAreNotRetriedByDefaultWhenTheConnectionFails(String method) {
-        server = FakeServer.replying(closeConnectionWithoutAnswering(), status(200));
+        replyWith(closeConnectionWithoutAnswering(), status(200));
 
         SeatsioException e = assertThrows(SeatsioException.class, () -> wrapper().stringResponse(request(method)));
 
-        assertThat(server.requests()).hasSize(1);
-        assertThat(e.idempotencyKey).isEqualTo(server.sentIdempotencyKeys().get(0));
+        assertThat(server.getRequestCount()).isEqualTo(1);
+        assertThat(e.idempotencyKey).isEqualTo(sentIdempotencyKeys().get(0));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"POST", "PUT", "DELETE", "PATCH"})
     public void writesAreRetriedWithTheSameKeyWhenEnabled(String method) {
-        server = FakeServer.replying(closeConnectionWithoutAnswering(), status(200));
+        replyWith(closeConnectionWithoutAnswering(), status(200));
 
-        wrapper().retryNonIdempotentRequests(true).stringResponse(request(method));
+        wrapper().retryWritesOnNetworkErrors(true).stringResponse(request(method));
 
-        assertThat(server.sentIdempotencyKeys()).hasSize(2).doesNotContainNull();
-        assertThat(server.sentIdempotencyKeys().get(1)).isEqualTo(server.sentIdempotencyKeys().get(0));
+        List<String> keys = sentIdempotencyKeys();
+        assertThat(keys).hasSize(2).doesNotContainNull();
+        assertThat(keys.get(1)).isEqualTo(keys.get(0));
     }
 
     @Test
     public void writesAreNotRetriedAfterRetriesAreDisabledAgain() {
-        server = FakeServer.replying(closeConnectionWithoutAnswering(), status(200));
+        replyWith(closeConnectionWithoutAnswering(), status(200));
 
-        assertThrows(SeatsioException.class, () -> wrapper().retryNonIdempotentRequests(true).retryNonIdempotentRequests(false).stringResponse(request("POST")));
+        assertThrows(SeatsioException.class, () -> wrapper().retryWritesOnNetworkErrors(true).retryWritesOnNetworkErrors(false).stringResponse(request("POST")));
 
-        assertThat(server.requests()).hasSize(1);
+        assertThat(server.getRequestCount()).isEqualTo(1);
     }
 
     @Test
     public void connectionFailureRetriesStopAfterMaxRetries() {
-        server = FakeServer.replying(closeConnectionWithoutAnswering());
+        replyWith(3, closeConnectionWithoutAnswering());
 
-        SeatsioException e = assertThrows(SeatsioException.class, () -> wrapper().maxRetries(2).retryNonIdempotentRequests(true).stringResponse(request("POST")));
+        SeatsioException e = assertThrows(SeatsioException.class, () -> wrapper().maxRetries(2).retryWritesOnNetworkErrors(true).stringResponse(request("POST")));
 
-        assertThat(server.requests()).hasSize(3);
-        assertThat(server.sentIdempotencyKeys()).containsOnly(e.idempotencyKey);
+        assertThat(server.getRequestCount()).isEqualTo(3);
+        assertThat(sentIdempotencyKeys()).containsOnly(e.idempotencyKey);
     }
 
     @Test
     public void getsAreRetriedByTheHttpClientOnlyNotOnTopOfIt() {
-        server = FakeServer.replying(closeConnectionWithoutAnswering());
+        replyWith(APACHE_DEFAULT_ATTEMPTS, closeConnectionWithoutAnswering());
 
-        assertThrows(SeatsioException.class, () -> wrapper().retryNonIdempotentRequests(true).stringResponse(request("GET")));
+        assertThrows(SeatsioException.class, () -> wrapper().retryWritesOnNetworkErrors(true).stringResponse(request("GET")));
 
-        assertThat(server.requests()).hasSize(APACHE_DEFAULT_ATTEMPTS);
+        assertThat(server.getRequestCount()).isEqualTo(APACHE_DEFAULT_ATTEMPTS);
     }
 
     @Test
     public void connectionRefusedIsRetriedWhenEnabled() {
-        server = FakeServer.replying(status(200));
-        String url = server.url("/");
-        closeServer();
+        String url = server.url("/").toString();
+        server.close();
 
         long start = System.currentTimeMillis();
-        assertThrows(SeatsioException.class, () -> wrapper().maxRetries(1).retryNonIdempotentRequests(true).stringResponse(Unirest.post(url).body("{}")));
+        assertThrows(SeatsioException.class, () -> wrapper().maxRetries(1).retryWritesOnNetworkErrors(true).stringResponse(Unirest.post(url).body("{}")));
 
         assertThat(System.currentTimeMillis() - start).isGreaterThanOrEqualTo(400);
     }
@@ -98,59 +108,61 @@ public class IdempotentRetryTest {
     public void requestConstructionErrorsAreNotRetried() {
         long start = System.currentTimeMillis();
 
-        assertThrows(SeatsioException.class, () -> wrapper().retryNonIdempotentRequests(true).stringResponse(Unirest.post("unknownProtocol:///x").body("{}")));
+        assertThrows(SeatsioException.class, () -> wrapper().retryWritesOnNetworkErrors(true).stringResponse(Unirest.post("unknownProtocol:///x").body("{}")));
 
         assertThat(System.currentTimeMillis() - start).isLessThan(400);
     }
 
     @Test
     public void writesAreRetriedOn429WithTheSameKey() {
-        server = FakeServer.replying(error(429, "RATE_LIMIT_EXCEEDED"), status(200));
+        replyWith(error(429, "RATE_LIMIT_EXCEEDED"), status(200));
 
         wrapper().stringResponse(request("POST"));
 
-        assertThat(server.sentIdempotencyKeys()).hasSize(2);
-        assertThat(server.sentIdempotencyKeys().get(1)).isEqualTo(server.sentIdempotencyKeys().get(0));
+        List<String> keys = sentIdempotencyKeys();
+        assertThat(keys).hasSize(2);
+        assertThat(keys.get(1)).isEqualTo(keys.get(0));
     }
 
     @Test
     public void writesAreRetriedOnKeyInUseWithTheSameKey() {
-        server = FakeServer.replying(error(409, "IDEMPOTENCY_KEY_IN_USE"), status(200));
+        replyWith(error(409, "IDEMPOTENCY_KEY_IN_USE"), status(200));
 
         wrapper().stringResponse(request("POST"));
 
-        assertThat(server.sentIdempotencyKeys()).hasSize(2);
-        assertThat(server.sentIdempotencyKeys().get(1)).isEqualTo(server.sentIdempotencyKeys().get(0));
+        List<String> keys = sentIdempotencyKeys();
+        assertThat(keys).hasSize(2);
+        assertThat(keys.get(1)).isEqualTo(keys.get(0));
     }
 
     @Test
     public void retriesOn429AndKeyInUseAlsoHappenWhenWriteRetriesAreEnabled() {
-        server = FakeServer.replying(error(429, "RATE_LIMIT_EXCEEDED"), error(409, "IDEMPOTENCY_KEY_IN_USE"), status(200));
+        replyWith(error(429, "RATE_LIMIT_EXCEEDED"), error(409, "IDEMPOTENCY_KEY_IN_USE"), status(200));
 
-        wrapper().retryNonIdempotentRequests(true).stringResponse(request("POST"));
+        wrapper().retryWritesOnNetworkErrors(true).stringResponse(request("POST"));
 
-        assertThat(server.requests()).hasSize(3);
+        assertThat(server.getRequestCount()).isEqualTo(3);
     }
 
     @Test
     public void callerKeySurvivesARetry() {
         String key = UUID.randomUUID().toString();
-        server = FakeServer.replying(error(409, "IDEMPOTENCY_KEY_IN_USE"), status(200));
+        replyWith(error(409, "IDEMPOTENCY_KEY_IN_USE"), status(200));
 
         wrapper().withIdempotencyKey(key).stringResponse(request("POST"));
 
-        assertThat(server.sentIdempotencyKeys()).containsExactly(key, key);
+        assertThat(sentIdempotencyKeys()).containsExactly(key, key);
     }
 
     @Test
     public void keyInUseErrorIsThrownWhenRetriesRunOut() {
-        server = FakeServer.replying(error(409, "IDEMPOTENCY_KEY_IN_USE"));
+        replyWith(3, error(409, "IDEMPOTENCY_KEY_IN_USE"));
 
         SeatsioException e = assertThrows(SeatsioException.class, () -> wrapper().maxRetries(2).stringResponse(request("POST")));
 
-        assertThat(server.requests()).hasSize(3);
+        assertThat(server.getRequestCount()).isEqualTo(3);
         assertThat(e.errors.get(0).getCode()).isEqualTo("IDEMPOTENCY_KEY_IN_USE");
-        assertThat(server.sentIdempotencyKeys()).containsOnly(e.idempotencyKey);
+        assertThat(sentIdempotencyKeys()).containsOnly(e.idempotencyKey);
     }
 
     @ParameterizedTest
@@ -162,78 +174,77 @@ public class IdempotentRetryTest {
             ""
     })
     public void otherConflictsAreNotRetried(String body) {
-        server = FakeServer.replying(json(409, body), status(200));
+        replyWith(json(409, body), status(200));
 
         SeatsioException e = assertThrows(SeatsioException.class, () -> wrapper().stringResponse(request("POST")));
 
-        assertThat(server.requests()).hasSize(1);
+        assertThat(server.getRequestCount()).isEqualTo(1);
         assertThat(e.idempotencyKey).isNotNull();
     }
 
     @Test
     public void doesNotRetryWhenTheThreadIsInterrupted() {
-        Thread client = Thread.currentThread();
-        server = FakeServer.replying(error(429, "RATE_LIMIT_EXCEEDED").andBeforeReplying(r -> client.interrupt()), status(200));
+        server.setDispatcher(interruptingTheClientAndReplying(Thread.currentThread(), error(429, "RATE_LIMIT_EXCEEDED")));
 
         SeatsioException e = assertThrows(SeatsioException.class, () -> wrapper().stringResponse(request("POST")));
 
-        assertThat(server.requests()).hasSize(1);
+        assertThat(server.getRequestCount()).isEqualTo(1);
         assertThat(e.idempotencyKey).isNotNull();
         assertThat(Thread.interrupted()).isTrue();
     }
 
     @Test
     public void doesNotRetryAConnectionFailureWhenTheThreadIsInterrupted() {
-        Thread client = Thread.currentThread();
-        server = FakeServer.replying(closeConnectionWithoutAnswering().andBeforeReplying(r -> client.interrupt()), status(200));
+        server.setDispatcher(interruptingTheClientAndReplying(Thread.currentThread(), closeConnectionWithoutAnswering()));
 
-        assertThrows(SeatsioException.class, () -> wrapper().retryNonIdempotentRequests(true).stringResponse(request("POST")));
+        assertThrows(SeatsioException.class, () -> wrapper().retryWritesOnNetworkErrors(true).stringResponse(request("POST")));
 
-        assertThat(server.requests()).hasSize(1);
+        assertThat(server.getRequestCount()).isEqualTo(1);
         assertThat(Thread.interrupted()).isTrue();
     }
 
     @Test
     public void retrySettingsAreSharedWithCopiesThatHaveAKey() {
-        server = FakeServer.replying(closeConnectionWithoutAnswering(), status(200));
+        replyWith(closeConnectionWithoutAnswering(), status(200));
         UnirestWrapper wrapper = wrapper();
         UnirestWrapper copy = wrapper.withIdempotencyKey(UUID.randomUUID().toString());
 
-        wrapper.retryNonIdempotentRequests(true);
+        wrapper.retryWritesOnNetworkErrors(true);
         copy.stringResponse(request("POST"));
 
-        assertThat(server.requests()).hasSize(2);
+        assertThat(server.getRequestCount()).isEqualTo(2);
     }
 
     @Test
-    public void headersAreSentOncePerAttempt() {
-        server = FakeServer.replying(error(429, "RATE_LIMIT_EXCEEDED"), status(200));
+    public void headersAreSentOncePerAttempt() throws InterruptedException {
+        replyWith(error(429, "RATE_LIMIT_EXCEEDED"), status(200));
 
         wrapper().stringResponse(request("POST"));
 
-        assertThat(server.requests()).hasSize(2);
-        for (FakeServer.Request request : server.requests()) {
-            assertThat(request.headers("X-Client-Lib")).hasSize(1);
-            assertThat(request.headers("Authorization")).hasSize(1);
-            assertThat(request.headers(SeatsioClient.IDEMPOTENCY_KEY_HEADER)).hasSize(1);
+        assertThat(server.getRequestCount()).isEqualTo(2);
+        for (int i = 0; i < 2; i++) {
+            RecordedRequest request = server.takeRequest();
+            assertThat(request.getHeaders().values("X-Client-Lib")).hasSize(1);
+            assertThat(request.getHeaders().values("Authorization")).hasSize(1);
+            assertThat(request.getHeaders().values(SeatsioClient.IDEMPOTENCY_KEY_HEADER)).hasSize(1);
         }
     }
 
     @Test
     public void maxRetriesIsSharedWithClientsThatHaveAKey() {
-        server = FakeServer.replying(error(429, "RATE_LIMIT_EXCEEDED"));
-        SeatsioClient client = new SeatsioClient("secretKey", null, server.url(""));
+        replyWith(3, error(429, "RATE_LIMIT_EXCEEDED"));
+        SeatsioClient client = new SeatsioClient("secretKey", null, baseUrl());
         SeatsioClient copy = client.withIdempotencyKey(UUID.randomUUID().toString());
 
         client.maxRetries(2);
         assertThrows(RateLimitExceededException.class, () -> copy.events.update("anEvent", new seatsio.events.UpdateEventParams().withKey("anotherEvent")));
 
-        assertThat(server.requests()).hasSize(3);
+        assertThat(server.getRequestCount()).isEqualTo(3);
     }
 
     @Test
     public void outcomeIsUnknownWhenTheConnectionFails() {
-        server = FakeServer.replying(closeConnectionWithoutAnswering());
+        replyWith(closeConnectionWithoutAnswering());
 
         SeatsioException e = assertThrows(SeatsioException.class, () -> wrapper().stringResponse(request("POST")));
 
@@ -243,7 +254,7 @@ public class IdempotentRetryTest {
     @ParameterizedTest
     @ValueSource(ints = {500, 502, 503})
     public void outcomeIsUnknownAfterA5xx(int status) {
-        server = FakeServer.replying(error(status, "SOME_ERROR"));
+        replyWith(error(status, "SOME_ERROR"));
 
         SeatsioException e = assertThrows(SeatsioException.class, () -> wrapper().stringResponse(request("POST")));
 
@@ -252,7 +263,7 @@ public class IdempotentRetryTest {
 
     @Test
     public void outcomeIsUnknownWhenTheKeyIsStillInUseAfterAllRetries() {
-        server = FakeServer.replying(error(409, "IDEMPOTENCY_KEY_IN_USE"));
+        replyWith(error(409, "IDEMPOTENCY_KEY_IN_USE"));
 
         SeatsioException e = assertThrows(SeatsioException.class, () -> wrapper().maxRetries(0).stringResponse(request("POST")));
 
@@ -262,7 +273,7 @@ public class IdempotentRetryTest {
     @ParameterizedTest
     @ValueSource(ints = {400, 404, 409, 422})
     public void outcomeIsKnownAfterA4xx(int status) {
-        server = FakeServer.replying(error(status, "SOME_ERROR"));
+        replyWith(error(status, "SOME_ERROR"));
 
         SeatsioException e = assertThrows(SeatsioException.class, () -> wrapper().stringResponse(request("POST")));
 
@@ -270,34 +281,25 @@ public class IdempotentRetryTest {
     }
 
     @Test
-    public void theLastScriptedReplyIsRepeatedOnceTheScriptRunsOut() {
-        server = FakeServer.replying(error(429, "RATE_LIMIT_EXCEEDED"));
-
-        assertThrows(SeatsioException.class, () -> wrapper().maxRetries(2).stringResponse(request("POST")));
-
-        assertThat(server.requests()).hasSize(3);
-    }
-
-    @Test
     public void anOperationWithUnknownOutcomeCanBeRetriedWithTheKeyOfTheException() {
-        server = FakeServer.replying(error(500, "SOME_ERROR"), json(200, "{}"));
-        SeatsioClient client = new SeatsioClient("secretKey", null, server.url(""));
+        replyWith(error(500, "SOME_ERROR"), json(200, "{}"));
+        SeatsioClient client = new SeatsioClient("secretKey", null, baseUrl());
         String key = assertThrows(SeatsioException.class,
                 () -> client.events.update("anEvent", new seatsio.events.UpdateEventParams().withKey("anotherEvent"))).idempotencyKey;
 
         client.withIdempotencyKey(key).events.update("anEvent", new seatsio.events.UpdateEventParams().withKey("anotherEvent"));
 
-        assertThat(server.sentIdempotencyKeys()).containsExactly(key, key);
+        assertThat(sentIdempotencyKeys()).containsExactly(key, key);
     }
 
     @Test
     public void seatsioClientCanEnableRetriesOfWrites() {
-        server = FakeServer.replying(closeConnectionWithoutAnswering(), json(200, "{}"));
-        SeatsioClient client = new SeatsioClient("secretKey", null, server.url("")).retryNonIdempotentRequests(true);
+        replyWith(closeConnectionWithoutAnswering(), json(200, "{}"));
+        SeatsioClient client = new SeatsioClient("secretKey", null, baseUrl()).retryWritesOnNetworkErrors(true);
 
         client.withIdempotencyKey(UUID.randomUUID().toString()).events.update("anEvent", new seatsio.events.UpdateEventParams().withKey("anotherEvent"));
 
-        assertThat(server.requests()).hasSize(2);
+        assertThat(server.getRequestCount()).isEqualTo(2);
     }
 
     private static UnirestWrapper wrapper() {
@@ -305,18 +307,65 @@ public class IdempotentRetryTest {
     }
 
     private HttpRequest<?> request(String method) {
+        String url = server.url("/").toString();
         if (method.equals("GET")) {
-            return Unirest.get(server.url("/"));
+            return Unirest.get(url);
         }
-        return Unirest.request(method, server.url("/")).body("{}");
+        return Unirest.request(method, url).body("{}");
     }
 
-    private void closeServer() {
+    private String baseUrl() {
+        String url = server.url("/").toString();
+        return url.substring(0, url.length() - 1);
+    }
+
+    private void replyWith(MockResponse... replies) {
+        for (MockResponse reply : replies) {
+            server.enqueue(reply);
+        }
+    }
+
+    private void replyWith(int times, MockResponse reply) {
+        for (int i = 0; i < times; i++) {
+            server.enqueue(reply);
+        }
+    }
+
+    private List<String> sentIdempotencyKeys() {
+        List<String> keys = new ArrayList<>();
         try {
-            server.close();
-            server = null;
-        } catch (Exception e) {
+            for (int i = 0; i < server.getRequestCount(); i++) {
+                keys.add(server.takeRequest().getHeaders().get(SeatsioClient.IDEMPOTENCY_KEY_HEADER));
+            }
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        return keys;
+    }
+
+    private static Dispatcher interruptingTheClientAndReplying(Thread client, MockResponse reply) {
+        return new Dispatcher() {
+            @Override
+            public MockResponse dispatch(RecordedRequest request) {
+                client.interrupt();
+                return reply;
+            }
+        };
+    }
+
+    private static MockResponse closeConnectionWithoutAnswering() {
+        return new MockResponse.Builder().onResponseStart(new SocketEffect.CloseSocket()).build();
+    }
+
+    private static MockResponse status(int code) {
+        return new MockResponse.Builder().code(code).build();
+    }
+
+    private static MockResponse json(int code, String body) {
+        return new MockResponse.Builder().code(code).setHeader("Content-Type", "application/json").body(body).build();
+    }
+
+    private static MockResponse error(int code, String errorCode) {
+        return json(code, "{\"errors\": [{\"code\": \"" + errorCode + "\", \"message\": \"" + errorCode + "\"}], \"requestId\": \"aRequestId\"}");
     }
 }

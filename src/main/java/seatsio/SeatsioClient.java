@@ -62,8 +62,8 @@ public class SeatsioClient {
         return this;
     }
 
-    public SeatsioClient retryNonIdempotentRequests(boolean retryNonIdempotentRequests) {
-        unirest.retryNonIdempotentRequests(retryNonIdempotentRequests);
+    public SeatsioClient retryWritesOnNetworkErrors(boolean retryWritesOnNetworkErrors) {
+        unirest.retryWritesOnNetworkErrors(retryWritesOnNetworkErrors);
         return this;
     }
 

@@ -3,9 +3,12 @@ package seatsio.events;
 import kong.unirest.HttpRequestWithBody;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
+import mockwebserver3.Dispatcher;
+import mockwebserver3.MockResponse;
+import mockwebserver3.MockWebServer;
+import mockwebserver3.RecordedRequest;
+import mockwebserver3.SocketEffect;
 import org.junit.jupiter.api.Test;
-import seatsio.FakeServer;
-import seatsio.FakeServer.Reply;
 import seatsio.SeatsioClient;
 import seatsio.SeatsioClientTest;
 import seatsio.SeatsioException;
@@ -77,8 +80,11 @@ public class IdempotencyTest extends SeatsioClientTest {
     public void retryAfterALostResponseCreatesOneEvent() throws Exception {
         useTestCompanyWithIdempotencyEnabled();
         String chartKey = createTestChart();
-        try (FakeServer proxy = proxyThatForwardsButDropsTheFirstResponse()) {
-            SeatsioClient clientViaProxy = new SeatsioClient(user.secretKey, null, proxy.url("")).retryNonIdempotentRequests(true);
+        try (MockWebServer proxy = new MockWebServer()) {
+            proxy.setDispatcher(forwardingButDroppingTheFirstResponse());
+            proxy.start();
+            String proxyUrl = proxy.url("/").toString();
+            SeatsioClient clientViaProxy = new SeatsioClient(user.secretKey, null, proxyUrl.substring(0, proxyUrl.length() - 1)).retryWritesOnNetworkErrors(true);
 
             Event event = clientViaProxy.events.create(chartKey);
 
@@ -86,24 +92,32 @@ public class IdempotencyTest extends SeatsioClientTest {
         }
     }
 
-    private static FakeServer proxyThatForwardsButDropsTheFirstResponse() {
+    private static Dispatcher forwardingButDroppingTheFirstResponse() {
         AtomicInteger requests = new AtomicInteger();
-        return FakeServer.replying(Reply.computedBy(request -> {
-            HttpResponse<String> response = forward(request);
-            if (requests.incrementAndGet() == 1) {
-                return Reply.closeConnectionWithoutAnswering();
+        return new Dispatcher() {
+            @Override
+            public MockResponse dispatch(RecordedRequest request) {
+                HttpResponse<String> response = forward(request);
+                if (requests.incrementAndGet() == 1) {
+                    return new MockResponse.Builder().onResponseStart(new SocketEffect.CloseSocket()).build();
+                }
+                MockResponse.Builder reply = new MockResponse.Builder().code(response.getStatus()).body(response.getBody());
+                String contentType = response.getHeaders().getFirst("Content-Type");
+                if (!contentType.isEmpty()) {
+                    reply.setHeader("Content-Type", contentType);
+                }
+                return reply.build();
             }
-            return Reply.of(response.getStatus(), response.getHeaders().getFirst("Content-Type"), response.getBody());
-        }));
+        };
     }
 
-    private static HttpResponse<String> forward(FakeServer.Request request) {
-        HttpRequestWithBody forwarded = Unirest.request(request.method(), apiUrl() + request.path());
-        request.headers().forEach((name, values) -> {
-            if (!name.equals("host") && !name.equals("content-length")) {
-                values.forEach(value -> forwarded.header(name, value));
+    private static HttpResponse<String> forward(RecordedRequest request) {
+        HttpRequestWithBody forwarded = Unirest.request(request.getMethod(), apiUrl() + request.getTarget());
+        for (String name : request.getHeaders().names()) {
+            if (!name.equalsIgnoreCase("host") && !name.equalsIgnoreCase("content-length")) {
+                request.getHeaders().values(name).forEach(value -> forwarded.header(name, value));
             }
-        });
-        return forwarded.body(request.body()).asString();
+        }
+        return forwarded.body(request.getBody() == null ? "" : request.getBody().utf8()).asString();
     }
 }

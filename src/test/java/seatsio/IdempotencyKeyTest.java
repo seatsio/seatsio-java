@@ -3,12 +3,13 @@ package seatsio;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import kong.unirest.Unirest;
+import mockwebserver3.MockResponse;
+import mockwebserver3.MockWebServer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import seatsio.FakeServer.Reply;
 import seatsio.util.UnirestWrapper;
 
 import java.util.UUID;
@@ -94,54 +95,65 @@ public class IdempotencyKeyTest {
     @Test
     public void suppliedKeyIsCaseInsensitive() {
         String key = UUID.randomUUID().toString().toUpperCase();
-        try (FakeServer server = FakeServer.replying(Reply.status(204))) {
-            new UnirestWrapper("secretKey", null).withIdempotencyKey(key).stringResponse(post(server.url("/")).body("{}"));
 
-            assertThat(server.sentIdempotencyKeys()).containsExactly(key);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        String sentKey = sentIdempotencyKey(new UnirestWrapper("secretKey", null).withIdempotencyKey(key).stringResponse(post(httpbinUrl("/anything")).body("{}")));
+
+        assertThat(sentKey).isEqualTo(key);
     }
 
     @Test
-    public void putsAndPatchesGetAnIdempotencyKey() throws Exception {
-        try (FakeServer server = FakeServer.replying(Reply.status(204))) {
-            new UnirestWrapper("secretKey", null).stringResponse(Unirest.put(server.url("/")).body("{}"));
-            new UnirestWrapper("secretKey", null).stringResponse(Unirest.patch(server.url("/")).body("{}"));
+    public void putsGetAnIdempotencyKey() {
+        String key = sentIdempotencyKey(new UnirestWrapper("secretKey", null).stringResponse(Unirest.put(httpbinUrl("/anything")).body("{}")));
 
-            assertThat(server.sentIdempotencyKeys()).allSatisfy(key -> assertThat(UUID.fromString(key).version()).isEqualTo(4));
+        assertThat(UUID.fromString(key).version()).isEqualTo(4);
+    }
+
+    @Test
+    public void patchesGetAnIdempotencyKey() {
+        String key = sentIdempotencyKey(new UnirestWrapper("secretKey", null).stringResponse(Unirest.patch(httpbinUrl("/anything")).body("{}")));
+
+        assertThat(UUID.fromString(key).version()).isEqualTo(4);
+    }
+
+    @ParameterizedTest
+    @MethodSource("errorResponses")
+    public void errorResponsesExposeTheKey(MockResponse reply) throws Exception {
+        try (MockWebServer server = new MockWebServer()) {
+            server.enqueue(reply);
+            server.start();
+
+            SeatsioException e = assertThrows(SeatsioException.class, () -> new UnirestWrapper("secretKey", null).stringResponse(post(server.url("/").toString()).body("{}")));
+
+            assertThat(e.idempotencyKey).isEqualTo(server.takeRequest().getHeaders().get(SeatsioClient.IDEMPOTENCY_KEY_HEADER));
         }
     }
 
     @ParameterizedTest
     @MethodSource("errorResponses")
-    public void errorResponsesExposeTheKey(Reply reply) throws Exception {
-        try (FakeServer server = FakeServer.replying(reply)) {
-            SeatsioException e = assertThrows(SeatsioException.class, () -> new UnirestWrapper("secretKey", null).stringResponse(post(server.url("/")).body("{}")));
+    public void errorResponsesOfGetsHaveNoKey(MockResponse reply) throws Exception {
+        try (MockWebServer server = new MockWebServer()) {
+            server.enqueue(reply);
+            server.start();
 
-            assertThat(e.idempotencyKey).isEqualTo(server.sentIdempotencyKeys().get(0));
-        }
-    }
-
-    @ParameterizedTest
-    @MethodSource("errorResponses")
-    public void errorResponsesOfGetsHaveNoKey(Reply reply) throws Exception {
-        try (FakeServer server = FakeServer.replying(reply)) {
-            SeatsioException e = assertThrows(SeatsioException.class, () -> new UnirestWrapper("secretKey", null).stringResponse(get(server.url("/"))));
+            SeatsioException e = assertThrows(SeatsioException.class, () -> new UnirestWrapper("secretKey", null).stringResponse(get(server.url("/").toString())));
 
             assertThat(e.idempotencyKey).isNull();
         }
     }
 
-    static Stream<Reply> errorResponses() {
+    static Stream<MockResponse> errorResponses() {
         return Stream.of(
-                Reply.error(400, "EVENT_NOT_FOUND"),
-                Reply.json(500, "{}"),
-                Reply.json(500, "{\"errors\": []}"),
-                Reply.json(500, "malformed"),
-                Reply.status(500),
-                Reply.withoutContentType(500, "{}")
+                json(400, "{\"errors\": [{\"code\": \"EVENT_NOT_FOUND\", \"message\": \"EVENT_NOT_FOUND\"}]}"),
+                json(500, "{}"),
+                json(500, "{\"errors\": []}"),
+                json(500, "malformed"),
+                new MockResponse.Builder().code(500).setHeader("Content-Type", "text/plain").build(),
+                new MockResponse.Builder().code(500).body("{}").build()
         );
+    }
+
+    private static MockResponse json(int code, String body) {
+        return new MockResponse.Builder().code(code).setHeader("Content-Type", "application/json").body(body).build();
     }
 
     @Test

@@ -35,6 +35,12 @@ public class SeatsioException extends RuntimeException {
         this.requestId = requestId;
     }
 
+    protected SeatsioException(String message, List<ApiError> errors, String requestId) {
+        super(message);
+        this.errors = errors;
+        this.requestId = requestId;
+    }
+
     private SeatsioException(HttpRequest request, RawResponse response, byte[] responseBody) {
         super(exceptionMessage(request, response, responseBody));
     }
@@ -66,6 +72,13 @@ public class SeatsioException extends RuntimeException {
                 return new RateLimitExceededException(exceptionMessage(request, response, responseBody));
             }
             return new SeatsioException(request, response, responseBody);
+        }
+        if (!errorResponse.hasErrorCode()) {
+            String message = exceptionMessage(request, response, responseBody);
+            if (response.getStatus() == 429) {
+                return new RateLimitExceededException(message, errorResponse.errors, errorResponse.requestId);
+            }
+            return new SeatsioException(message, errorResponse.errors, errorResponse.requestId);
         }
         if (response.getStatus() == 429) {
             return new RateLimitExceededException(errorResponse.errors, errorResponse.requestId);

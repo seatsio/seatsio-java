@@ -243,9 +243,9 @@ This exception contains a message string describing what went wrong, and also th
 - `requestId`: the identifier of the request you made. Please mention this to us when you have questions, as it will make debugging easier.
 - `idempotencyKey`: the `Idempotency-Key` sent with a `POST`, `PUT` or `DELETE` request (see [Idempotency](#idempotency)), or `null` for other requests.
 
-`outcomeIsUnknown()` tells you whether the request may or may not have been executed: it's `true` when the connection failed or the server answered with a 5xx, and `false` for a 4xx.
+`outcomeIsUnknown()` tells you whether the request may or may not have been executed: it's `true` when the connection failed, when the server answered with a 5xx, or when it answered `409` with error code `IDEMPOTENCY_KEY_IN_USE` after the client ran out of retries (an earlier request with the same key was still being processed). It's `false` for every other 4xx.
 
-If the server returns an error response without an error code (for example, an empty `errors` array), `errors` and `requestId` are `null`, and the message contains the HTTP status and the response body.
+If the server returns an error response without an error code (for example, an empty `errors` array), `errors` is empty, `requestId` is still set if the response contains one, and the message contains the HTTP status and the response body. If the response body is not a JSON object, `errors` and `requestId` are `null`.
 
 ## Idempotency
 
@@ -259,7 +259,8 @@ If the connection fails after the server executed a request but before you recei
 try {
     client.events.create(chartKey);
 } catch (SeatsioException e) {
-    // only retry when the outcome is unknown (a connection error, a timeout or a 5xx); retrying a 4xx can never succeed
+    // only retry when the outcome is unknown (a connection error, a timeout, a 5xx or a 409 IDEMPOTENCY_KEY_IN_USE);
+    // retrying any other 4xx can never succeed
     if (e.idempotencyKey != null && e.outcomeIsUnknown()) {
         client.withIdempotencyKey(e.idempotencyKey).events.create(chartKey);
     }
@@ -275,7 +276,7 @@ If the server answers `409` because an earlier request with the same key is stil
 By default, the client doesn't retry `POST`, `PUT` and `DELETE` requests when the connection fails. To retry them (with the same key), enable it **only if idempotency is enabled for your company**. Otherwise, a retry could execute an operation that already succeeded a second time:
 
 ```java
-SeatsioClient client = new SeatsioClient(Region.EU, <WORKSPACE SECRET KEY>).retryNonIdempotentRequests(true);
+SeatsioClient client = new SeatsioClient(Region.EU, <WORKSPACE SECRET KEY>).retryWritesOnNetworkErrors(true);
 ```
 
 This setting also applies to the clients returned by `withIdempotencyKey()`, and the number of retries is limited by `maxRetries()`.
