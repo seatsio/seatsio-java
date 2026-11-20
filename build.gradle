@@ -58,6 +58,7 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.27.7'
     testImplementation 'commons-io:commons-io:2.22.0'
     testImplementation 'org.awaitility:awaitility:4.3.0'
+    testImplementation 'com.squareup.okhttp3:mockwebserver3:5.5.1'
     testRuntimeOnly "org.slf4j:slf4j-api:2.0.20"
 }
 
