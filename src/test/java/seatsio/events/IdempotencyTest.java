@@ -12,7 +12,9 @@ import org.junit.jupiter.api.Test;
 import seatsio.SeatsioClient;
 import seatsio.SeatsioClientTest;
 import seatsio.SeatsioException;
+import seatsio.util.IdempotencyKeyStatus;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -81,30 +83,34 @@ public class IdempotencyTest extends SeatsioClientTest {
         useTestCompanyWithIdempotencyEnabled();
         String chartKey = createTestChart();
         try (MockWebServer proxy = new MockWebServer()) {
-            proxy.setDispatcher(forwardingButDroppingTheFirstResponse());
+            proxy.setDispatcher(forwardingButDroppingTheResponseOfRequest(2));
             proxy.start();
             String proxyUrl = proxy.url("/").toString();
-            SeatsioClient clientViaProxy = new SeatsioClient(user.secretKey, null, proxyUrl.substring(0, proxyUrl.length() - 1)).retryWritesOnNetworkErrors(true);
+            SeatsioClient clientViaProxy = new SeatsioClient(user.secretKey, null, proxyUrl.substring(0, proxyUrl.length() - 1));
 
-            Event event = clientViaProxy.events.create(chartKey);
+            Event first = clientViaProxy.events.create(chartKey); // the client learns that the route honors idempotency keys
+            Event second = clientViaProxy.events.create(chartKey); // response lost, retried with the same key, replayed
 
-            assertThat(client.events.listAll()).extracting(Event::id).containsExactly(event.id());
+            assertThat(proxy.getRequestCount()).isEqualTo(3);
+            assertThat(client.events.listAll()).extracting(Event::id).containsExactlyInAnyOrder(first.id(), second.id());
         }
     }
 
-    private static Dispatcher forwardingButDroppingTheFirstResponse() {
+    private static Dispatcher forwardingButDroppingTheResponseOfRequest(int requestToDrop) {
         AtomicInteger requests = new AtomicInteger();
         return new Dispatcher() {
             @Override
             public MockResponse dispatch(RecordedRequest request) {
                 HttpResponse<String> response = forward(request);
-                if (requests.incrementAndGet() == 1) {
+                if (requests.incrementAndGet() == requestToDrop) {
                     return new MockResponse.Builder().onResponseStart(new SocketEffect.CloseSocket()).build();
                 }
                 MockResponse.Builder reply = new MockResponse.Builder().code(response.getStatus()).body(response.getBody());
-                String contentType = response.getHeaders().getFirst("Content-Type");
-                if (!contentType.isEmpty()) {
-                    reply.setHeader("Content-Type", contentType);
+                for (String header : List.of("Content-Type", IdempotencyKeyStatus.HEADER)) {
+                    String value = response.getHeaders().getFirst(header);
+                    if (!value.isEmpty()) {
+                        reply.setHeader(header, value);
+                    }
                 }
                 return reply.build();
             }

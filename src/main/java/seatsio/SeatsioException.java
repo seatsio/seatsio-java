@@ -5,6 +5,7 @@ import kong.unirest.RawResponse;
 import seatsio.events.BestAvailableObjectsNotFoundException;
 import seatsio.exceptions.RateLimitExceededException;
 import seatsio.util.ErrorResponse;
+import seatsio.util.IdempotencyKeyStatus;
 import seatsio.util.UnirestWrapper;
 
 import java.util.List;
@@ -17,16 +18,42 @@ public class SeatsioException extends RuntimeException {
     public List<ApiError> errors;
     public String requestId;
     public String idempotencyKey;
+    /**
+     * Whether the server honored the idempotency key of this request, according to the Idempotency-Key-Status header of
+     * the response: true or false, or null when there was no response or the response didn't say.
+     */
+    public Boolean idempotencyKeyHonored;
+    /**
+     * True if the server didn't execute the request again but replayed the recorded response of an earlier request with
+     * the same idempotency key.
+     */
+    public boolean replayed;
     private boolean outcomeIsUnknown;
+    private boolean safeToRetryWithSameKey;
 
     public SeatsioException(String message) {
         super(message);
     }
 
     public SeatsioException(Throwable t, HttpRequest request) {
+        this(t, request, true, false);
+    }
+
+    private SeatsioException(Throwable t, HttpRequest request, boolean outcomeIsUnknown, boolean safeToRetryWithSameKey) {
         super("Error while executing " + request.getHttpMethod() + " " + request.getUrl(), t);
         this.idempotencyKey = idempotencyKey(request);
-        this.outcomeIsUnknown = true;
+        this.outcomeIsUnknown = outcomeIsUnknown;
+        this.safeToRetryWithSameKey = safeToRetryWithSameKey && idempotencyKey != null;
+    }
+
+    /**
+     * A request that got no response.
+     *
+     * @param outcomeIsUnknown       false if the request never reached the server
+     * @param safeToRetryWithSameKey true if a retry with the same idempotency key can't execute the request twice
+     */
+    public static SeatsioException fromConnectionFailure(Throwable t, HttpRequest request, boolean outcomeIsUnknown, boolean safeToRetryWithSameKey) {
+        return new SeatsioException(t, request, outcomeIsUnknown, safeToRetryWithSameKey);
     }
 
     protected SeatsioException(List<ApiError> errors, String requestId) {
@@ -46,18 +73,45 @@ public class SeatsioException extends RuntimeException {
     }
 
     public static SeatsioException from(HttpRequest request, RawResponse response, byte[] responseBody) {
+        return from(request, response, responseBody, false);
+    }
+
+    /**
+     * @param routeHonorsKeys whether the last response of the same route said the server honors idempotency keys for it.
+     *                        Used when this response doesn't say, e.g. a 502 from a proxy.
+     */
+    public static SeatsioException from(HttpRequest request, RawResponse response, byte[] responseBody, boolean routeHonorsKeys) {
         SeatsioException exception = create(request, response, responseBody);
+        IdempotencyKeyStatus status = IdempotencyKeyStatus.of(response);
         exception.idempotencyKey = idempotencyKey(request);
+        exception.idempotencyKeyHonored = status == null ? null : status.keyHonored();
+        exception.replayed = status == IdempotencyKeyStatus.REPLAYED;
         exception.outcomeIsUnknown = response.getStatus() >= 500 || UnirestWrapper.isIdempotencyKeyInUse(response, responseBody);
+        exception.safeToRetryWithSameKey = exception.outcomeIsUnknown
+                && exception.idempotencyKey != null
+                && (status == null ? routeHonorsKeys : status.keyHonored())
+                && !exception.replayed;
         return exception;
     }
 
     /**
-     * True if the request may or may not have been executed: the connection failed, the server answered with a 5xx, or the key was still in use after all retries (the first request may still succeed).
-     * Only then can retrying the same operation (with the same idempotencyKey) give a different result.
+     * True if the request may or may not have been executed: the response was lost after the request was sent, the server
+     * answered with a 5xx, or the key was still in use after all retries (the first request may still succeed).
+     * False for a request that never reached the server, and for every 4xx other than IDEMPOTENCY_KEY_IN_USE.
      */
     public boolean outcomeIsUnknown() {
         return outcomeIsUnknown;
+    }
+
+    /**
+     * True if the same call, made again with this exception's idempotencyKey (see SeatsioClient.withIdempotencyKey()),
+     * can't execute the request twice and may give a different result. That holds when the request never reached the
+     * server, or when its outcome is unknown and the server honors idempotency keys for it: known from the response or,
+     * when the response was lost, from the last response of the same route. Retry promptly: the server keeps a key for
+     * 10 minutes.
+     */
+    public boolean isSafeToRetryWithSameKey() {
+        return safeToRetryWithSameKey;
     }
 
     private static String idempotencyKey(HttpRequest request) {

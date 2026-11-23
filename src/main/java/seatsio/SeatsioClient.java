@@ -62,15 +62,12 @@ public class SeatsioClient {
         return this;
     }
 
-    public SeatsioClient retryWritesOnNetworkErrors(boolean retryWritesOnNetworkErrors) {
-        unirest.retryWritesOnNetworkErrors(retryWritesOnNetworkErrors);
-        return this;
-    }
-
     /**
-     * Returns a client that sends the given Idempotency-Key with every POST, PUT and DELETE request.
-     * Use it to retry an operation whose outcome is unknown: take the key from SeatsioException.idempotencyKey and
-     * make the same call again on the returned client. Use the returned client for that one operation only.
+     * Returns a client that sends the given Idempotency-Key with every POST and DELETE request.
+     * Use it to retry an operation that failed with a SeatsioException for which isSafeToRetryWithSameKey() is true:
+     * take the key from SeatsioException.idempotencyKey and make the same call again on the returned client.
+     * Use the returned client for that one operation only. It shares the retry settings of this client, and what this
+     * client learned about which routes honor idempotency keys.
      *
      * @throws IllegalArgumentException if the key is not a v4 UUID
      */

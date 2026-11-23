@@ -2,12 +2,19 @@ package seatsio.util;
 
 import kong.unirest.*;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.conn.ConnectTimeoutException;
 import seatsio.SeatsioClient;
 import seatsio.SeatsioException;
 
+import javax.net.ssl.SSLHandshakeException;
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.UnknownHostException;
+import java.time.Duration;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
@@ -22,27 +29,37 @@ public class UnirestWrapper {
     private static final Set<HttpMethod> SAFE_METHODS = Set.of(HttpMethod.GET, HttpMethod.HEAD, HttpMethod.OPTIONS, HttpMethod.TRACE);
     private static final Pattern V4_UUID = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}", Pattern.CASE_INSENSITIVE);
 
+    /**
+     * The server keeps an Idempotency-Key for 10 minutes. Once an attempt of a write may have reached the server,
+     * every retry must start well within that time, otherwise the key may have expired and the retry runs as a new request.
+     */
+    static final long RETRY_WINDOW_MILLIS = Duration.ofMinutes(5).toMillis();
+
     private final String secretKey;
     private final String workspaceKey;
     private final String idempotencyKey;
-    private final RetrySettings retrySettings;
+    private final SharedState state;
 
     public UnirestWrapper(String secretKey, String workspaceKey) {
-        this(secretKey, workspaceKey, null, new RetrySettings());
+        this(secretKey, workspaceKey, RetryClock.SYSTEM);
     }
 
-    private UnirestWrapper(String secretKey, String workspaceKey, String idempotencyKey, RetrySettings retrySettings) {
+    UnirestWrapper(String secretKey, String workspaceKey, RetryClock clock) {
+        this(secretKey, workspaceKey, null, new SharedState(clock));
+    }
+
+    private UnirestWrapper(String secretKey, String workspaceKey, String idempotencyKey, SharedState state) {
         this.secretKey = secretKey;
         this.workspaceKey = workspaceKey;
         this.idempotencyKey = idempotencyKey;
-        this.retrySettings = retrySettings;
+        this.state = state;
     }
 
     public UnirestWrapper withIdempotencyKey(String idempotencyKey) {
         if (idempotencyKey == null || !V4_UUID.matcher(idempotencyKey).matches()) {
             throw new IllegalArgumentException("Idempotency key " + idempotencyKey + " is not a v4 UUID");
         }
-        return new UnirestWrapper(secretKey, workspaceKey, idempotencyKey, retrySettings);
+        return new UnirestWrapper(secretKey, workspaceKey, idempotencyKey, state);
     }
 
     public String stringResponse(HttpRequest request) {
@@ -64,21 +81,29 @@ public class UnirestWrapper {
     }
 
     private byte[] execute(HttpRequest request) {
+        Write write = isSafe(request) ? null : new Write(request);
         for (int retryCount = 0; ; retryCount++) {
+            AtomicReference<RawResponse> response = new AtomicReference<>();
+            AtomicReference<byte[]> responseBody = new AtomicReference<>();
             try {
-                AtomicReference<RawResponse> response = new AtomicReference<>();
-                AtomicReference<byte[]> responseBody = new AtomicReference<>();
                 request.thenConsume(r -> {
                     response.set((RawResponse) r);
                     responseBody.set(response.get().getContentAsBytes());
                 });
-                if (!isRetryable(response.get(), responseBody.get()) || !waitBeforeRetry(retryCount)) {
-                    return processResponse(request, response.get(), responseBody.get());
-                }
             } catch (UnirestException e) {
-                if (!isRetryable(request, e) || !waitBeforeRetry(retryCount)) {
+                if (write == null) {
                     throw new SeatsioException(e, request);
                 }
+                if (write.failed(e) && waitBeforeRetry(retryCount, write)) {
+                    continue;
+                }
+                throw write.connectionFailure(e);
+            }
+            if (write != null) {
+                write.answered(response.get(), responseBody.get());
+            }
+            if (!isRetryable(response.get(), responseBody.get()) || !waitBeforeRetry(retryCount, write)) {
+                return processResponse(request, response.get(), responseBody.get(), write);
             }
         }
     }
@@ -95,23 +120,20 @@ public class UnirestWrapper {
         return errorResponse != null && "IDEMPOTENCY_KEY_IN_USE".equals(errorResponse.firstErrorCode());
     }
 
-    private boolean isRetryable(HttpRequest request, UnirestException e) {
-        return retrySettings.retryWritesOnNetworkErrors
-                && !isSafe(request)
-                && e.getCause() instanceof IOException
-                && !(e.getCause() instanceof ClientProtocolException);
-    }
-
     private static boolean isSafe(HttpRequest request) {
         return SAFE_METHODS.contains(request.getHttpMethod());
     }
 
-    private boolean waitBeforeRetry(int retryCount) {
-        if (retryCount >= retrySettings.maxRetries) {
+    private boolean waitBeforeRetry(int retryCount, Write write) {
+        if (retryCount >= state.maxRetries) {
+            return false;
+        }
+        long delay = (long) Math.pow(2, retryCount + 2) * 100;
+        if (write != null && !write.mayRetryAfter(delay)) {
             return false;
         }
         try {
-            Thread.sleep((long) Math.pow(2, retryCount + 2) * 100);
+            state.clock.sleep(delay);
             return true;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -119,9 +141,9 @@ public class UnirestWrapper {
         }
     }
 
-    private byte[] processResponse(HttpRequest request, RawResponse response, byte[] responseBody) {
+    private byte[] processResponse(HttpRequest request, RawResponse response, byte[] responseBody, Write write) {
         if (response.getStatus() >= 400) {
-            throw SeatsioException.from(request, response, responseBody);
+            throw SeatsioException.from(request, response, responseBody, write != null && write.routeHonorsKeys());
         } else {
             return responseBody;
         }
@@ -148,21 +170,128 @@ public class UnirestWrapper {
     }
 
     public UnirestWrapper maxRetries(int maxRetries) {
-        retrySettings.maxRetries = maxRetries;
+        state.maxRetries = maxRetries;
         return this;
-    }
-
-    public UnirestWrapper retryWritesOnNetworkErrors(boolean retryWritesOnNetworkErrors) {
-        retrySettings.retryWritesOnNetworkErrors = retryWritesOnNetworkErrors;
-        return this;
-    }
-
-    private static class RetrySettings {
-        volatile int maxRetries = 5;
-        volatile boolean retryWritesOnNetworkErrors = false;
     }
 
     public static void reinitializeHttpConnectionPool() {
         unirest.shutDown(false);
+    }
+
+    /**
+     * Whether a connection failure happened before any byte of the request reached the server.
+     */
+    private enum Delivery {
+        /**
+         * Connection refused, connect timeout, DNS failure, TLS handshake failure. Always safe to retry.
+         */
+        NEVER_SENT,
+        /**
+         * The request may have reached the server and run: read timeout, connection reset, no response.
+         */
+        RESPONSE_LOST,
+        /**
+         * Not a network failure (an invalid URL, a protocol error). Retrying gives the same result.
+         */
+        NOT_RETRYABLE;
+
+        static Delivery of(UnirestException e) {
+            Throwable cause = e.getCause();
+            if (!(cause instanceof IOException) || cause instanceof ClientProtocolException) {
+                return NOT_RETRYABLE;
+            }
+            // ConnectTimeoutException is an InterruptedIOException, so it must be checked by type, not by "timeout"
+            if (cause instanceof ConnectException
+                    || cause instanceof ConnectTimeoutException
+                    || cause instanceof UnknownHostException
+                    || cause instanceof SSLHandshakeException) {
+                return NEVER_SENT;
+            }
+            return RESPONSE_LOST;
+        }
+    }
+
+    /**
+     * The attempts of one POST, PUT, DELETE or PATCH request, all sent with the same Idempotency-Key.
+     */
+    private class Write {
+
+        private final HttpRequest<?> request;
+        private final String route;
+        private final long start;
+        private boolean mayHaveReachedTheServer;
+        private boolean mayHaveRun;
+
+        Write(HttpRequest<?> request) {
+            this.request = request;
+            this.route = request.getHttpMethod() + " " + request.toSummary().getRawPath();
+            this.start = state.clock.millis();
+        }
+
+        void answered(RawResponse response, byte[] responseBody) {
+            mayHaveReachedTheServer = true;
+            if (isIdempotencyKeyInUse(response, responseBody)) {
+                mayHaveRun = true;
+            }
+            state.remember(route, IdempotencyKeyStatus.of(response));
+        }
+
+        /**
+         * Records a connection failure. Returns whether the SDK may retry it, retries left and time permitting.
+         */
+        boolean failed(UnirestException e) {
+            Delivery delivery = Delivery.of(e);
+            if (delivery == Delivery.NEVER_SENT) {
+                return true;
+            }
+            mayHaveReachedTheServer = true;
+            mayHaveRun = true;
+            return delivery == Delivery.RESPONSE_LOST && routeHonorsKeys();
+        }
+
+        boolean mayRetryAfter(long delay) {
+            return !mayHaveReachedTheServer || startsWithinRetryWindow(delay);
+        }
+
+        private boolean startsWithinRetryWindow(long delay) {
+            return state.clock.millis() + delay - start <= RETRY_WINDOW_MILLIS;
+        }
+
+        boolean routeHonorsKeys() {
+            return state.honorsKeys(route);
+        }
+
+        SeatsioException connectionFailure(UnirestException e) {
+            boolean safeToRetryWithSameKey = !mayHaveRun || (routeHonorsKeys() && startsWithinRetryWindow(0));
+            return SeatsioException.fromConnectionFailure(e, request, mayHaveRun, safeToRetryWithSameKey);
+        }
+    }
+
+    /**
+     * Shared by a wrapper and the copies made with withIdempotencyKey(): they use the same secret key, so the same
+     * company, and the server honors keys for the same routes.
+     */
+    private static class SharedState {
+        final RetryClock clock;
+        volatile int maxRetries = 5;
+        /**
+         * Per "METHOD path template": whether the last response with a known Idempotency-Key-Status said the route
+         * honors idempotency keys. No entry means unknown.
+         */
+        private final Map<String, Boolean> routesHonoringKeys = new ConcurrentHashMap<>();
+
+        SharedState(RetryClock clock) {
+            this.clock = clock;
+        }
+
+        void remember(String route, IdempotencyKeyStatus status) {
+            if (status != null) {
+                routesHonoringKeys.put(route, status.keyHonored());
+            }
+        }
+
+        boolean honorsKeys(String route) {
+            return Boolean.TRUE.equals(routesHonoringKeys.get(route));
+        }
     }
 }
