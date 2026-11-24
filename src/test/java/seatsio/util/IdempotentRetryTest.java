@@ -356,6 +356,31 @@ public class IdempotentRetryTest {
         assertThat(sentIdempotencyKeys().subList(1, 4)).containsOnly(e.idempotencyKey);
     }
 
+    @Test
+    public void allKindsOfFailureShareOneRetryCount() throws Exception {
+        int port = freePort();
+        try (MockWebServer late = new MockWebServer()) {
+            late.enqueue(error(429, "RATE_LIMIT_EXCEEDED"));
+            late.enqueue(keyStatus(error(409, "IDEMPOTENCY_KEY_IN_USE"), "in-use"));
+            late.enqueue(lostResponse());
+            late.enqueue(status(200));
+            clock.onSleep = () -> {
+                if (clock.sleeps == 1) {
+                    start(late, port);
+                }
+            };
+            HttpRequest<?> request = Unirest.post("http://localhost:" + port + BOOK).routeParam("key", "event1").body("{}");
+
+            SeatsioException e = assertThrows(SeatsioException.class, () -> wrapper().maxRetries(3).stringResponse(request));
+
+            assertThat(clock.sleeps).isEqualTo(3);
+            assertThat(late.getRequestCount()).isEqualTo(3);
+            assertThat(e.getCause()).isNotNull();
+            assertThat(e.outcomeIsUnknown()).isTrue();
+            assertThat(e.isSafeToRetryWithSameKey()).isTrue();
+        }
+    }
+
     // guide test 15
     @Test
     public void setDefaultWorkspaceIsRetriedAfterALostResponse() {
