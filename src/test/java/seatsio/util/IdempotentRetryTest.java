@@ -18,7 +18,16 @@ import seatsio.SeatsioException;
 import seatsio.events.UpdateEventParams;
 import seatsio.exceptions.RateLimitExceededException;
 
+import kong.unirest.UnirestException;
+import org.apache.http.conn.ConnectTimeoutException;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import javax.net.ssl.SSLHandshakeException;
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
+import java.util.stream.Stream;
 import java.net.ServerSocket;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -406,6 +415,69 @@ public class IdempotentRetryTest {
         assertThat(e.outcomeIsUnknown()).isFalse();
         assertThat(e.isSafeToRetryWithSameKey()).isTrue();
         assertThat(e.idempotencyKey).isNotNull();
+    }
+
+    @Test
+    public void aGetThatWasNeverSentHasAKnownOutcome() {
+        String url = server.url("/").toString();
+        server.close();
+
+        SeatsioException e = assertThrows(SeatsioException.class, () -> wrapper().stringResponse(Unirest.get(url)));
+
+        assertThat(e.outcomeIsUnknown()).isFalse();
+        assertThat(e.isSafeToRetryWithSameKey()).isFalse();
+    }
+
+    @Test
+    public void aGetWithALostResponseHasAnUnknownOutcome() {
+        replyWith(APACHE_DEFAULT_ATTEMPTS, lostResponse());
+
+        SeatsioException e = assertThrows(SeatsioException.class, () -> wrapper().stringResponse(request("GET")));
+
+        assertThat(e.outcomeIsUnknown()).isTrue();
+    }
+
+    @ParameterizedTest
+    @MethodSource("failuresBeforeSending")
+    public void failuresBeforeAnyByteIsSentCountAsNeverSent(IOException cause) {
+        assertThat(UnirestWrapper.Delivery.of(new UnirestException(cause))).isEqualTo(UnirestWrapper.Delivery.NEVER_SENT);
+    }
+
+    static Stream<IOException> failuresBeforeSending() {
+        return Stream.of(
+                new ConnectException("refused"),
+                new ConnectTimeoutException("connect timed out"),
+                new UnknownHostException("seatsio.invalid"),
+                new SSLHandshakeException("handshake failed"));
+    }
+
+    @Test
+    public void aReadTimeoutCountsAsALostResponseDespiteBeingATimeout() {
+        assertThat(UnirestWrapper.Delivery.of(new UnirestException(new SocketTimeoutException("Read timed out"))))
+                .isEqualTo(UnirestWrapper.Delivery.RESPONSE_LOST);
+    }
+
+    @Test
+    public void aWriteToAnUnknownHostIsRetriedWithTheSameKey() {
+        SeatsioException e = assertThrows(SeatsioException.class, () -> wrapper().maxRetries(1)
+                .stringResponse(Unirest.post("http://seatsio.invalid/").body("{}")));
+
+        assertThat(clock.sleeps).isEqualTo(1);
+        assertThat(e.getCause()).hasRootCauseInstanceOf(UnknownHostException.class);
+        assertThat(e.outcomeIsUnknown()).isFalse();
+        assertThat(e.isSafeToRetryWithSameKey()).isTrue();
+    }
+
+    @Test
+    public void aWriteThatFailsTheTlsHandshakeIsRetriedWithTheSameKey() {
+        String url = server.url("/").toString().replace("http://", "https://");
+
+        SeatsioException e = assertThrows(SeatsioException.class, () -> wrapper().maxRetries(1)
+                .stringResponse(Unirest.post(url).body("{}")));
+
+        assertThat(clock.sleeps).isEqualTo(1);
+        assertThat(e.outcomeIsUnknown()).isFalse();
+        assertThat(e.isSafeToRetryWithSameKey()).isTrue();
     }
 
     @Test

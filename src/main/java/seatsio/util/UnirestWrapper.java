@@ -92,7 +92,7 @@ public class UnirestWrapper {
                 });
             } catch (UnirestException e) {
                 if (write == null) {
-                    throw new SeatsioException(e, request);
+                    throw SeatsioException.fromConnectionFailure(e, request, Delivery.of(e) != Delivery.NEVER_SENT, false);
                 }
                 if (write.failed(e) && waitBeforeRetry(retryCount, write)) {
                     continue;
@@ -181,7 +181,7 @@ public class UnirestWrapper {
     /**
      * Whether a connection failure happened before any byte of the request reached the server.
      */
-    private enum Delivery {
+    enum Delivery {
         /**
          * Connection refused, connect timeout, DNS failure, TLS handshake failure. Always safe to retry.
          */
