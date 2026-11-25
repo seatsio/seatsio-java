@@ -136,7 +136,7 @@ public class UnirestWrapper {
 
     private byte[] processResponse(HttpRequest request, RawResponse response, byte[] responseBody, Write write) {
         if (response.getStatus() >= 400) {
-            throw SeatsioException.from(request, response, responseBody, write != null && write.routeHonorsKeys());
+            throw SeatsioException.from(request, response, responseBody, write != null && write.routeHonorsKeys(), write != null && write.mayHaveRun);
         } else {
             return responseBody;
         }

@@ -74,20 +74,24 @@ public class SeatsioException extends RuntimeException {
     }
 
     public static SeatsioException from(HttpRequest request, RawResponse response, byte[] responseBody) {
-        return from(request, response, responseBody, false);
+        return from(request, response, responseBody, false, false);
     }
 
     /**
      * @param routeHonorsKeys whether the last response of the same route said the server honors idempotency keys for it.
      *                        Used when this response doesn't say, e.g. a 502 from a proxy.
+     * @param mayHaveRun      whether an earlier attempt of this request may have been executed (e.g. its response was
+     *                        lost), whatever status the final response has.
      */
-    public static SeatsioException from(HttpRequest request, RawResponse response, byte[] responseBody, boolean routeHonorsKeys) {
+    public static SeatsioException from(HttpRequest request, RawResponse response, byte[] responseBody, boolean routeHonorsKeys, boolean mayHaveRun) {
         SeatsioException exception = create(request, response, responseBody);
         IdempotencyKeyStatus status = IdempotencyKeyStatus.of(response);
         exception.idempotencyKey = idempotencyKey(request);
         exception.idempotencyKeyHonored = status == null ? null : status.keyHonored();
         exception.replayed = status == IdempotencyKeyStatus.REPLAYED;
-        exception.outcomeIsUnknown = response.getStatus() >= 500 || UnirestWrapper.isIdempotencyKeyInUse(response, responseBody);
+        exception.outcomeIsUnknown = response.getStatus() >= 500
+                || UnirestWrapper.isIdempotencyKeyInUse(response, responseBody)
+                || (mayHaveRun && !exception.replayed);
         exception.safeToRetryWithSameKey = exception.outcomeIsUnknown
                 && exception.idempotencyKey != null
                 && (status == null ? routeHonorsKeys : status.keyHonored())
@@ -97,8 +101,10 @@ public class SeatsioException extends RuntimeException {
 
     /**
      * True if the request may or may not have been executed: the response was lost after the request was sent, the server
-     * answered with a 5xx, or the key was still in use after all retries (the first request may still succeed).
-     * False for a request that never reached the server, and for every 4xx other than IDEMPOTENCY_KEY_IN_USE.
+     * answered with a 5xx, the key was still in use after all retries (the first request may still succeed),
+     * or an earlier attempt may have been executed and the final response is an error that doesn't say.
+     * False for a request that never reached the server, and for a 4xx of a request no attempt of which may have run,
+     * other than IDEMPOTENCY_KEY_IN_USE.
      */
     public boolean outcomeIsUnknown() {
         return outcomeIsUnknown;

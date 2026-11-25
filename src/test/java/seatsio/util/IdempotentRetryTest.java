@@ -168,6 +168,19 @@ public class IdempotentRetryTest {
     }
 
     @Test
+    public void aLostResponseFollowedByRateLimitsLeavesTheOutcomeUnknown() {
+        UnirestWrapper wrapper = wrapper().maxRetries(2);
+        replyWith(keyStatus(200, "executed"), lostResponse());
+        replyWith(3, error(429, "RATE_LIMIT_EXCEEDED"));
+
+        wrapper.stringResponse(request("POST"));
+        SeatsioException e = assertThrows(SeatsioException.class, () -> wrapper.stringResponse(request("POST")));
+
+        assertThat(e.outcomeIsUnknown()).isTrue();
+        assertThat(e.isSafeToRetryWithSameKey()).isTrue();
+    }
+
+    @Test
     public void concretePathsOfTheSameTemplateShareTheMemory() {
         UnirestWrapper wrapper = wrapper();
         replyWith(keyStatus(200, "executed"), lostResponse(), keyStatus(200, "replayed"));
