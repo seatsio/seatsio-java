@@ -84,7 +84,7 @@ public class IdempotentRetryTest {
         assertThat(server.getRequestCount()).isEqualTo(2);
         assertThat(e.outcomeIsUnknown()).isTrue();
         assertThat(e.isSafeToRetryWithSameKey()).isFalse();
-        assertThat(e.idempotencyKey).isEqualTo(sentIdempotencyKeys().get(1));
+        assertThat(e.idempotencyKey).isEqualTo(UUID.fromString(sentIdempotencyKeys().get(1)));
     }
 
     // guide test 3
@@ -110,7 +110,7 @@ public class IdempotentRetryTest {
         assertThat(server.getRequestCount()).isEqualTo(1);
         assertThat(e.outcomeIsUnknown()).isTrue();
         assertThat(e.isSafeToRetryWithSameKey()).isFalse();
-        assertThat(e.idempotencyKey).isEqualTo(sentIdempotencyKeys().get(0));
+        assertThat(e.idempotencyKey).isEqualTo(UUID.fromString(sentIdempotencyKeys().get(0)));
     }
 
     // guide test 5
@@ -193,7 +193,7 @@ public class IdempotentRetryTest {
         replyWith(keyStatus(200, "executed"), lostResponse(), keyStatus(200, "replayed"));
 
         wrapper.stringResponse(request("POST"));
-        wrapper.withIdempotencyKey(UUID.randomUUID().toString()).stringResponse(request("POST"));
+        wrapper.withIdempotencyKey(UUID.randomUUID()).stringResponse(request("POST"));
 
         assertThat(server.getRequestCount()).isEqualTo(3);
     }
@@ -350,7 +350,7 @@ public class IdempotentRetryTest {
         assertThat(server.getRequestCount()).isEqualTo(1 + 3);
         assertThat(e.outcomeIsUnknown()).isTrue();
         assertThat(e.isSafeToRetryWithSameKey()).isTrue();
-        assertThat(sentIdempotencyKeys().subList(1, 4)).containsOnly(e.idempotencyKey);
+        assertThat(sentIdempotencyKeys().subList(1, 4)).containsOnly(e.idempotencyKey.toString());
     }
 
     @Test
@@ -584,12 +584,12 @@ public class IdempotentRetryTest {
 
     @Test
     public void callerKeySurvivesARetry() {
-        String key = UUID.randomUUID().toString();
+        UUID key = UUID.randomUUID();
         replyWith(error(409, "IDEMPOTENCY_KEY_IN_USE"), status(200));
 
         wrapper().withIdempotencyKey(key).stringResponse(request("POST"));
 
-        assertThat(sentIdempotencyKeys()).containsExactly(key, key);
+        assertThat(sentIdempotencyKeys()).containsExactly(key.toString(), key.toString());
     }
 
     @Test
@@ -600,7 +600,7 @@ public class IdempotentRetryTest {
 
         assertThat(server.getRequestCount()).isEqualTo(3);
         assertThat(e.errors.get(0).getCode()).isEqualTo("IDEMPOTENCY_KEY_IN_USE");
-        assertThat(sentIdempotencyKeys()).containsOnly(e.idempotencyKey);
+        assertThat(sentIdempotencyKeys()).containsOnly(e.idempotencyKey.toString());
     }
 
     @ParameterizedTest
@@ -663,7 +663,7 @@ public class IdempotentRetryTest {
     public void maxRetriesIsSharedWithClientsThatHaveAKey() {
         replyWith(3, error(429, "RATE_LIMIT_EXCEEDED"));
         SeatsioClient client = new SeatsioClient("secretKey", null, baseUrl());
-        SeatsioClient copy = client.withIdempotencyKey(UUID.randomUUID().toString());
+        SeatsioClient copy = client.withIdempotencyKey(UUID.randomUUID());
 
         client.maxRetries(2);
         assertThrows(RateLimitExceededException.class, () -> copy.events.update("anEvent", new UpdateEventParams().withKey("anotherEvent")));
@@ -745,7 +745,7 @@ public class IdempotentRetryTest {
         assertThat(e.isSafeToRetryWithSameKey()).isTrue();
         client.withIdempotencyKey(e.idempotencyKey).events.update("anEvent", new UpdateEventParams().withKey("anotherEvent"));
 
-        assertThat(sentIdempotencyKeys()).containsExactly(e.idempotencyKey, e.idempotencyKey);
+        assertThat(sentIdempotencyKeys()).containsExactly(e.idempotencyKey.toString(), e.idempotencyKey.toString());
     }
 
     private UnirestWrapper wrapper() {

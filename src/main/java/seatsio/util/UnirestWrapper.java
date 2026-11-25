@@ -12,7 +12,6 @@ import java.time.Duration;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.regex.Pattern;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -23,13 +22,12 @@ public class UnirestWrapper {
             .concurrency(200, 200));
 
     private static final Set<HttpMethod> SAFE_METHODS = Set.of(HttpMethod.GET, HttpMethod.HEAD, HttpMethod.OPTIONS, HttpMethod.TRACE);
-    private static final Pattern V4_UUID = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}", Pattern.CASE_INSENSITIVE);
 
     static final long RETRY_WINDOW_MILLIS = Duration.ofMinutes(5).toMillis();
 
     private final String secretKey;
     private final String workspaceKey;
-    private final String idempotencyKey;
+    private final UUID idempotencyKey;
     private final SharedState state;
 
     public UnirestWrapper(String secretKey, String workspaceKey) {
@@ -40,15 +38,15 @@ public class UnirestWrapper {
         this(secretKey, workspaceKey, null, new SharedState(clock));
     }
 
-    private UnirestWrapper(String secretKey, String workspaceKey, String idempotencyKey, SharedState state) {
+    private UnirestWrapper(String secretKey, String workspaceKey, UUID idempotencyKey, SharedState state) {
         this.secretKey = secretKey;
         this.workspaceKey = workspaceKey;
         this.idempotencyKey = idempotencyKey;
         this.state = state;
     }
 
-    public UnirestWrapper withIdempotencyKey(String idempotencyKey) {
-        if (idempotencyKey == null || !V4_UUID.matcher(idempotencyKey).matches()) {
+    public UnirestWrapper withIdempotencyKey(UUID idempotencyKey) {
+        if (idempotencyKey == null || idempotencyKey.version() != 4 || idempotencyKey.variant() != 2) {
             throw new IllegalArgumentException("Idempotency key " + idempotencyKey + " is not a v4 UUID");
         }
         return new UnirestWrapper(secretKey, workspaceKey, idempotencyKey, state);
@@ -68,7 +66,7 @@ public class UnirestWrapper {
 
     private void addIdempotencyKey(HttpRequest request) {
         if (!isSafe(request)) {
-            request.header(SeatsioClient.IDEMPOTENCY_KEY_HEADER, idempotencyKey != null ? idempotencyKey : UUID.randomUUID().toString());
+            request.header(SeatsioClient.IDEMPOTENCY_KEY_HEADER, (idempotencyKey != null ? idempotencyKey : UUID.randomUUID()).toString());
         }
     }
 

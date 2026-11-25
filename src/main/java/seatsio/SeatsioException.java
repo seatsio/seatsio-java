@@ -9,6 +9,7 @@ import seatsio.util.IdempotencyKeyStatus;
 import seatsio.util.UnirestWrapper;
 
 import java.util.List;
+import java.util.UUID;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.joining;
@@ -17,7 +18,7 @@ public class SeatsioException extends RuntimeException {
 
     public List<ApiError> errors;
     public String requestId;
-    public String idempotencyKey;
+    public UUID idempotencyKey;
     /**
      * Whether the server honored the idempotency key of this request, according to the Idempotency-Key-Status header of
      * the response: true or false, or null when there was no response or the response didn't say.
@@ -114,9 +115,9 @@ public class SeatsioException extends RuntimeException {
         return safeToRetryWithSameKey;
     }
 
-    private static String idempotencyKey(HttpRequest request) {
+    private static UUID idempotencyKey(HttpRequest request) {
         String key = request.getHeaders().getFirst(SeatsioClient.IDEMPOTENCY_KEY_HEADER);
-        return key.isEmpty() ? null : key;
+        return key.isEmpty() ? null : UUID.fromString(key);
     }
 
     private static SeatsioException create(HttpRequest request, RawResponse response, byte[] responseBody) {

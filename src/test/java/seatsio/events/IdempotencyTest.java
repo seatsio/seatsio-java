@@ -27,7 +27,7 @@ public class IdempotencyTest extends SeatsioClientTest {
     public void sameKeyReplaysTheResponse() {
         useTestCompanyWithIdempotencyEnabled();
         String chartKey = createTestChart();
-        SeatsioClient clientWithKey = client.withIdempotencyKey(UUID.randomUUID().toString());
+        SeatsioClient clientWithKey = client.withIdempotencyKey(UUID.randomUUID());
 
         Event first = clientWithKey.events.create(chartKey);
         Event second = clientWithKey.events.create(chartKey);
@@ -40,7 +40,7 @@ public class IdempotencyTest extends SeatsioClientTest {
     public void sameKeyWithADifferentRequestIsRejected() {
         useTestCompanyWithIdempotencyEnabled();
         String chartKey = createTestChart();
-        SeatsioClient clientWithKey = client.withIdempotencyKey(UUID.randomUUID().toString());
+        SeatsioClient clientWithKey = client.withIdempotencyKey(UUID.randomUUID());
         clientWithKey.events.create(chartKey);
 
         SeatsioException e = assertThrows(SeatsioException.class, () -> clientWithKey.events.create(chartKey, new CreateEventParams().withKey("anotherEvent")));
@@ -51,7 +51,7 @@ public class IdempotencyTest extends SeatsioClientTest {
     @Test
     public void keyIsIgnoredWhenIdempotencyIsNotEnabledForTheCompany() {
         String chartKey = createTestChart();
-        SeatsioClient clientWithKey = client.withIdempotencyKey(UUID.randomUUID().toString());
+        SeatsioClient clientWithKey = client.withIdempotencyKey(UUID.randomUUID());
 
         Event first = clientWithKey.events.create(chartKey);
         Event second = clientWithKey.events.create(chartKey);
@@ -62,7 +62,7 @@ public class IdempotencyTest extends SeatsioClientTest {
     @Test
     public void suppliedKeyIsAvailableOnAFailedRequest() {
         useTestCompanyWithIdempotencyEnabled();
-        String key = UUID.randomUUID().toString();
+        UUID key = UUID.randomUUID();
 
         SeatsioException e = assertThrows(SeatsioException.class, () -> client.withIdempotencyKey(key).events.create("unknownChart"));
 
@@ -75,7 +75,7 @@ public class IdempotencyTest extends SeatsioClientTest {
 
         SeatsioException e = assertThrows(SeatsioException.class, () -> client.events.create("unknownChart"));
 
-        assertThat(UUID.fromString(e.idempotencyKey).version()).isEqualTo(4);
+        assertThat(e.idempotencyKey.version()).isEqualTo(4);
     }
 
     @Test

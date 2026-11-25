@@ -62,7 +62,7 @@ public class IdempotencyKeyTest {
             new UnirestWrapper("secretKey", null).stringResponse(post(httpbinUrl("/status/500")).body("{}"));
             fail("expected exception");
         } catch (SeatsioException e) {
-            assertThat(UUID.fromString(e.idempotencyKey).version()).isEqualTo(4);
+            assertThat(e.idempotencyKey.version()).isEqualTo(4);
         }
     }
 
@@ -72,33 +72,25 @@ public class IdempotencyKeyTest {
             new UnirestWrapper("secretKey", null).stringResponse(post("http://localhost:1/anything").body("{}"));
             fail("expected exception");
         } catch (SeatsioException e) {
-            assertThat(UUID.fromString(e.idempotencyKey).version()).isEqualTo(4);
+            assertThat(e.idempotencyKey.version()).isEqualTo(4);
         }
     }
 
     @Test
     public void aClientCanRetryWithTheSameIdempotencyKey() {
-        String key = UUID.randomUUID().toString();
+        UUID key = UUID.randomUUID();
         UnirestWrapper wrapper = new UnirestWrapper("secretKey", null).withIdempotencyKey(key);
 
-        assertThat(sentIdempotencyKey(wrapper.stringResponse(post(httpbinUrl("/anything")).body("{}")))).isEqualTo(key);
-        assertThat(sentIdempotencyKey(wrapper.stringResponse(post(httpbinUrl("/anything")).body("{}")))).isEqualTo(key);
+        assertThat(sentIdempotencyKey(wrapper.stringResponse(post(httpbinUrl("/anything")).body("{}")))).isEqualTo(key.toString());
+        assertThat(sentIdempotencyKey(wrapper.stringResponse(post(httpbinUrl("/anything")).body("{}")))).isEqualTo(key.toString());
     }
 
     @ParameterizedTest
     @NullSource
-    @ValueSource(strings = {"", "notAUuid", "f81d4fae-7dec-11d0-a765-00a0c91e6bf6", "00000000-0000-0000-0000-000000000000", "1-1-1-1-1"})
+    @ValueSource(strings = {"f81d4fae-7dec-11d0-a765-00a0c91e6bf6", "00000000-0000-0000-0000-000000000000", "550e8400-e29b-41d4-c716-446655440000"})
     public void suppliedKeyMustBeAV4Uuid(String key) {
-        assertThrows(IllegalArgumentException.class, () -> new SeatsioClient("secretKey", null, "http://localhost:1").withIdempotencyKey(key));
-    }
-
-    @Test
-    public void suppliedKeyIsCaseInsensitive() {
-        String key = UUID.randomUUID().toString().toUpperCase();
-
-        String sentKey = sentIdempotencyKey(new UnirestWrapper("secretKey", null).withIdempotencyKey(key).stringResponse(post(httpbinUrl("/anything")).body("{}")));
-
-        assertThat(sentKey).isEqualTo(key);
+        UUID uuid = key == null ? null : UUID.fromString(key);
+        assertThrows(IllegalArgumentException.class, () -> new SeatsioClient("secretKey", null, "http://localhost:1").withIdempotencyKey(uuid));
     }
 
     @Test
@@ -124,7 +116,7 @@ public class IdempotencyKeyTest {
 
             SeatsioException e = assertThrows(SeatsioException.class, () -> new UnirestWrapper("secretKey", null).stringResponse(post(server.url("/").toString()).body("{}")));
 
-            assertThat(e.idempotencyKey).isEqualTo(server.takeRequest().getHeaders().get(SeatsioClient.IDEMPOTENCY_KEY_HEADER));
+            assertThat(e.idempotencyKey.toString()).isEqualTo(server.takeRequest().getHeaders().get(SeatsioClient.IDEMPOTENCY_KEY_HEADER));
         }
     }
 

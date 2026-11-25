@@ -241,7 +241,7 @@ This exception contains a message string describing what went wrong, and also th
 
 - `errors`: a list of errors that the server returned. In most cases, this array will contain only one element, an instance of ApiError, containing an error code and a message.
 - `requestId`: the identifier of the request you made. Please mention this to us when you have questions, as it will make debugging easier.
-- `idempotencyKey`: the `Idempotency-Key` sent with a `POST` or `DELETE` request (see [Idempotency](#idempotency)), or `null` for other requests.
+- `idempotencyKey`: the `Idempotency-Key` (a `UUID`) sent with a `POST` or `DELETE` request (see [Idempotency](#idempotency)), or `null` for other requests.
 - `idempotencyKeyHonored`: whether the server honored that key, according to the `Idempotency-Key-Status` header of the response; `null` when there was no response or the response didn't say.
 - `replayed`: `true` when the server didn't execute the request again, but replayed the response of an earlier request with the same key.
 
@@ -273,7 +273,7 @@ try {
 }
 ```
 
-Retry promptly: after 10 minutes, the server has forgotten the key. The retried request must be identical to the original one, otherwise the server returns an error `422`. Every `POST` and `DELETE` made with the client returned by `withIdempotencyKey()` sends that key, so use it for one operation only. You can also supply your own key; it must be a v4 UUID, otherwise `withIdempotencyKey()` throws an `IllegalArgumentException`.
+Retry promptly: after 10 minutes, the server has forgotten the key. The retried request must be identical to the original one, otherwise the server returns an error `422`. Every `POST` and `DELETE` made with the client returned by `withIdempotencyKey()` sends that key, so use it for one operation only. You can also supply your own key, a `UUID`; it must be a v4 UUID (`UUID.randomUUID()` gives you one), otherwise `withIdempotencyKey()` throws an `IllegalArgumentException`.
 
 ### Automatic retries
 
