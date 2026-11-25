@@ -82,8 +82,6 @@ public class UnirestWrapper {
                 });
             } catch (UnirestException e) {
                 if (write == null) {
-                    // The HTTP client already retries a GET whose response was lost, so retrying those here would
-                    // multiply the attempts. It does not retry a connection that could not be set up: do that here.
                     if (neverSent(e) && waitBeforeRetry(retryCount, null)) {
                         continue;
                     }
@@ -173,11 +171,6 @@ public class UnirestWrapper {
         unirest.shutDown(false);
     }
 
-    /**
-     * Whether a connection failure happened before any byte of the request reached the server, so the request cannot
-     * have run. This is a whitelist: any other failure (a read timeout, a connection reset, a broken pipe on a stale
-     * pooled connection, ...) is treated as "may have been sent", which is the safe default.
-     */
     static boolean neverSent(UnirestException e) {
         Throwable cause = e.getCause();
         // ConnectTimeoutException is an InterruptedIOException, so it must be checked by type, not by "timeout"
@@ -187,9 +180,6 @@ public class UnirestWrapper {
                 || cause instanceof SSLHandshakeException;
     }
 
-    /**
-     * The attempts of one POST, PUT, DELETE or PATCH request, all sent with the same Idempotency-Key.
-     */
     private class Write {
 
         private final HttpRequest<?> request;
@@ -210,9 +200,6 @@ public class UnirestWrapper {
             state.remember(IdempotencyKeyStatus.of(response));
         }
 
-        /**
-         * Records a connection failure. Returns whether the SDK may retry it, retries left and time permitting.
-         */
         boolean failed(UnirestException e) {
             if (neverSent(e)) {
                 return true;
@@ -240,18 +227,9 @@ public class UnirestWrapper {
         }
     }
 
-    /**
-     * Shared by a wrapper and the copies made with withIdempotencyKey(): they use the same secret key, so the same
-     * company, and the server honors keys for the same writes.
-     */
     private static class SharedState {
         final RetryClock clock;
         volatile int maxRetries = 5;
-        /**
-         * Whether the last response with a known Idempotency-Key-Status said the server honors idempotency keys.
-         * One flag for all writes: the kill switch and the company flag apply to every POST and DELETE at once.
-         * null means unknown.
-         */
         private volatile Boolean keysHonored;
 
         SharedState(RetryClock clock) {

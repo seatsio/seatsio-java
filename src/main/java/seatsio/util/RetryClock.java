@@ -1,8 +1,5 @@
 package seatsio.util;
 
-/**
- * Time source and sleep for retries, so that tests can replace them.
- */
 interface RetryClock {
 
     RetryClock SYSTEM = new RetryClock() {

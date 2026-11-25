@@ -72,7 +72,6 @@ public class IdempotentRetryTest {
         assertThat(keys.get(2)).isEqualTo(keys.get(1)).isNotEqualTo(keys.get(0));
     }
 
-    // guide test 2
     @Test
     public void aLostResponseIsNotRetriedOnARouteThatIgnoresKeys() {
         UnirestWrapper wrapper = wrapper();
@@ -87,7 +86,6 @@ public class IdempotentRetryTest {
         assertThat(e.idempotencyKey).isEqualTo(UUID.fromString(sentIdempotencyKeys().get(1)));
     }
 
-    // guide test 3
     @Test
     public void aLostResponseIsNotRetriedOnARouteThatNeverSentAStatus() {
         UnirestWrapper wrapper = wrapper();
@@ -99,7 +97,6 @@ public class IdempotentRetryTest {
         assertThat(server.getRequestCount()).isEqualTo(2);
     }
 
-    // guide test 4
     @ParameterizedTest
     @ValueSource(strings = {"POST", "PUT", "DELETE", "PATCH"})
     public void theFirstRequestToARouteIsNotRetriedAfterALostResponse(String method) {
@@ -113,7 +110,6 @@ public class IdempotentRetryTest {
         assertThat(e.idempotencyKey).isEqualTo(UUID.fromString(sentIdempotencyKeys().get(0)));
     }
 
-    // guide test 5
     @Test
     public void aRequestThatWasNeverSentIsRetriedWithTheSameKey() throws Exception {
         int port = freePort();
@@ -132,7 +128,6 @@ public class IdempotentRetryTest {
         }
     }
 
-    // guide test 6
     @Test
     public void whatOneWriteLearnedAppliesToAllWrites() {
         UnirestWrapper wrapper = wrapper();
@@ -144,7 +139,6 @@ public class IdempotentRetryTest {
         assertThat(server.getRequestCount()).isEqualTo(3);
     }
 
-    // guide test 7
     @ParameterizedTest
     @ValueSource(ints = {200, 400, 500})
     public void theLatestKnownStatusOfARouteWins(int ignoredStatus) {
@@ -158,7 +152,6 @@ public class IdempotentRetryTest {
         assertThat(server.getRequestCount()).isEqualTo(3);
     }
 
-    // guide test 8
     @ParameterizedTest
     @ValueSource(ints = {401, 429})
     public void aResponseWithoutAStatusLeavesTheMemoryAlone(int status) {
@@ -174,7 +167,6 @@ public class IdempotentRetryTest {
         assertThat(server.getRequestCount()).isEqualTo(4);
     }
 
-    // guide test 9
     @Test
     public void concretePathsOfTheSameTemplateShareTheMemory() {
         UnirestWrapper wrapper = wrapper();
@@ -186,7 +178,6 @@ public class IdempotentRetryTest {
         assertThat(server.getRequestCount()).isEqualTo(3);
     }
 
-    // guide test 10
     @Test
     public void copiesWithAKeyShareTheMemory() {
         UnirestWrapper wrapper = wrapper();
@@ -208,7 +199,6 @@ public class IdempotentRetryTest {
         assertThat(server.getRequestCount()).isEqualTo(2);
     }
 
-    // guide test 11
     @Test
     public void aRetrySendsTheSameRequest() throws InterruptedException {
         UnirestWrapper wrapper = new UnirestWrapper("secretKey", "aWorkspaceKey", clock);
@@ -229,7 +219,6 @@ public class IdempotentRetryTest {
         }
     }
 
-    // guide test 12
     @Test
     public void anUnknownStatusLeavesTheMemoryAlone() {
         UnirestWrapper wrapper = wrapper();
@@ -264,7 +253,6 @@ public class IdempotentRetryTest {
         assertThat(server.getRequestCount()).isEqualTo(3);
     }
 
-    // guide test 13
     @Test
     public void inUseMarksARouteAsHonoringKeys() {
         UnirestWrapper wrapper = wrapper();
@@ -337,7 +325,6 @@ public class IdempotentRetryTest {
         assertThat(server.getRequestCount()).isEqualTo(1);
     }
 
-    // guide test 14
     @Test
     public void lostResponsesCountAgainstMaxRetries() {
         UnirestWrapper wrapper = wrapper();
@@ -378,7 +365,6 @@ public class IdempotentRetryTest {
         }
     }
 
-    // guide test 15
     @Test
     public void setDefaultWorkspaceIsRetriedAfterALostResponse() {
         SeatsioClient client = new SeatsioClient("secretKey", null, baseUrl());
@@ -392,7 +378,6 @@ public class IdempotentRetryTest {
         assertThat(keys.get(2)).isEqualTo(keys.get(1));
     }
 
-    // guide test 16
     @Test
     public void aRequestThatWasNeverSentIsSafeToRetryWithTheSameKey() {
         String url = server.url("/").toString();
@@ -489,7 +474,6 @@ public class IdempotentRetryTest {
         assertThat(e.isSafeToRetryWithSameKey()).isTrue();
     }
 
-    // guide test 17
     @Test
     public void aRequestThatWasNeverSentIsNotRetriedOnceTheKeyMayHaveExpired() {
         replyWith(error(429, "RATE_LIMIT_EXCEEDED").newBuilder().setHeader("Connection", "close").build());
@@ -825,9 +809,6 @@ public class IdempotentRetryTest {
         };
     }
 
-    /**
-     * The client sends the request, then the connection closes before the response starts.
-     */
     private static MockResponse lostResponse() {
         return new MockResponse.Builder().onResponseStart(new SocketEffect.CloseSocket()).build();
     }
