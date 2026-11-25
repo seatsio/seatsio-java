@@ -285,6 +285,8 @@ The client retries a `POST` or `DELETE` with the same key:
 
 All these retries count against `maxRetries()`. Once a request may have reached the server, the client doesn't start a retry more than 5 minutes after the first attempt, well within the lifetime of the key. A `422` and an invalid key are never retried. The clients returned by `withIdempotencyKey()` share the settings and the memory of the client they were made from.
 
+Because of that memory, create one `SeatsioClient` and share it across your application (it's thread-safe), instead of creating a new one per request. A client that is created per request starts with an empty memory, so it never retries after a lost response, and idempotency can't protect you from executing an operation twice.
+
 There is a small remaining risk: if idempotency is switched off for your company between the last response that said an operation honors keys and a lost response, the retry can execute the operation a second time. The next response with `ignored` corrects the client's memory, so this window is short.
 
 The client stops retrying when its thread is interrupted (the interrupt flag stays set). This applies to all retries, including those after a `429`.
