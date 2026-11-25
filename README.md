@@ -310,7 +310,7 @@ Passing in 0 disables exponential backoff completely. In that case, the client w
 
 ## Multi-threading
 
-It's perfectly fine to re-use an instance of `SeatsioClient` in different threads. All methods are thread-safe.
+It's perfectly fine to re-use an instance of `SeatsioClient` in different threads. All methods are thread-safe. For idempotency to work correctly, it's recommended to use a single instance across all threads.
 
 ## Connection pooling
 
