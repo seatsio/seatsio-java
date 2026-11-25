@@ -134,25 +134,14 @@ public class IdempotentRetryTest {
 
     // guide test 6
     @Test
-    public void routesAreRememberedSeparately() {
+    public void whatOneWriteLearnedAppliesToAllWrites() {
         UnirestWrapper wrapper = wrapper();
-        replyWith(keyStatus(200, "executed"), lostResponse());
+        replyWith(keyStatus(200, "executed"), lostResponse(), status(200));
 
         wrapper.stringResponse(Unirest.post(baseUrl() + "/a").body("{}"));
-        assertThrows(SeatsioException.class, () -> wrapper.stringResponse(Unirest.post(baseUrl() + "/b").body("{}")));
+        wrapper.stringResponse(request("DELETE"));
 
-        assertThat(server.getRequestCount()).isEqualTo(2);
-    }
-
-    @Test
-    public void methodsAreRememberedSeparately() {
-        UnirestWrapper wrapper = wrapper();
-        replyWith(keyStatus(200, "executed"), lostResponse());
-
-        wrapper.stringResponse(request("POST"));
-        assertThrows(SeatsioException.class, () -> wrapper.stringResponse(request("DELETE")));
-
-        assertThat(server.getRequestCount()).isEqualTo(2);
+        assertThat(server.getRequestCount()).isEqualTo(3);
     }
 
     // guide test 7
@@ -425,6 +414,16 @@ public class IdempotentRetryTest {
 
         assertThat(e.outcomeIsUnknown()).isFalse();
         assertThat(e.isSafeToRetryWithSameKey()).isFalse();
+    }
+
+    @Test
+    public void aGetThatWasNeverSentIsRetriedUntilTheRetriesRunOut() {
+        String url = server.url("/").toString();
+        server.close();
+
+        assertThrows(SeatsioException.class, () -> wrapper().maxRetries(2).stringResponse(Unirest.get(url)));
+
+        assertThat(clock.sleeps).isEqualTo(2);
     }
 
     @Test

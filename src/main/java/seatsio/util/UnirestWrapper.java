@@ -9,10 +9,8 @@ import javax.net.ssl.SSLHandshakeException;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.time.Duration;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
@@ -86,6 +84,11 @@ public class UnirestWrapper {
                 });
             } catch (UnirestException e) {
                 if (write == null) {
+                    // The HTTP client already retries a GET whose response was lost, so retrying those here would
+                    // multiply the attempts. It does not retry a connection that could not be set up: do that here.
+                    if (neverSent(e) && waitBeforeRetry(retryCount, null)) {
+                        continue;
+                    }
                     throw SeatsioException.fromConnectionFailure(e, request, !neverSent(e), false);
                 }
                 if (write.failed(e) && waitBeforeRetry(retryCount, write)) {
@@ -192,14 +195,12 @@ public class UnirestWrapper {
     private class Write {
 
         private final HttpRequest<?> request;
-        private final String route;
         private final long start;
         private boolean mayHaveReachedTheServer;
         private boolean mayHaveRun;
 
         Write(HttpRequest<?> request) {
             this.request = request;
-            this.route = request.getHttpMethod() + " " + request.toSummary().getRawPath();
             this.start = state.clock.millis();
         }
 
@@ -208,7 +209,7 @@ public class UnirestWrapper {
             if (isIdempotencyKeyInUse(response, responseBody)) {
                 mayHaveRun = true;
             }
-            state.remember(route, IdempotencyKeyStatus.of(response));
+            state.remember(IdempotencyKeyStatus.of(response));
         }
 
         /**
@@ -232,7 +233,7 @@ public class UnirestWrapper {
         }
 
         boolean routeHonorsKeys() {
-            return state.honorsKeys(route);
+            return state.honorsKeys();
         }
 
         SeatsioException connectionFailure(UnirestException e) {
@@ -243,29 +244,30 @@ public class UnirestWrapper {
 
     /**
      * Shared by a wrapper and the copies made with withIdempotencyKey(): they use the same secret key, so the same
-     * company, and the server honors keys for the same routes.
+     * company, and the server honors keys for the same writes.
      */
     private static class SharedState {
         final RetryClock clock;
         volatile int maxRetries = 5;
         /**
-         * Per "METHOD path template": whether the last response with a known Idempotency-Key-Status said the route
-         * honors idempotency keys. No entry means unknown.
+         * Whether the last response with a known Idempotency-Key-Status said the server honors idempotency keys.
+         * One flag for all writes: the kill switch and the company flag apply to every POST and DELETE at once.
+         * null means unknown.
          */
-        private final Map<String, Boolean> routesHonoringKeys = new ConcurrentHashMap<>();
+        private volatile Boolean keysHonored;
 
         SharedState(RetryClock clock) {
             this.clock = clock;
         }
 
-        void remember(String route, IdempotencyKeyStatus status) {
+        void remember(IdempotencyKeyStatus status) {
             if (status != null) {
-                routesHonoringKeys.put(route, status.keyHonored());
+                keysHonored = status.keyHonored();
             }
         }
 
-        boolean honorsKeys(String route) {
-            return Boolean.TRUE.equals(routesHonoringKeys.get(route));
+        boolean honorsKeys() {
+            return Boolean.TRUE.equals(keysHonored);
         }
     }
 }
