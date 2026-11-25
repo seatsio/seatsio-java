@@ -488,14 +488,14 @@ public class IdempotentRetryTest {
     }
 
     @Test
-    public void aRequestThatWasNeverSentIsNotRetriedOnceTheKeyMayHaveExpired() {
+    public void aRetryAfter429IsNotCutOffByTheKeyWindowButByTheNeverSentWindow() {
         replyWith(error(429, "RATE_LIMIT_EXCEEDED").newBuilder().setHeader("Connection", "close").build());
         clock.onSleep = () -> {
             server.close();
-            clock.now += Duration.ofMinutes(6).toMillis();
+            clock.now = Duration.ofMinutes(6).toMillis();
         };
 
-        SeatsioException e = assertThrows(SeatsioException.class, () -> wrapper().stringResponse(request("POST")));
+        SeatsioException e = assertThrows(SeatsioException.class, () -> wrapper().maxRetries(2).stringResponse(request("POST")));
 
         assertThat(server.getRequestCount()).isEqualTo(1);
         assertThat(clock.sleeps).isEqualTo(1);
@@ -504,14 +504,53 @@ public class IdempotentRetryTest {
     }
 
     @Test
-    public void aRequestThatWasNeverSentIsRetriedWhateverTheTimeIfNoAttemptWasSent() {
+    public void retriesOfNeverSentRequestsStopAfterAShortWindow() {
         String url = server.url("/").toString();
         server.close();
-        clock.onSleep = () -> clock.now += Duration.ofMinutes(10).toMillis();
+        clock.onSleep = () -> clock.now += Duration.ofSeconds(10).toMillis();
 
-        assertThrows(SeatsioException.class, () -> wrapper().maxRetries(3).stringResponse(Unirest.post(url).body("{}")));
+        SeatsioException e = assertThrows(SeatsioException.class, () -> wrapper().maxRetries(20).stringResponse(Unirest.post(url).body("{}")));
 
         assertThat(clock.sleeps).isEqualTo(3);
+        assertThat(e.outcomeIsUnknown()).isFalse();
+    }
+
+    @Test
+    public void retriesOfNeverSentGetsStopAfterAShortWindow() {
+        String url = server.url("/").toString();
+        server.close();
+        clock.onSleep = () -> clock.now += Duration.ofSeconds(10).toMillis();
+
+        assertThrows(SeatsioException.class, () -> wrapper().maxRetries(20).stringResponse(Unirest.get(url)));
+
+        assertThat(clock.sleeps).isEqualTo(3);
+    }
+
+    @Test
+    public void a429OnlyWriteKeepsRetryingPastTheRetryWindow() {
+        replyWith(3, error(429, "RATE_LIMIT_EXCEEDED"));
+        clock.onSleep = () -> clock.now += Duration.ofMinutes(6).toMillis();
+
+        assertThrows(RateLimitExceededException.class, () -> wrapper().maxRetries(2).stringResponse(request("POST")));
+
+        assertThat(server.getRequestCount()).isEqualTo(3);
+    }
+
+    @Test
+    public void aReplayed5xxIsNotSafeToRetryWithTheSameKey() {
+        replyWith(keyStatus(error(500, "SOME_ERROR"), "replayed"));
+
+        SeatsioException e = assertThrows(SeatsioException.class, () -> wrapper().stringResponse(request("POST")));
+
+        assertThat(e.outcomeIsUnknown()).isTrue();
+        assertThat(e.isSafeToRetryWithSameKey()).isFalse();
+    }
+
+    @Test
+    public void aNonJson429GivesARateLimitExceededException() {
+        replyWith(3, status(429));
+
+        assertThrows(RateLimitExceededException.class, () -> wrapper().maxRetries(2).stringResponse(request("POST")));
     }
 
     @Test
@@ -527,16 +566,6 @@ public class IdempotentRetryTest {
         assertThat(server.getRequestCount()).isEqualTo(1 + 4);
         assertThat(e.outcomeIsUnknown()).isTrue();
         assertThat(e.isSafeToRetryWithSameKey()).isFalse();
-    }
-
-    @Test
-    public void retriesOn429StopOnceTheKeyMayHaveExpired() {
-        replyWith(2, error(429, "RATE_LIMIT_EXCEEDED"));
-        clock.onSleep = () -> clock.now += Duration.ofMinutes(6).toMillis();
-
-        assertThrows(RateLimitExceededException.class, () -> wrapper().stringResponse(request("POST")));
-
-        assertThat(server.getRequestCount()).isEqualTo(2);
     }
 
     @Test

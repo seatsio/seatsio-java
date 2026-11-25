@@ -69,7 +69,7 @@ public class IdempotencyKeyTest {
     @Test
     public void connectionFailuresExposeTheirIdempotencyKey() {
         try {
-            new UnirestWrapper("secretKey", null).stringResponse(post("http://localhost:1/anything").body("{}"));
+            new UnirestWrapper("secretKey", null).maxRetries(0).stringResponse(post("http://localhost:1/anything").body("{}"));
             fail("expected exception");
         } catch (SeatsioException e) {
             assertThat(e.idempotencyKey.version()).isEqualTo(4);
@@ -150,7 +150,7 @@ public class IdempotencyKeyTest {
 
     @Test
     public void connectionFailuresOfGetsHaveNoKey() {
-        SeatsioException e = assertThrows(SeatsioException.class, () -> new UnirestWrapper("secretKey", null).stringResponse(get("http://localhost:1/anything")));
+        SeatsioException e = assertThrows(SeatsioException.class, () -> new UnirestWrapper("secretKey", null).maxRetries(0).stringResponse(get("http://localhost:1/anything")));
 
         assertThat(e.idempotencyKey).isNull();
     }

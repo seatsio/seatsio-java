@@ -24,6 +24,7 @@ public class UnirestWrapper {
     private static final Set<HttpMethod> SAFE_METHODS = Set.of(HttpMethod.GET, HttpMethod.HEAD, HttpMethod.OPTIONS, HttpMethod.TRACE);
 
     static final long RETRY_WINDOW_MILLIS = Duration.ofMinutes(5).toMillis();
+    static final long NEVER_SENT_RETRY_WINDOW_MILLIS = Duration.ofSeconds(30).toMillis();
 
     private final String secretKey;
     private final String workspaceKey;
@@ -72,6 +73,7 @@ public class UnirestWrapper {
 
     private byte[] execute(HttpRequest request) {
         Write write = isSafe(request) ? null : new Write(request);
+        long start = state.clock.millis();
         for (int retryCount = 0; ; retryCount++) {
             AtomicReference<RawResponse> response = new AtomicReference<>();
             AtomicReference<byte[]> responseBody = new AtomicReference<>();
@@ -82,12 +84,13 @@ public class UnirestWrapper {
                 });
             } catch (UnirestException e) {
                 if (write == null) {
-                    if (neverSent(e) && waitBeforeRetry(retryCount, null)) {
+                    if (neverSent(e) && waitBeforeRetry(retryCount, null, start + NEVER_SENT_RETRY_WINDOW_MILLIS)) {
                         continue;
                     }
                     throw SeatsioException.fromConnectionFailure(e, request, !neverSent(e), false);
                 }
-                if (write.failed(e) && waitBeforeRetry(retryCount, write)) {
+                long deadline = neverSent(e) ? start + NEVER_SENT_RETRY_WINDOW_MILLIS : Long.MAX_VALUE;
+                if (write.failed(e) && waitBeforeRetry(retryCount, write, deadline)) {
                     continue;
                 }
                 throw write.connectionFailure(e);
@@ -95,7 +98,7 @@ public class UnirestWrapper {
             if (write != null) {
                 write.answered(response.get(), responseBody.get());
             }
-            if (!isRetryable(response.get(), responseBody.get()) || !waitBeforeRetry(retryCount, write)) {
+            if (!isRetryable(response.get(), responseBody.get()) || !waitBeforeRetry(retryCount, write, Long.MAX_VALUE)) {
                 return processResponse(request, response.get(), responseBody.get(), write);
             }
         }
@@ -117,12 +120,15 @@ public class UnirestWrapper {
         return SAFE_METHODS.contains(request.getHttpMethod());
     }
 
-    private boolean waitBeforeRetry(int retryCount, Write write) {
+    private boolean waitBeforeRetry(int retryCount, Write write, long deadline) {
         if (retryCount >= state.maxRetries) {
             return false;
         }
         long delay = (long) Math.pow(2, retryCount + 2) * 100;
         if (write != null && !write.mayRetryAfter(delay)) {
+            return false;
+        }
+        if (deadline != Long.MAX_VALUE && state.clock.millis() + delay > deadline) {
             return false;
         }
         try {
@@ -184,7 +190,6 @@ public class UnirestWrapper {
 
         private final HttpRequest<?> request;
         private final long start;
-        private boolean mayHaveReachedTheServer;
         private boolean mayHaveRun;
 
         Write(HttpRequest<?> request) {
@@ -193,7 +198,6 @@ public class UnirestWrapper {
         }
 
         void answered(RawResponse response, byte[] responseBody) {
-            mayHaveReachedTheServer = true;
             if (isIdempotencyKeyInUse(response, responseBody)) {
                 mayHaveRun = true;
             }
@@ -204,13 +208,12 @@ public class UnirestWrapper {
             if (neverSent(e)) {
                 return true;
             }
-            mayHaveReachedTheServer = true;
             mayHaveRun = true;
             return routeHonorsKeys();
         }
 
         boolean mayRetryAfter(long delay) {
-            return !mayHaveReachedTheServer || startsWithinRetryWindow(delay);
+            return !mayHaveRun || startsWithinRetryWindow(delay);
         }
 
         private boolean startsWithinRetryWindow(long delay) {
