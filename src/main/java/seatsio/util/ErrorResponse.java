@@ -32,6 +32,14 @@ public class ErrorResponse {
         }
     }
 
+    public static boolean isIdempotencyKeyInUse(RawResponse response, byte[] responseBody) {
+        if (response.getStatus() != 409) {
+            return false;
+        }
+        ErrorResponse errorResponse = parseIfAny(response, responseBody);
+        return errorResponse != null && "IDEMPOTENCY_KEY_IN_USE".equals(errorResponse.firstErrorCode());
+    }
+
     public boolean hasErrorCode() {
         return !errors.isEmpty();
     }

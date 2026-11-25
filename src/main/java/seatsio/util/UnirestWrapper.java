@@ -2,7 +2,6 @@ package seatsio.util;
 
 import kong.unirest.*;
 import org.apache.http.conn.ConnectTimeoutException;
-import seatsio.SeatsioClient;
 import seatsio.SeatsioException;
 
 import javax.net.ssl.SSLHandshakeException;
@@ -67,12 +66,12 @@ public class UnirestWrapper {
 
     private void addIdempotencyKey(HttpRequest request) {
         if (!isSafe(request)) {
-            request.header(SeatsioClient.IDEMPOTENCY_KEY_HEADER, (idempotencyKey != null ? idempotencyKey : UUID.randomUUID()).toString());
+            request.header(IdempotencyKeyStatus.KEY_HEADER, (idempotencyKey != null ? idempotencyKey : UUID.randomUUID()).toString());
         }
     }
 
     private byte[] execute(HttpRequest request) {
-        Write write = isSafe(request) ? null : new Write(request);
+        Call call = isSafe(request) ? new Read(request) : new Write(request);
         long start = state.clock.millis();
         for (int retryCount = 0; ; retryCount++) {
             AtomicReference<RawResponse> response = new AtomicReference<>();
@@ -83,49 +82,33 @@ public class UnirestWrapper {
                     responseBody.set(response.get().getContentAsBytes());
                 });
             } catch (UnirestException e) {
-                if (write == null) {
-                    if (neverSent(e) && waitBeforeRetry(retryCount, null, start + NEVER_SENT_RETRY_WINDOW_MILLIS)) {
-                        continue;
-                    }
-                    throw SeatsioException.fromConnectionFailure(e, request, !neverSent(e), false);
-                }
                 long deadline = neverSent(e) ? start + NEVER_SENT_RETRY_WINDOW_MILLIS : Long.MAX_VALUE;
-                if (write.failed(e) && waitBeforeRetry(retryCount, write, deadline)) {
+                if (call.failed(e) && waitBeforeRetry(retryCount, call, deadline)) {
                     continue;
                 }
-                throw write.connectionFailure(e);
+                throw call.connectionFailure(e);
             }
-            if (write != null) {
-                write.answered(response.get(), responseBody.get());
-            }
-            if (!isRetryable(response.get(), responseBody.get()) || !waitBeforeRetry(retryCount, write, Long.MAX_VALUE)) {
-                return processResponse(request, response.get(), responseBody.get(), write);
+            call.answered(response.get(), responseBody.get());
+            if (!isRetryable(response.get(), responseBody.get()) || !waitBeforeRetry(retryCount, call, Long.MAX_VALUE)) {
+                return processResponse(request, response.get(), responseBody.get(), call);
             }
         }
     }
 
     private static boolean isRetryable(RawResponse response, byte[] responseBody) {
-        return response.getStatus() == 429 || isIdempotencyKeyInUse(response, responseBody);
-    }
-
-    public static boolean isIdempotencyKeyInUse(RawResponse response, byte[] responseBody) {
-        if (response.getStatus() != 409) {
-            return false;
-        }
-        ErrorResponse errorResponse = ErrorResponse.parseIfAny(response, responseBody);
-        return errorResponse != null && "IDEMPOTENCY_KEY_IN_USE".equals(errorResponse.firstErrorCode());
+        return response.getStatus() == 429 || ErrorResponse.isIdempotencyKeyInUse(response, responseBody);
     }
 
     private static boolean isSafe(HttpRequest request) {
         return SAFE_METHODS.contains(request.getHttpMethod());
     }
 
-    private boolean waitBeforeRetry(int retryCount, Write write, long deadline) {
+    private boolean waitBeforeRetry(int retryCount, Call call, long deadline) {
         if (retryCount >= state.maxRetries) {
             return false;
         }
         long delay = (long) Math.pow(2, retryCount + 2) * 100;
-        if (write != null && !write.mayRetryAfter(delay)) {
+        if (!call.mayRetryAfter(delay)) {
             return false;
         }
         if (deadline != Long.MAX_VALUE && state.clock.millis() + delay > deadline) {
@@ -140,9 +123,9 @@ public class UnirestWrapper {
         }
     }
 
-    private byte[] processResponse(HttpRequest request, RawResponse response, byte[] responseBody, Write write) {
+    private byte[] processResponse(HttpRequest request, RawResponse response, byte[] responseBody, Call call) {
         if (response.getStatus() >= 400) {
-            throw SeatsioException.from(request, response, responseBody, write != null && write.routeHonorsKeys(), write != null && write.mayHaveRun);
+            throw call.error(response, responseBody);
         } else {
             return responseBody;
         }
@@ -186,7 +169,53 @@ public class UnirestWrapper {
                 || cause instanceof SSLHandshakeException;
     }
 
-    private class Write {
+    private interface Call {
+
+        void answered(RawResponse response, byte[] responseBody);
+
+        boolean failed(UnirestException e);
+
+        boolean mayRetryAfter(long delay);
+
+        SeatsioException connectionFailure(UnirestException e);
+
+        SeatsioException error(RawResponse response, byte[] responseBody);
+    }
+
+    private static class Read implements Call {
+
+        private final HttpRequest<?> request;
+
+        Read(HttpRequest<?> request) {
+            this.request = request;
+        }
+
+        @Override
+        public void answered(RawResponse response, byte[] responseBody) {
+        }
+
+        @Override
+        public boolean failed(UnirestException e) {
+            return neverSent(e);
+        }
+
+        @Override
+        public boolean mayRetryAfter(long delay) {
+            return true;
+        }
+
+        @Override
+        public SeatsioException connectionFailure(UnirestException e) {
+            return SeatsioException.fromConnectionFailure(e, request, !neverSent(e), false);
+        }
+
+        @Override
+        public SeatsioException error(RawResponse response, byte[] responseBody) {
+            return SeatsioException.from(request, response, responseBody, false, false);
+        }
+    }
+
+    private class Write implements Call {
 
         private final HttpRequest<?> request;
         private final long start;
@@ -197,14 +226,16 @@ public class UnirestWrapper {
             this.start = state.clock.millis();
         }
 
-        void answered(RawResponse response, byte[] responseBody) {
-            if (isIdempotencyKeyInUse(response, responseBody)) {
+        @Override
+        public void answered(RawResponse response, byte[] responseBody) {
+            if (ErrorResponse.isIdempotencyKeyInUse(response, responseBody)) {
                 mayHaveRun = true;
             }
             state.remember(IdempotencyKeyStatus.of(response));
         }
 
-        boolean failed(UnirestException e) {
+        @Override
+        public boolean failed(UnirestException e) {
             if (neverSent(e)) {
                 return true;
             }
@@ -212,7 +243,8 @@ public class UnirestWrapper {
             return routeHonorsKeys();
         }
 
-        boolean mayRetryAfter(long delay) {
+        @Override
+        public boolean mayRetryAfter(long delay) {
             return !mayHaveRun || startsWithinRetryWindow(delay);
         }
 
@@ -224,7 +256,13 @@ public class UnirestWrapper {
             return state.honorsKeys();
         }
 
-        SeatsioException connectionFailure(UnirestException e) {
+        @Override
+        public SeatsioException error(RawResponse response, byte[] responseBody) {
+            return SeatsioException.from(request, response, responseBody, routeHonorsKeys(), mayHaveRun);
+        }
+
+        @Override
+        public SeatsioException connectionFailure(UnirestException e) {
             boolean safeToRetryWithSameKey = !mayHaveRun || (routeHonorsKeys() && startsWithinRetryWindow(0));
             return SeatsioException.fromConnectionFailure(e, request, mayHaveRun, safeToRetryWithSameKey);
         }

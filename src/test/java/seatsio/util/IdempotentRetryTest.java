@@ -36,6 +36,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static seatsio.MockResponses.json;
 
 public class IdempotentRetryTest {
 
@@ -122,8 +123,8 @@ public class IdempotentRetryTest {
 
             assertThat(clock.sleeps).isEqualTo(1);
             assertThat(late.getRequestCount()).isEqualTo(1);
-            assertThat(late.takeRequest().getHeaders().get(SeatsioClient.IDEMPOTENCY_KEY_HEADER))
-                    .isEqualTo(request.getHeaders().getFirst(SeatsioClient.IDEMPOTENCY_KEY_HEADER))
+            assertThat(late.takeRequest().getHeaders().get(IdempotencyKeyStatus.KEY_HEADER))
+                    .isEqualTo(request.getHeaders().getFirst(IdempotencyKeyStatus.KEY_HEADER))
                     .isNotEmpty();
         }
     }
@@ -227,7 +228,7 @@ public class IdempotentRetryTest {
         assertThat(retry.getTarget()).isEqualTo(lost.getTarget()).isEqualTo("/events/event2/actions/book?expand=x");
         assertThat(retry.getBody()).isEqualTo(lost.getBody());
         assertThat(retry.getBody().utf8()).isEqualTo("{\"objects\": [\"A-1\"]}");
-        for (String header : List.of(SeatsioClient.IDEMPOTENCY_KEY_HEADER, "X-Workspace-Key", "Authorization")) {
+        for (String header : List.of(IdempotencyKeyStatus.KEY_HEADER, "X-Workspace-Key", "Authorization")) {
             assertThat(retry.getHeaders().values(header)).hasSize(1).isEqualTo(lost.getHeaders().values(header));
         }
     }
@@ -681,7 +682,7 @@ public class IdempotentRetryTest {
             RecordedRequest request = server.takeRequest();
             assertThat(request.getHeaders().values("X-Client-Lib")).hasSize(1);
             assertThat(request.getHeaders().values("Authorization")).hasSize(1);
-            assertThat(request.getHeaders().values(SeatsioClient.IDEMPOTENCY_KEY_HEADER)).hasSize(1);
+            assertThat(request.getHeaders().values(IdempotencyKeyStatus.KEY_HEADER)).hasSize(1);
         }
     }
 
@@ -811,7 +812,7 @@ public class IdempotentRetryTest {
         List<String> keys = new ArrayList<>();
         try {
             for (int i = 0; i < server.getRequestCount(); i++) {
-                keys.add(server.takeRequest().getHeaders().get(SeatsioClient.IDEMPOTENCY_KEY_HEADER));
+                keys.add(server.takeRequest().getHeaders().get(IdempotencyKeyStatus.KEY_HEADER));
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -865,10 +866,6 @@ public class IdempotentRetryTest {
 
     private static MockResponse keyStatus(MockResponse response, String keyStatus) {
         return response.newBuilder().setHeader(IdempotencyKeyStatus.HEADER, keyStatus).build();
-    }
-
-    private static MockResponse json(int code, String body) {
-        return new MockResponse.Builder().code(code).setHeader("Content-Type", "application/json").body(body).build();
     }
 
     private static MockResponse error(int code, String errorCode) {

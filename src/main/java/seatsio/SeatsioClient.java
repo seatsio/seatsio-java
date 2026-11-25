@@ -15,7 +15,6 @@ import seatsio.workspaces.Workspaces;
 
 public class SeatsioClient {
 
-    public static final String IDEMPOTENCY_KEY_HEADER = "Idempotency-Key";
 
     private final String baseUrl;
     private final UnirestWrapper unirest;

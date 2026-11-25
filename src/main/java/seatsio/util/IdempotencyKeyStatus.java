@@ -16,6 +16,7 @@ public enum IdempotencyKeyStatus {
     REUSED("reused", true),
     IGNORED("ignored", false);
 
+    public static final String KEY_HEADER = "Idempotency-Key";
     public static final String HEADER = "Idempotency-Key-Status";
 
     private final String headerValue;

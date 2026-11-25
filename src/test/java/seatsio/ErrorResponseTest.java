@@ -15,6 +15,7 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static seatsio.util.UnirestWrapper.get;
+import static seatsio.MockResponses.json;
 
 public class ErrorResponseTest {
 
@@ -90,7 +91,4 @@ public class ErrorResponseTest {
         return server.url("/").toString();
     }
 
-    private static MockResponse json(int code, String body) {
-        return new MockResponse.Builder().code(code).setHeader("Content-Type", "application/json").body(body).build();
-    }
 }

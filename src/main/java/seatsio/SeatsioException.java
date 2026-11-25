@@ -6,7 +6,6 @@ import seatsio.events.BestAvailableObjectsNotFoundException;
 import seatsio.exceptions.RateLimitExceededException;
 import seatsio.util.ErrorResponse;
 import seatsio.util.IdempotencyKeyStatus;
-import seatsio.util.UnirestWrapper;
 
 import java.util.List;
 import java.util.UUID;
@@ -90,7 +89,7 @@ public class SeatsioException extends RuntimeException {
         exception.idempotencyKeyHonored = status == null ? null : status.keyHonored();
         exception.replayed = status == IdempotencyKeyStatus.REPLAYED;
         exception.outcomeIsUnknown = response.getStatus() >= 500
-                || UnirestWrapper.isIdempotencyKeyInUse(response, responseBody)
+                || ErrorResponse.isIdempotencyKeyInUse(response, responseBody)
                 || (mayHaveRun && !exception.replayed);
         exception.safeToRetryWithSameKey = exception.outcomeIsUnknown
                 && exception.idempotencyKey != null
@@ -122,28 +121,27 @@ public class SeatsioException extends RuntimeException {
     }
 
     private static UUID idempotencyKey(HttpRequest request) {
-        String key = request.getHeaders().getFirst(SeatsioClient.IDEMPOTENCY_KEY_HEADER);
+        String key = request.getHeaders().getFirst(IdempotencyKeyStatus.KEY_HEADER);
         return key.isEmpty() ? null : UUID.fromString(key);
     }
 
     private static SeatsioException create(HttpRequest request, RawResponse response, byte[] responseBody) {
+        boolean rateLimited = response.getStatus() == 429;
         ErrorResponse errorResponse = ErrorResponse.parseIfAny(response, responseBody);
         if (errorResponse == null) {
-            if (response.getStatus() == 429) {
-                return new RateLimitExceededException(exceptionMessage(request, response, responseBody));
-            }
-            return new SeatsioException(request, response, responseBody);
+            String message = exceptionMessage(request, response, responseBody);
+            return rateLimited ? new RateLimitExceededException(message) : new SeatsioException(request, response, responseBody);
         }
         if (!errorResponse.hasErrorCode()) {
             String message = exceptionMessage(request, response, responseBody);
-            if (response.getStatus() == 429) {
-                return new RateLimitExceededException(message, errorResponse.errors, errorResponse.requestId);
-            }
-            return new SeatsioException(message, errorResponse.errors, errorResponse.requestId);
+            return rateLimited
+                    ? new RateLimitExceededException(message, errorResponse.errors, errorResponse.requestId)
+                    : new SeatsioException(message, errorResponse.errors, errorResponse.requestId);
         }
-        if (response.getStatus() == 429) {
+        if (rateLimited) {
             return new RateLimitExceededException(errorResponse.errors, errorResponse.requestId);
-        } else if (isBestAvailableObjectsNotFound(errorResponse)) {
+        }
+        if (isBestAvailableObjectsNotFound(errorResponse)) {
             return new BestAvailableObjectsNotFoundException(errorResponse.errors, errorResponse.requestId);
         }
         return new SeatsioException(errorResponse.errors, errorResponse.requestId);

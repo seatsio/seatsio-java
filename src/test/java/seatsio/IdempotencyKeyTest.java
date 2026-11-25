@@ -10,6 +10,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import seatsio.util.IdempotencyKeyStatus;
 import seatsio.util.UnirestWrapper;
 
 import java.util.UUID;
@@ -22,6 +23,7 @@ import static seatsio.Httpbin.httpbinUrl;
 import static seatsio.util.UnirestWrapper.delete;
 import static seatsio.util.UnirestWrapper.get;
 import static seatsio.util.UnirestWrapper.post;
+import static seatsio.MockResponses.json;
 
 public class IdempotencyKeyTest {
 
@@ -116,7 +118,7 @@ public class IdempotencyKeyTest {
 
             SeatsioException e = assertThrows(SeatsioException.class, () -> new UnirestWrapper("secretKey", null).stringResponse(post(server.url("/").toString()).body("{}")));
 
-            assertThat(e.idempotencyKey.toString()).isEqualTo(server.takeRequest().getHeaders().get(SeatsioClient.IDEMPOTENCY_KEY_HEADER));
+            assertThat(e.idempotencyKey.toString()).isEqualTo(server.takeRequest().getHeaders().get(IdempotencyKeyStatus.KEY_HEADER));
         }
     }
 
@@ -142,10 +144,6 @@ public class IdempotencyKeyTest {
                 new MockResponse.Builder().code(500).setHeader("Content-Type", "text/plain").build(),
                 new MockResponse.Builder().code(500).body("{}").build()
         );
-    }
-
-    private static MockResponse json(int code, String body) {
-        return new MockResponse.Builder().code(code).setHeader("Content-Type", "application/json").body(body).build();
     }
 
     @Test
