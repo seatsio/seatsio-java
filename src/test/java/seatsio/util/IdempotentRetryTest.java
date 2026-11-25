@@ -57,7 +57,6 @@ public class IdempotentRetryTest {
         server.close();
     }
 
-    // guide test 1
     @ParameterizedTest
     @ValueSource(strings = {"POST", "DELETE"})
     public void aLostResponseIsRetriedWithTheSameKeyOnARouteThatHonorsKeys(String method) {
@@ -440,7 +439,7 @@ public class IdempotentRetryTest {
     @ParameterizedTest
     @MethodSource("failuresBeforeSending")
     public void failuresBeforeAnyByteIsSentCountAsNeverSent(IOException cause) {
-        assertThat(UnirestWrapper.Delivery.of(new UnirestException(cause))).isEqualTo(UnirestWrapper.Delivery.NEVER_SENT);
+        assertThat(UnirestWrapper.neverSent(new UnirestException(cause))).isTrue();
     }
 
     static Stream<IOException> failuresBeforeSending() {
@@ -452,9 +451,8 @@ public class IdempotentRetryTest {
     }
 
     @Test
-    public void aReadTimeoutCountsAsALostResponseDespiteBeingATimeout() {
-        assertThat(UnirestWrapper.Delivery.of(new UnirestException(new SocketTimeoutException("Read timed out"))))
-                .isEqualTo(UnirestWrapper.Delivery.RESPONSE_LOST);
+    public void aReadTimeoutMayHaveBeenSentDespiteBeingATimeout() {
+        assertThat(UnirestWrapper.neverSent(new UnirestException(new SocketTimeoutException("Read timed out")))).isFalse();
     }
 
     @Test

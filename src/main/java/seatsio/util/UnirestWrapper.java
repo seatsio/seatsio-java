@@ -1,13 +1,11 @@
 package seatsio.util;
 
 import kong.unirest.*;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.conn.ConnectTimeoutException;
 import seatsio.SeatsioClient;
 import seatsio.SeatsioException;
 
 import javax.net.ssl.SSLHandshakeException;
-import java.io.IOException;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.time.Duration;
@@ -29,10 +27,6 @@ public class UnirestWrapper {
     private static final Set<HttpMethod> SAFE_METHODS = Set.of(HttpMethod.GET, HttpMethod.HEAD, HttpMethod.OPTIONS, HttpMethod.TRACE);
     private static final Pattern V4_UUID = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}", Pattern.CASE_INSENSITIVE);
 
-    /**
-     * The server keeps an Idempotency-Key for 10 minutes. Once an attempt of a write may have reached the server,
-     * every retry must start well within that time, otherwise the key may have expired and the retry runs as a new request.
-     */
     static final long RETRY_WINDOW_MILLIS = Duration.ofMinutes(5).toMillis();
 
     private final String secretKey;
@@ -92,7 +86,7 @@ public class UnirestWrapper {
                 });
             } catch (UnirestException e) {
                 if (write == null) {
-                    throw SeatsioException.fromConnectionFailure(e, request, Delivery.of(e) != Delivery.NEVER_SENT, false);
+                    throw SeatsioException.fromConnectionFailure(e, request, !neverSent(e), false);
                 }
                 if (write.failed(e) && waitBeforeRetry(retryCount, write)) {
                     continue;
@@ -179,36 +173,17 @@ public class UnirestWrapper {
     }
 
     /**
-     * Whether a connection failure happened before any byte of the request reached the server.
+     * Whether a connection failure happened before any byte of the request reached the server, so the request cannot
+     * have run. This is a whitelist: any other failure (a read timeout, a connection reset, a broken pipe on a stale
+     * pooled connection, ...) is treated as "may have been sent", which is the safe default.
      */
-    enum Delivery {
-        /**
-         * Connection refused, connect timeout, DNS failure, TLS handshake failure. Always safe to retry.
-         */
-        NEVER_SENT,
-        /**
-         * The request may have reached the server and run: read timeout, connection reset, no response.
-         */
-        RESPONSE_LOST,
-        /**
-         * Not a network failure (an invalid URL, a protocol error). Retrying gives the same result.
-         */
-        NOT_RETRYABLE;
-
-        static Delivery of(UnirestException e) {
-            Throwable cause = e.getCause();
-            if (!(cause instanceof IOException) || cause instanceof ClientProtocolException) {
-                return NOT_RETRYABLE;
-            }
-            // ConnectTimeoutException is an InterruptedIOException, so it must be checked by type, not by "timeout"
-            if (cause instanceof ConnectException
-                    || cause instanceof ConnectTimeoutException
-                    || cause instanceof UnknownHostException
-                    || cause instanceof SSLHandshakeException) {
-                return NEVER_SENT;
-            }
-            return RESPONSE_LOST;
-        }
+    static boolean neverSent(UnirestException e) {
+        Throwable cause = e.getCause();
+        // ConnectTimeoutException is an InterruptedIOException, so it must be checked by type, not by "timeout"
+        return cause instanceof ConnectException
+                || cause instanceof ConnectTimeoutException
+                || cause instanceof UnknownHostException
+                || cause instanceof SSLHandshakeException;
     }
 
     /**
@@ -240,13 +215,12 @@ public class UnirestWrapper {
          * Records a connection failure. Returns whether the SDK may retry it, retries left and time permitting.
          */
         boolean failed(UnirestException e) {
-            Delivery delivery = Delivery.of(e);
-            if (delivery == Delivery.NEVER_SENT) {
+            if (neverSent(e)) {
                 return true;
             }
             mayHaveReachedTheServer = true;
             mayHaveRun = true;
-            return delivery == Delivery.RESPONSE_LOST && routeHonorsKeys();
+            return routeHonorsKeys();
         }
 
         boolean mayRetryAfter(long delay) {
