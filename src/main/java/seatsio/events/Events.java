@@ -515,4 +515,10 @@ public class Events {
         return gson().fromJson(response, Event.class);
     }
 
+    public List<Event> moveEventsToNewChartCopy(List<String> eventKeys) {
+        JsonObjectBuilder request = aJsonObject().withProperty("events", eventKeys);
+        String response = unirest.stringResponse(post(baseUrl + "/events/actions/move-to-new-chart-copy").body(request.build().toString()));
+        return gson().fromJson(response, EventCreationResult.class).events();
+    }
+
 }
